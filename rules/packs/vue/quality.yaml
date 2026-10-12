@@ -1,0 +1,291 @@
+# HAND-EDITED rule file: pack vue, topic quality. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Vue pack. Version dimension "vue" from package.json/lockfile (vue, or @vue/compat => migration build).
+# target: template -> vue grammar on the SFC; target: script -> <script>/<script setup> content
+# (and plain .js/.ts files matched by `files`) parsed with the typescript grammar.
+pack: vue
+pack_version: 2026.10.0
+rules:
+- id: VUE-QUAL-COMPUTED-ASYNC-001
+  title: Computed getters must not be async
+  language: vue
+  kind: anti-pattern
+  category: reactivity
+  severity: major
+  applies_to:
+    vue: '>=2.7'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (call_expression
+        function: (identifier) @c (#eq? @c "computed")
+        arguments: (arguments (arrow_function) @match (#match? @match "^async")))
+  message: Computed getters "should only perform pure computation and be free of side effects" - no async requests. Use watch()/watchEffect or a data-fetching composable.
+  source:
+    url: https://vuejs.org/guide/essentials/computed.html
+    doc: 'Computed Properties - Best Practices: Getters should be side-effect free'
+    doc_version: Vue 3 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>import { computed } from 'vue'; const user = computed(async () => await fetchUser())</script>
+    good: |
+      <script setup>import { computed, ref } from 'vue'; const a = ref(1); const double = computed(() => a.value * 2)</script>
+- id: VUE-QUAL-EMITS-001
+  title: Declare emitted events with the emits option
+  language: vue
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    target: script
+    query: |
+      (call_expression
+        function: (member_expression object: (this) property: (property_identifier) @p (#eq? @p "$emit"))) @match
+    filters:
+    - file.lacks_text:emits
+  message: Component emits events without an `emits` declaration. Vue 3 recommends documenting all emitted events; undeclared listeners also fall through to the root element.
+  ai_question: Does this component (or a mixin/extends parent) already declare these events elsewhere?
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/emits-option.html
+    doc: Vue 3 Migration Guide - emits Option
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script>export default { methods: { save() { this.$emit('save') } } }</script>
+    good: |
+      <script>export default { emits: ['save'], methods: { save() { this.$emit('save') } } }</script>
+- id: VUE-QUAL-MULTIWORD-001
+  title: Use multi-word component names
+  language: vue
+  kind: best-practice
+  category: naming
+  severity: minor
+  applies_to:
+    vue: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (export_statement
+        (object (pair
+          key: (property_identifier) @k (#eq? @k "name")
+          value: (string (string_fragment) @match (#match? @match "^[A-Za-z][a-z0-9]*$") (#not-eq? @match "App")))))
+  message: Single-word component name. The style guide (Essential) requires multi-word names (except root App) to avoid conflicts with current and future HTML elements.
+  source:
+    url: https://vuejs.org/style-guide/rules-essential.html
+    doc: 'Style Guide - Essential: Use multi-word component names'
+    doc_version: Vue 3 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script>export default { name: 'Todo' }</script>
+    good: |
+      <script>export default { name: 'TodoItem' }</script>
+- id: VUE-QUAL-MUTATE-PROP-001
+  title: Do not mutate props
+  language: vue
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    vue: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (assignment_expression left: (member_expression object: (identifier) @o (#eq? @o "props")) @match)
+  message: Props follow one-way data flow and are readonly; emit an event or copy into local state instead of assigning.
+  source:
+    url: https://vuejs.org/guide/components/props.html
+    doc: Props - One-Way Data Flow
+    doc_version: Vue 3 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>const props = defineProps(['foo']); props.foo = 'bar'</script>
+    good: |
+      <script setup>const props = defineProps(['foo']); const emit = defineEmits(['update:foo']); emit('update:foo', 'bar')</script>
+- id: VUE-QUAL-PROPS-DESTRUCT-001
+  title: Destructured defineProps is not reactive before Vue 3.5
+  language: vue
+  kind: anti-pattern
+  category: reactivity
+  severity: major
+  applies_to:
+    vue: '>=3.0 <3.5'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (variable_declarator
+        name: (object_pattern)
+        value: (call_expression function: (identifier) @f (#eq? @f "defineProps"))) @match
+  message: Before Vue 3.5 destructuring defineProps() yields non-reactive values. Vue 3.5 stabilised Reactive Props Destructure; on <3.5 use props.x or toRefs(props).
+  source:
+    url: https://blog.vuejs.org/posts/vue-3-5
+    doc: Announcing Vue 3.5 - Reactive Props Destructure (see also https://vuejs.org/guide/components/props.html)
+    doc_version: Vue 3.5
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>const { msg } = defineProps(['msg'])</script>
+    good: |
+      <script setup>const props = defineProps(['msg'])</script>
+- id: VUE-QUAL-REACTIVE-DESTRUCT-001
+  title: Destructuring reactive() loses reactivity
+  language: vue
+  kind: anti-pattern
+  category: reactivity
+  severity: major
+  applies_to:
+    vue: '>=2.7'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    files:
+    - '**/*.vue'
+    - '**/*.js'
+    - '**/*.ts'
+    query: |
+      (variable_declarator
+        name: (object_pattern)
+        value: (call_expression function: (identifier) @f (#eq? @f "reactive"))) @match
+  message: Destructuring primitive properties of a reactive() object disconnects them from reactivity; use toRefs() or ref().
+  source:
+    url: https://vuejs.org/guide/essentials/reactivity-fundamentals.html
+    doc: Reactivity Fundamentals - Limitations of reactive()
+    doc_version: Vue 3 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>import { reactive } from 'vue'; const { count } = reactive({ count: 0 })</script>
+    good: |
+      <script setup>import { reactive, toRefs } from 'vue'; const { count } = toRefs(reactive({ count: 0 }))</script>
+- id: VUE-QUAL-SCOPED-001
+  title: Use component-scoped styling
+  language: vue
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    vue: '>=2.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    target: template
+    query: |
+      (style_element (start_tag) @match)
+    filters:
+    - vue.start_tag_lacks_attr:scoped
+    - vue.start_tag_lacks_attr:module
+  message: <style> without scoped or module. The style guide (Essential) says styles in components other than the top-level App and layouts may be scoped.
+  ai_question: Is this the top-level App component or a layout component (where global styles are acceptable)? If not, should the styles be scoped / CSS modules?
+  source:
+    url: https://vuejs.org/style-guide/rules-essential.html
+    doc: 'Style Guide - Essential: Use component-scoped styling'
+    doc_version: Vue 3 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><button class="btn" /></template>
+      <style>.btn { color: red }</style>
+    good: |
+      <template><button class="btn" /></template>
+      <style scoped>.btn { color: red }</style>
+- id: VUE-QUAL-VFOR-KEY-001
+  title: Always use key with v-for
+  language: vue
+  kind: best-practice
+  category: correctness
+  severity: major
+  applies_to:
+    vue: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      (start_tag (directive_attribute (directive_name) @d (#eq? @d "v-for"))) @match
+    filters:
+    - vue.start_tag_lacks_attr:key
+  message: v-for without a :key. The style guide (Priority A, Essential) requires keys so Vue can track element identity.
+  source:
+    url: https://vuejs.org/style-guide/rules-essential.html
+    doc: 'Style Guide - Essential: Use keyed v-for'
+    doc_version: Vue 3 docs (vuejs.org)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><ul><li v-for="t in todos">{{ t.text }}</li></ul></template>
+    good: |
+      <template><ul><li v-for="t in todos" :key="t.id">{{ t.text }}</li></ul></template>
+- id: VUE-QUAL-VIF-VFOR-001
+  title: Never use v-if on the same element as v-for
+  language: vue
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    vue: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      [
+        (start_tag
+          (directive_attribute (directive_name) @a (#eq? @a "v-for"))
+          (directive_attribute (directive_name) @b (#eq? @b "v-if"))) @match
+        (start_tag
+          (directive_attribute (directive_name) @c (#eq? @c "v-if"))
+          (directive_attribute (directive_name) @d (#eq? @d "v-for"))) @match
+      ]
+  message: v-if and v-for on the same element. In Vue 2 v-for has higher precedence, in Vue 3 v-if does (so the loop variable is undefined in the condition). Filter with a computed property or wrap in <template v-for>.
+  source:
+    url: https://vuejs.org/style-guide/rules-essential.html
+    doc: 'Style Guide - Essential: Avoid v-if with v-for; precedence change: https://v3-migration.vuejs.org/breaking-changes/v-if-v-for.html'
+    doc_version: Vue 3 docs / Vue 3 Migration Guide
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><li v-for="u in users" v-if="u.active" :key="u.id">{{ u.name }}</li></template>
+    good: |
+      <template><li v-for="u in activeUsers" :key="u.id">{{ u.name }}</li></template>
+- id: VUE-QUAL-WATCH-DEEP-001
+  title: Use deep watchers with caution
+  language: vue
+  kind: best-practice
+  category: performance
+  severity: info
+  applies_to:
+    vue: '>=2.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    target: script
+    query: |
+      (pair key: (property_identifier) @k (#eq? @k "deep") value: (true)) @match
+  message: Deep watch traverses all nested properties and "can be expensive when used on large data structures"; watch a specific getter instead where possible.
+  ai_question: Could the watched source be large/deeply nested, and would watching a specific property getter suffice?
+  source:
+    url: https://vuejs.org/guide/essentials/watchers.html
+    doc: Watchers - Deep Watchers
+    doc_version: Vue 3 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>import { watch } from 'vue'; watch(state, onChange, { deep: true })</script>
+    good: |
+      <script setup>import { watch } from 'vue'; watch(() => state.user.id, onChange)</script>

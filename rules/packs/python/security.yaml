@@ -1,0 +1,211 @@
+# HAND-EDITED rule file: pack python, topic security. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Python security rules added from the Sonar way / Semgrep / Snyk gap checklists (catalog keys only;
+# crev's own detection and wording, citing official Python / framework / OWASP docs). Injection-shaped
+# rules are ai-confirm (no data flow): they need a high-confidence AI confirmation to be listed.
+pack: python
+pack_version: 2026.10.0
+rules:
+- id: PY-SEC-COOKIE-INSECURE
+  title: Cookie set without secure=True
+  language: python
+  kind: security
+  category: security
+  severity: minor
+  precision: medium
+  applies_to:
+    python: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((call function: (attribute attribute: (identifier) @m) arguments: (argument_list) @args) @match
+        (#eq? @m "set_cookie") (#not-match? @args "secure\\s*=\\s*True"))
+  message: Without secure=True the cookie is also sent over plain HTTP; pass secure=True (and httponly=True, samesite) for session or auth cookies.
+  ai_question: Does the cookie carry session, authentication or other sensitive data, with Secure not enforced elsewhere (framework settings such as SESSION_COOKIE_SECURE)?
+  source:
+    url: https://docs.djangoproject.com/en/5.2/ref/request-response/#django.http.HttpResponse.set_cookie
+    doc: Django HttpResponse.set_cookie; Flask Response.set_cookie
+    doc_version: Django 5.2
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      resp.set_cookie("sid", sid)
+    good: |
+      resp.set_cookie("sid", sid, secure=True, httponly=True, samesite="Lax")
+  xref:
+  - sonar:python:S2092
+  cwe:
+  - CWE-614
+  owasp:
+  - A05:2021
+  - A02:2025
+  tags:
+  - appsec
+- id: PY-SEC-LDAP-INJECTION
+  title: LDAP filter built with string formatting
+  language: python
+  kind: security
+  category: security
+  severity: major
+  precision: low
+  applies_to:
+    python: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((call function: (attribute attribute: (identifier) @m) arguments: (argument_list (_) [(binary_operator) (string (interpolation))] @e)) @match
+        (#match? @m "^(search|search_s|search_st|search_ext|search_ext_s|paged_search)$"))
+    filters:
+    - taint.clean:ldap
+    - file.has_re:\bldap3?\b
+    - cap.lacks_re:e:escape_filter_chars
+  message: Formatting input into an LDAP filter allows LDAP injection; escape values (ldap.filter.escape_filter_chars / ldap3.utils.conv.escape_filter_chars).
+  ai_question: Does the formatted part of the filter come from untrusted input without escape_filter_chars?
+  source:
+    url: https://cheatsheetseries.owasp.org/cheatsheets/LDAP_Injection_Prevention_Cheat_Sheet.html
+    doc: OWASP LDAP Injection Prevention Cheat Sheet
+    doc_version: OWASP Cheat Sheet Series 2026
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      import ldap
+      conn.search_s(BASE, ldap.SCOPE_SUBTREE, f"(uid={user})")
+    good: |
+      import ldap
+      from ldap.filter import escape_filter_chars
+      conn.search_s(BASE, ldap.SCOPE_SUBTREE, "(uid=%s)" % escape_filter_chars(user))
+    regressions:
+    - note: the escaped value is formatted in, which is the documented safe use
+      code: |
+        import ldap
+        conn.search_s(BASE, ldap.SCOPE_SUBTREE, "(uid=" + escape_filter_chars(user) + ")")
+  xref:
+  - sonar:pythonsecurity:S2078
+  cwe:
+  - CWE-90
+  owasp:
+  - A03:2021
+  - A05:2025
+  tags:
+  - appsec
+- id: PY-SEC-OPEN-REDIRECT
+  title: Redirect to a URL taken from the request
+  language: python
+  kind: security
+  category: security
+  severity: major
+  precision: low
+  applies_to:
+    python: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((call function: [(identifier) (attribute)] @f arguments: (argument_list . (_) @u)) @match
+        (#match? @f "(^|\\.)(redirect|HttpResponseRedirect|RedirectResponse)$") (#match? @u "request\\.|\\bargs\\b|GET|POST|query_params"))
+    filters:
+    - taint.clean:redirect
+  message: Redirecting to a request-supplied URL lets attackers send users to phishing sites; allow only relative paths or an allow-list of hosts (e.g. django.utils.http.url_has_allowed_host_and_scheme).
+  ai_question: Can the redirect target be an absolute URL chosen by the requester, without an allow-list or same-host check?
+  source:
+    url: https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html
+    doc: OWASP Unvalidated Redirects and Forwards Cheat Sheet
+    doc_version: OWASP Cheat Sheet Series 2026
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      return redirect(request.args.get("next"))
+    good: |
+      return redirect(url_for("index"))
+  xref:
+  - sonar:pythonsecurity:S5146
+  - semgrep:python.flask.security.open-redirect
+  cwe:
+  - CWE-601
+  owasp:
+  - A01:2021
+  - A01:2025
+  tags:
+  - appsec
+- id: PY-SEC-WEAK-CIPHER
+  title: Broken cipher (DES, 3DES, RC2, RC4, Blowfish)
+  language: python
+  kind: security
+  category: security
+  severity: critical
+  precision: high
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((call function: (attribute object: (_) @o attribute: (identifier) @a)) @match
+        (#match? @o "(^|\\.)(DES|DES3|ARC2|ARC4|Blowfish)$") (#eq? @a "new"))
+      ((call function: (attribute object: (_) @o attribute: (identifier) @a)) @match
+        (#match? @o "(^|\\.)algorithms$") (#match? @a "^(TripleDES|Blowfish|ARC4|CAST5|IDEA|SEED)$"))
+  message: This cipher is obsolete; use AES-GCM (cryptography AESGCM) or ChaCha20-Poly1305.
+  source:
+    url: https://cryptography.io/en/latest/hazmat/decrepit/ciphers/
+    doc: cryptography - Decrepit ciphers
+    doc_version: cryptography 46
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      from Crypto.Cipher import DES
+      c = DES.new(key, DES.MODE_CBC, iv)
+    good: |
+      from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+      c = AESGCM(key)
+  xref:
+  - sonar:python:S5547
+  cwe:
+  - CWE-327
+  owasp:
+  - A02:2021
+  - A04:2025
+  tags:
+  - appsec
+- id: PY-SEC-XPATH-INJECTION
+  title: XPath expression built with string formatting
+  language: python
+  kind: security
+  category: security
+  severity: major
+  precision: low
+  applies_to:
+    python: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((call function: (attribute attribute: (identifier) @m) arguments: (argument_list . [(binary_operator) (string (interpolation)) (call function: (attribute attribute: (identifier) @fmt))] @e)) @match
+        (#match? @m "^(xpath|find|findall|findtext|iterfind|XPath)$"))
+    filters:
+    - taint.clean:xpath
+    - file.has_re:lxml|xml\.etree|ElementTree|elementpath
+  message: Formatting input into an XPath expression allows XPath injection; pass values as XPath variables (lxml xpath(..., name=value)).
+  ai_question: Does the formatted part of the XPath expression come from untrusted input?
+  source:
+    url: https://lxml.de/xpathxslt.html#the-xpath-method
+    doc: lxml - XPath variables
+    doc_version: lxml 6
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      from lxml import etree
+      r = tree.xpath(f"//user[@name='{name}']")
+    good: |
+      from lxml import etree
+      r = tree.xpath("//user[@name=$name]", name=name)
+  xref:
+  - sonar:pythonsecurity:S2091
+  cwe:
+  - CWE-643
+  owasp:
+  - A03:2021
+  - A05:2025
+  tags:
+  - appsec

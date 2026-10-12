@@ -1,0 +1,22 @@
+__pycache__/
+/crev
+*.test
+.crev-cache/
+
+# crev state (reports, caches, AI handoff, runs); user rules in .crev/rules/ are committed
+.crev/*
+!.crev/rules/
+
+# tools/ruleupdate snapshots and needs-review report
+.ruleupdate/
+
+# tools/corpus: cloned corpus repos, linter fixtures, benchmarks (never committed, never embedded)
+/tools/corpus/cache/
+/tools/corpus/results/*/raw/
+/tools/corpus/results/*/*.json
+!/tools/corpus/results/fixtures-*/fixtures.json
+/tools/gap/cache/
+
+# tools/bench: cloned repos and per-case work dirs (never committed)
+/tools/bench/cache/
+/tools/bench/work/

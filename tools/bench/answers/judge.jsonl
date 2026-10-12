@@ -1,0 +1,47 @@
+{"j": "800c6af57d", "valid": true, "why": "real defect or contract problem"}
+{"j": "d92ef1d27a", "valid": true, "why": "real defect or contract problem"}
+{"j": "67d5c080e8", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "e3417f26f9", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "dc655d6399", "valid": true, "why": "real defect or contract problem"}
+{"j": "7d347e745d", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "f334e685d5", "valid": true, "why": "real defect or contract problem"}
+{"j": "33bc1e703c", "valid": true, "why": "real defect or contract problem"}
+{"j": "5db521eb0e", "valid": true, "why": "real defect or contract problem"}
+{"j": "cdc8e801bc", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "73d2e9ae2c", "valid": true, "why": "real defect or contract problem"}
+{"j": "5543370fc0", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "173244bc4c", "valid": true, "why": "real defect or contract problem"}
+{"j": "682b2798f9", "valid": true, "why": "real defect or contract problem"}
+{"j": "236d18264e", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "e2614241ef", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "be15bb5996", "valid": true, "why": "real defect or contract problem"}
+{"j": "3cb6e64add", "valid": true, "why": "real defect or contract problem"}
+{"j": "2d9670b206", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "9d40712eb9", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "7570fcc3e5", "valid": true, "why": "real defect or contract problem"}
+{"j": "8c7f0b8159", "valid": true, "why": "real defect or contract problem"}
+{"j": "2835c341d9", "valid": true, "why": "real defect or contract problem"}
+{"j": "1836b9387c", "valid": true, "why": "real defect or contract problem"}
+{"j": "95219aed6b", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "729477d703", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "7bbf7a62b4", "valid": true, "why": "real defect or contract problem"}
+{"j": "a9f68ac389", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "10d89d6deb", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "a6b4a4e3ae", "valid": false, "why": "speculative or not a defect worth a comment"}
+{"j": "7fb103754e", "valid": true, "why": "real defect or contract problem"}
+{"j": "8e83eadbaa", "valid": true, "why": "real defect or contract problem"}
+{"j":"3bb9c78f2e","valid":true,"why":"unrelated responsibility added to middleware"}
+{"j":"4a1b3f9fc2","valid":true,"why":"interface method with body does not compile"}
+{"j":"7c5bb1a50b","valid":true,"why":"unrelated responsibility added to utility class"}
+{"j":"258c628629","valid":true,"why":"interface method with body does not compile"}
+{"j":"9804db94a6","valid":true,"why":"require() in a TS module; minor but real"}
+{"j": "30c23a1c65", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}
+{"j": "64bf154650", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}
+{"j": "dbafadfb25", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}
+{"j": "cb834573d4", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}
+{"j": "155f0b6a2a", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}
+{"j": "398b1c6a9b", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}
+{"j": "dcb78edf89", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}
+{"j": "a873d92586", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}
+{"j": "026ee1518c", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}
+{"j": "bbd6dca247", "valid": true, "why": "accurate code-quality finding (maintainability), low severity"}

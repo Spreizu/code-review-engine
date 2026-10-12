@@ -1,0 +1,553 @@
+# crev rule -> Sonar rule keys it covers (xref sonar:<key>). Keys only: titles/descriptions are not copied.
+# Verified by title review against the Sonar catalog (tools/gap/sonar.py); merged into rules/data/xref.yaml by tools/rulegen/xref.py.
+rules:
+  PY-SEC-SQL-STRING-FORMAT:
+  - python:S2077
+  DOCKER-QUAL-ENTRYPOINT-SHELL-WITH-CMD:
+  - docker:S7019
+  DOCKER-QUAL-LATEST-TAG:
+  - docker:S6596
+  - docker:S8431
+  DOCKER-QUAL-WORKDIR-RELATIVE-PATH:
+  - docker:S7021
+  GO-QUAL-CTX-IN-STRUCT:
+  - godre:S8242
+  GO-SEC-TLS-INSECURE-SKIP-VERIFY:
+  - go:S4830
+  GO-SEC-TLS-OLD-VERSION:
+  - go:S4423
+  GO-SEC-WEAK-CRYPTO-MD5:
+  - go:S4790
+  GO-SEC-WEAK-CRYPTO-SHA1:
+  - go:S4790
+  GRADLE-QUAL-TASKS-CREATE-EAGER-KTS:
+  - kotlin:S6623
+  JAVA-QUAL-CONC-SDF-STATIC-001:
+  - java:S2885
+  JAVA-QUAL-CONC-THREAD-RUN-001:
+  - java:S1217
+  JAVA-QUAL-CONC-WAIT-LOOP-001:
+  - java:S2274
+  JAVA-QUAL-COR-BIGDECIMAL-DOUBLE-001:
+  - java:S2111
+  JAVA-QUAL-COR-COLLECTIONS-EMPTY-001:
+  - java:S1596
+  JAVA-QUAL-COR-EQUALS-HASHCODE-001:
+  - java:S1206
+  JAVA-QUAL-COR-OPTIONAL-NULL-RETURN-001:
+  - java:S2789
+  JAVA-QUAL-COR-STRING-EQ-001:
+  - java:S4973
+  JAVA-MIG-FIN-001:
+  - java:S1113
+  JAVA-QUAL-RES-FILEINPUTSTREAM-001:
+  - java:S2095
+  JAVA-QUAL-RES-FILEOUTPUTSTREAM-001:
+  - java:S2095
+  JAVA-QUAL-RES-JDBC-001:
+  - java:S2095
+  JAVA-SEC-MATHRANDOM-001:
+  - java:S2245
+  JAVA-SEC-RANDOM-001:
+  - java:S2245
+  JAVA-SEC-SQLI-001:
+  - java:S2077
+  JAVA-SEC-SQLI-FORMAT-002:
+  - java:S2077
+  JAVA-SEC-XXE-DOCUMENTBUILDER-001:
+  - java:S2755
+  JAVA-SEC-XXE-SAXPARSER-001:
+  - java:S2755
+  JAVA-SEC-XXE-SCHEMA-001:
+  - java:S2755
+  JAVA-SEC-XXE-TRANSFORMER-001:
+  - java:S2755
+  JAVA-SEC-XXE-XMLINPUT-001:
+  - java:S2755
+  JAVA-SEC-XXE-XMLREADER-001:
+  - java:S2755
+  JAVA-MIG-VBC-001:
+  - java:S2129
+  JS-QUAL-ARRAY-CALLBACK-RETURN:
+  - javascript:S3796
+  - typescript:S3796
+  JS-MIG-CALLEE-001:
+  - javascript:S2685
+  - typescript:S2685
+  JS-QUAL-DEFAULT-CASE-LAST:
+  - javascript:S4524
+  - typescript:S4524
+  JS-QUAL-FOR-DIRECTION:
+  - javascript:S2251
+  - typescript:S2251
+  JS-QUAL-NEW-CAP:
+  - javascript:S2430
+  - typescript:S2430
+  JS-QUAL-NEW-WRAPPER-001:
+  - javascript:S1533
+  - typescript:S1533
+  JS-QUAL-NO-CONST-ASSIGN:
+  - javascript:S3500
+  - typescript:S3500
+  JS-QUAL-NO-CONSTANT-BINARY-EXPRESSION:
+  - javascript:S6638
+  - typescript:S6638
+  JS-QUAL-NO-CONTROL-REGEX:
+  - javascript:S6324
+  - typescript:S6324
+  JS-QUAL-NO-DUPLICATE-IMPORTS:
+  - javascript:S3863
+  - typescript:S3863
+  JS-QUAL-NO-EMPTY-CHARACTER-CLASS:
+  - javascript:S2639
+  - typescript:S2639
+  JS-QUAL-NO-EMPTY-FUNCTION:
+  - javascript:S1186
+  - typescript:S1186
+  JS-QUAL-NO-EMPTY-PATTERN:
+  - javascript:S3799
+  - typescript:S3799
+  JS-QUAL-NO-EXTRA-BIND:
+  - javascript:S6637
+  - typescript:S6637
+  JS-QUAL-NO-LABELS:
+  - javascript:S1119
+  - typescript:S1119
+  - javascript:S1219
+  - typescript:S1219
+  - javascript:S1439
+  - typescript:S1439
+  JS-QUAL-NO-LONE-BLOCKS:
+  - javascript:S1199
+  - typescript:S1199
+  JS-QUAL-NO-LONELY-IF:
+  - javascript:S6660
+  - typescript:S6660
+  JS-QUAL-NO-LOSS-OF-PRECISION:
+  - javascript:S6534
+  - typescript:S6534
+  JS-QUAL-NO-MULTI-STR:
+  - javascript:S1516
+  - typescript:S1516
+  JS-QUAL-NO-NESTED-TERNARY:
+  - javascript:S3358
+  - typescript:S3358
+  JS-QUAL-NO-NEW-NATIVE-NONCONSTRUCTOR:
+  - javascript:S3834
+  - typescript:S3834
+  JS-QUAL-NO-OCTAL-ESCAPE:
+  - javascript:S6657
+  - typescript:S6657
+  JS-QUAL-NO-REGEX-SPACES:
+  - javascript:S6326
+  - typescript:S6326
+  JS-QUAL-NO-SELF-ASSIGN:
+  - javascript:S1656
+  - typescript:S1656
+  JS-QUAL-NO-SETTER-RETURN:
+  - javascript:S2432
+  - typescript:S2432
+  JS-QUAL-NO-UNNEEDED-TERNARY:
+  - javascript:S6644
+  - typescript:S6644
+  JS-QUAL-NO-UNSAFE-FINALLY:
+  - javascript:S1143
+  - typescript:S1143
+  JS-QUAL-NO-UNUSED-PRIVATE-CLASS-MEMBERS:
+  - javascript:S1068
+  - typescript:S1068
+  JS-QUAL-NO-USELESS-CALL:
+  - javascript:S6676
+  - typescript:S6676
+  JS-QUAL-NO-USELESS-CONSTRUCTOR:
+  - javascript:S6647
+  - typescript:S6647
+  JS-QUAL-NO-USELESS-RENAME:
+  - javascript:S6650
+  - typescript:S6650
+  JS-QUAL-NO-USELESS-RETURN:
+  - javascript:S3626
+  - typescript:S3626
+  JS-QUAL-NO-VOID:
+  - javascript:S3735
+  - typescript:S3735
+  JS-QUAL-PREFER-OBJECT-SPREAD:
+  - javascript:S6661
+  - typescript:S6661
+  JS-QUAL-PREFER-PROMISE-REJECT-ERRORS:
+  - javascript:S6671
+  - typescript:S6671
+  JS-QUAL-PREFER-REGEX-LITERALS:
+  - javascript:S6325
+  - typescript:S6325
+  JS-QUAL-PREFER-SPREAD:
+  - javascript:S6666
+  - typescript:S6666
+  JS-QUAL-VALID-TYPEOF:
+  - javascript:S4125
+  - typescript:S4125
+  JS-QUAL-WEB-SORT-DEFAULT-001:
+  - javascript:S2871
+  - typescript:S2871
+  KT-QUAL-EQUALS-WITHOUT-HASHCODE:
+  - kotlin:S1206
+  KT-SEC-HARDCODED-SECRET:
+  - kotlin:S6418
+  - kotlin:S2068
+  KT-SEC-HOSTNAME-VERIFIER-ALL:
+  - kotlin:S5527
+  KT-SEC-INSECURE-RANDOM:
+  - kotlin:S2245
+  KT-SEC-TRUST-ALL:
+  - kotlin:S4830
+  KT-SEC-WEAK-HASH:
+  - kotlin:S4790
+  PHP-SEC-CURL-NO-VERIFY:
+  - php:S4830
+  PHP-SEC-MD5-PASSWORD:
+  - php:S4790
+  PHP-MIG-NESTED-TERNARY:
+  - php:S3358
+  PHP-MIG-REMOVED-PHP4-CONSTRUCTOR:
+  - php:S1603
+  PY-SEC-BIND-ALL-INTERFACES:
+  - python:S8392
+  PY-SEC-FLASK-DEBUG:
+  - python:S4507
+  PY-SEC-HARDCODED-PASSWORD:
+  - python:S6418
+  - python:S2068
+  PY-SEC-HARDCODED-TMP:
+  - python:S5443
+  PY-SEC-HASH-WEAK:
+  - python:S4790
+  PY-SEC-JINJA-AUTOESCAPE-FALSE:
+  - python:S5247
+  PY-SEC-RANDOM-FOR-SECURITY:
+  - python:S2245
+  PY-SEC-REQUESTS-VERIFY-FALSE:
+  - python:S4830
+  PY-SEC-SSL-NO-VERIFY:
+  - python:S4830
+  - python:S5527
+  PY-SEC-TEMPFILE-MKTEMP:
+  - python:S5445
+  PY-SEC-XML-UNTRUSTED:
+  - python:S2755
+  SB-SEC-CSRF-001:
+  - java:S4502
+  SB-SEC-NOOP-ENCODER-001:
+  - java:S5344
+  SB-SEC-WEB-CORS-ALL-001:
+  - java:S5122
+  TF-SEC-AWS-EBS-UNENCRYPTED:
+  - terraform:S6275
+  TF-SEC-AWS-RDS-UNENCRYPTED:
+  - terraform:S6388
+  TS-QUAL-NO-DUPLICATE-ENUM-VALUES:
+  - typescript:S6578
+  TS-QUAL-NO-DUPLICATE-TYPE-CONSTITUENTS:
+  - typescript:S4621
+  TS-QUAL-NO-EXTRANEOUS-CLASS:
+  - typescript:S2094
+  TS-QUAL-NO-REDUNDANT-TYPE-CONSTITUENTS:
+  - typescript:S6571
+  TS-QUAL-NO-UNNECESSARY-BOOLEAN-LITERAL-COMPARE:
+  - typescript:S1125
+  TS-QUAL-NO-UNNECESSARY-TYPE-CONSTRAINT:
+  - typescript:S6569
+  TS-QUAL-PREFER-FUNCTION-TYPE:
+  - typescript:S6598
+  TS-QUAL-PREFER-LITERAL-ENUM-MEMBER:
+  - typescript:S6550
+  TS-QUAL-PREFER-NULLISH-COALESCING:
+  - typescript:S6606
+  TS-QUAL-PREFER-REGEXP-EXEC:
+  - typescript:S6594
+  JS-MOD-AT-001:
+  - javascript:S7755
+  - typescript:S7755
+  JS-QUAL-DEFAULT-PARAM-LAST:
+  - javascript:S1788
+  - typescript:S1788
+  JS-MOD-HASOWN-001:
+  - javascript:S6653
+  - typescript:S6653
+  JS-MOD-JSON-CLONE-001:
+  - javascript:S7784
+  - typescript:S7784
+  JS-QUAL-NO-CASE-DECLARATIONS:
+  - javascript:S6836
+  - typescript:S6836
+  JS-QUAL-NO-CONSTRUCTOR-RETURN:
+  - javascript:S6635
+  - typescript:S6635
+  JS-QUAL-NO-DELETE-VAR:
+  - javascript:S3001
+  - typescript:S3001
+  JS-QUAL-NO-DUPE-CLASS-MEMBERS:
+  - javascript:S1534
+  - typescript:S1534
+  JS-QUAL-NO-DUPE-ELSE-IF:
+  - javascript:S1862
+  - typescript:S1862
+  JS-QUAL-NO-DUPE-KEYS:
+  - javascript:S1534
+  - typescript:S1534
+  JS-QUAL-NO-DUPLICATE-CASE:
+  - javascript:S1862
+  - typescript:S1862
+  JS-QUAL-NO-ELSE-RETURN:
+  - javascript:S1126
+  JS-QUAL-NO-EMPTY:
+  - javascript:S108
+  - typescript:S108
+  - javascript:S2486
+  - typescript:S2486
+  JS-QUAL-NO-EXTEND-NATIVE:
+  - javascript:S6643
+  - typescript:S6643
+  JS-QUAL-NO-EXTRA-BOOLEAN-CAST:
+  - javascript:S6509
+  - typescript:S6509
+  JS-QUAL-NO-FALLTHROUGH:
+  - javascript:S128
+  - typescript:S128
+  JS-QUAL-NO-IMPORT-ASSIGN:
+  - javascript:S6522
+  - typescript:S6522
+  JS-QUAL-NO-LOOP-FUNC:
+  - javascript:S1515
+  - typescript:S1515
+  JS-QUAL-NO-NEW:
+  - javascript:S1848
+  - typescript:S1848
+  JS-QUAL-NO-OCTAL:
+  - javascript:S1314
+  - typescript:S1314
+  JS-QUAL-NO-PARAM-REASSIGN:
+  - javascript:S1226
+  - typescript:S1226
+  JS-QUAL-NO-SEQUENCES:
+  - javascript:S878
+  - typescript:S878
+  JS-QUAL-NO-SHADOW-RESTRICTED-NAMES:
+  - javascript:S2137
+  - typescript:S2137
+  JS-QUAL-NO-UNDEF-INIT:
+  - javascript:S6645
+  JS-QUAL-NO-UNREACHABLE:
+  - javascript:S1763
+  - typescript:S1763
+  JS-QUAL-NO-UNSAFE-NEGATION:
+  - javascript:S3812
+  - typescript:S3812
+  JS-QUAL-NO-UNUSED-EXPRESSIONS:
+  - javascript:S905
+  - typescript:S905
+  JS-QUAL-NO-USELESS-CATCH:
+  - javascript:S2737
+  - typescript:S2737
+  JS-QUAL-NO-USELESS-ESCAPE:
+  - javascript:S6535
+  - typescript:S6535
+  JS-QUAL-NO-WARNING-COMMENTS:
+  - javascript:S1134
+  - typescript:S1134
+  - javascript:S1135
+  - typescript:S1135
+  JS-MOD-OPTCHAIN-001:
+  - javascript:S6582
+  - typescript:S6582
+  JS-MIG-PROTO-001:
+  - javascript:S6654
+  - typescript:S6654
+  JS-QUAL-REQUIRE-YIELD:
+  - javascript:S3531
+  - typescript:S3531
+  JS-QUAL-THROW-LITERAL-001:
+  - javascript:S3696
+  - typescript:S3696
+  JS-QUAL-USE-ISNAN:
+  - javascript:S2688
+  - typescript:S2688
+  JS-QUAL-VAR-001:
+  - javascript:S3504
+  - typescript:S3504
+  JS-MOD-WEB-DATE-NOW-001:
+  - javascript:S7759
+  - typescript:S7759
+  JS-QUAL-WITH-001:
+  - javascript:S1321
+  REACT-QUAL-JSX-KEY-INDEX:
+  - javascript:S6479
+  - typescript:S6479
+  REACT-QUAL-JSX-KEY-MISSING:
+  - javascript:S6477
+  - typescript:S6477
+  REACT-QUAL-NESTED-COMPONENT-DEFINITION:
+  - javascript:S6478
+  - typescript:S6478
+  REACT-MIG-REACTDOM-FIND-DOM-NODE-REMOVED:
+  - javascript:S6788
+  - typescript:S6788
+  REACT-QUAL-SETSTATE-FROM-THIS-STATE:
+  - javascript:S6756
+  - typescript:S6756
+  REACT-QUAL-STATE-MUTATION:
+  - javascript:S6746
+  - typescript:S6746
+  REACT-MIG-STRING-REFS:
+  - javascript:S6790
+  - typescript:S6790
+  REACT-MIG-UNSAFE-LEGACY-LIFECYCLE:
+  - javascript:S6791
+  - typescript:S6791
+  VUE-QUAL-COMPUTED-ASYNC-001:
+  - javascript:S9025
+  - typescript:S9025
+  VUE-QUAL-HTML-BUTTON-HAS-TYPE:
+  - javascript:S9011
+  - typescript:S9011
+  VUE-QUAL-MUTATE-PROP-001:
+  - javascript:S8951
+  - typescript:S8951
+  VUE-QUAL-NO-REQUIRED-PROP-WITH-DEFAULT:
+  - javascript:S8950
+  - typescript:S8950
+  VUE-QUAL-NO-SIDE-EFFECTS-IN-COMPUTED-PROPERTIES:
+  - javascript:S8988
+  - typescript:S8988
+  VUE-QUAL-REQUIRE-PROP-TYPE-CONSTRUCTOR:
+  - javascript:S9107
+  - typescript:S9107
+  VUE-QUAL-REQUIRE-PROP-TYPES:
+  - javascript:S8957
+  - typescript:S8957
+  VUE-QUAL-VALID-V-FOR:
+  - javascript:S8984
+  - typescript:S8984
+  VUE-QUAL-VALID-V-FOR-NOVALUE:
+  - javascript:S8984
+  - typescript:S8984
+  VUE-QUAL-VFOR-KEY-001:
+  - javascript:S8982
+  - typescript:S8982
+  VUE-QUAL-VIF-VFOR-001:
+  - javascript:S8987
+  - typescript:S8987
+  TS-QUAL-DEFAULT-PARAM-LAST:
+  - typescript:S1788
+  TS-QUAL-MAX-PARAMS:
+  - typescript:S107
+  TS-QUAL-NO-ARRAY-DELETE:
+  - typescript:S2870
+  TS-QUAL-NO-FLOATING-PROMISES:
+  - typescript:S9383
+  TS-QUAL-NO-THIS-ALIAS:
+  - typescript:S7740
+  TS-QUAL-ONLY-THROW-ERROR:
+  - typescript:S3696
+  TS-QUAL-PREFER-FIND:
+  - typescript:S7750
+  TS-QUAL-PREFER-INCLUDES:
+  - typescript:S7765
+  TS-QUAL-PREFER-STRING-STARTS-ENDS-WITH:
+  - typescript:S6557
+  PY-QUAL-ASSERT-TUPLE:
+  - python:S5905
+  PY-QUAL-DATETIME-NOW-NAIVE:
+  - python:S6903
+  PY-QUAL-FINALLY-JUMP:
+  - python:S1143
+  PY-QUAL-IMPORT-STAR:
+  - python:S2208
+  PY-QUAL-IN-DICT-KEYS:
+  - python:S8521
+  PY-QUAL-IS-LITERAL:
+  - python:S5795
+  PY-QUAL-LOOP-VAR-CLOSURE:
+  - python:S1515
+  PY-MOD-PEP604-OPTIONAL:
+  - python:S6546
+  PY-QUAL-RAISE-NOTIMPLEMENTED:
+  - python:S5632
+  PY-MOD-TYPE-ALIAS-PEP695:
+  - python:S6794
+  PY-QUAL-TYPE-COMPARISON:
+  - python:S6660
+  PY-QUAL-USELESS-COMPARISON:
+  - python:S905
+  PY-MOD-ZONEINFO:
+  - python:S6890
+  JAVA-CERT-OBJ09-CLASS-NAME-COMPARE:
+  - java:S1872
+  JAVA-CERT-THI02-NOTIFY:
+  - java:S2446
+  JAVA-QUAL-CONC-CME-001:
+  - java:S6417
+  JAVA-QUAL-CONC-INTERRUPTED-001:
+  - java:S2142
+  JAVA-QUAL-CONC-THREADLOCAL-REMOVE-001:
+  - java:S5164
+  JAVA-QUAL-COR-BIGDECIMAL-EQUALS-001:
+  - java:S9351
+  JAVA-QUAL-COR-NAN-EQ-001:
+  - java:S9147
+  JAVA-QUAL-COR-RECORD-ARRAY-001:
+  - java:S6218
+  JAVA-MOD-MATH-CLAMP-001:
+  - java:S6885
+  JAVA-MOD-STREAM-TOLIST-001:
+  - java:S6204
+  JAVA-MOD-UNNAMED-001:
+  - java:S7467
+  JAVA-MOD-PAT-001:
+  - java:S6201
+  JAVA-MOD-REC-001:
+  - java:S6206
+  JAVA-MOD-TXT-001:
+  - java:S6126
+  JAVA-QUAL-UTF8-001:
+  - java:S4719
+  SB-QUAL-ASYNC-PRIVATE-001:
+  - java:S2230
+  SB-QUAL-ASYNC-RETURN-001:
+  - java:S6810
+  SB-QUAL-ASYNC-SELF-001:
+  - java:S6809
+  SB-QUAL-CACHE-SELF-001:
+  - java:S6809
+  SB-QUAL-INJ-001:
+  - java:S6813
+  SB-QUAL-TX-001:
+  - java:S2229
+  - java:S6809
+  SB-QUAL-TX-002:
+  - java:S2230
+  SB-QUAL-TX-CHECKED-001:
+  - java:S8989
+  SB-QUAL-WEB-REQMAPPING-METHOD-001:
+  - java:S4488
+  GO-QUAL-HTTP-BODY-NOT-CLOSED:
+  - godre:S8208
+  GO-QUAL-VET-ASSIGN:
+  - go:S1656
+  GO-QUAL-VET-LOSTCANCEL:
+  - godre:S8188
+  GO-QUAL-VET-TESTINGGOROUTINE:
+  - godre:S8166
+  GO-QUAL-VET-UNREACHABLE:
+  - go:S1763
+  KT-QUAL-CLASS-NAMING:
+  - kotlin:S101
+  KT-QUAL-FILTER-FIRST:
+  - kotlin:S6527
+  KT-QUAL-FUN-INTERFACE:
+  - kotlin:S6516
+  KT-QUAL-NULL-OR-EMPTY:
+  - kotlin:S6529
+  KT-QUAL-SIZE-ZERO:
+  - kotlin:S6529
+  PHP-QUAL-GOTO:
+  - php:S907

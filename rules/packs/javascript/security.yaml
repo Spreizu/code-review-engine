@@ -1,0 +1,85 @@
+# HAND-EDITED rule file: pack javascript, topic security. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# JavaScript pack (also applied to TypeScript files and Vue <script> blocks; queries use node
+# types shared by tree-sitter-javascript and tree-sitter-typescript). Version dimension
+# "ecmascript" = lowest supported ES edition derived from tsconfig target, browserslist,
+# ESLint ecmaVersion or engines.node (see PLAN.md §5).
+pack: javascript
+pack_version: 2026.10.0
+rules:
+- id: JS-SEC-EVAL-001
+  title: Never use eval()
+  language: javascript
+  kind: security
+  category: security
+  severity: critical
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression function: (identifier) @match (#eq? @match "eval"))
+  message: 'MDN: "Never use direct eval()!" - it runs code with the caller''s privileges and is an injection sink.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval
+    doc: MDN eval() - Never use direct eval()!
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const v = eval(userInput)
+    good: |
+      const v = JSON.parse(userInput)
+- id: JS-SEC-IMPLIED-EVAL-001
+  title: No string arguments to setTimeout/setInterval
+  language: javascript
+  kind: security
+  category: security
+  severity: major
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression
+        function: (identifier) @f (#any-of? @f "setTimeout" "setInterval")
+        arguments: (arguments . [(string) (template_string)] @match))
+  message: A string passed to setTimeout/setInterval is evaluated as code, with the same concerns as eval(); pass a function.
+  source:
+    url: https://eslint.org/docs/latest/rules/no-implied-eval
+    doc: ESLint no-implied-eval (cites MDN eval)
+    doc_version: ESLint latest (v9/v10 docs)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      setTimeout("refresh()", 100)
+    good: |
+      setTimeout(() => refresh(), 100)
+- id: JS-SEC-INNERHTML-001
+  title: innerHTML/outerHTML assignment is an XSS sink
+  language: javascript
+  kind: security
+  category: security
+  severity: major
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (assignment_expression
+        left: (member_expression property: (property_identifier) @p (#any-of? @p "innerHTML" "outerHTML")) @match)
+  message: Assigning untrusted strings to innerHTML can execute script; use textContent for plain text or sanitize (Trusted Types / DOMPurify).
+  ai_question: Can the assigned value contain user-controlled data that is not sanitized?
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/API/Element/innerHTML
+    doc: MDN Element.innerHTML - Security considerations
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      el.innerHTML = comment.body
+    good: |
+      el.textContent = comment.body

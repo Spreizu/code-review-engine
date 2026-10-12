@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/elmo/code-review-engine/schemas/custom-rules.schema.json",
+  "title": "User rule file (.crev/rules/*.yaml)",
+  "description": "Layered over the built-in catalog by rule id. New ids must be complete rules (rule-pack.schema.json#/$defs/rule). For a built-in id: no `override` = patch (deep-merge the given fields), `override: replace` = full replacement, `disabled: true` = remove. Validate with `crev rules validate`.",
+  "type": "object",
+  "required": [
+    "rules"
+  ],
+  "properties": {
+    "pack": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$",
+      "default": "custom",
+      "description": "Pack name for rules added by this file"
+    },
+    "pack_version": {
+      "type": "string",
+      "default": "local"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "title": "disable",
+            "type": "object",
+            "required": [
+              "id",
+              "disabled"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "disabled": {
+                "const": true
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "title": "replace / add (complete rule)",
+            "allOf": [
+              {
+                "$ref": "rule-pack.schema.json#/$defs/rule"
+              }
+            ],
+            "properties": {
+              "override": {
+                "const": "replace"
+              }
+            }
+          },
+          {
+            "title": "patch (partial rule, built-in id)",
+            "type": "object",
+            "required": [
+              "id"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Z]+(-[A-Z0-9]+)+$"
+              },
+              "override": {
+                "const": "patch"
+              }
+            },
+            "not": {
+              "required": [
+                "disabled"
+              ]
+            },
+            "description": "Any rule field (severity, applies_to, detection.files, detection.filters, message, status, tags, xref, ...). Maps merge recursively; scalars and lists replace."
+          }
+        ]
+      }
+    }
+  }
+}

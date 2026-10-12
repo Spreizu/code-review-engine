@@ -1,0 +1,188 @@
+# HAND-EDITED rule file: pack java, topic modernization. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Java language pack. Version dimension: "java" = effective release level
+# (maven.compiler.release / <java.version> / Gradle toolchain languageVersion).
+pack: java
+pack_version: 2026.10.0
+rules:
+- id: JAVA-MOD-PAT-001
+  title: Use pattern matching for instanceof instead of instanceof + cast
+  language: java
+  kind: modernization
+  category: readability
+  severity: minor
+  applies_to:
+    java: '>=16'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (if_statement
+        condition: (parenthesized_expression
+          (instanceof_expression left: (identifier) @v right: (type_identifier) @t))
+        consequence: (block
+          (local_variable_declaration
+            declarator: (variable_declarator
+              value: (cast_expression type: (type_identifier) @t2 value: (identifier) @v2) @match)))
+        (#eq? @t @t2) (#eq? @v @v2))
+  message: '`instanceof` test followed by a cast of the same variable; use a type pattern (`obj instanceof T t`).'
+  fix: if (obj instanceof String s) { use(s); }
+  source:
+    url: https://openjdk.org/jeps/394
+    doc: 'JEP 394: Pattern Matching for instanceof'
+    doc_version: JDK 16 (final)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { void f(Object obj) { if (obj instanceof String) { String s = (String) obj; System.out.println(s); } } }
+    good: |
+      class A { void f(Object obj) { if (obj instanceof String s) { System.out.println(s); } } }
+- id: JAVA-MOD-PAT-002
+  title: Replace instanceof if/else chains with pattern matching for switch
+  language: java
+  kind: modernization
+  category: readability
+  severity: info
+  applies_to:
+    java: '>=21'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (if_statement
+        condition: (parenthesized_expression (instanceof_expression))
+        alternative: (if_statement
+          condition: (parenthesized_expression (instanceof_expression)))) @match
+  message: Chain of instanceof tests; a pattern-matching `switch` (optionally over a sealed hierarchy) is exhaustive-checked and clearer.
+  ai_question: Do all branches test the same variable against different types, such that a `switch (x) { case A a -> ...; case B b -> ...; }` is a behaviour-preserving rewrite?
+  source:
+    url: https://openjdk.org/jeps/441
+    doc: 'JEP 441: Pattern Matching for switch'
+    doc_version: JDK 21 (final)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { String f(Object o) { if (o instanceof Integer i) { return "int"; } else if (o instanceof String s) { return "str"; } return "?"; } }
+    good: |
+      class A { String f(Object o) { return switch (o) { case Integer i -> "int"; case String s -> "str"; default -> "?"; }; } }
+- id: JAVA-MOD-REC-001
+  title: Consider a record for an immutable data carrier
+  language: java
+  kind: modernization
+  category: design
+  severity: info
+  applies_to:
+    java: '>=16'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (class_declaration
+        body: (class_body
+          (method_declaration name: (identifier) @h (#eq? @h "hashCode")))) @match
+  message: Class hand-writes equals/hashCode; if it is a shallowly-immutable data carrier, a record removes the boilerplate.
+  rationale: Records are classes that act as transparent carriers for immutable data; JEP 395 finalized them in JDK 16.
+  fix: Replace with `record Name(Type a, Type b) {}` and move validation into a compact constructor.
+  ai_question: Is this class a plain data carrier (all fields final, state fully exposed by accessors, no inheritance requirement, not a JPA entity)? If yes, a record is appropriate.
+  source:
+    url: https://openjdk.org/jeps/395
+    doc: 'JEP 395: Records'
+    doc_version: JDK 16 (final)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      final class Point {
+        private final int x, y;
+        Point(int x, int y) { this.x = x; this.y = y; }
+        public boolean equals(Object o) { return o instanceof Point p && p.x == x && p.y == y; }
+        public int hashCode() { return 31 * x + y; }
+      }
+    good: |
+      record Point(int x, int y) {}
+- id: JAVA-MOD-SEQ-001
+  title: Use SequencedCollection.getLast()
+  language: java
+  kind: modernization
+  category: readability
+  severity: info
+  applies_to:
+    java: '>=21'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation
+        object: (identifier) @o
+        name: (identifier) @g (#eq? @g "get")
+        arguments: (argument_list
+          (binary_expression
+            left: (method_invocation object: (identifier) @o2 name: (identifier) @s (#eq? @s "size"))
+            right: (decimal_integer_literal) @one (#eq? @one "1")))
+        (#eq? @o @o2)) @match
+  message: '`list.get(list.size() - 1)` - JDK 21 sequenced collections provide getLast() (and getFirst(), reversed()).'
+  source:
+    url: https://openjdk.org/jeps/431
+    doc: 'JEP 431: Sequenced Collections'
+    doc_version: JDK 21
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { String f(java.util.List<String> list) { return list.get(list.size() - 1); } }
+    good: |
+      class A { String f(java.util.List<String> list) { return list.getLast(); } }
+- id: JAVA-MOD-SV-001
+  title: Prefer ScopedValue over InheritableThreadLocal
+  language: java
+  kind: modernization
+  category: concurrency
+  severity: info
+  applies_to:
+    java: '>=25'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (field_declaration
+        type: (generic_type (type_identifier) @t (#eq? @t "InheritableThreadLocal"))) @match
+  message: InheritableThreadLocal copies mutable per-thread state into every child thread; scoped values (final in JDK 25) share immutable data one-way with bounded lifetime.
+  ai_question: Is this value written once per request/task and only read by callees (one-way data flow)? If so ScopedValue.where(KEY, v).run(...) fits.
+  source:
+    url: https://openjdk.org/jeps/506
+    doc: 'JEP 506: Scoped Values'
+    doc_version: JDK 25 (final)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class Ctx { static final InheritableThreadLocal<String> USER = new InheritableThreadLocal<>(); }
+    good: |
+      class Ctx { static final ScopedValue<String> USER = ScopedValue.newInstance(); }
+- id: JAVA-MOD-TXT-001
+  title: Prefer text blocks over concatenated multi-line string literals
+  language: java
+  kind: modernization
+  category: readability
+  severity: info
+  applies_to:
+    java: '>=15'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (binary_expression
+        left: (binary_expression right: (string_literal) @l)
+        right: (string_literal) @match
+        (#match? @l "\\\\n\"$"))
+  message: Multi-line string built by concatenating literals ending in \n; a text block (""" ... """) is easier to read and maintain.
+  source:
+    url: https://openjdk.org/jeps/378
+    doc: 'JEP 378: Text Blocks'
+    doc_version: JDK 15 (final)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { String q = "SELECT *\n" + "FROM t\n" + "WHERE id = ?"; }
+    good: |
+      class A { String q = """
+          SELECT *
+          FROM t
+          WHERE id = ?"""; }

@@ -1,0 +1,15 @@
+[[package]]
+name = "Django"
+version = "4.2.1"
+description = "web framework"
+optional = false
+
+[package.dependencies]
+asgiref = ">=3.6.0"
+
+[[package]]
+name = "typing_extensions"
+version = "4.9.0"
+
+[metadata]
+lock-version = "2.0"

@@ -1,0 +1,230 @@
+# HAND-EDITED rule file: pack typescript, topic quality. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# TypeScript pack. Version dimension "typescript" from package.json/lockfile (typescript, or
+# @typescript/native / @typescript/typescript6 aliases). tsconfig.json options are exposed as
+# "tsconfig.<option>" facts (after resolving "extends").
+pack: typescript
+pack_version: 2026.10.0
+rules:
+- id: TS-QUAL-ANY-001
+  title: Avoid explicit any
+  language: typescript
+  kind: anti-pattern
+  category: type-safety
+  severity: minor
+  applies_to:
+    typescript: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (type_annotation (predefined_type) @match (#eq? @match "any"))
+  message: Don't use any as a type unless you are in the process of migrating a JavaScript project to TypeScript; prefer unknown plus narrowing.
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html
+    doc: 'Declaration Files - Do''s and Don''ts: any'
+    doc_version: TypeScript handbook (current)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      function parse(x: any) { return x.foo }
+    good: |
+      function parse(x: unknown) { return typeof x === 'object' && x !== null ? x : null }
+- id: TS-QUAL-BOXED-001
+  title: Never use Number, String, Boolean, Symbol or Object types
+  language: typescript
+  kind: anti-pattern
+  category: type-safety
+  severity: minor
+  applies_to:
+    typescript: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (type_annotation (type_identifier) @match (#any-of? @match "Number" "String" "Boolean" "Symbol" "Object"))
+  message: These refer to non-primitive boxed objects; use number, string, boolean, symbol, and object.
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html
+    doc: 'Do''s and Don''ts: Number, String, Boolean, Symbol and Object'
+    doc_version: TypeScript handbook (current)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      function reverse(s: String): String { return s }
+    good: |
+      function reverse(s: string): string { return s }
+- id: TS-QUAL-CALLBACK-ANY-001
+  title: Use void, not any, for ignored callback return types
+  language: typescript
+  kind: anti-pattern
+  category: type-safety
+  severity: minor
+  applies_to:
+    typescript: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (function_type return_type: (predefined_type) @match (#eq? @match "any"))
+  message: Don't use the return type any for callbacks whose value will be ignored; use void so the value cannot be used accidentally.
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html
+    doc: 'Do''s and Don''ts: Return Types of Callbacks'
+    doc_version: TypeScript handbook (current)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      function fn(x: () => any) { x() }
+    good: |
+      function fn(x: () => void) { x() }
+- id: TS-QUAL-CATCH-ANY-001
+  title: Do not annotate catch variables as any
+  language: typescript
+  kind: best-practice
+  category: type-safety
+  severity: minor
+  applies_to:
+    typescript: '>=4.4'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (catch_clause type: (type_annotation (predefined_type) @match (#eq? @match "any")))
+  message: 'Since TS 4.4 (useUnknownInCatchVariables, part of strict) catch variables are unknown; annotating `: any` opts out of narrowing.'
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-4.html
+    doc: TypeScript 4.4 - Defaulting to the unknown Type in Catch Variables
+    doc_version: TypeScript 4.4
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      try { run() } catch (e: any) { console.log(e.message) }
+    good: |
+      try { run() } catch (e) { if (e instanceof Error) console.log(e.message) }
+- id: TS-QUAL-CFG-STRICT-001
+  title: Enable strict mode
+  language: tsconfig
+  kind: best-practice
+  category: configuration
+  severity: major
+  applies_to:
+    typescript: '>=2.3 <6.0'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/tsconfig*.json'
+    config:
+      key: compilerOptions.strict
+      op: not_equals
+      value: true
+  message: strict enables the strict family of type-checking options; it becomes the default in TypeScript 6.0/7.0, so enabling it now also eases the upgrade.
+  source:
+    url: https://www.typescriptlang.org/tsconfig/
+    doc: TSConfig Reference - strict
+    doc_version: 'TSConfig reference (current); default change: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/'
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "compilerOptions": { "target": "es2022" } }'
+    good: '{ "compilerOptions": { "strict": true } }'
+- id: TS-QUAL-CONST-ENUM-001
+  title: Avoid exporting const enums from libraries
+  language: typescript
+  kind: anti-pattern
+  category: modules
+  severity: minor
+  applies_to:
+    typescript: '>=2.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (export_statement declaration: (enum_declaration) @match (#match? @match "^const\\s"))
+  message: Ambient const enums are inlined at compile time and are incompatible with isolatedModules; the handbook documents pitfalls when they cross package boundaries.
+  ai_question: Is this const enum part of a published library or .d.ts surface consumed by other packages/isolated-module builds?
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/enums.html
+    doc: Enums - Const enum pitfalls
+    doc_version: TypeScript handbook (current)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      export const enum Direction { Up, Down }
+    good: |
+      export const Direction = { Up: 0, Down: 1 } as const
+- id: TS-QUAL-NAMESPACE-001
+  title: Prefer ES modules over namespaces
+  language: typescript
+  kind: best-practice
+  category: modules
+  severity: minor
+  applies_to:
+    typescript: '>=1.5'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (internal_module) @match
+  message: The handbook recommends modules over namespaces in modern code. Namespaces are also not erasable syntax (see --erasableSyntaxOnly).
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html
+    doc: Namespaces and Modules
+    doc_version: TypeScript handbook (current)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      namespace Validation { export const ok = true }
+    good: |
+      export const ok = true
+- id: TS-QUAL-NONNULL-001
+  title: Use non-null assertions sparingly
+  language: typescript
+  kind: anti-pattern
+  category: type-safety
+  severity: info
+  applies_to:
+    typescript: '>=2.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (non_null_expression) @match
+  message: Postfix ! removes null/undefined without any check; the handbook says to use it only when you know the value can't be null or undefined.
+  ai_question: Is there a guarantee in the surrounding code (prior check, invariant) that this value is never null/undefined here? If not, propose a narrowing check.
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/2/everyday-types.html
+    doc: Everyday Types - Non-null Assertion Operator (Postfix !)
+    doc_version: TypeScript handbook (current)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const el = document.getElementById('app')!
+    good: |
+      const el = document.getElementById('app'); if (!el) throw new Error('missing #app')
+- id: TS-QUAL-TSIGNORE-001
+  title: Prefer @ts-expect-error over @ts-ignore
+  language: typescript
+  kind: best-practice
+  category: type-safety
+  severity: minor
+  applies_to:
+    typescript: '>=3.9'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((comment) @match (#match? @match "@ts-ignore"))
+  message: '@ts-expect-error reports when the suppressed error disappears, so stale suppressions are surfaced; @ts-ignore silently stays.'
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-9.html
+    doc: TypeScript 3.9 - // @ts-expect-error Comments
+    doc_version: TypeScript 3.9
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      // @ts-ignore
+      const n: number = 'x'
+    good: |
+      // @ts-expect-error -- deliberate: testing invalid input
+      const n: number = 'x'

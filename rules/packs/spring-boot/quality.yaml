@@ -1,0 +1,171 @@
+# HAND-EDITED rule file: pack spring-boot, topic quality. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Spring Boot pack. Version dimensions: "spring-boot" (parent/BOM/plugin version),
+# "spring-framework", "spring-security" (resolved from the BOM when not pinned), "java".
+pack: spring-boot
+pack_version: 2026.10.0
+rules:
+- id: SB-QUAL-CFG-001
+  title: Prefer @ConfigurationProperties over scattered @Value
+  language: java
+  kind: best-practice
+  category: configuration
+  severity: info
+  applies_to:
+    spring-boot: '>=2.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (field_declaration
+        (modifiers (annotation name: (identifier) @a (#eq? @a "Value")))) @match
+  message: '@Value lacks relaxed binding and metadata support; group related properties into a type-safe @ConfigurationProperties class/record.'
+  ai_question: Does this class (or module) inject several related properties sharing a prefix via @Value, such that a @ConfigurationProperties record would be clearer? Single SpEL-based values are fine.
+  source:
+    url: https://docs.spring.io/spring-boot/reference/features/external-config.html
+    doc: Externalized Configuration - @ConfigurationProperties vs. @Value
+    doc_version: Spring Boot reference (current 4.x)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class S { @Value("${app.mail.host}") String host; }
+    good: |
+      @ConfigurationProperties("app.mail") record MailProps(String host, int port) {}
+- id: SB-QUAL-INJ-001
+  title: Prefer constructor injection over field injection
+  language: java
+  kind: best-practice
+  category: design
+  severity: minor
+  applies_to:
+    spring-boot: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (field_declaration
+        (modifiers (marker_annotation name: (identifier) @a (#eq? @a "Autowired")))) @match
+  message: Field injection with @Autowired. Spring Boot docs "generally recommend using constructor injection"; Spring Framework recommends constructors for mandatory dependencies.
+  fix: Make the field `private final` and inject it through the (single, implicitly autowired) constructor.
+  source:
+    url: https://docs.spring.io/spring-boot/reference/using/spring-beans-and-dependency-injection.html
+    doc: Spring Beans and Dependency Injection
+    doc_version: Spring Boot reference (current 4.x); also https://docs.spring.io/spring-framework/reference/core/beans/dependencies/factory-collaborators.html
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      @Service class S { @Autowired private Repo repo; }
+    good: |
+      @Service class S { private final Repo repo; S(Repo repo) { this.repo = repo; } }
+- id: SB-QUAL-OSIV-001
+  title: Decide explicitly on spring.jpa.open-in-view
+  language: properties
+  kind: best-practice
+  category: data-access
+  severity: info
+  applies_to:
+    spring-boot: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: config
+    requires_dependency: org.springframework.boot:spring-boot-starter-data-jpa
+    files:
+    - '**/application*.properties'
+    - '**/application*.yml'
+    - '**/application*.yaml'
+    config:
+      key: spring.jpa.open-in-view
+      op: absent
+  message: Spring Boot registers OpenEntityManagerInViewInterceptor by default (lazy loading in web views, and a startup warning). If you do not want this behaviour set spring.jpa.open-in-view=false.
+  source:
+    url: https://docs.spring.io/spring-boot/reference/data/sql.html
+    doc: SQL Databases - Open EntityManager in View
+    doc_version: Spring Boot reference (current 4.x)
+    retrieved: '2026-10-09'
+  examples:
+    bad: spring.datasource.url=jdbc:postgresql://db/app
+    good: spring.jpa.open-in-view=false
+- id: SB-QUAL-TX-001
+  title: '@Transactional self-invocation is not intercepted'
+  language: java
+  kind: anti-pattern
+  category: data-access
+  severity: major
+  applies_to:
+    spring-boot: '>=2.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (method_declaration
+        (modifiers [(marker_annotation name: (identifier) @a) (annotation name: (identifier) @a)])
+        name: (identifier) @match
+        (#eq? @a "Transactional"))
+  message: In proxy mode only external calls through the proxy are intercepted; calling this @Transactional method from another method of the same class bypasses the transaction.
+  ai_question: Is this @Transactional method invoked from another method of the same class (directly or via `this.`)? Provide the call site if so.
+  source:
+    url: https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html
+    doc: Using @Transactional (proxy mode / self-invocation note)
+    doc_version: Spring Framework 7.0 reference
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class S { @Transactional public void save() {} public void run() { save(); } }
+    good: |
+      class S { public void run() {} }
+- id: SB-QUAL-TX-002
+  title: '@Transactional on a private method has no effect'
+  language: java
+  kind: anti-pattern
+  category: data-access
+  severity: major
+  applies_to:
+    spring-boot: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_declaration
+        (modifiers [(marker_annotation name: (identifier) @a) (annotation name: (identifier) @a)]) @mods
+        name: (identifier) @match
+        (#eq? @a "Transactional")
+        (#match? @mods "(^|\\s)private(\\s|$)"))
+  message: Proxy-based @Transactional is applied to public (and since 6.0 protected/package-visible, for class-based proxies) methods only; a private method is never intercepted.
+  source:
+    url: https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html
+    doc: Method visibility and @Transactional in proxy mode
+    doc_version: Spring Framework 7.0 reference
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class S { @Transactional private void save() {} }
+    good: |
+      class S { @Transactional public void save() {} }
+- id: SB-QUAL-VT-001
+  title: Consider enabling virtual threads
+  language: properties
+  kind: best-practice
+  category: concurrency
+  severity: info
+  applies_to:
+    spring-boot: '>=3.2'
+    java: '>=21'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/application*.properties'
+    - '**/application*.yml'
+    - '**/application*.yaml'
+    config:
+      key: spring.threads.virtual.enabled
+      op: absent
+  message: On Java 21+ Spring Boot can run request handling on virtual threads via spring.threads.virtual.enabled=true (docs strongly recommend Java 24+ for the best experience, see JAVA-QUAL-VT-002 on pinning).
+  source:
+    url: https://docs.spring.io/spring-boot/reference/features/spring-application.html
+    doc: SpringApplication - Virtual threads
+    doc_version: Spring Boot reference (current 4.x); property since 3.2
+    retrieved: '2026-10-09'
+  examples:
+    bad: server.port=8080
+    good: spring.threads.virtual.enabled=true

@@ -1,0 +1,97 @@
+{"case":"c01","path":"src/main/java/org/apache/commons/lang3/ClassPathUtils.java","line":162,"cat":"design","msg":"A JDBC user lookup does not belong in a class-path utility class (unrelated responsibility, new java.sql dependency)."}
+{"case":"c02","path":"gson/src/main/java/com/google/gson/LazilyParsedNumber.java","line":41,"cat":"bug","msg":"Fallback still throws NumberFormatException for values with a fraction or exponent; intValue() should go through BigDecimal."}
+{"case":"c02","path":"gson/src/main/java/com/google/gson/LazilyParsedNumber.java","line":51,"cat":"bug","msg":"longValue() fallback uses new BigInteger(value), which throws for decimal/exponent strings."}
+{"case":"c03","none":true}
+{"case":"c04","none":true}
+{"case":"c05","none":true}
+{"case":"c06","path":"packages/pinia/src/rootStore.ts","line":55,"cat":"bug","msg":"'pinia && activePinia' should be '||': no fallback to activePinia outside an injection context."}
+{"case":"c07","none":true}
+{"case":"c08","none":true}
+{"case":"c09","none":true}
+{"case":"c10","path":"sandbox/server.js","line":79,"cat":"bug","msg":"const pathname is reassigned below ('/index.html'): TypeError for '/'."}
+{"case":"c11","none":true}
+{"case":"c12","path":"src/Idn.php","line":28,"cat":"bug","msg":"Condition inverted ('!== true'): non-true values return IDNA_DEFAULT and the is_int branch is unreachable."}
+{"case":"c13","none":true}
+{"case":"c14","path":"kotlinpoet/src/main/java/com/squareup/kotlinpoet/TypeSpec.kt","line":751,"cat":"bug","msg":"Only functions with an explicit ABSTRACT modifier are counted; bodiless interface functions are implicitly abstract."}
+{"case":"c15","none":true}
+{"case":"c16","none":true}
+{"case":"c17","none":true}
+{"case":"c18","path":"gson/src/main/java/com/google/gson/stream/JsonReader.java","line":1014,"cat":"bug","msg":"Chunk appended after readEscapeCharacter(), which can refill/shift the buffer; start/len may no longer be valid."}
+{"case":"c18","path":"gson/src/main/java/com/google/gson/stream/JsonReader.java","line":1027,"cat":"design","msg":"Stray assignment to field initialLength looks like leftover code."}
+{"case":"c19","path":"Slim/CallableResolver.php","line":124,"cat":"bug","msg":"Removed guard for an invalid $callablePattern: preg_match fails silently and Class:method is misresolved."}
+{"case":"c19","path":"Slim/MiddlewareDispatcher.php","line":188,"cat":"bug","msg":"Same removed guard in the middleware dispatcher."}
+{"case":"c20","none":true}
+{"case":"c21","path":"gson/src/main/java/com/google/gson/internal/Primitives.java","line":32,"cat":"bug","msg":"'&&' became '||': every Class reported primitive; non-Class types throw ClassCastException."}
+{"case":"c22","none":true}
+{"case":"c23","none":true}
+{"case":"c24","path":"okio/src/commonMain/kotlin/okio/Utf8.kt","line":272,"cat":"bug","msg":"'index <= endIndex' reads one past the slice."}
+{"case":"c25","path":"path.go","line":159,"cat":"bug","msg":"i <= len(s) indexes s[len(s)]: panic."}
+{"case":"c26","path":"okio-assetfilesystem/src/main/kotlin/okio/assetfilesystem/AssetFileSystem.kt","line":184,"cat":"bug","msg":"'&&' should be '||': backwards seeks no longer reopen the stream."}
+{"case":"c27","none":true}
+{"case":"c28","path":"kotlinpoet/src/main/java/com/squareup/kotlinpoet/CodeBlock.kt","line":376,"cat":"bug","msg":"Precision from toString().split('.') breaks for exponent-form doubles and NaN/Infinity; %L now reformats every Number."}
+{"case":"c29","path":"zsh_completions.go","line":221,"cat":"bug","msg":"'&&' contradicts the 'or' comment: delimiter missing when only file completion follows."}
+{"case":"c30","path":"bash_completions.go","line":176,"cat":"bug","msg":"'split' no longer local but still assigned by _init_completion -s: leaks into the user's shell."}
+{"case":"c31","none":true}
+{"case":"c32","none":true}
+{"case":"c33","path":"src/flask/blueprints.py","line":75,"cat":"bug","msg":"Condition inverted: configured max age now returns None; timedelta branch dead."}
+{"case":"c34","none":true}
+{"case":"c35","path":"packages/pinia/src/devtools/file-saver.ts","line":71,"cat":"bug","msg":"Fallback uses the same MouseEvent constructor that just threw, so the catch path throws again."}
+{"case":"c36","path":"packages/pinia/src/devtools/file-saver.ts","line":135,"cat":"bug","msg":"Origin check inverted: same-origin links go through the CORS path."}
+{"case":"c37","none":true}
+{"case":"c38","none":true}
+{"case":"c39","path":"extras/src/main/java/com/google/gson/typeadapters/UtcDateTypeAdapter.java","line":102,"cat":"bug","msg":"Condition inverted: offset suffix written only for UTC, omitted for other zones."}
+{"case":"c40","none":true}
+{"case":"c41","none":true}
+{"case":"c42","none":true}
+{"case":"c43","none":true}
+{"case":"c44","none":true}
+{"case":"c45","none":true}
+{"case":"c46","none":true}
+{"case":"c47","path":"src/main/java/org/apache/commons/lang3/time/DatePrinter.java","line":180,"cat":"bug","msg":"Interface method with a body must be default or static: does not compile; unrelated to the interface's purpose."}
+{"case":"c48","path":"gson/src/main/java/com/google/gson/internal/GsonPreconditions.java","line":37,"cat":"design","msg":"Removing public checkNotNull breaks external callers the removed comment warned about."}
+{"case":"c49","path":"src/flask/testing.py","line":165,"cat":"design","msg":"Depends on the private Werkzeug 3.x signature of _update_cookies_from_response; minimum Werkzeug version must be bumped."}
+{"case":"c50","path":"src/Handler/EncodedBodyStream.php","line":57,"cat":"bug","msg":"'<= 0' rejects valid read(0); message still says negative."}
+{"case":"c51","path":"src/flask/testing.py","line":212,"cat":"bug","msg":"'and' became 'or': IndexError on args[0] when called without positional args."}
+{"case":"c52","path":"kotlinpoet/src/jvmMain/kotlin/com/squareup/kotlinpoet/MemberName.kt","line":145,"cat":"bug","msg":"Condition inverted: else branch dereferences a null operator."}
+{"case":"c53","none":true}
+{"case":"c54","path":"src/requests/auth.py","line":283,"cat":"bug","msg":"'<= 500' runs the digest retry on HTTP 500."}
+{"case":"c55","none":true}
+{"case":"c56","none":true}
+{"case":"c57","none":true}
+{"case":"c58","path":"src/requests/utils.py","line":239,"cat":"bug","msg":"hostname is lower-cased/None: case-sensitive netrc entries stop matching; None host may raise."}
+{"case":"c59","none":true}
+{"case":"c60","none":true}
+{"case":"c61","path":"okio/src/jvmMain/kotlin/okio/internal/DefaultSocket.kt","line":51,"cat":"bug","msg":"Eager socket.outputStream in the sink constructor throws for unconnected/closed sockets."}
+{"case":"c61","path":"okio/src/jvmMain/kotlin/okio/internal/DefaultSocket.kt","line":107,"cat":"bug","msg":"Eager socket.inputStream in the source constructor throws for unconnected/closed sockets."}
+{"case":"c62","none":true}
+{"case":"c63","path":"binding/binding_nomsgpack.go","line":118,"cat":"bug","msg":"Condition inverted: validation skipped when a validator exists, nil panic otherwise."}
+{"case":"c64","path":"src/Handler/CurlShareHandleState.php","line":273,"cat":"bug","msg":"'&&' became '||': closes non-resources on PHP 7."}
+{"case":"c65","path":"packages/pinia/src/devtools/actions.ts","line":93,"cat":"bug","msg":"Promise never resolves after a file is selected."}
+{"case":"c66","none":true}
+{"case":"c67","none":true}
+{"case":"c68","none":true}
+{"case":"c69","none":true}
+{"case":"c70","path":"src/flask/templating.py","line":84,"cat":"bug","msg":"Found template no longer returned in explain mode: always TemplateNotFound."}
+{"case":"c71","path":"Slim/Middleware/RoutingMiddleware.php","line":100,"cat":"design","msg":"A users-table lookup does not belong in routing middleware."}
+{"case":"c72","path":"gson/src/main/java/com/google/gson/internal/JavaVersion.java","line":63,"cat":"bug","msg":"'i <= length()' reads past the end for all-digit versions: StringIndexOutOfBoundsException."}
+{"case":"c73","path":"src/main/java/org/apache/commons/lang3/JavaVersion.java","line":234,"cat":"bug","msg":"Null check removed: switch on null throws NPE despite the 'null if unknown' contract."}
+{"case":"c74","path":"src/main/java/org/apache/commons/lang3/time/Instants.java","line":89,"cat":"design","msg":"null treated as EPOCH makes toMillisSince(null) silently return decades of millis."}
+{"case":"c74","path":"src/main/java/org/apache/commons/lang3/time/Instants.java","line":41,"cat":"design","msg":"Javadoc says not null while null is now accepted."}
+{"case":"c75","path":"context.go","line":124,"cat":"bug","msg":"c.Keys read without c.mu: races with concurrent Set (concurrent map read/write)."}
+{"case":"c76","path":"okio/src/jvmMain/kotlin/okio/NioFileSystemWrappingFileSystem.kt","line":58,"cat":"bug","msg":"Message uses $this instead of $path."}
+{"case":"c76","path":"okio/src/jvmMain/kotlin/okio/NioFileSystemWrappingFileSystem.kt","line":82,"cat":"bug","msg":"dir / entry.toString() duplicates the directory prefix; use entry.fileName."}
+{"case":"c77","path":"kotlinpoet/src/jvmMain/kotlin/com/squareup/kotlinpoet/ParameterizedTypeName.kt","line":214,"cat":"bug","msg":"Non-generic types now become a ParameterizedTypeName without arguments."}
+{"case":"c78","none":true}
+{"case":"c79","none":true}
+{"case":"c80","none":true}
+{"case":"c81","path":"Slim/Middleware/BodyParsingMiddleware.php","line":130,"cat":"bug","msg":"Invalid XML returns false; withParsedBody(false) throws (PSR-7 requires null|array|object)."}
+{"case":"c82","none":true}
+{"case":"c83","none":true}
+{"case":"c84","path":"src/flask/sessions.py","line":322,"cat":"bug","msg":"itsdangerous signs with the last key: fallbacks appended after secret_key make new sessions use an old key; current key must be last."}
+{"case":"c85","none":true}
+{"case":"c86","path":"packages/pinia/src/store.ts","line":437,"cat":"bug","msg":"Missing key in initialState overwrites the ref with undefined."}
+{"case":"c87","none":true}
+{"case":"c88","path":"powershell_completions.go","line":322,"cat":"bug","msg":"Error check removed: unused err (compile error) and lost os.Create failure."}
+{"case":"c89","none":true}
+{"case":"c90","none":true}
+{"case":"c91","path":"src/Client.php","line":349,"cat":"design","msg":"Argument validation error thrown as RequestException; should be InvalidArgumentException."}

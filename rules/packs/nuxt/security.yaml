@@ -1,0 +1,41 @@
+# HAND-EDITED rule file: pack nuxt, topic security. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Nuxt pack. Version dimension "nuxt" from package.json/lockfile (nuxt, or nuxt-edge / @nuxt/bridge).
+# Rules also inherit the vue dimension (Nuxt 2 => Vue 2, Nuxt 3/4 => Vue 3).
+pack: nuxt
+pack_version: 2026.10.0
+rules:
+- id: NUXT-SEC-RTC-PUBLIC-001
+  title: Secrets must not live in runtimeConfig.public
+  language: typescript
+  framework: nuxt
+  kind: security
+  category: security
+  severity: critical
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    files:
+    - nuxt.config.ts
+    - nuxt.config.js
+    - nuxt.config.mjs
+    query: |
+      (pair
+        key: (property_identifier) @rc (#eq? @rc "runtimeConfig")
+        value: (object (pair
+          key: (property_identifier) @pub (#eq? @pub "public")
+          value: (object (pair key: (property_identifier) @match (#match? @match "(?i)(secret|token|password|passwd|private|apikey|api_key)"))))))
+  message: Keys inside runtimeConfig.public are added to every page payload and exposed client-side; keep secrets at the top level of runtimeConfig (server-only).
+  ai_question: Is this value actually secret (credential, private API key, signing secret), or is it intentionally public (e.g. a publishable key)?
+  source:
+    url: https://nuxt.com/docs/guide/going-further/runtime-config
+    doc: Runtime Config
+    doc_version: Nuxt 4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      export default defineNuxtConfig({ runtimeConfig: { public: { stripeSecret: '' } } })
+    good: |
+      export default defineNuxtConfig({ runtimeConfig: { stripeSecret: '', public: { apiBase: '/api' } } })

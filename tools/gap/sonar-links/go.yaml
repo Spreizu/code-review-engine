@@ -1,0 +1,8 @@
+# Reviewed by title: crev Go rule -> Sonar Go key. Keys only.
+lang: go,godre
+by_id:
+  GO-QUAL-VET-ASSIGN: [S1656]
+  GO-QUAL-VET-UNREACHABLE: [S1763]
+  GO-QUAL-HTTP-BODY-NOT-CLOSED: [S8208]
+  GO-QUAL-VET-LOSTCANCEL: [S8188]
+  GO-QUAL-VET-TESTINGGOROUTINE: [S8166]

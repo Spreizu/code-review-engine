@@ -1,0 +1,100 @@
+{"case":"c01","path":"src/main/java/org/apache/commons/lang3/ClassPathUtils.java","line":163,"cat":"security","msg":"SQL built by concatenating the name parameter into the query: SQL injection; use a PreparedStatement with a bind parameter."}
+{"case":"c01","path":"src/main/java/org/apache/commons/lang3/ClassPathUtils.java","line":162,"cat":"design","msg":"A JDBC user lookup does not belong in a class-path utility class (unrelated responsibility, new java.sql dependency)."}
+{"case":"c02","path":"gson/src/main/java/com/google/gson/LazilyParsedNumber.java","line":41,"cat":"bug","msg":"Fallback still throws NumberFormatException for values with a fraction or exponent (\"1.5\", \"1e3\"); intValue() should go through BigDecimal."}
+{"case":"c02","path":"gson/src/main/java/com/google/gson/LazilyParsedNumber.java","line":51,"cat":"bug","msg":"longValue() fallback uses new BigInteger(value), which throws for decimal/exponent strings; parse with BigDecimal."}
+{"case":"c03","none":true}
+{"case":"c04","none":true}
+{"case":"c05","none":true}
+{"case":"c06","path":"packages/pinia/src/rootStore.ts","line":55,"cat":"bug","msg":"'pinia && activePinia' returns the injected-or-active pinia only when both exist; outside an injection context it returns false instead of falling back to activePinia (should be ||)."}
+{"case":"c07","path":"src/flask/views.py","line":196,"cat":"security","msg":"subprocess.run with shell=True and the argument interpolated into the command string: command injection; pass an argument list without shell=True."}
+{"case":"c08","none":true}
+{"case":"c09","path":"testcode/BenchmarkTest00925.py","line":56,"cat":"security","msg":"Request parameter (via configparser round-trip) is reflected into the HTML response without escaping (escape_for_html imported but unused): reflected XSS."}
+{"case":"c10","path":"sandbox/server.js","line":79,"cat":"bug","msg":"pathname is now const but is reassigned to '/index.html' a few lines below: TypeError at runtime for '/'."}
+{"case":"c11","path":"okio-testing-support/src/commonMain/kotlin/okio/TestingCommon.kt","line":88,"cat":"security","msg":"Passwords hashed with unsalted MD5: broken for password storage; use a slow salted KDF (bcrypt/scrypt/Argon2/PBKDF2)."}
+{"case":"c12","path":"src/Idn.php","line":28,"cat":"bug","msg":"Condition inverted ('!== true'): every non-true value (including ints) now returns IDNA_DEFAULT, so the is_int branch below is unreachable and true no longer maps to the default."}
+{"case":"c13","path":"packages/pinia/test-dts/store.test-d.ts","line":310,"cat":"security","msg":"eval() on a string argument: arbitrary code execution; also does not belong in a type-test file."}
+{"case":"c14","path":"kotlinpoet/src/main/java/com/squareup/kotlinpoet/TypeSpec.kt","line":751,"cat":"bug","msg":"Counting only functions that carry an explicit ABSTRACT modifier misses interface functions without a body, which are implicitly abstract; valid fun interfaces may be rejected or invalid ones accepted."}
+{"case":"c15","path":"src/main/java/org/owasp/benchmark/testcode/BenchmarkTest00627.java","line":63,"cat":"security","msg":"Request parameter concatenated into the file path opened with FileOutputStream: path traversal / arbitrary file write."}
+{"case":"c16","path":"src/main/java/org/owasp/benchmark/testcode/BenchmarkTest02580.java","line":74,"cat":"security","msg":"User-controlled query value used as the format string written to the HTML response (and X-XSS-Protection disabled): reflected XSS."}
+{"case":"c17","path":"vitest.config.ts","line":92,"cat":"security","msg":"child_process.exec with the argument interpolated into a shell command: command injection; also an unrelated export in the vitest config."}
+{"case":"c18","path":"gson/src/main/java/com/google/gson/stream/JsonReader.java","line":1014,"cat":"bug","msg":"The pending chunk is now appended after readEscapeCharacter(), which can call fillBuffer() and shift the buffer; buffer[start..start+len] may then point at the wrong characters (previously appended before the escape was read)."}
+{"case":"c18","path":"gson/src/main/java/com/google/gson/stream/JsonReader.java","line":1027,"cat":"design","msg":"Assignment to a field 'initialLength' that is not used anywhere in this change looks like leftover code."}
+{"case":"c19","path":"Slim/CallableResolver.php","line":124,"cat":"bug","msg":"The guard against an invalid $callablePattern was removed: preg_match now emits a warning/returns false and the resolver silently treats 'Class:method' strings as a class name."}
+{"case":"c19","path":"Slim/MiddlewareDispatcher.php","line":188,"cat":"bug","msg":"Same removed guard: an invalid $callablePattern makes preg_match fail silently and middleware 'class:method' notation is misresolved."}
+{"case":"c20","none":true}
+{"case":"c21","path":"gson/src/main/java/com/google/gson/internal/Primitives.java","line":32,"cat":"bug","msg":"'&&' became '||': every Class is now reported primitive, and a non-Class Type (e.g. ParameterizedType) hits the cast and throws ClassCastException."}
+{"case":"c22","path":"src/main/java/org/owasp/benchmark/testcode/BenchmarkTest01963.java","line":54,"cat":"security","msg":"Header value concatenated into the SQL passed to batchUpdate: SQL injection; use a parameterized statement."}
+{"case":"c23","none":true}
+{"case":"c24","path":"okio/src/commonMain/kotlin/okio/Utf8.kt","line":272,"cat":"bug","msg":"'index <= endIndex' reads this[endIndex], one past the slice (and past the array when endIndex == size): off-by-one."}
+{"case":"c25","path":"path.go","line":159,"cat":"bug","msg":"Loop runs to i == len(s) and indexes s[i]: index out of range panic for every input; must be i < len(s)."}
+{"case":"c26","path":"okio-assetfilesystem/src/main/kotlin/okio/assetfilesystem/AssetFileSystem.kt","line":184,"cat":"bug","msg":"'||' became '&&': a backwards seek (currentOffset > fileOffset) no longer reopens the stream unless also at EOF, so reads return data from the wrong offset."}
+{"case":"c27","none":true}
+{"case":"c28","path":"kotlinpoet/src/main/java/com/squareup/kotlinpoet/CodeBlock.kt","line":376,"cat":"bug","msg":"Precision derived from toString().split('.') breaks for values printed in exponent form (1.0E10, 1.0E-5) and NaN/Infinity, producing wrong literals; also %L now reformats every Number (grouping '_'), changing output for BigDecimal/Long callers."}
+{"case":"c29","path":"zsh_completions.go","line":221,"cat":"bug","msg":"'||' became '&&' contrary to the comment ('or'): the activeHelp delimiter is no longer added when file completion follows without other completions."}
+{"case":"c30","path":"bash_completions.go","line":176,"cat":"bug","msg":"'split' removed from the local list but '_init_completion -s' still assigns it, so it leaks into the user's shell as a global; same for completions_func if it is still assigned later."}
+{"case":"c31","path":"Slim/Factory/ServerRequestCreatorFactory.php","line":92,"cat":"security","msg":"unserialize() on a cookie value: PHP object injection; use json_decode or unserialize with allowed_classes => false (and sign the cookie)."}
+{"case":"c32","path":"testcode/BenchmarkTest00277.py","line":51,"cat":"security","msg":"After pop(0), bar is the form parameter; it is joined into the path opened for writing: path traversal / arbitrary file write."}
+{"case":"c33","path":"src/flask/blueprints.py","line":75,"cat":"bug","msg":"Condition inverted ('is not None'): any configured max age now returns None, and a None config falls through to return None anyway; the timedelta branch is dead."}
+{"case":"c34","path":"src/flask/json/__init__.py","line":175,"cat":"security","msg":"pickle.loads on caller-supplied data allows arbitrary code execution; use JSON or a signed, restricted format."}
+{"case":"c35","path":"packages/pinia/src/devtools/file-saver.ts","line":71,"cat":"bug","msg":"The catch branch exists for browsers where 'new MouseEvent' throws, but the fallback now uses the same constructor, so it throws again; also screenX/screenY changed from 0 to 80/20."}
+{"case":"c36","path":"packages/pinia/src/devtools/file-saver.ts","line":135,"cat":"bug","msg":"Origin check inverted: same-origin links now go through the CORS path while cross-origin links are downloaded directly."}
+{"case":"c37","none":true}
+{"case":"c38","none":true}
+{"case":"c39","path":"extras/src/main/java/com/google/gson/typeadapters/UtcDateTypeAdapter.java","line":102,"cat":"bug","msg":"Condition inverted ('offset == 0'): a +00:00 suffix is written for UTC and no offset at all for non-UTC zones, producing wrong timestamps."}
+{"case":"c40","none":true}
+{"case":"c41","path":"testcode/BenchmarkTest00001.py","line":47,"cat":"security","msg":"Cookie value is joined into the path passed to codecs.open: path traversal / arbitrary file read."}
+{"case":"c42","none":true}
+{"case":"c43","none":true}
+{"case":"c44","none":true}
+{"case":"c45","none":true}
+{"case":"c46","none":true}
+{"case":"c47","path":"src/main/java/org/apache/commons/lang3/time/DatePrinter.java","line":180,"cat":"bug","msg":"A method with a body in an interface must be 'default' or 'static': this does not compile; and the method is unrelated to date printing."}
+{"case":"c47","path":"src/main/java/org/apache/commons/lang3/time/DatePrinter.java","line":181,"cat":"security","msg":"Runtime.exec with the argument concatenated into the command string: command/argument injection; pass an argument array or use ProcessBuilder with validated args."}
+{"case":"c48","path":"gson/src/main/java/com/google/gson/internal/GsonPreconditions.java","line":37,"cat":"api","msg":"Removing the public (deprecated) checkNotNull is a binary-incompatible change; the removed comment says external projects may call it, so this needs a major-version note or a longer deprecation."}
+{"case":"c49","path":"src/flask/testing.py","line":165,"cat":"api","msg":"Calls the private Werkzeug method _update_cookies_from_response with a 3-argument signature (Werkzeug 3.x); with older Werkzeug this raises TypeError, so the minimum Werkzeug version must be bumped (and private API use is fragile)."}
+{"case":"c49","path":"src/flask/testing.py","line":141,"cat":"api","msg":"self._cookies only exists on newer Werkzeug test clients; AttributeError on older versions now that the hasattr fallback is gone."}
+{"case":"c50","path":"src/Handler/EncodedBodyStream.php","line":57,"cat":"bug","msg":"'<= 0' rejects read(0), which is a valid PSR-7 call, and the message still says 'negative': off-by-one in the guard."}
+{"case":"c51","path":"src/flask/testing.py","line":212,"cat":"bug","msg":"'and' became 'or': with no positional args, args[0] is evaluated and raises IndexError; with any args the isinstance check is skipped and every first arg is treated as a builder/environ."}
+{"case":"c52","path":"kotlinpoet/src/jvmMain/kotlin/com/squareup/kotlinpoet/MemberName.kt","line":145,"cat":"bug","msg":"Condition inverted: operators are emitted by name and the else branch dereferences operator when it is null (operator.operator)."}
+{"case":"c53","path":"interop/kotlin-metadata/src/main/kotlin/com/squareup/kotlinpoet/metadata/specs/ClassInspector.kt","line":115,"cat":"security","msg":"Runtime.exec with the argument interpolated into a single command string: argument injection; use ProcessBuilder with a validated argument list. Also unrelated to the metadata API."}
+{"case":"c54","path":"src/requests/auth.py","line":283,"cat":"bug","msg":"'<= 500' treats HTTP 500 as a 4xx and runs the digest-auth retry path on server errors: off-by-one in the range."}
+{"case":"c55","none":true}
+{"case":"c56","path":"cobra.go","line":251,"cat":"security","msg":"exec.Command(\"sh\", \"-c\", \"tool \"+arg): shell command injection; call exec.Command(\"tool\", arg) directly."}
+{"case":"c57","none":true}
+{"case":"c58","path":"src/requests/utils.py","line":239,"cat":"bug","msg":"urlparse().hostname is lower-cased and None for host-less URLs: case-sensitive .netrc machine names stop matching, and authenticators(None) can raise."}
+{"case":"c59","none":true}
+{"case":"c60","none":true}
+{"case":"c61","path":"okio/src/jvmMain/kotlin/okio/internal/DefaultSocket.kt","line":51,"cat":"bug","msg":"socket.outputStream is now fetched eagerly when the sink is constructed; getOutputStream() throws if the socket is not yet connected, already closed or output-shutdown, so creating the sink can fail where it used to be lazy."}
+{"case":"c61","path":"okio/src/jvmMain/kotlin/okio/internal/DefaultSocket.kt","line":107,"cat":"bug","msg":"Same eager socket.inputStream in SocketSource: throws at construction for unconnected/closed sockets."}
+{"case":"c62","none":true}
+{"case":"c63","path":"binding/binding_nomsgpack.go","line":118,"cat":"bug","msg":"Condition inverted: with a validator set, validation is skipped; with Validator == nil it calls ValidateStruct on a nil interface and panics."}
+{"case":"c64","path":"src/Handler/CurlShareHandleState.php","line":273,"cat":"bug","msg":"'&&' became '||': on PHP 7 curl_share_close is called even when the handle is no longer a resource (TypeError/warning), and on PHP 8 any resource handle is closed by a PHP-7-only helper."}
+{"case":"c65","path":"packages/pinia/src/devtools/actions.ts","line":93,"cat":"bug","msg":"The resolve for a selected file was removed: after choosing a file the promise never settles, so file import hangs."}
+{"case":"c66","none":true}
+{"case":"c67","none":true}
+{"case":"c68","none":true}
+{"case":"c69","none":true}
+{"case":"c70","path":"src/flask/templating.py","line":84,"cat":"bug","msg":"With explain-template-loading enabled, a template that was found (trv) is no longer returned: every lookup raises TemplateNotFound."}
+{"case":"c71","path":"Slim/Middleware/RoutingMiddleware.php","line":101,"cat":"security","msg":"$_GET['name'] concatenated into the SQL string: SQL injection; use a prepared statement. Also a DB lookup does not belong in routing middleware."}
+{"case":"c72","path":"gson/src/main/java/com/google/gson/internal/JavaVersion.java","line":63,"cat":"bug","msg":"'i <= length()' calls charAt(length()) for an all-digit version string (e.g. \"17\"): StringIndexOutOfBoundsException."}
+{"case":"c73","path":"src/main/java/org/apache/commons/lang3/JavaVersion.java","line":234,"cat":"bug","msg":"Null check removed: switch on a null String throws NullPointerException, contradicting the documented 'null if unknown' contract."}
+{"case":"c74","path":"src/main/java/org/apache/commons/lang3/time/Instants.java","line":89,"cat":"design","msg":"Treating null as EPOCH makes toMillisSince(null) silently return ~56 years of milliseconds instead of failing fast; surprising semantics for a public API."}
+{"case":"c74","path":"src/main/java/org/apache/commons/lang3/time/Instants.java","line":41,"cat":"design","msg":"Javadoc still says '@param instant ... not null' while the method now accepts null; contract is contradictory."}
+{"case":"c75","path":"context.go","line":124,"cat":"bug","msg":"c.Keys is read and iterated without holding c.mu, while Set/Get lock it; Copy() racing with a concurrent Set can panic with concurrent map read and write."}
+{"case":"c76","path":"okio/src/jvmMain/kotlin/okio/NioFileSystemWrappingFileSystem.kt","line":58,"cat":"bug","msg":"Error message interpolates $this (the file system) instead of $path."}
+{"case":"c76","path":"okio/src/jvmMain/kotlin/okio/NioFileSystemWrappingFileSystem.kt","line":82,"cat":"bug","msg":"Files.list entries already include the directory (dir/x); 'dir / entry.toString()' duplicates it for relative dirs (dir/dir/x) and yields absolute paths for absolute ones; use entry.fileName."}
+{"case":"c77","path":"kotlinpoet/src/jvmMain/kotlin/com/squareup/kotlinpoet/ParameterizedTypeName.kt","line":214,"cat":"bug","msg":"Early return for types without type arguments removed: non-generic KClasses now become a ParameterizedTypeName with no arguments, which is invalid (rejected or rendered as Foo<>)."}
+{"case":"c78","none":true}
+{"case":"c79","none":true}
+{"case":"c80","none":true}
+{"case":"c81","path":"Slim/Middleware/BodyParsingMiddleware.php","line":130,"cat":"bug","msg":"Invalid XML now returns false instead of null; withParsedBody(false) violates PSR-7 (null|array|object) and throws InvalidArgumentException instead of treating the body as unparsed."}
+{"case":"c82","none":true}
+{"case":"c83","none":true}
+{"case":"c84","path":"src/flask/sessions.py","line":322,"cat":"security","msg":"itsdangerous signs with the LAST key in the list; appending fallbacks after secret_key means new sessions are signed with an old fallback key, defeating key rotation. The current key must be last."}
+{"case":"c85","none":true}
+{"case":"c86","path":"packages/pinia/src/store.ts","line":437,"cat":"bug","msg":"When initialState exists but has no entry for this key (e.g. state added after the payload was produced), the ref is overwritten with undefined; guard with 'key in initialState'."}
+{"case":"c87","none":true}
+{"case":"c88","path":"powershell_completions.go","line":322,"cat":"bug","msg":"Error check removed: err is now unused (compile error 'declared and not used'), and if it compiled, a failed os.Create would write to a nil *os.File and lose the real error."}
+{"case":"c89","path":"binding/binding.go","line":134,"cat":"security","msg":"SQL built by concatenating name: SQL injection; use db.Query(\"... WHERE name = ?\", name)."}
+{"case":"c90","none":true}
+{"case":"c91","path":"src/Client.php","line":349,"cat":"design","msg":"An invalid 'headers' option is a caller argument error, but it is reported as RequestException (a transfer/network exception callers catch for retries); throw InvalidArgumentException instead."}

@@ -1,0 +1,291 @@
+# HAND-EDITED rule file: pack typescript, topic migration. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# TypeScript pack. Version dimension "typescript" from package.json/lockfile (typescript, or
+# @typescript/native / @typescript/typescript6 aliases). tsconfig.json options are exposed as
+# "tsconfig.<option>" facts (after resolving "extends").
+pack: typescript
+pack_version: 2026.10.0
+rules:
+- id: TS-MIG-CFG-BASEURL-001
+  title: baseUrl is deprecated (6.0) and unsupported (7.0)
+  language: tsconfig
+  kind: removal
+  category: configuration
+  severity: major
+  applies_to:
+    typescript: '>=6.0'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/tsconfig*.json'
+    config:
+      key: compilerOptions.baseUrl
+      op: exists
+  message: baseUrl is no longer supported in TypeScript 7.0; make `paths` entries relative to the project root (the ts5to6 tool can rewrite them).
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html
+    doc: TypeScript 6.0 - baseUrl deprecation
+    doc_version: TypeScript 6.0 / 7.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "compilerOptions": { "baseUrl": ".", "paths": { "@/*": ["src/*"] } } }'
+    good: '{ "compilerOptions": { "paths": { "@/*": ["./src/*"] } } }'
+- id: TS-MIG-CFG-DOWNLEVEL-001
+  title: downlevelIteration is unsupported in TypeScript 7.0
+  language: tsconfig
+  kind: removal
+  category: configuration
+  severity: major
+  applies_to:
+    typescript: '>=6.0'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/tsconfig*.json'
+    config:
+      key: compilerOptions.downlevelIteration
+      op: exists
+  message: downlevelIteration only mattered for ES5 targets and is no longer supported in TypeScript 7.0.
+  source:
+    url: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
+    doc: Announcing TypeScript 7.0 - hard errors list
+    doc_version: TypeScript 7.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "compilerOptions": { "downlevelIteration": true } }'
+    good: '{ "compilerOptions": { "target": "es2022" } }'
+- id: TS-MIG-CFG-INUV-001
+  title: importsNotUsedAsValues / preserveValueImports -> verbatimModuleSyntax
+  language: tsconfig
+  kind: removal
+  category: configuration
+  severity: major
+  applies_to:
+    typescript: '>=5.0'
+  overrides:
+  - when:
+      typescript: '>=5.5'
+    severity: critical
+    message: These options were removed in TypeScript 5.5 (deprecated in 5.0); use verbatimModuleSyntax.
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/tsconfig*.json'
+    config:
+      key_any_of:
+      - compilerOptions.importsNotUsedAsValues
+      - compilerOptions.preserveValueImports
+      op: exists
+  message: Deprecated in TypeScript 5.0 in favour of --verbatimModuleSyntax.
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html
+    doc: TypeScript 5.0 - --verbatimModuleSyntax; removal list in https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-5.html
+    doc_version: TypeScript 5.0 / 5.5
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "compilerOptions": { "importsNotUsedAsValues": "error" } }'
+    good: '{ "compilerOptions": { "verbatimModuleSyntax": true } }'
+- id: TS-MIG-CFG-MODRES-001
+  title: moduleResolution node/node10/classic are deprecated (6.0) and unsupported (7.0)
+  language: tsconfig
+  kind: removal
+  category: configuration
+  severity: major
+  applies_to:
+    typescript: '>=6.0'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/tsconfig*.json'
+    config:
+      key: compilerOptions.moduleResolution
+      op: in
+      value:
+      - node
+      - node10
+      - classic
+      case_insensitive: true
+  message: Use moduleResolution "bundler" (with module esnext/preserve) or "nodenext".
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html
+    doc: TypeScript 6.0 - deprecation of --moduleResolution node (node10)
+    doc_version: TypeScript 6.0 / 7.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "compilerOptions": { "moduleResolution": "node" } }'
+    good: '{ "compilerOptions": { "module": "preserve", "moduleResolution": "bundler" } }'
+- id: TS-MIG-CFG-MODULE-001
+  title: module amd/umd/system/none are unsupported in 7.0
+  language: tsconfig
+  kind: removal
+  category: configuration
+  severity: major
+  applies_to:
+    typescript: '>=6.0'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/tsconfig*.json'
+    config:
+      key: compilerOptions.module
+      op: in
+      value:
+      - amd
+      - umd
+      - system
+      - systemjs
+      - none
+      case_insensitive: true
+  message: AMD/UMD/SystemJS/none module emit is removed in TypeScript 7.0; use esnext or preserve with a bundler.
+  source:
+    url: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
+    doc: Announcing TypeScript 7.0 - deprecations that turned into hard errors
+    doc_version: TypeScript 7.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "compilerOptions": { "module": "amd" } }'
+    good: '{ "compilerOptions": { "module": "esnext" } }'
+- id: TS-MIG-CFG-TARGET-ES5-001
+  title: target ES3/ES5 is deprecated (6.0) and unsupported (7.0)
+  language: tsconfig
+  kind: removal
+  category: configuration
+  severity: major
+  applies_to:
+    typescript: '>=6.0'
+  overrides:
+  - when:
+      typescript: '>=7.0'
+    severity: critical
+    message: 'TypeScript 7.0 no longer supports target: es5.'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/tsconfig*.json'
+    config:
+      key: compilerOptions.target
+      op: in
+      value:
+      - es3
+      - es5
+      case_insensitive: true
+  message: Legacy ES5 targets are deprecated in TypeScript 6.0; target a modern ES version and down-level with a bundler if needed.
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html
+    doc: 'TypeScript 6.0 deprecations; 7.0 hard errors: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/'
+    doc_version: TypeScript 6.0 / 7.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "compilerOptions": { "target": "es5" } }'
+    good: '{ "compilerOptions": { "target": "es2022" } }'
+- id: TS-MIG-CFG-TYPES-001
+  title: Declare compilerOptions.types explicitly for TS 6.0+
+  language: tsconfig
+  kind: migration
+  category: configuration
+  severity: minor
+  applies_to:
+    typescript: '>=6.0'
+  detection:
+    mode: deterministic
+    engine: config
+    requires_dependency_glob: '@types/*'
+    files:
+    - '**/tsconfig*.json'
+    config:
+      key: compilerOptions.types
+      op: absent
+      unless_key:
+      - extends
+      - references
+  message: types now defaults to [] (TS 6.0/7.0), so global @types packages (node, jest, ...) are no longer included automatically; list them explicitly.
+  source:
+    url: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
+    doc: Announcing TypeScript 7.0 - new defaults adopted from 6.0
+    doc_version: TypeScript 6.0 / 7.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "compilerOptions": { "strict": true } }'
+    good: '{ "compilerOptions": { "types": ["node", "jest"] } }'
+    regressions:
+    - note: corpus (pinia, zod) - types may come from the extended base config
+      code: '{ "extends": "./tsconfig.base.json", "compilerOptions": { "outDir": "dist" } }'
+      path: tsconfig.json
+- id: TS-MIG-IMPORT-ASSERT-001
+  title: Import assertions (assert) -> import attributes (with)
+  language: typescript
+  kind: removal
+  category: modules
+  severity: critical
+  applies_to:
+    typescript: '>=6.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((import_statement) @match (#match? @match "\\sassert\\s*\\{"))
+  message: 'The `asserts` keyword on imports is deprecated in TS 6.0 and an error in 7.0; use `with { type: "json" }` (ES2025 Import Attributes).'
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html
+    doc: 'TypeScript 6.0 - Deprecated: asserts Keyword on Imports'
+    doc_version: TypeScript 6.0 / 7.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      import data from './data.json' assert { type: 'json' }
+    good: |
+      import data from './data.json' with { type: 'json' }
+- id: TS-MIG-MODULE-KW-001
+  title: '`module Foo {}` namespace syntax is an error in TS 6.0+'
+  language: typescript
+  kind: removal
+  category: modules
+  severity: critical
+  applies_to:
+    typescript: '>=6.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (module name: (identifier)) @match
+  message: Using the `module` keyword to declare a namespace is deprecated in TypeScript 6.0 and a hard error in 7.0; write `namespace Foo {}` (or better, an ES module). `declare module "pkg"` is unaffected.
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-6-0.html
+    doc: 'TypeScript 6.0 - Deprecated: legacy module Syntax for namespaces; 7.0 hard error: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/'
+    doc_version: TypeScript 6.0 / 7.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      module Foo { export const bar = 10 }
+    good: |
+      declare module "foo" { export const bar: number }
+- id: TS-MIG-VUE-TS7-001
+  title: Vue projects cannot yet use TypeScript 7 for SFC type-checking
+  language: manifest
+  kind: migration
+  category: tooling
+  severity: major
+  applies_to:
+    typescript: '>=7.0'
+    vue: '>=2.7'
+  detection:
+    mode: deterministic
+    engine: manifest
+    manifest:
+      check: has_dependency
+      value: vue-tsc
+  message: TypeScript 7.0 ships no programmatic API yet; Volar/vue-tsc must keep using TypeScript 6.0 (e.g. alias typescript to @typescript/typescript6) until 7.1+.
+  source:
+    url: https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/
+    doc: Announcing TypeScript 7.0 - TypeScript and Embedded Languages
+    doc_version: TypeScript 7.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "devDependencies": { "typescript": "^7.0.2", "vue-tsc": "^3.0.0" } }'
+    good: '{ "devDependencies": { "typescript": "npm:@typescript/typescript6@^6.0.2", "@typescript/native": "npm:typescript@^7.0.2", "vue-tsc": "^3.0.0" } }'

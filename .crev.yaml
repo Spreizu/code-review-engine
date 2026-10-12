@@ -1,0 +1,13 @@
+# Repo-local crev config for crev's OWN source tree (not the shipped template: see
+# internal/config/template.crev.yaml, written by `crev init`).
+fail_on: critical
+custom_rules: [.crev/rules]
+# Rule packs and generator specs embed deliberately "bad" examples (fake secrets, deprecated APIs);
+# reviewing them only produces noise. Vendored grammar sources are generated C.
+ignore:
+  - "rules/packs/**"
+  - "tools/rulegen/specs/**"
+  - "internal/grammars/*/src/**"
+  - "**/testdata/**"
+ai:
+  mode: "off"

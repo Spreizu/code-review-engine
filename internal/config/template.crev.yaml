@@ -1,0 +1,71 @@
+# Default crev configuration template (shipped; written into user repos by `crev init`).
+# CI gate: exit code 1 only when a gating finding is critical (decision 2026-10-09).
+# Everything else is still reported (text/JSON/SARIF/MD); lower fail_on to tighten.
+fail_on: critical
+# packs: [go, react, ...]   # empty/omitted = all 26 packs; applies_to + file kinds decide what runs
+# User rules layered over the catalog by id (add/patch/replace/disable); check with `crev rules validate`.
+custom_rules: [.crev/rules]
+
+# A dimension that is present (e.g. *.vue files, Spring imports) but whose version cannot be
+# detected is assumed to be the latest known release (rules/data/latest-versions.yaml);
+# findings list it under `assumed_versions`. Decision 2026-10-09. Alternative: skip.
+unknown_version_policy: assume-latest
+
+# Report everything: rules that mirror ESLint / typescript-eslint / eslint-plugin-vue are NOT
+# skipped when those linters are configured (decision 2026-10-09). Disable per rule below if wanted.
+
+ai:
+  mode: auto                # off | auto | required (required => exit 4 if anything stays pending_ai)
+  provider: auto            # auto = api when base_url+model+key resolve, else cursor-skill
+  # OpenAI-compatible chat completions; env CREV_AI_BASE_URL / CREV_AI_MODEL override these.
+  base_url: ""              # e.g. https://llm-gateway.example.com/v1  (".../chat/completions" is appended)
+  model: ""                 # e.g. the model id your gateway exposes
+  api_key_env: CREV_AI_API_KEY   # NAME of the env var holding the key; never put a key in this file
+  min_confidence: medium    # ai_confirmed findings below this never gate
+  # No budget cap (decision 2026-10-09). Cost is controlled by payload compression instead:
+  batch_size: 20            # findings per request; rule text is sent once per batch
+  context_lines: 6          # lines of code around each match (minimal context)
+  max_snippet_chars: 1200   # hard cap per item
+  concurrency: 4
+  timeout_seconds: 120
+  temperature: 0
+  json_mode: true           # send response_format=json_object (auto-retried without on HTTP 400)
+  # cache_dir: .crev/cache/ai        # content-addressed verdict cache (persist it in CI)
+  # handoff_dir: .crev/ai-handoff    # Cursor-skill fallback: batches.jsonl is written here
+
+state_dir: .crev            # report.json (input for `crev ai export|run` and `crev ingest`)
+baseline: .crev-baseline.json
+# Exclusions. Built-in defaults skip dependency/build/cache dirs (node_modules, vendor, __pycache__, .nuxt,
+# .next, .output, dist, build, out, target, .gradle, coverage, .svelte-kit, .angular, .turbo, .cache,
+# .venv/venv, bin/obj next to .NET projects, ...), lockfiles (still read for version detection),
+# minified/bundled/source-map files and generated code (*.pb.go, *_pb2.py, *.generated.*, files with an
+# "@generated" or "Code generated ... DO NOT EDIT." header). .gitignore files are honoured as git does
+# (nested files, negations, .git/info/exclude). Each can be switched off:
+default_excludes: true      # --no-default-excludes
+gitignore: true             # --no-gitignore
+skip_generated: true        # --include-generated
+# Project tool configuration: a rule explicitly switched off in your linter config (eslint,
+# typescript-eslint, golangci-lint, ruff/flake8/pylint/mypy, detekt/ktlint, Checkstyle/PMD/SpotBugs/
+# Error Prone, PHPStan/Psalm/PHPCS, hadolint, tflint, checkov, yamllint, buf, tsconfig, .editorconfig)
+# or by an inline disable comment (eslint-disable*, //nolint, # noqa, @SuppressWarnings, phpcs:ignore,
+# hadolint ignore, tflint-ignore, ...) suppresses the equivalent crev rule. Suppressed findings stay
+# in JSON/SARIF and are listed with --show-suppressed. Having a linter installed never hides anything.
+respect_project_config: true # --no-project-config
+ignore: []                  # extra globs, e.g. ["**/legacy/**", "docs/**/*.json"]
+rules: {}                   # e.g. { SB-QUAL-INJ-001: { severity: info }, JS-QUAL-VAR-001: { enabled: false } }
+# Rule trust (rules/data/trust.yaml): rules without external evidence (labelled linter suites,
+# OWASP Benchmark, clean corpus runs, stable metamorphic variants) run as ai-confirm, so their hits
+# reach the review list only after a high-confidence AI confirmation. "unproven" keeps every rule's
+# declared mode (more findings, more false positives). `crev rules list` shows each rule's level.
+trust:
+  deterministic_min: measured   # measured | unproven
+# Dependency vulnerabilities (SCA): lockfiles (package-lock/npm-shrinkwrap, yarn.lock, pnpm-lock.yaml,
+# composer.lock, go.mod/go.sum, poetry.lock, Pipfile.lock, requirements*.txt pins, gradle.lockfile,
+# pom.xml) matched against OSV.dev advisories. online sends package names + versions to api.osv.dev;
+# offline uses the databases downloaded by `crev vulndb update` (warns when older than max_age_days).
+vulndb:
+  mode: online              # online | offline | off   (scan --vulndb overrides)
+  # dir: ~/.cache/crev/vulndb
+  max_age_days: 7
+  # api_url: https://api.osv.dev
+  timeout_seconds: 30

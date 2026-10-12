@@ -1,0 +1,4857 @@
+[
+{
+"name": "airflow-variable-name-task-id-mismatch",
+"code": "AIR001",
+"linter": "Airflow"
+},
+{
+"name": "airflow-dag-no-schedule-argument",
+"code": "AIR002",
+"linter": "Airflow"
+},
+{
+"name": "airflow-variable-get-outside-task",
+"code": "AIR003",
+"linter": "Airflow"
+},
+{
+"name": "airflow-task-branch-as-short-circuit",
+"code": "AIR004",
+"linter": "Airflow"
+},
+{
+"name": "airflow-xcom-pull-in-template-string",
+"code": "AIR201",
+"linter": "Airflow"
+},
+{
+"name": "airflow-task-implicit-multiple-outputs",
+"code": "AIR202",
+"linter": "Airflow"
+},
+{
+"name": "airflow3-removal",
+"code": "AIR301",
+"linter": "Airflow"
+},
+{
+"name": "airflow3-moved-to-provider",
+"code": "AIR302",
+"linter": "Airflow"
+},
+{
+"name": "airflow3-incompatible-function-signature",
+"code": "AIR303",
+"linter": "Airflow"
+},
+{
+"name": "airflow3-dag-dynamic-value",
+"code": "AIR304",
+"linter": "Airflow"
+},
+{
+"name": "airflow3-suggested-update",
+"code": "AIR311",
+"linter": "Airflow"
+},
+{
+"name": "airflow3-suggested-to-move-to-provider",
+"code": "AIR312",
+"linter": "Airflow"
+},
+{
+"name": "airflow31-moved",
+"code": "AIR321",
+"linter": "Airflow"
+},
+{
+"name": "commented-out-code",
+"code": "ERA001",
+"linter": "eradicate"
+},
+{
+"name": "fast-api-redundant-response-model",
+"code": "FAST001",
+"linter": "FastAPI"
+},
+{
+"name": "fast-api-non-annotated-dependency",
+"code": "FAST002",
+"linter": "FastAPI"
+},
+{
+"name": "fast-api-unused-path-parameter",
+"code": "FAST003",
+"linter": "FastAPI"
+},
+{
+"name": "sys-version-slice3",
+"code": "YTT101",
+"linter": "flake8-2020"
+},
+{
+"name": "sys-version2",
+"code": "YTT102",
+"linter": "flake8-2020"
+},
+{
+"name": "sys-version-cmp-str3",
+"code": "YTT103",
+"linter": "flake8-2020"
+},
+{
+"name": "sys-version-info0-eq3",
+"code": "YTT201",
+"linter": "flake8-2020"
+},
+{
+"name": "six-py3",
+"code": "YTT202",
+"linter": "flake8-2020"
+},
+{
+"name": "sys-version-info1-cmp-int",
+"code": "YTT203",
+"linter": "flake8-2020"
+},
+{
+"name": "sys-version-info-minor-cmp-int",
+"code": "YTT204",
+"linter": "flake8-2020"
+},
+{
+"name": "sys-version0",
+"code": "YTT301",
+"linter": "flake8-2020"
+},
+{
+"name": "sys-version-cmp-str10",
+"code": "YTT302",
+"linter": "flake8-2020"
+},
+{
+"name": "sys-version-slice1",
+"code": "YTT303",
+"linter": "flake8-2020"
+},
+{
+"name": "missing-type-function-argument",
+"code": "ANN001",
+"linter": "flake8-annotations"
+},
+{
+"name": "missing-type-args",
+"code": "ANN002",
+"linter": "flake8-annotations"
+},
+{
+"name": "missing-type-kwargs",
+"code": "ANN003",
+"linter": "flake8-annotations"
+},
+{
+"name": "missing-type-self",
+"code": "ANN101",
+"linter": "flake8-annotations"
+},
+{
+"name": "missing-type-cls",
+"code": "ANN102",
+"linter": "flake8-annotations"
+},
+{
+"name": "missing-return-type-undocumented-public-function",
+"code": "ANN201",
+"linter": "flake8-annotations"
+},
+{
+"name": "missing-return-type-private-function",
+"code": "ANN202",
+"linter": "flake8-annotations"
+},
+{
+"name": "missing-return-type-special-method",
+"code": "ANN204",
+"linter": "flake8-annotations"
+},
+{
+"name": "missing-return-type-static-method",
+"code": "ANN205",
+"linter": "flake8-annotations"
+},
+{
+"name": "missing-return-type-class-method",
+"code": "ANN206",
+"linter": "flake8-annotations"
+},
+{
+"name": "any-type",
+"code": "ANN401",
+"linter": "flake8-annotations"
+},
+{
+"name": "cancel-scope-no-checkpoint",
+"code": "ASYNC100",
+"linter": "flake8-async"
+},
+{
+"name": "trio-sync-call",
+"code": "ASYNC105",
+"linter": "flake8-async"
+},
+{
+"name": "async-function-with-timeout",
+"code": "ASYNC109",
+"linter": "flake8-async"
+},
+{
+"name": "async-busy-wait",
+"code": "ASYNC110",
+"linter": "flake8-async"
+},
+{
+"name": "async-zero-sleep",
+"code": "ASYNC115",
+"linter": "flake8-async"
+},
+{
+"name": "long-sleep-not-forever",
+"code": "ASYNC116",
+"linter": "flake8-async"
+},
+{
+"name": "yield-in-context-manager-in-async-generator",
+"code": "ASYNC119",
+"linter": "flake8-async"
+},
+{
+"name": "blocking-http-call-in-async-function",
+"code": "ASYNC210",
+"linter": "flake8-async"
+},
+{
+"name": "blocking-http-call-httpx-in-async-function",
+"code": "ASYNC212",
+"linter": "flake8-async"
+},
+{
+"name": "create-subprocess-in-async-function",
+"code": "ASYNC220",
+"linter": "flake8-async"
+},
+{
+"name": "run-process-in-async-function",
+"code": "ASYNC221",
+"linter": "flake8-async"
+},
+{
+"name": "wait-for-process-in-async-function",
+"code": "ASYNC222",
+"linter": "flake8-async"
+},
+{
+"name": "blocking-open-call-in-async-function",
+"code": "ASYNC230",
+"linter": "flake8-async"
+},
+{
+"name": "blocking-path-method-in-async-function",
+"code": "ASYNC240",
+"linter": "flake8-async"
+},
+{
+"name": "blocking-input-in-async-function",
+"code": "ASYNC250",
+"linter": "flake8-async"
+},
+{
+"name": "blocking-sleep-in-async-function",
+"code": "ASYNC251",
+"linter": "flake8-async"
+},
+{
+"name": "assert",
+"code": "S101",
+"linter": "flake8-bandit"
+},
+{
+"name": "exec-builtin",
+"code": "S102",
+"linter": "flake8-bandit"
+},
+{
+"name": "bad-file-permissions",
+"code": "S103",
+"linter": "flake8-bandit"
+},
+{
+"name": "hardcoded-bind-all-interfaces",
+"code": "S104",
+"linter": "flake8-bandit"
+},
+{
+"name": "hardcoded-password-string",
+"code": "S105",
+"linter": "flake8-bandit"
+},
+{
+"name": "hardcoded-password-func-arg",
+"code": "S106",
+"linter": "flake8-bandit"
+},
+{
+"name": "hardcoded-password-default",
+"code": "S107",
+"linter": "flake8-bandit"
+},
+{
+"name": "hardcoded-temp-file",
+"code": "S108",
+"linter": "flake8-bandit"
+},
+{
+"name": "try-except-pass",
+"code": "S110",
+"linter": "flake8-bandit"
+},
+{
+"name": "try-except-continue",
+"code": "S112",
+"linter": "flake8-bandit"
+},
+{
+"name": "request-without-timeout",
+"code": "S113",
+"linter": "flake8-bandit"
+},
+{
+"name": "flask-debug-true",
+"code": "S201",
+"linter": "flake8-bandit"
+},
+{
+"name": "tarfile-unsafe-members",
+"code": "S202",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-pickle-usage",
+"code": "S301",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-marshal-usage",
+"code": "S302",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-insecure-hash-usage",
+"code": "S303",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-insecure-cipher-usage",
+"code": "S304",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-insecure-cipher-mode-usage",
+"code": "S305",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-mktemp-usage",
+"code": "S306",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-eval-usage",
+"code": "S307",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-mark-safe-usage",
+"code": "S308",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-url-open-usage",
+"code": "S310",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-non-cryptographic-random-usage",
+"code": "S311",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-telnet-usage",
+"code": "S312",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xmlc-element-tree-usage",
+"code": "S313",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-element-tree-usage",
+"code": "S314",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-expat-reader-usage",
+"code": "S315",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-expat-builder-usage",
+"code": "S316",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-sax-usage",
+"code": "S317",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-mini-dom-usage",
+"code": "S318",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-pull-dom-usage",
+"code": "S319",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xmle-tree-usage",
+"code": "S320",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-ftp-lib-usage",
+"code": "S321",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-unverified-context-usage",
+"code": "S323",
+"linter": "flake8-bandit"
+},
+{
+"name": "hashlib-insecure-hash-function",
+"code": "S324",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-telnetlib-import",
+"code": "S401",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-ftplib-import",
+"code": "S402",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-pickle-import",
+"code": "S403",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-subprocess-import",
+"code": "S404",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-etree-import",
+"code": "S405",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-sax-import",
+"code": "S406",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-expat-import",
+"code": "S407",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-minidom-import",
+"code": "S408",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xml-pulldom-import",
+"code": "S409",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-lxml-import",
+"code": "S410",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-xmlrpc-import",
+"code": "S411",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-httpoxy-import",
+"code": "S412",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-pycrypto-import",
+"code": "S413",
+"linter": "flake8-bandit"
+},
+{
+"name": "suspicious-pyghmi-import",
+"code": "S415",
+"linter": "flake8-bandit"
+},
+{
+"name": "request-with-no-cert-validation",
+"code": "S501",
+"linter": "flake8-bandit"
+},
+{
+"name": "ssl-insecure-version",
+"code": "S502",
+"linter": "flake8-bandit"
+},
+{
+"name": "ssl-with-bad-defaults",
+"code": "S503",
+"linter": "flake8-bandit"
+},
+{
+"name": "ssl-with-no-version",
+"code": "S504",
+"linter": "flake8-bandit"
+},
+{
+"name": "weak-cryptographic-key",
+"code": "S505",
+"linter": "flake8-bandit"
+},
+{
+"name": "unsafe-yaml-load",
+"code": "S506",
+"linter": "flake8-bandit"
+},
+{
+"name": "ssh-no-host-key-verification",
+"code": "S507",
+"linter": "flake8-bandit"
+},
+{
+"name": "snmp-insecure-version",
+"code": "S508",
+"linter": "flake8-bandit"
+},
+{
+"name": "snmp-weak-cryptography",
+"code": "S509",
+"linter": "flake8-bandit"
+},
+{
+"name": "paramiko-call",
+"code": "S601",
+"linter": "flake8-bandit"
+},
+{
+"name": "subprocess-popen-with-shell-equals-true",
+"code": "S602",
+"linter": "flake8-bandit"
+},
+{
+"name": "subprocess-without-shell-equals-true",
+"code": "S603",
+"linter": "flake8-bandit"
+},
+{
+"name": "call-with-shell-equals-true",
+"code": "S604",
+"linter": "flake8-bandit"
+},
+{
+"name": "start-process-with-a-shell",
+"code": "S605",
+"linter": "flake8-bandit"
+},
+{
+"name": "start-process-with-no-shell",
+"code": "S606",
+"linter": "flake8-bandit"
+},
+{
+"name": "start-process-with-partial-path",
+"code": "S607",
+"linter": "flake8-bandit"
+},
+{
+"name": "hardcoded-sql-expression",
+"code": "S608",
+"linter": "flake8-bandit"
+},
+{
+"name": "unix-command-wildcard-injection",
+"code": "S609",
+"linter": "flake8-bandit"
+},
+{
+"name": "django-extra",
+"code": "S610",
+"linter": "flake8-bandit"
+},
+{
+"name": "django-raw-sql",
+"code": "S611",
+"linter": "flake8-bandit"
+},
+{
+"name": "logging-config-insecure-listen",
+"code": "S612",
+"linter": "flake8-bandit"
+},
+{
+"name": "jinja2-autoescape-false",
+"code": "S701",
+"linter": "flake8-bandit"
+},
+{
+"name": "mako-templates",
+"code": "S702",
+"linter": "flake8-bandit"
+},
+{
+"name": "unsafe-markup-use",
+"code": "S704",
+"linter": "flake8-bandit"
+},
+{
+"name": "blind-except",
+"code": "BLE001",
+"linter": "flake8-blind-except"
+},
+{
+"name": "boolean-type-hint-positional-argument",
+"code": "FBT001",
+"linter": "flake8-boolean-trap"
+},
+{
+"name": "boolean-default-value-positional-argument",
+"code": "FBT002",
+"linter": "flake8-boolean-trap"
+},
+{
+"name": "boolean-positional-value-in-call",
+"code": "FBT003",
+"linter": "flake8-boolean-trap"
+},
+{
+"name": "unary-prefix-increment-decrement",
+"code": "B002",
+"linter": "flake8-bugbear"
+},
+{
+"name": "assignment-to-os-environ",
+"code": "B003",
+"linter": "flake8-bugbear"
+},
+{
+"name": "unreliable-callable-check",
+"code": "B004",
+"linter": "flake8-bugbear"
+},
+{
+"name": "strip-with-multi-characters",
+"code": "B005",
+"linter": "flake8-bugbear"
+},
+{
+"name": "mutable-argument-default",
+"code": "B006",
+"linter": "flake8-bugbear"
+},
+{
+"name": "unused-loop-control-variable",
+"code": "B007",
+"linter": "flake8-bugbear"
+},
+{
+"name": "function-call-in-default-argument",
+"code": "B008",
+"linter": "flake8-bugbear"
+},
+{
+"name": "get-attr-with-constant",
+"code": "B009",
+"linter": "flake8-bugbear"
+},
+{
+"name": "set-attr-with-constant",
+"code": "B010",
+"linter": "flake8-bugbear"
+},
+{
+"name": "assert-false",
+"code": "B011",
+"linter": "flake8-bugbear"
+},
+{
+"name": "jump-statement-in-finally",
+"code": "B012",
+"linter": "flake8-bugbear"
+},
+{
+"name": "redundant-tuple-in-exception-handler",
+"code": "B013",
+"linter": "flake8-bugbear"
+},
+{
+"name": "duplicate-handler-exception",
+"code": "B014",
+"linter": "flake8-bugbear"
+},
+{
+"name": "useless-comparison",
+"code": "B015",
+"linter": "flake8-bugbear"
+},
+{
+"name": "raise-literal",
+"code": "B016",
+"linter": "flake8-bugbear"
+},
+{
+"name": "assert-raises-exception",
+"code": "B017",
+"linter": "flake8-bugbear"
+},
+{
+"name": "useless-expression",
+"code": "B018",
+"linter": "flake8-bugbear"
+},
+{
+"name": "cached-instance-method",
+"code": "B019",
+"linter": "flake8-bugbear"
+},
+{
+"name": "loop-variable-overrides-iterator",
+"code": "B020",
+"linter": "flake8-bugbear"
+},
+{
+"name": "f-string-docstring",
+"code": "B021",
+"linter": "flake8-bugbear"
+},
+{
+"name": "useless-contextlib-suppress",
+"code": "B022",
+"linter": "flake8-bugbear"
+},
+{
+"name": "function-uses-loop-variable",
+"code": "B023",
+"linter": "flake8-bugbear"
+},
+{
+"name": "abstract-base-class-without-abstract-method",
+"code": "B024",
+"linter": "flake8-bugbear"
+},
+{
+"name": "duplicate-try-block-exception",
+"code": "B025",
+"linter": "flake8-bugbear"
+},
+{
+"name": "star-arg-unpacking-after-keyword-arg",
+"code": "B026",
+"linter": "flake8-bugbear"
+},
+{
+"name": "empty-method-without-abstract-decorator",
+"code": "B027",
+"linter": "flake8-bugbear"
+},
+{
+"name": "no-explicit-stacklevel",
+"code": "B028",
+"linter": "flake8-bugbear"
+},
+{
+"name": "except-with-empty-tuple",
+"code": "B029",
+"linter": "flake8-bugbear"
+},
+{
+"name": "except-with-non-exception-classes",
+"code": "B030",
+"linter": "flake8-bugbear"
+},
+{
+"name": "reuse-of-groupby-generator",
+"code": "B031",
+"linter": "flake8-bugbear"
+},
+{
+"name": "unintentional-type-annotation",
+"code": "B032",
+"linter": "flake8-bugbear"
+},
+{
+"name": "duplicate-value",
+"code": "B033",
+"linter": "flake8-bugbear"
+},
+{
+"name": "re-sub-positional-args",
+"code": "B034",
+"linter": "flake8-bugbear"
+},
+{
+"name": "static-key-dict-comprehension",
+"code": "B035",
+"linter": "flake8-bugbear"
+},
+{
+"name": "mutable-contextvar-default",
+"code": "B039",
+"linter": "flake8-bugbear"
+},
+{
+"name": "del-attr-with-constant",
+"code": "B043",
+"linter": "flake8-bugbear"
+},
+{
+"name": "return-in-generator",
+"code": "B901",
+"linter": "flake8-bugbear"
+},
+{
+"name": "class-as-data-structure",
+"code": "B903",
+"linter": "flake8-bugbear"
+},
+{
+"name": "raise-without-from-inside-except",
+"code": "B904",
+"linter": "flake8-bugbear"
+},
+{
+"name": "zip-without-explicit-strict",
+"code": "B905",
+"linter": "flake8-bugbear"
+},
+{
+"name": "loop-iterator-mutation",
+"code": "B909",
+"linter": "flake8-bugbear"
+},
+{
+"name": "batched-without-explicit-strict",
+"code": "B911",
+"linter": "flake8-bugbear"
+},
+{
+"name": "map-without-explicit-strict",
+"code": "B912",
+"linter": "flake8-bugbear"
+},
+{
+"name": "builtin-variable-shadowing",
+"code": "A001",
+"linter": "flake8-builtins"
+},
+{
+"name": "builtin-argument-shadowing",
+"code": "A002",
+"linter": "flake8-builtins"
+},
+{
+"name": "builtin-attribute-shadowing",
+"code": "A003",
+"linter": "flake8-builtins"
+},
+{
+"name": "builtin-import-shadowing",
+"code": "A004",
+"linter": "flake8-builtins"
+},
+{
+"name": "stdlib-module-shadowing",
+"code": "A005",
+"linter": "flake8-builtins"
+},
+{
+"name": "builtin-lambda-argument-shadowing",
+"code": "A006",
+"linter": "flake8-builtins"
+},
+{
+"name": "missing-trailing-comma",
+"code": "COM812",
+"linter": "flake8-commas"
+},
+{
+"name": "trailing-comma-on-bare-tuple",
+"code": "COM818",
+"linter": "flake8-commas"
+},
+{
+"name": "prohibited-trailing-comma",
+"code": "COM819",
+"linter": "flake8-commas"
+},
+{
+"name": "unnecessary-generator-list",
+"code": "C400",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-generator-set",
+"code": "C401",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-generator-dict",
+"code": "C402",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-list-comprehension-set",
+"code": "C403",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-list-comprehension-dict",
+"code": "C404",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-literal-set",
+"code": "C405",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-literal-dict",
+"code": "C406",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-collection-call",
+"code": "C408",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-literal-within-tuple-call",
+"code": "C409",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-literal-within-list-call",
+"code": "C410",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-list-call",
+"code": "C411",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-call-around-sorted",
+"code": "C413",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-double-cast-or-process",
+"code": "C414",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-subscript-reversal",
+"code": "C415",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-comprehension",
+"code": "C416",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-map",
+"code": "C417",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-literal-within-dict-call",
+"code": "C418",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-comprehension-in-call",
+"code": "C419",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "unnecessary-dict-comprehension-for-iterable",
+"code": "C420",
+"linter": "flake8-comprehensions"
+},
+{
+"name": "missing-copyright-notice",
+"code": "CPY001",
+"linter": "flake8-copyright"
+},
+{
+"name": "call-datetime-without-tzinfo",
+"code": "DTZ001",
+"linter": "flake8-datetimez"
+},
+{
+"name": "call-datetime-today",
+"code": "DTZ002",
+"linter": "flake8-datetimez"
+},
+{
+"name": "call-datetime-utcnow",
+"code": "DTZ003",
+"linter": "flake8-datetimez"
+},
+{
+"name": "call-datetime-utcfromtimestamp",
+"code": "DTZ004",
+"linter": "flake8-datetimez"
+},
+{
+"name": "call-datetime-now-without-tzinfo",
+"code": "DTZ005",
+"linter": "flake8-datetimez"
+},
+{
+"name": "call-datetime-fromtimestamp",
+"code": "DTZ006",
+"linter": "flake8-datetimez"
+},
+{
+"name": "call-datetime-strptime-without-zone",
+"code": "DTZ007",
+"linter": "flake8-datetimez"
+},
+{
+"name": "call-date-today",
+"code": "DTZ011",
+"linter": "flake8-datetimez"
+},
+{
+"name": "call-date-fromtimestamp",
+"code": "DTZ012",
+"linter": "flake8-datetimez"
+},
+{
+"name": "datetime-min-max",
+"code": "DTZ901",
+"linter": "flake8-datetimez"
+},
+{
+"name": "debugger",
+"code": "T100",
+"linter": "flake8-debugger"
+},
+{
+"name": "django-nullable-model-string-field",
+"code": "DJ001",
+"linter": "flake8-django"
+},
+{
+"name": "django-locals-in-render-function",
+"code": "DJ003",
+"linter": "flake8-django"
+},
+{
+"name": "django-exclude-with-model-form",
+"code": "DJ006",
+"linter": "flake8-django"
+},
+{
+"name": "django-all-with-model-form",
+"code": "DJ007",
+"linter": "flake8-django"
+},
+{
+"name": "django-model-without-dunder-str",
+"code": "DJ008",
+"linter": "flake8-django"
+},
+{
+"name": "django-unordered-body-content-in-model",
+"code": "DJ012",
+"linter": "flake8-django"
+},
+{
+"name": "django-non-leading-receiver-decorator",
+"code": "DJ013",
+"linter": "flake8-django"
+},
+{
+"name": "raw-string-in-exception",
+"code": "EM101",
+"linter": "flake8-errmsg"
+},
+{
+"name": "f-string-in-exception",
+"code": "EM102",
+"linter": "flake8-errmsg"
+},
+{
+"name": "dot-format-in-exception",
+"code": "EM103",
+"linter": "flake8-errmsg"
+},
+{
+"name": "shebang-not-executable",
+"code": "EXE001",
+"linter": "flake8-executable"
+},
+{
+"name": "shebang-missing-executable-file",
+"code": "EXE002",
+"linter": "flake8-executable"
+},
+{
+"name": "shebang-missing-python",
+"code": "EXE003",
+"linter": "flake8-executable"
+},
+{
+"name": "shebang-leading-whitespace",
+"code": "EXE004",
+"linter": "flake8-executable"
+},
+{
+"name": "shebang-not-first-line",
+"code": "EXE005",
+"linter": "flake8-executable"
+},
+{
+"name": "line-contains-fixme",
+"code": "FIX001",
+"linter": "flake8-fixme"
+},
+{
+"name": "line-contains-todo",
+"code": "FIX002",
+"linter": "flake8-fixme"
+},
+{
+"name": "line-contains-xxx",
+"code": "FIX003",
+"linter": "flake8-fixme"
+},
+{
+"name": "line-contains-hack",
+"code": "FIX004",
+"linter": "flake8-fixme"
+},
+{
+"name": "future-rewritable-type-annotation",
+"code": "FA100",
+"linter": "flake8-future-annotations"
+},
+{
+"name": "future-required-type-annotation",
+"code": "FA102",
+"linter": "flake8-future-annotations"
+},
+{
+"name": "f-string-in-get-text-func-call",
+"code": "INT001",
+"linter": "flake8-gettext"
+},
+{
+"name": "format-in-get-text-func-call",
+"code": "INT002",
+"linter": "flake8-gettext"
+},
+{
+"name": "printf-in-get-text-func-call",
+"code": "INT003",
+"linter": "flake8-gettext"
+},
+{
+"name": "single-line-implicit-string-concatenation",
+"code": "ISC001",
+"linter": "flake8-implicit-str-concat"
+},
+{
+"name": "multi-line-implicit-string-concatenation",
+"code": "ISC002",
+"linter": "flake8-implicit-str-concat"
+},
+{
+"name": "explicit-string-concatenation",
+"code": "ISC003",
+"linter": "flake8-implicit-str-concat"
+},
+{
+"name": "implicit-string-concatenation-in-collection-literal",
+"code": "ISC004",
+"linter": "flake8-implicit-str-concat"
+},
+{
+"name": "unconventional-import-alias",
+"code": "ICN001",
+"linter": "flake8-import-conventions"
+},
+{
+"name": "banned-import-alias",
+"code": "ICN002",
+"linter": "flake8-import-conventions"
+},
+{
+"name": "banned-import-from",
+"code": "ICN003",
+"linter": "flake8-import-conventions"
+},
+{
+"name": "direct-logger-instantiation",
+"code": "LOG001",
+"linter": "flake8-logging"
+},
+{
+"name": "invalid-get-logger-argument",
+"code": "LOG002",
+"linter": "flake8-logging"
+},
+{
+"name": "log-exception-outside-except-handler",
+"code": "LOG004",
+"linter": "flake8-logging"
+},
+{
+"name": "exception-without-exc-info",
+"code": "LOG007",
+"linter": "flake8-logging"
+},
+{
+"name": "undocumented-warn",
+"code": "LOG009",
+"linter": "flake8-logging"
+},
+{
+"name": "exc-info-outside-except-handler",
+"code": "LOG014",
+"linter": "flake8-logging"
+},
+{
+"name": "root-logger-call",
+"code": "LOG015",
+"linter": "flake8-logging"
+},
+{
+"name": "logging-string-format",
+"code": "G001",
+"linter": "flake8-logging-format"
+},
+{
+"name": "logging-percent-format",
+"code": "G002",
+"linter": "flake8-logging-format"
+},
+{
+"name": "logging-string-concat",
+"code": "G003",
+"linter": "flake8-logging-format"
+},
+{
+"name": "logging-f-string",
+"code": "G004",
+"linter": "flake8-logging-format"
+},
+{
+"name": "logging-warn",
+"code": "G010",
+"linter": "flake8-logging-format"
+},
+{
+"name": "logging-extra-attr-clash",
+"code": "G101",
+"linter": "flake8-logging-format"
+},
+{
+"name": "logging-exc-info",
+"code": "G201",
+"linter": "flake8-logging-format"
+},
+{
+"name": "logging-redundant-exc-info",
+"code": "G202",
+"linter": "flake8-logging-format"
+},
+{
+"name": "implicit-namespace-package",
+"code": "INP001",
+"linter": "flake8-no-pep420"
+},
+{
+"name": "unnecessary-placeholder",
+"code": "PIE790",
+"linter": "flake8-pie"
+},
+{
+"name": "duplicate-class-field-definition",
+"code": "PIE794",
+"linter": "flake8-pie"
+},
+{
+"name": "non-unique-enums",
+"code": "PIE796",
+"linter": "flake8-pie"
+},
+{
+"name": "unnecessary-spread",
+"code": "PIE800",
+"linter": "flake8-pie"
+},
+{
+"name": "unnecessary-dict-kwargs",
+"code": "PIE804",
+"linter": "flake8-pie"
+},
+{
+"name": "reimplemented-container-builtin",
+"code": "PIE807",
+"linter": "flake8-pie"
+},
+{
+"name": "unnecessary-range-start",
+"code": "PIE808",
+"linter": "flake8-pie"
+},
+{
+"name": "multiple-starts-ends-with",
+"code": "PIE810",
+"linter": "flake8-pie"
+},
+{
+"name": "print",
+"code": "T201",
+"linter": "flake8-print"
+},
+{
+"name": "p-print",
+"code": "T203",
+"linter": "flake8-print"
+},
+{
+"name": "unprefixed-type-param",
+"code": "PYI001",
+"linter": "flake8-pyi"
+},
+{
+"name": "complex-if-statement-in-stub",
+"code": "PYI002",
+"linter": "flake8-pyi"
+},
+{
+"name": "unrecognized-version-info-check",
+"code": "PYI003",
+"linter": "flake8-pyi"
+},
+{
+"name": "patch-version-comparison",
+"code": "PYI004",
+"linter": "flake8-pyi"
+},
+{
+"name": "wrong-tuple-length-version-comparison",
+"code": "PYI005",
+"linter": "flake8-pyi"
+},
+{
+"name": "bad-version-info-comparison",
+"code": "PYI006",
+"linter": "flake8-pyi"
+},
+{
+"name": "unrecognized-platform-check",
+"code": "PYI007",
+"linter": "flake8-pyi"
+},
+{
+"name": "unrecognized-platform-name",
+"code": "PYI008",
+"linter": "flake8-pyi"
+},
+{
+"name": "pass-statement-stub-body",
+"code": "PYI009",
+"linter": "flake8-pyi"
+},
+{
+"name": "non-empty-stub-body",
+"code": "PYI010",
+"linter": "flake8-pyi"
+},
+{
+"name": "typed-argument-default-in-stub",
+"code": "PYI011",
+"linter": "flake8-pyi"
+},
+{
+"name": "pass-in-class-body",
+"code": "PYI012",
+"linter": "flake8-pyi"
+},
+{
+"name": "ellipsis-in-non-empty-class-body",
+"code": "PYI013",
+"linter": "flake8-pyi"
+},
+{
+"name": "argument-default-in-stub",
+"code": "PYI014",
+"linter": "flake8-pyi"
+},
+{
+"name": "assignment-default-in-stub",
+"code": "PYI015",
+"linter": "flake8-pyi"
+},
+{
+"name": "duplicate-union-member",
+"code": "PYI016",
+"linter": "flake8-pyi"
+},
+{
+"name": "complex-assignment-in-stub",
+"code": "PYI017",
+"linter": "flake8-pyi"
+},
+{
+"name": "unused-private-type-var",
+"code": "PYI018",
+"linter": "flake8-pyi"
+},
+{
+"name": "custom-type-var-for-self",
+"code": "PYI019",
+"linter": "flake8-pyi"
+},
+{
+"name": "quoted-annotation-in-stub",
+"code": "PYI020",
+"linter": "flake8-pyi"
+},
+{
+"name": "docstring-in-stub",
+"code": "PYI021",
+"linter": "flake8-pyi"
+},
+{
+"name": "collections-named-tuple",
+"code": "PYI024",
+"linter": "flake8-pyi"
+},
+{
+"name": "unaliased-collections-abc-set-import",
+"code": "PYI025",
+"linter": "flake8-pyi"
+},
+{
+"name": "type-alias-without-annotation",
+"code": "PYI026",
+"linter": "flake8-pyi"
+},
+{
+"name": "str-or-repr-defined-in-stub",
+"code": "PYI029",
+"linter": "flake8-pyi"
+},
+{
+"name": "unnecessary-literal-union",
+"code": "PYI030",
+"linter": "flake8-pyi"
+},
+{
+"name": "any-eq-ne-annotation",
+"code": "PYI032",
+"linter": "flake8-pyi"
+},
+{
+"name": "legacy-type-comment",
+"code": "PYI033",
+"linter": "flake8-pyi"
+},
+{
+"name": "non-self-return-type",
+"code": "PYI034",
+"linter": "flake8-pyi"
+},
+{
+"name": "unassigned-special-variable-in-stub",
+"code": "PYI035",
+"linter": "flake8-pyi"
+},
+{
+"name": "bad-exit-annotation",
+"code": "PYI036",
+"linter": "flake8-pyi"
+},
+{
+"name": "redundant-numeric-union",
+"code": "PYI041",
+"linter": "flake8-pyi"
+},
+{
+"name": "snake-case-type-alias",
+"code": "PYI042",
+"linter": "flake8-pyi"
+},
+{
+"name": "t-suffixed-type-alias",
+"code": "PYI043",
+"linter": "flake8-pyi"
+},
+{
+"name": "future-annotations-in-stub",
+"code": "PYI044",
+"linter": "flake8-pyi"
+},
+{
+"name": "iter-method-return-iterable",
+"code": "PYI045",
+"linter": "flake8-pyi"
+},
+{
+"name": "unused-private-protocol",
+"code": "PYI046",
+"linter": "flake8-pyi"
+},
+{
+"name": "unused-private-type-alias",
+"code": "PYI047",
+"linter": "flake8-pyi"
+},
+{
+"name": "stub-body-multiple-statements",
+"code": "PYI048",
+"linter": "flake8-pyi"
+},
+{
+"name": "unused-private-typed-dict",
+"code": "PYI049",
+"linter": "flake8-pyi"
+},
+{
+"name": "no-return-argument-annotation-in-stub",
+"code": "PYI050",
+"linter": "flake8-pyi"
+},
+{
+"name": "redundant-literal-union",
+"code": "PYI051",
+"linter": "flake8-pyi"
+},
+{
+"name": "unannotated-assignment-in-stub",
+"code": "PYI052",
+"linter": "flake8-pyi"
+},
+{
+"name": "string-or-bytes-too-long",
+"code": "PYI053",
+"linter": "flake8-pyi"
+},
+{
+"name": "numeric-literal-too-long",
+"code": "PYI054",
+"linter": "flake8-pyi"
+},
+{
+"name": "unnecessary-type-union",
+"code": "PYI055",
+"linter": "flake8-pyi"
+},
+{
+"name": "unsupported-method-call-on-all",
+"code": "PYI056",
+"linter": "flake8-pyi"
+},
+{
+"name": "byte-string-usage",
+"code": "PYI057",
+"linter": "flake8-pyi"
+},
+{
+"name": "generator-return-from-iter-method",
+"code": "PYI058",
+"linter": "flake8-pyi"
+},
+{
+"name": "generic-not-last-base-class",
+"code": "PYI059",
+"linter": "flake8-pyi"
+},
+{
+"name": "redundant-none-literal",
+"code": "PYI061",
+"linter": "flake8-pyi"
+},
+{
+"name": "duplicate-literal-member",
+"code": "PYI062",
+"linter": "flake8-pyi"
+},
+{
+"name": "pep484-style-positional-only-parameter",
+"code": "PYI063",
+"linter": "flake8-pyi"
+},
+{
+"name": "redundant-final-literal",
+"code": "PYI064",
+"linter": "flake8-pyi"
+},
+{
+"name": "bad-version-info-order",
+"code": "PYI066",
+"linter": "flake8-pyi"
+},
+{
+"name": "pytest-fixture-incorrect-parentheses-style",
+"code": "PT001",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-fixture-positional-args",
+"code": "PT002",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-extraneous-scope-function",
+"code": "PT003",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-missing-fixture-name-underscore",
+"code": "PT004",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-incorrect-fixture-name-underscore",
+"code": "PT005",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-parametrize-names-wrong-type",
+"code": "PT006",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-parametrize-values-wrong-type",
+"code": "PT007",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-patch-with-lambda",
+"code": "PT008",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-unittest-assertion",
+"code": "PT009",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-raises-without-exception",
+"code": "PT010",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-raises-too-broad",
+"code": "PT011",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-raises-with-multiple-statements",
+"code": "PT012",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-incorrect-pytest-import",
+"code": "PT013",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-duplicate-parametrize-test-cases",
+"code": "PT014",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-assert-always-false",
+"code": "PT015",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-fail-without-message",
+"code": "PT016",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-assert-in-except",
+"code": "PT017",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-composite-assertion",
+"code": "PT018",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-fixture-param-without-value",
+"code": "PT019",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-deprecated-yield-fixture",
+"code": "PT020",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-fixture-finalizer-callback",
+"code": "PT021",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-useless-yield-fixture",
+"code": "PT022",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-incorrect-mark-parentheses-style",
+"code": "PT023",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-unnecessary-asyncio-mark-on-fixture",
+"code": "PT024",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-erroneous-use-fixtures-on-fixture",
+"code": "PT025",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-use-fixtures-without-parameters",
+"code": "PT026",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-unittest-raises-assertion",
+"code": "PT027",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-parameter-with-default-argument",
+"code": "PT028",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-warns-without-warning",
+"code": "PT029",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-warns-too-broad",
+"code": "PT030",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "pytest-warns-with-multiple-statements",
+"code": "PT031",
+"linter": "flake8-pytest-style"
+},
+{
+"name": "bad-quotes-inline-string",
+"code": "Q000",
+"linter": "flake8-quotes"
+},
+{
+"name": "bad-quotes-multiline-string",
+"code": "Q001",
+"linter": "flake8-quotes"
+},
+{
+"name": "bad-quotes-docstring",
+"code": "Q002",
+"linter": "flake8-quotes"
+},
+{
+"name": "avoidable-escaped-quote",
+"code": "Q003",
+"linter": "flake8-quotes"
+},
+{
+"name": "unnecessary-escaped-quote",
+"code": "Q004",
+"linter": "flake8-quotes"
+},
+{
+"name": "unnecessary-paren-on-raise-exception",
+"code": "RSE102",
+"linter": "flake8-raise"
+},
+{
+"name": "unnecessary-return-none",
+"code": "RET501",
+"linter": "flake8-return"
+},
+{
+"name": "implicit-return-value",
+"code": "RET502",
+"linter": "flake8-return"
+},
+{
+"name": "implicit-return",
+"code": "RET503",
+"linter": "flake8-return"
+},
+{
+"name": "unnecessary-assign",
+"code": "RET504",
+"linter": "flake8-return"
+},
+{
+"name": "superfluous-else-return",
+"code": "RET505",
+"linter": "flake8-return"
+},
+{
+"name": "superfluous-else-raise",
+"code": "RET506",
+"linter": "flake8-return"
+},
+{
+"name": "superfluous-else-continue",
+"code": "RET507",
+"linter": "flake8-return"
+},
+{
+"name": "superfluous-else-break",
+"code": "RET508",
+"linter": "flake8-return"
+},
+{
+"name": "private-member-access",
+"code": "SLF001",
+"linter": "flake8-self"
+},
+{
+"name": "duplicate-isinstance-call",
+"code": "SIM101",
+"linter": "flake8-simplify"
+},
+{
+"name": "collapsible-if",
+"code": "SIM102",
+"linter": "flake8-simplify"
+},
+{
+"name": "needless-bool",
+"code": "SIM103",
+"linter": "flake8-simplify"
+},
+{
+"name": "suppressible-exception",
+"code": "SIM105",
+"linter": "flake8-simplify"
+},
+{
+"name": "return-in-try-except-finally",
+"code": "SIM107",
+"linter": "flake8-simplify"
+},
+{
+"name": "if-else-block-instead-of-if-exp",
+"code": "SIM108",
+"linter": "flake8-simplify"
+},
+{
+"name": "compare-with-tuple",
+"code": "SIM109",
+"linter": "flake8-simplify"
+},
+{
+"name": "reimplemented-builtin",
+"code": "SIM110",
+"linter": "flake8-simplify"
+},
+{
+"name": "uncapitalized-environment-variables",
+"code": "SIM112",
+"linter": "flake8-simplify"
+},
+{
+"name": "enumerate-for-loop",
+"code": "SIM113",
+"linter": "flake8-simplify"
+},
+{
+"name": "if-with-same-arms",
+"code": "SIM114",
+"linter": "flake8-simplify"
+},
+{
+"name": "open-file-with-context-handler",
+"code": "SIM115",
+"linter": "flake8-simplify"
+},
+{
+"name": "if-else-block-instead-of-dict-lookup",
+"code": "SIM116",
+"linter": "flake8-simplify"
+},
+{
+"name": "multiple-with-statements",
+"code": "SIM117",
+"linter": "flake8-simplify"
+},
+{
+"name": "in-dict-keys",
+"code": "SIM118",
+"linter": "flake8-simplify"
+},
+{
+"name": "negate-equal-op",
+"code": "SIM201",
+"linter": "flake8-simplify"
+},
+{
+"name": "negate-not-equal-op",
+"code": "SIM202",
+"linter": "flake8-simplify"
+},
+{
+"name": "double-negation",
+"code": "SIM208",
+"linter": "flake8-simplify"
+},
+{
+"name": "if-expr-with-true-false",
+"code": "SIM210",
+"linter": "flake8-simplify"
+},
+{
+"name": "if-expr-with-false-true",
+"code": "SIM211",
+"linter": "flake8-simplify"
+},
+{
+"name": "if-expr-with-twisted-arms",
+"code": "SIM212",
+"linter": "flake8-simplify"
+},
+{
+"name": "expr-and-not-expr",
+"code": "SIM220",
+"linter": "flake8-simplify"
+},
+{
+"name": "expr-or-not-expr",
+"code": "SIM221",
+"linter": "flake8-simplify"
+},
+{
+"name": "expr-or-true",
+"code": "SIM222",
+"linter": "flake8-simplify"
+},
+{
+"name": "expr-and-false",
+"code": "SIM223",
+"linter": "flake8-simplify"
+},
+{
+"name": "yoda-conditions",
+"code": "SIM300",
+"linter": "flake8-simplify"
+},
+{
+"name": "if-else-block-instead-of-dict-get",
+"code": "SIM401",
+"linter": "flake8-simplify"
+},
+{
+"name": "split-static-string",
+"code": "SIM905",
+"linter": "flake8-simplify"
+},
+{
+"name": "dict-get-with-none-default",
+"code": "SIM910",
+"linter": "flake8-simplify"
+},
+{
+"name": "zip-dict-keys-and-values",
+"code": "SIM911",
+"linter": "flake8-simplify"
+},
+{
+"name": "no-slots-in-str-subclass",
+"code": "SLOT000",
+"linter": "flake8-slots"
+},
+{
+"name": "no-slots-in-tuple-subclass",
+"code": "SLOT001",
+"linter": "flake8-slots"
+},
+{
+"name": "no-slots-in-namedtuple-subclass",
+"code": "SLOT002",
+"linter": "flake8-slots"
+},
+{
+"name": "banned-api",
+"code": "TID251",
+"linter": "flake8-tidy-imports"
+},
+{
+"name": "relative-imports",
+"code": "TID252",
+"linter": "flake8-tidy-imports"
+},
+{
+"name": "banned-module-level-imports",
+"code": "TID253",
+"linter": "flake8-tidy-imports"
+},
+{
+"name": "lazy-import-mismatch",
+"code": "TID254",
+"linter": "flake8-tidy-imports"
+},
+{
+"name": "lazy-import-immediately-resolved",
+"code": "TID255",
+"linter": "flake8-tidy-imports"
+},
+{
+"name": "invalid-todo-tag",
+"code": "TD001",
+"linter": "flake8-todos"
+},
+{
+"name": "missing-todo-author",
+"code": "TD002",
+"linter": "flake8-todos"
+},
+{
+"name": "missing-todo-link",
+"code": "TD003",
+"linter": "flake8-todos"
+},
+{
+"name": "missing-todo-colon",
+"code": "TD004",
+"linter": "flake8-todos"
+},
+{
+"name": "missing-todo-description",
+"code": "TD005",
+"linter": "flake8-todos"
+},
+{
+"name": "invalid-todo-capitalization",
+"code": "TD006",
+"linter": "flake8-todos"
+},
+{
+"name": "missing-space-after-todo-colon",
+"code": "TD007",
+"linter": "flake8-todos"
+},
+{
+"name": "typing-only-first-party-import",
+"code": "TC001",
+"linter": "flake8-type-checking"
+},
+{
+"name": "typing-only-third-party-import",
+"code": "TC002",
+"linter": "flake8-type-checking"
+},
+{
+"name": "typing-only-standard-library-import",
+"code": "TC003",
+"linter": "flake8-type-checking"
+},
+{
+"name": "runtime-import-in-type-checking-block",
+"code": "TC004",
+"linter": "flake8-type-checking"
+},
+{
+"name": "empty-type-checking-block",
+"code": "TC005",
+"linter": "flake8-type-checking"
+},
+{
+"name": "runtime-cast-value",
+"code": "TC006",
+"linter": "flake8-type-checking"
+},
+{
+"name": "unquoted-type-alias",
+"code": "TC007",
+"linter": "flake8-type-checking"
+},
+{
+"name": "quoted-type-alias",
+"code": "TC008",
+"linter": "flake8-type-checking"
+},
+{
+"name": "runtime-string-union",
+"code": "TC010",
+"linter": "flake8-type-checking"
+},
+{
+"name": "unused-function-argument",
+"code": "ARG001",
+"linter": "flake8-unused-arguments"
+},
+{
+"name": "unused-method-argument",
+"code": "ARG002",
+"linter": "flake8-unused-arguments"
+},
+{
+"name": "unused-class-method-argument",
+"code": "ARG003",
+"linter": "flake8-unused-arguments"
+},
+{
+"name": "unused-static-method-argument",
+"code": "ARG004",
+"linter": "flake8-unused-arguments"
+},
+{
+"name": "unused-lambda-argument",
+"code": "ARG005",
+"linter": "flake8-unused-arguments"
+},
+{
+"name": "os-path-abspath",
+"code": "PTH100",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-chmod",
+"code": "PTH101",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-mkdir",
+"code": "PTH102",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-makedirs",
+"code": "PTH103",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-rename",
+"code": "PTH104",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-replace",
+"code": "PTH105",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-rmdir",
+"code": "PTH106",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-remove",
+"code": "PTH107",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-unlink",
+"code": "PTH108",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-getcwd",
+"code": "PTH109",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-exists",
+"code": "PTH110",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-expanduser",
+"code": "PTH111",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-isdir",
+"code": "PTH112",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-isfile",
+"code": "PTH113",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-islink",
+"code": "PTH114",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-readlink",
+"code": "PTH115",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-stat",
+"code": "PTH116",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-isabs",
+"code": "PTH117",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-join",
+"code": "PTH118",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-basename",
+"code": "PTH119",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-dirname",
+"code": "PTH120",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-samefile",
+"code": "PTH121",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-splitext",
+"code": "PTH122",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "builtin-open",
+"code": "PTH123",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "py-path",
+"code": "PTH124",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "path-constructor-current-directory",
+"code": "PTH201",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-getsize",
+"code": "PTH202",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-getatime",
+"code": "PTH203",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-getmtime",
+"code": "PTH204",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-path-getctime",
+"code": "PTH205",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-sep-split",
+"code": "PTH206",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "glob",
+"code": "PTH207",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-listdir",
+"code": "PTH208",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "invalid-pathlib-with-suffix",
+"code": "PTH210",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "os-symlink",
+"code": "PTH211",
+"linter": "flake8-use-pathlib"
+},
+{
+"name": "static-join-to-f-string",
+"code": "FLY002",
+"linter": "flynt"
+},
+{
+"name": "unsorted-imports",
+"code": "I001",
+"linter": "isort"
+},
+{
+"name": "missing-required-import",
+"code": "I002",
+"linter": "isort"
+},
+{
+"name": "complex-structure",
+"code": "C901",
+"linter": "mccabe"
+},
+{
+"name": "numpy-deprecated-type-alias",
+"code": "NPY001",
+"linter": "NumPy-specific rules"
+},
+{
+"name": "numpy-legacy-random",
+"code": "NPY002",
+"linter": "NumPy-specific rules"
+},
+{
+"name": "numpy-deprecated-function",
+"code": "NPY003",
+"linter": "NumPy-specific rules"
+},
+{
+"name": "numpy2-deprecation",
+"code": "NPY201",
+"linter": "NumPy-specific rules"
+},
+{
+"name": "invalid-class-name",
+"code": "N801",
+"linter": "pep8-naming"
+},
+{
+"name": "invalid-function-name",
+"code": "N802",
+"linter": "pep8-naming"
+},
+{
+"name": "invalid-argument-name",
+"code": "N803",
+"linter": "pep8-naming"
+},
+{
+"name": "invalid-first-argument-name-for-class-method",
+"code": "N804",
+"linter": "pep8-naming"
+},
+{
+"name": "invalid-first-argument-name-for-method",
+"code": "N805",
+"linter": "pep8-naming"
+},
+{
+"name": "non-lowercase-variable-in-function",
+"code": "N806",
+"linter": "pep8-naming"
+},
+{
+"name": "dunder-function-name",
+"code": "N807",
+"linter": "pep8-naming"
+},
+{
+"name": "constant-imported-as-non-constant",
+"code": "N811",
+"linter": "pep8-naming"
+},
+{
+"name": "lowercase-imported-as-non-lowercase",
+"code": "N812",
+"linter": "pep8-naming"
+},
+{
+"name": "camelcase-imported-as-lowercase",
+"code": "N813",
+"linter": "pep8-naming"
+},
+{
+"name": "camelcase-imported-as-constant",
+"code": "N814",
+"linter": "pep8-naming"
+},
+{
+"name": "mixed-case-variable-in-class-scope",
+"code": "N815",
+"linter": "pep8-naming"
+},
+{
+"name": "mixed-case-variable-in-global-scope",
+"code": "N816",
+"linter": "pep8-naming"
+},
+{
+"name": "camelcase-imported-as-acronym",
+"code": "N817",
+"linter": "pep8-naming"
+},
+{
+"name": "error-suffix-on-exception-name",
+"code": "N818",
+"linter": "pep8-naming"
+},
+{
+"name": "invalid-module-name",
+"code": "N999",
+"linter": "pep8-naming"
+},
+{
+"name": "pandas-use-of-inplace-argument",
+"code": "PD002",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-dot-is-null",
+"code": "PD003",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-dot-not-null",
+"code": "PD004",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-dot-ix",
+"code": "PD007",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-dot-at",
+"code": "PD008",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-dot-iat",
+"code": "PD009",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-dot-pivot-or-unstack",
+"code": "PD010",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-dot-values",
+"code": "PD011",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-dot-read-table",
+"code": "PD012",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-dot-stack",
+"code": "PD013",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-use-of-pd-merge",
+"code": "PD015",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-nunique-constant-series-check",
+"code": "PD101",
+"linter": "pandas-vet"
+},
+{
+"name": "pandas-df-variable-name",
+"code": "PD901",
+"linter": "pandas-vet"
+},
+{
+"name": "unnecessary-list-cast",
+"code": "PERF101",
+"linter": "Perflint"
+},
+{
+"name": "incorrect-dict-iterator",
+"code": "PERF102",
+"linter": "Perflint"
+},
+{
+"name": "try-except-in-loop",
+"code": "PERF203",
+"linter": "Perflint"
+},
+{
+"name": "manual-list-comprehension",
+"code": "PERF401",
+"linter": "Perflint"
+},
+{
+"name": "manual-list-copy",
+"code": "PERF402",
+"linter": "Perflint"
+},
+{
+"name": "manual-dict-comprehension",
+"code": "PERF403",
+"linter": "Perflint"
+},
+{
+"name": "mixed-spaces-and-tabs",
+"code": "E101",
+"linter": "pycodestyle"
+},
+{
+"name": "indentation-with-invalid-multiple",
+"code": "E111",
+"linter": "pycodestyle"
+},
+{
+"name": "no-indented-block",
+"code": "E112",
+"linter": "pycodestyle"
+},
+{
+"name": "unexpected-indentation",
+"code": "E113",
+"linter": "pycodestyle"
+},
+{
+"name": "indentation-with-invalid-multiple-comment",
+"code": "E114",
+"linter": "pycodestyle"
+},
+{
+"name": "no-indented-block-comment",
+"code": "E115",
+"linter": "pycodestyle"
+},
+{
+"name": "unexpected-indentation-comment",
+"code": "E116",
+"linter": "pycodestyle"
+},
+{
+"name": "over-indented",
+"code": "E117",
+"linter": "pycodestyle"
+},
+{
+"name": "whitespace-after-open-bracket",
+"code": "E201",
+"linter": "pycodestyle"
+},
+{
+"name": "whitespace-before-close-bracket",
+"code": "E202",
+"linter": "pycodestyle"
+},
+{
+"name": "whitespace-before-punctuation",
+"code": "E203",
+"linter": "pycodestyle"
+},
+{
+"name": "whitespace-after-decorator",
+"code": "E204",
+"linter": "pycodestyle"
+},
+{
+"name": "whitespace-before-parameters",
+"code": "E211",
+"linter": "pycodestyle"
+},
+{
+"name": "multiple-spaces-before-operator",
+"code": "E221",
+"linter": "pycodestyle"
+},
+{
+"name": "multiple-spaces-after-operator",
+"code": "E222",
+"linter": "pycodestyle"
+},
+{
+"name": "tab-before-operator",
+"code": "E223",
+"linter": "pycodestyle"
+},
+{
+"name": "tab-after-operator",
+"code": "E224",
+"linter": "pycodestyle"
+},
+{
+"name": "missing-whitespace-around-operator",
+"code": "E225",
+"linter": "pycodestyle"
+},
+{
+"name": "missing-whitespace-around-arithmetic-operator",
+"code": "E226",
+"linter": "pycodestyle"
+},
+{
+"name": "missing-whitespace-around-bitwise-or-shift-operator",
+"code": "E227",
+"linter": "pycodestyle"
+},
+{
+"name": "missing-whitespace-around-modulo-operator",
+"code": "E228",
+"linter": "pycodestyle"
+},
+{
+"name": "missing-whitespace",
+"code": "E231",
+"linter": "pycodestyle"
+},
+{
+"name": "multiple-spaces-after-comma",
+"code": "E241",
+"linter": "pycodestyle"
+},
+{
+"name": "tab-after-comma",
+"code": "E242",
+"linter": "pycodestyle"
+},
+{
+"name": "unexpected-spaces-around-keyword-parameter-equals",
+"code": "E251",
+"linter": "pycodestyle"
+},
+{
+"name": "missing-whitespace-around-parameter-equals",
+"code": "E252",
+"linter": "pycodestyle"
+},
+{
+"name": "too-few-spaces-before-inline-comment",
+"code": "E261",
+"linter": "pycodestyle"
+},
+{
+"name": "no-space-after-inline-comment",
+"code": "E262",
+"linter": "pycodestyle"
+},
+{
+"name": "no-space-after-block-comment",
+"code": "E265",
+"linter": "pycodestyle"
+},
+{
+"name": "multiple-leading-hashes-for-block-comment",
+"code": "E266",
+"linter": "pycodestyle"
+},
+{
+"name": "multiple-spaces-after-keyword",
+"code": "E271",
+"linter": "pycodestyle"
+},
+{
+"name": "multiple-spaces-before-keyword",
+"code": "E272",
+"linter": "pycodestyle"
+},
+{
+"name": "tab-after-keyword",
+"code": "E273",
+"linter": "pycodestyle"
+},
+{
+"name": "tab-before-keyword",
+"code": "E274",
+"linter": "pycodestyle"
+},
+{
+"name": "missing-whitespace-after-keyword",
+"code": "E275",
+"linter": "pycodestyle"
+},
+{
+"name": "blank-line-between-methods",
+"code": "E301",
+"linter": "pycodestyle"
+},
+{
+"name": "blank-lines-top-level",
+"code": "E302",
+"linter": "pycodestyle"
+},
+{
+"name": "too-many-blank-lines",
+"code": "E303",
+"linter": "pycodestyle"
+},
+{
+"name": "blank-line-after-decorator",
+"code": "E304",
+"linter": "pycodestyle"
+},
+{
+"name": "blank-lines-after-function-or-class",
+"code": "E305",
+"linter": "pycodestyle"
+},
+{
+"name": "blank-lines-before-nested-definition",
+"code": "E306",
+"linter": "pycodestyle"
+},
+{
+"name": "multiple-imports-on-one-line",
+"code": "E401",
+"linter": "pycodestyle"
+},
+{
+"name": "module-import-not-at-top-of-file",
+"code": "E402",
+"linter": "pycodestyle"
+},
+{
+"name": "line-too-long",
+"code": "E501",
+"linter": "pycodestyle"
+},
+{
+"name": "redundant-backslash",
+"code": "E502",
+"linter": "pycodestyle"
+},
+{
+"name": "multiple-statements-on-one-line-colon",
+"code": "E701",
+"linter": "pycodestyle"
+},
+{
+"name": "multiple-statements-on-one-line-semicolon",
+"code": "E702",
+"linter": "pycodestyle"
+},
+{
+"name": "useless-semicolon",
+"code": "E703",
+"linter": "pycodestyle"
+},
+{
+"name": "none-comparison",
+"code": "E711",
+"linter": "pycodestyle"
+},
+{
+"name": "true-false-comparison",
+"code": "E712",
+"linter": "pycodestyle"
+},
+{
+"name": "not-in-test",
+"code": "E713",
+"linter": "pycodestyle"
+},
+{
+"name": "not-is-test",
+"code": "E714",
+"linter": "pycodestyle"
+},
+{
+"name": "type-comparison",
+"code": "E721",
+"linter": "pycodestyle"
+},
+{
+"name": "bare-except",
+"code": "E722",
+"linter": "pycodestyle"
+},
+{
+"name": "lambda-assignment",
+"code": "E731",
+"linter": "pycodestyle"
+},
+{
+"name": "ambiguous-variable-name",
+"code": "E741",
+"linter": "pycodestyle"
+},
+{
+"name": "ambiguous-class-name",
+"code": "E742",
+"linter": "pycodestyle"
+},
+{
+"name": "ambiguous-function-name",
+"code": "E743",
+"linter": "pycodestyle"
+},
+{
+"name": "io-error",
+"code": "E902",
+"linter": "pycodestyle"
+},
+{
+"name": "syntax-error",
+"code": "E999",
+"linter": "pycodestyle"
+},
+{
+"name": "tab-indentation",
+"code": "W191",
+"linter": "pycodestyle"
+},
+{
+"name": "trailing-whitespace",
+"code": "W291",
+"linter": "pycodestyle"
+},
+{
+"name": "missing-newline-at-end-of-file",
+"code": "W292",
+"linter": "pycodestyle"
+},
+{
+"name": "blank-line-with-whitespace",
+"code": "W293",
+"linter": "pycodestyle"
+},
+{
+"name": "too-many-newlines-at-end-of-file",
+"code": "W391",
+"linter": "pycodestyle"
+},
+{
+"name": "doc-line-too-long",
+"code": "W505",
+"linter": "pycodestyle"
+},
+{
+"name": "invalid-escape-sequence",
+"code": "W605",
+"linter": "pycodestyle"
+},
+{
+"name": "docstring-extraneous-parameter",
+"code": "DOC102",
+"linter": "pydoclint"
+},
+{
+"name": "docstring-missing-returns",
+"code": "DOC201",
+"linter": "pydoclint"
+},
+{
+"name": "docstring-extraneous-returns",
+"code": "DOC202",
+"linter": "pydoclint"
+},
+{
+"name": "docstring-missing-yields",
+"code": "DOC402",
+"linter": "pydoclint"
+},
+{
+"name": "docstring-extraneous-yields",
+"code": "DOC403",
+"linter": "pydoclint"
+},
+{
+"name": "docstring-missing-exception",
+"code": "DOC501",
+"linter": "pydoclint"
+},
+{
+"name": "docstring-extraneous-exception",
+"code": "DOC502",
+"linter": "pydoclint"
+},
+{
+"name": "undocumented-public-module",
+"code": "D100",
+"linter": "pydocstyle"
+},
+{
+"name": "undocumented-public-class",
+"code": "D101",
+"linter": "pydocstyle"
+},
+{
+"name": "undocumented-public-method",
+"code": "D102",
+"linter": "pydocstyle"
+},
+{
+"name": "undocumented-public-function",
+"code": "D103",
+"linter": "pydocstyle"
+},
+{
+"name": "undocumented-public-package",
+"code": "D104",
+"linter": "pydocstyle"
+},
+{
+"name": "undocumented-magic-method",
+"code": "D105",
+"linter": "pydocstyle"
+},
+{
+"name": "undocumented-public-nested-class",
+"code": "D106",
+"linter": "pydocstyle"
+},
+{
+"name": "undocumented-public-init",
+"code": "D107",
+"linter": "pydocstyle"
+},
+{
+"name": "unnecessary-multiline-docstring",
+"code": "D200",
+"linter": "pydocstyle"
+},
+{
+"name": "blank-line-before-function",
+"code": "D201",
+"linter": "pydocstyle"
+},
+{
+"name": "blank-line-after-function",
+"code": "D202",
+"linter": "pydocstyle"
+},
+{
+"name": "incorrect-blank-line-before-class",
+"code": "D203",
+"linter": "pydocstyle"
+},
+{
+"name": "incorrect-blank-line-after-class",
+"code": "D204",
+"linter": "pydocstyle"
+},
+{
+"name": "missing-blank-line-after-summary",
+"code": "D205",
+"linter": "pydocstyle"
+},
+{
+"name": "docstring-tab-indentation",
+"code": "D206",
+"linter": "pydocstyle"
+},
+{
+"name": "under-indentation",
+"code": "D207",
+"linter": "pydocstyle"
+},
+{
+"name": "over-indentation",
+"code": "D208",
+"linter": "pydocstyle"
+},
+{
+"name": "new-line-after-last-paragraph",
+"code": "D209",
+"linter": "pydocstyle"
+},
+{
+"name": "surrounding-whitespace",
+"code": "D210",
+"linter": "pydocstyle"
+},
+{
+"name": "blank-line-before-class",
+"code": "D211",
+"linter": "pydocstyle"
+},
+{
+"name": "multi-line-summary-first-line",
+"code": "D212",
+"linter": "pydocstyle"
+},
+{
+"name": "multi-line-summary-second-line",
+"code": "D213",
+"linter": "pydocstyle"
+},
+{
+"name": "overindented-section",
+"code": "D214",
+"linter": "pydocstyle"
+},
+{
+"name": "overindented-section-underline",
+"code": "D215",
+"linter": "pydocstyle"
+},
+{
+"name": "triple-single-quotes",
+"code": "D300",
+"linter": "pydocstyle"
+},
+{
+"name": "escape-sequence-in-docstring",
+"code": "D301",
+"linter": "pydocstyle"
+},
+{
+"name": "missing-trailing-period",
+"code": "D400",
+"linter": "pydocstyle"
+},
+{
+"name": "non-imperative-mood",
+"code": "D401",
+"linter": "pydocstyle"
+},
+{
+"name": "signature-in-docstring",
+"code": "D402",
+"linter": "pydocstyle"
+},
+{
+"name": "first-word-uncapitalized",
+"code": "D403",
+"linter": "pydocstyle"
+},
+{
+"name": "docstring-starts-with-this",
+"code": "D404",
+"linter": "pydocstyle"
+},
+{
+"name": "non-capitalized-section-name",
+"code": "D405",
+"linter": "pydocstyle"
+},
+{
+"name": "missing-new-line-after-section-name",
+"code": "D406",
+"linter": "pydocstyle"
+},
+{
+"name": "missing-dashed-underline-after-section",
+"code": "D407",
+"linter": "pydocstyle"
+},
+{
+"name": "missing-section-underline-after-name",
+"code": "D408",
+"linter": "pydocstyle"
+},
+{
+"name": "mismatched-section-underline-length",
+"code": "D409",
+"linter": "pydocstyle"
+},
+{
+"name": "no-blank-line-after-section",
+"code": "D410",
+"linter": "pydocstyle"
+},
+{
+"name": "no-blank-line-before-section",
+"code": "D411",
+"linter": "pydocstyle"
+},
+{
+"name": "blank-lines-between-header-and-content",
+"code": "D412",
+"linter": "pydocstyle"
+},
+{
+"name": "missing-blank-line-after-last-section",
+"code": "D413",
+"linter": "pydocstyle"
+},
+{
+"name": "empty-docstring-section",
+"code": "D414",
+"linter": "pydocstyle"
+},
+{
+"name": "missing-terminal-punctuation",
+"code": "D415",
+"linter": "pydocstyle"
+},
+{
+"name": "missing-section-name-colon",
+"code": "D416",
+"linter": "pydocstyle"
+},
+{
+"name": "undocumented-param",
+"code": "D417",
+"linter": "pydocstyle"
+},
+{
+"name": "overload-with-docstring",
+"code": "D418",
+"linter": "pydocstyle"
+},
+{
+"name": "empty-docstring",
+"code": "D419",
+"linter": "pydocstyle"
+},
+{
+"name": "incorrect-section-order",
+"code": "D420",
+"linter": "pydocstyle"
+},
+{
+"name": "property-docstring-starts-with-verb",
+"code": "D421",
+"linter": "pydocstyle"
+},
+{
+"name": "unused-import",
+"code": "F401",
+"linter": "Pyflakes"
+},
+{
+"name": "import-shadowed-by-loop-var",
+"code": "F402",
+"linter": "Pyflakes"
+},
+{
+"name": "undefined-local-with-import-star",
+"code": "F403",
+"linter": "Pyflakes"
+},
+{
+"name": "late-future-import",
+"code": "F404",
+"linter": "Pyflakes"
+},
+{
+"name": "undefined-local-with-import-star-usage",
+"code": "F405",
+"linter": "Pyflakes"
+},
+{
+"name": "undefined-local-with-nested-import-star-usage",
+"code": "F406",
+"linter": "Pyflakes"
+},
+{
+"name": "future-feature-not-defined",
+"code": "F407",
+"linter": "Pyflakes"
+},
+{
+"name": "percent-format-invalid-format",
+"code": "F501",
+"linter": "Pyflakes"
+},
+{
+"name": "percent-format-expected-mapping",
+"code": "F502",
+"linter": "Pyflakes"
+},
+{
+"name": "percent-format-expected-sequence",
+"code": "F503",
+"linter": "Pyflakes"
+},
+{
+"name": "percent-format-extra-named-arguments",
+"code": "F504",
+"linter": "Pyflakes"
+},
+{
+"name": "percent-format-missing-argument",
+"code": "F505",
+"linter": "Pyflakes"
+},
+{
+"name": "percent-format-mixed-positional-and-named",
+"code": "F506",
+"linter": "Pyflakes"
+},
+{
+"name": "percent-format-positional-count-mismatch",
+"code": "F507",
+"linter": "Pyflakes"
+},
+{
+"name": "percent-format-star-requires-sequence",
+"code": "F508",
+"linter": "Pyflakes"
+},
+{
+"name": "percent-format-unsupported-format-character",
+"code": "F509",
+"linter": "Pyflakes"
+},
+{
+"name": "string-dot-format-invalid-format",
+"code": "F521",
+"linter": "Pyflakes"
+},
+{
+"name": "string-dot-format-extra-named-arguments",
+"code": "F522",
+"linter": "Pyflakes"
+},
+{
+"name": "string-dot-format-extra-positional-arguments",
+"code": "F523",
+"linter": "Pyflakes"
+},
+{
+"name": "string-dot-format-missing-arguments",
+"code": "F524",
+"linter": "Pyflakes"
+},
+{
+"name": "string-dot-format-mixing-automatic",
+"code": "F525",
+"linter": "Pyflakes"
+},
+{
+"name": "f-string-missing-placeholders",
+"code": "F541",
+"linter": "Pyflakes"
+},
+{
+"name": "multi-value-repeated-key-literal",
+"code": "F601",
+"linter": "Pyflakes"
+},
+{
+"name": "multi-value-repeated-key-variable",
+"code": "F602",
+"linter": "Pyflakes"
+},
+{
+"name": "expressions-in-star-assignment",
+"code": "F621",
+"linter": "Pyflakes"
+},
+{
+"name": "multiple-starred-expressions",
+"code": "F622",
+"linter": "Pyflakes"
+},
+{
+"name": "assert-tuple",
+"code": "F631",
+"linter": "Pyflakes"
+},
+{
+"name": "is-literal",
+"code": "F632",
+"linter": "Pyflakes"
+},
+{
+"name": "invalid-print-syntax",
+"code": "F633",
+"linter": "Pyflakes"
+},
+{
+"name": "if-tuple",
+"code": "F634",
+"linter": "Pyflakes"
+},
+{
+"name": "break-outside-loop",
+"code": "F701",
+"linter": "Pyflakes"
+},
+{
+"name": "continue-outside-loop",
+"code": "F702",
+"linter": "Pyflakes"
+},
+{
+"name": "yield-outside-function",
+"code": "F704",
+"linter": "Pyflakes"
+},
+{
+"name": "return-outside-function",
+"code": "F706",
+"linter": "Pyflakes"
+},
+{
+"name": "default-except-not-last",
+"code": "F707",
+"linter": "Pyflakes"
+},
+{
+"name": "forward-annotation-syntax-error",
+"code": "F722",
+"linter": "Pyflakes"
+},
+{
+"name": "redefined-while-unused",
+"code": "F811",
+"linter": "Pyflakes"
+},
+{
+"name": "undefined-name",
+"code": "F821",
+"linter": "Pyflakes"
+},
+{
+"name": "undefined-export",
+"code": "F822",
+"linter": "Pyflakes"
+},
+{
+"name": "undefined-local",
+"code": "F823",
+"linter": "Pyflakes"
+},
+{
+"name": "unused-variable",
+"code": "F841",
+"linter": "Pyflakes"
+},
+{
+"name": "unused-annotation",
+"code": "F842",
+"linter": "Pyflakes"
+},
+{
+"name": "raise-not-implemented",
+"code": "F901",
+"linter": "Pyflakes"
+},
+{
+"name": "eval",
+"code": "PGH001",
+"linter": "pygrep-hooks"
+},
+{
+"name": "deprecated-log-warn",
+"code": "PGH002",
+"linter": "pygrep-hooks"
+},
+{
+"name": "blanket-type-ignore",
+"code": "PGH003",
+"linter": "pygrep-hooks"
+},
+{
+"name": "blanket-noqa",
+"code": "PGH004",
+"linter": "pygrep-hooks"
+},
+{
+"name": "invalid-mock-access",
+"code": "PGH005",
+"linter": "pygrep-hooks"
+},
+{
+"name": "type-name-incorrect-variance",
+"code": "PLC0105",
+"linter": "Pylint"
+},
+{
+"name": "type-bivariance",
+"code": "PLC0131",
+"linter": "Pylint"
+},
+{
+"name": "type-param-name-mismatch",
+"code": "PLC0132",
+"linter": "Pylint"
+},
+{
+"name": "single-string-slots",
+"code": "PLC0205",
+"linter": "Pylint"
+},
+{
+"name": "dict-index-missing-items",
+"code": "PLC0206",
+"linter": "Pylint"
+},
+{
+"name": "missing-maxsplit-arg",
+"code": "PLC0207",
+"linter": "Pylint"
+},
+{
+"name": "iteration-over-set",
+"code": "PLC0208",
+"linter": "Pylint"
+},
+{
+"name": "useless-import-alias",
+"code": "PLC0414",
+"linter": "Pylint"
+},
+{
+"name": "import-outside-top-level",
+"code": "PLC0415",
+"linter": "Pylint"
+},
+{
+"name": "len-test",
+"code": "PLC1802",
+"linter": "Pylint"
+},
+{
+"name": "compare-to-empty-string",
+"code": "PLC1901",
+"linter": "Pylint"
+},
+{
+"name": "non-ascii-name",
+"code": "PLC2401",
+"linter": "Pylint"
+},
+{
+"name": "non-ascii-import-name",
+"code": "PLC2403",
+"linter": "Pylint"
+},
+{
+"name": "import-private-name",
+"code": "PLC2701",
+"linter": "Pylint"
+},
+{
+"name": "unnecessary-dunder-call",
+"code": "PLC2801",
+"linter": "Pylint"
+},
+{
+"name": "unnecessary-direct-lambda-call",
+"code": "PLC3002",
+"linter": "Pylint"
+},
+{
+"name": "yield-in-init",
+"code": "PLE0100",
+"linter": "Pylint"
+},
+{
+"name": "return-in-init",
+"code": "PLE0101",
+"linter": "Pylint"
+},
+{
+"name": "nonlocal-and-global",
+"code": "PLE0115",
+"linter": "Pylint"
+},
+{
+"name": "continue-in-finally",
+"code": "PLE0116",
+"linter": "Pylint"
+},
+{
+"name": "nonlocal-without-binding",
+"code": "PLE0117",
+"linter": "Pylint"
+},
+{
+"name": "load-before-global-declaration",
+"code": "PLE0118",
+"linter": "Pylint"
+},
+{
+"name": "non-slot-assignment",
+"code": "PLE0237",
+"linter": "Pylint"
+},
+{
+"name": "duplicate-bases",
+"code": "PLE0241",
+"linter": "Pylint"
+},
+{
+"name": "unexpected-special-method-signature",
+"code": "PLE0302",
+"linter": "Pylint"
+},
+{
+"name": "invalid-length-return-type",
+"code": "PLE0303",
+"linter": "Pylint"
+},
+{
+"name": "invalid-bool-return-type",
+"code": "PLE0304",
+"linter": "Pylint"
+},
+{
+"name": "invalid-index-return-type",
+"code": "PLE0305",
+"linter": "Pylint"
+},
+{
+"name": "invalid-str-return-type",
+"code": "PLE0307",
+"linter": "Pylint"
+},
+{
+"name": "invalid-bytes-return-type",
+"code": "PLE0308",
+"linter": "Pylint"
+},
+{
+"name": "invalid-hash-return-type",
+"code": "PLE0309",
+"linter": "Pylint"
+},
+{
+"name": "invalid-all-object",
+"code": "PLE0604",
+"linter": "Pylint"
+},
+{
+"name": "invalid-all-format",
+"code": "PLE0605",
+"linter": "Pylint"
+},
+{
+"name": "potential-index-error",
+"code": "PLE0643",
+"linter": "Pylint"
+},
+{
+"name": "misplaced-bare-raise",
+"code": "PLE0704",
+"linter": "Pylint"
+},
+{
+"name": "repeated-keyword-argument",
+"code": "PLE1132",
+"linter": "Pylint"
+},
+{
+"name": "dict-iter-missing-items",
+"code": "PLE1141",
+"linter": "Pylint"
+},
+{
+"name": "await-outside-async",
+"code": "PLE1142",
+"linter": "Pylint"
+},
+{
+"name": "logging-too-many-args",
+"code": "PLE1205",
+"linter": "Pylint"
+},
+{
+"name": "logging-too-few-args",
+"code": "PLE1206",
+"linter": "Pylint"
+},
+{
+"name": "bad-string-format-character",
+"code": "PLE1300",
+"linter": "Pylint"
+},
+{
+"name": "bad-string-format-type",
+"code": "PLE1307",
+"linter": "Pylint"
+},
+{
+"name": "bad-str-strip-call",
+"code": "PLE1310",
+"linter": "Pylint"
+},
+{
+"name": "invalid-envvar-value",
+"code": "PLE1507",
+"linter": "Pylint"
+},
+{
+"name": "singledispatch-method",
+"code": "PLE1519",
+"linter": "Pylint"
+},
+{
+"name": "singledispatchmethod-function",
+"code": "PLE1520",
+"linter": "Pylint"
+},
+{
+"name": "yield-from-in-async-function",
+"code": "PLE1700",
+"linter": "Pylint"
+},
+{
+"name": "bidirectional-unicode",
+"code": "PLE2502",
+"linter": "Pylint"
+},
+{
+"name": "invalid-character-backspace",
+"code": "PLE2510",
+"linter": "Pylint"
+},
+{
+"name": "invalid-character-sub",
+"code": "PLE2512",
+"linter": "Pylint"
+},
+{
+"name": "invalid-character-esc",
+"code": "PLE2513",
+"linter": "Pylint"
+},
+{
+"name": "invalid-character-nul",
+"code": "PLE2514",
+"linter": "Pylint"
+},
+{
+"name": "invalid-character-zero-width-space",
+"code": "PLE2515",
+"linter": "Pylint"
+},
+{
+"name": "modified-iterating-set",
+"code": "PLE4703",
+"linter": "Pylint"
+},
+{
+"name": "comparison-with-itself",
+"code": "PLR0124",
+"linter": "Pylint"
+},
+{
+"name": "comparison-of-constant",
+"code": "PLR0133",
+"linter": "Pylint"
+},
+{
+"name": "no-classmethod-decorator",
+"code": "PLR0202",
+"linter": "Pylint"
+},
+{
+"name": "no-staticmethod-decorator",
+"code": "PLR0203",
+"linter": "Pylint"
+},
+{
+"name": "property-with-parameters",
+"code": "PLR0206",
+"linter": "Pylint"
+},
+{
+"name": "manual-from-import",
+"code": "PLR0402",
+"linter": "Pylint"
+},
+{
+"name": "too-many-public-methods",
+"code": "PLR0904",
+"linter": "Pylint"
+},
+{
+"name": "too-many-return-statements",
+"code": "PLR0911",
+"linter": "Pylint"
+},
+{
+"name": "too-many-branches",
+"code": "PLR0912",
+"linter": "Pylint"
+},
+{
+"name": "too-many-arguments",
+"code": "PLR0913",
+"linter": "Pylint"
+},
+{
+"name": "too-many-locals",
+"code": "PLR0914",
+"linter": "Pylint"
+},
+{
+"name": "too-many-statements",
+"code": "PLR0915",
+"linter": "Pylint"
+},
+{
+"name": "too-many-boolean-expressions",
+"code": "PLR0916",
+"linter": "Pylint"
+},
+{
+"name": "too-many-positional-arguments",
+"code": "PLR0917",
+"linter": "Pylint"
+},
+{
+"name": "repeated-isinstance-calls",
+"code": "PLR1701",
+"linter": "Pylint"
+},
+{
+"name": "too-many-nested-blocks",
+"code": "PLR1702",
+"linter": "Pylint"
+},
+{
+"name": "redefined-argument-from-local",
+"code": "PLR1704",
+"linter": "Pylint"
+},
+{
+"name": "and-or-ternary",
+"code": "PLR1706",
+"linter": "Pylint"
+},
+{
+"name": "stop-iteration-return",
+"code": "PLR1708",
+"linter": "Pylint"
+},
+{
+"name": "useless-return",
+"code": "PLR1711",
+"linter": "Pylint"
+},
+{
+"name": "swap-with-temporary-variable",
+"code": "PLR1712",
+"linter": "Pylint"
+},
+{
+"name": "repeated-equality-comparison",
+"code": "PLR1714",
+"linter": "Pylint"
+},
+{
+"name": "boolean-chained-comparison",
+"code": "PLR1716",
+"linter": "Pylint"
+},
+{
+"name": "sys-exit-alias",
+"code": "PLR1722",
+"linter": "Pylint"
+},
+{
+"name": "if-stmt-min-max",
+"code": "PLR1730",
+"linter": "Pylint"
+},
+{
+"name": "unnecessary-dict-index-lookup",
+"code": "PLR1733",
+"linter": "Pylint"
+},
+{
+"name": "unnecessary-list-index-lookup",
+"code": "PLR1736",
+"linter": "Pylint"
+},
+{
+"name": "magic-value-comparison",
+"code": "PLR2004",
+"linter": "Pylint"
+},
+{
+"name": "empty-comment",
+"code": "PLR2044",
+"linter": "Pylint"
+},
+{
+"name": "collapsible-else-if",
+"code": "PLR5501",
+"linter": "Pylint"
+},
+{
+"name": "non-augmented-assignment",
+"code": "PLR6104",
+"linter": "Pylint"
+},
+{
+"name": "literal-membership",
+"code": "PLR6201",
+"linter": "Pylint"
+},
+{
+"name": "no-self-use",
+"code": "PLR6301",
+"linter": "Pylint"
+},
+{
+"name": "unnecessary-lambda",
+"code": "PLW0108",
+"linter": "Pylint"
+},
+{
+"name": "useless-else-on-loop",
+"code": "PLW0120",
+"linter": "Pylint"
+},
+{
+"name": "self-assigning-variable",
+"code": "PLW0127",
+"linter": "Pylint"
+},
+{
+"name": "redeclared-assigned-name",
+"code": "PLW0128",
+"linter": "Pylint"
+},
+{
+"name": "assert-on-string-literal",
+"code": "PLW0129",
+"linter": "Pylint"
+},
+{
+"name": "named-expr-without-context",
+"code": "PLW0131",
+"linter": "Pylint"
+},
+{
+"name": "useless-exception-statement",
+"code": "PLW0133",
+"linter": "Pylint"
+},
+{
+"name": "nan-comparison",
+"code": "PLW0177",
+"linter": "Pylint"
+},
+{
+"name": "bad-staticmethod-argument",
+"code": "PLW0211",
+"linter": "Pylint"
+},
+{
+"name": "redefined-slots-in-subclass",
+"code": "PLW0244",
+"linter": "Pylint"
+},
+{
+"name": "super-without-brackets",
+"code": "PLW0245",
+"linter": "Pylint"
+},
+{
+"name": "import-self",
+"code": "PLW0406",
+"linter": "Pylint"
+},
+{
+"name": "global-variable-not-assigned",
+"code": "PLW0602",
+"linter": "Pylint"
+},
+{
+"name": "global-statement",
+"code": "PLW0603",
+"linter": "Pylint"
+},
+{
+"name": "global-at-module-level",
+"code": "PLW0604",
+"linter": "Pylint"
+},
+{
+"name": "self-or-cls-assignment",
+"code": "PLW0642",
+"linter": "Pylint"
+},
+{
+"name": "binary-op-exception",
+"code": "PLW0711",
+"linter": "Pylint"
+},
+{
+"name": "too-many-statements-in-try-clause",
+"code": "PLW0717",
+"linter": "Pylint"
+},
+{
+"name": "bad-open-mode",
+"code": "PLW1501",
+"linter": "Pylint"
+},
+{
+"name": "shallow-copy-environ",
+"code": "PLW1507",
+"linter": "Pylint"
+},
+{
+"name": "invalid-envvar-default",
+"code": "PLW1508",
+"linter": "Pylint"
+},
+{
+"name": "subprocess-popen-preexec-fn",
+"code": "PLW1509",
+"linter": "Pylint"
+},
+{
+"name": "subprocess-run-without-check",
+"code": "PLW1510",
+"linter": "Pylint"
+},
+{
+"name": "unspecified-encoding",
+"code": "PLW1514",
+"linter": "Pylint"
+},
+{
+"name": "eq-without-hash",
+"code": "PLW1641",
+"linter": "Pylint"
+},
+{
+"name": "useless-with-lock",
+"code": "PLW2101",
+"linter": "Pylint"
+},
+{
+"name": "redefined-loop-name",
+"code": "PLW2901",
+"linter": "Pylint"
+},
+{
+"name": "bad-dunder-method-name",
+"code": "PLW3201",
+"linter": "Pylint"
+},
+{
+"name": "nested-min-max",
+"code": "PLW3301",
+"linter": "Pylint"
+},
+{
+"name": "useless-metaclass-type",
+"code": "UP001",
+"linter": "pyupgrade"
+},
+{
+"name": "type-of-primitive",
+"code": "UP003",
+"linter": "pyupgrade"
+},
+{
+"name": "useless-object-inheritance",
+"code": "UP004",
+"linter": "pyupgrade"
+},
+{
+"name": "deprecated-unittest-alias",
+"code": "UP005",
+"linter": "pyupgrade"
+},
+{
+"name": "non-pep585-annotation",
+"code": "UP006",
+"linter": "pyupgrade"
+},
+{
+"name": "non-pep604-annotation-union",
+"code": "UP007",
+"linter": "pyupgrade"
+},
+{
+"name": "super-call-with-parameters",
+"code": "UP008",
+"linter": "pyupgrade"
+},
+{
+"name": "utf8-encoding-declaration",
+"code": "UP009",
+"linter": "pyupgrade"
+},
+{
+"name": "unnecessary-future-import",
+"code": "UP010",
+"linter": "pyupgrade"
+},
+{
+"name": "lru-cache-without-parameters",
+"code": "UP011",
+"linter": "pyupgrade"
+},
+{
+"name": "unnecessary-encode-utf8",
+"code": "UP012",
+"linter": "pyupgrade"
+},
+{
+"name": "convert-typed-dict-functional-to-class",
+"code": "UP013",
+"linter": "pyupgrade"
+},
+{
+"name": "convert-named-tuple-functional-to-class",
+"code": "UP014",
+"linter": "pyupgrade"
+},
+{
+"name": "redundant-open-modes",
+"code": "UP015",
+"linter": "pyupgrade"
+},
+{
+"name": "datetime-timezone-utc",
+"code": "UP017",
+"linter": "pyupgrade"
+},
+{
+"name": "native-literals",
+"code": "UP018",
+"linter": "pyupgrade"
+},
+{
+"name": "typing-text-str-alias",
+"code": "UP019",
+"linter": "pyupgrade"
+},
+{
+"name": "open-alias",
+"code": "UP020",
+"linter": "pyupgrade"
+},
+{
+"name": "replace-universal-newlines",
+"code": "UP021",
+"linter": "pyupgrade"
+},
+{
+"name": "replace-stdout-stderr",
+"code": "UP022",
+"linter": "pyupgrade"
+},
+{
+"name": "deprecated-c-element-tree",
+"code": "UP023",
+"linter": "pyupgrade"
+},
+{
+"name": "os-error-alias",
+"code": "UP024",
+"linter": "pyupgrade"
+},
+{
+"name": "unicode-kind-prefix",
+"code": "UP025",
+"linter": "pyupgrade"
+},
+{
+"name": "deprecated-mock-import",
+"code": "UP026",
+"linter": "pyupgrade"
+},
+{
+"name": "unpacked-list-comprehension",
+"code": "UP027",
+"linter": "pyupgrade"
+},
+{
+"name": "yield-in-for-loop",
+"code": "UP028",
+"linter": "pyupgrade"
+},
+{
+"name": "unnecessary-builtin-import",
+"code": "UP029",
+"linter": "pyupgrade"
+},
+{
+"name": "format-literals",
+"code": "UP030",
+"linter": "pyupgrade"
+},
+{
+"name": "printf-string-formatting",
+"code": "UP031",
+"linter": "pyupgrade"
+},
+{
+"name": "f-string",
+"code": "UP032",
+"linter": "pyupgrade"
+},
+{
+"name": "lru-cache-with-maxsize-none",
+"code": "UP033",
+"linter": "pyupgrade"
+},
+{
+"name": "extraneous-parentheses",
+"code": "UP034",
+"linter": "pyupgrade"
+},
+{
+"name": "deprecated-import",
+"code": "UP035",
+"linter": "pyupgrade"
+},
+{
+"name": "outdated-version-block",
+"code": "UP036",
+"linter": "pyupgrade"
+},
+{
+"name": "quoted-annotation",
+"code": "UP037",
+"linter": "pyupgrade"
+},
+{
+"name": "non-pep604-isinstance",
+"code": "UP038",
+"linter": "pyupgrade"
+},
+{
+"name": "unnecessary-class-parentheses",
+"code": "UP039",
+"linter": "pyupgrade"
+},
+{
+"name": "non-pep695-type-alias",
+"code": "UP040",
+"linter": "pyupgrade"
+},
+{
+"name": "timeout-error-alias",
+"code": "UP041",
+"linter": "pyupgrade"
+},
+{
+"name": "replace-str-enum",
+"code": "UP042",
+"linter": "pyupgrade"
+},
+{
+"name": "unnecessary-default-type-args",
+"code": "UP043",
+"linter": "pyupgrade"
+},
+{
+"name": "non-pep646-unpack",
+"code": "UP044",
+"linter": "pyupgrade"
+},
+{
+"name": "non-pep604-annotation-optional",
+"code": "UP045",
+"linter": "pyupgrade"
+},
+{
+"name": "non-pep695-generic-class",
+"code": "UP046",
+"linter": "pyupgrade"
+},
+{
+"name": "non-pep695-generic-function",
+"code": "UP047",
+"linter": "pyupgrade"
+},
+{
+"name": "while-one",
+"code": "UP048",
+"linter": "pyupgrade"
+},
+{
+"name": "private-type-parameter",
+"code": "UP049",
+"linter": "pyupgrade"
+},
+{
+"name": "useless-class-metaclass-type",
+"code": "UP050",
+"linter": "pyupgrade"
+},
+{
+"name": "deprecated-abc-decorator",
+"code": "UP051",
+"linter": "pyupgrade"
+},
+{
+"name": "context-manager-iterator",
+"code": "UP052",
+"linter": "pyupgrade"
+},
+{
+"name": "read-whole-file",
+"code": "FURB101",
+"linter": "refurb"
+},
+{
+"name": "write-whole-file",
+"code": "FURB103",
+"linter": "refurb"
+},
+{
+"name": "print-empty-string",
+"code": "FURB105",
+"linter": "refurb"
+},
+{
+"name": "if-exp-instead-of-or-operator",
+"code": "FURB110",
+"linter": "refurb"
+},
+{
+"name": "repeated-append",
+"code": "FURB113",
+"linter": "refurb"
+},
+{
+"name": "f-string-number-format",
+"code": "FURB116",
+"linter": "refurb"
+},
+{
+"name": "reimplemented-operator",
+"code": "FURB118",
+"linter": "refurb"
+},
+{
+"name": "for-loop-writes",
+"code": "FURB122",
+"linter": "refurb"
+},
+{
+"name": "readlines-in-for",
+"code": "FURB129",
+"linter": "refurb"
+},
+{
+"name": "delete-full-slice",
+"code": "FURB131",
+"linter": "refurb"
+},
+{
+"name": "check-and-remove-from-set",
+"code": "FURB132",
+"linter": "refurb"
+},
+{
+"name": "if-expr-min-max",
+"code": "FURB136",
+"linter": "refurb"
+},
+{
+"name": "reimplemented-starmap",
+"code": "FURB140",
+"linter": "refurb"
+},
+{
+"name": "for-loop-set-mutations",
+"code": "FURB142",
+"linter": "refurb"
+},
+{
+"name": "slice-copy",
+"code": "FURB145",
+"linter": "refurb"
+},
+{
+"name": "unnecessary-enumerate",
+"code": "FURB148",
+"linter": "refurb"
+},
+{
+"name": "math-constant",
+"code": "FURB152",
+"linter": "refurb"
+},
+{
+"name": "repeated-global",
+"code": "FURB154",
+"linter": "refurb"
+},
+{
+"name": "hardcoded-string-charset",
+"code": "FURB156",
+"linter": "refurb"
+},
+{
+"name": "verbose-decimal-constructor",
+"code": "FURB157",
+"linter": "refurb"
+},
+{
+"name": "bit-count",
+"code": "FURB161",
+"linter": "refurb"
+},
+{
+"name": "fromisoformat-replace-z",
+"code": "FURB162",
+"linter": "refurb"
+},
+{
+"name": "redundant-log-base",
+"code": "FURB163",
+"linter": "refurb"
+},
+{
+"name": "unnecessary-from-float",
+"code": "FURB164",
+"linter": "refurb"
+},
+{
+"name": "int-on-sliced-str",
+"code": "FURB166",
+"linter": "refurb"
+},
+{
+"name": "regex-flag-alias",
+"code": "FURB167",
+"linter": "refurb"
+},
+{
+"name": "isinstance-type-none",
+"code": "FURB168",
+"linter": "refurb"
+},
+{
+"name": "type-none-comparison",
+"code": "FURB169",
+"linter": "refurb"
+},
+{
+"name": "single-item-membership-test",
+"code": "FURB171",
+"linter": "refurb"
+},
+{
+"name": "implicit-cwd",
+"code": "FURB177",
+"linter": "refurb"
+},
+{
+"name": "meta-class-abc-meta",
+"code": "FURB180",
+"linter": "refurb"
+},
+{
+"name": "hashlib-digest-hex",
+"code": "FURB181",
+"linter": "refurb"
+},
+{
+"name": "list-reverse-copy",
+"code": "FURB187",
+"linter": "refurb"
+},
+{
+"name": "slice-to-remove-prefix-or-suffix",
+"code": "FURB188",
+"linter": "refurb"
+},
+{
+"name": "subclass-builtin",
+"code": "FURB189",
+"linter": "refurb"
+},
+{
+"name": "sorted-min-max",
+"code": "FURB192",
+"linter": "refurb"
+},
+{
+"name": "ambiguous-unicode-character-string",
+"code": "RUF001",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "ambiguous-unicode-character-docstring",
+"code": "RUF002",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "ambiguous-unicode-character-comment",
+"code": "RUF003",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "collection-literal-concatenation",
+"code": "RUF005",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "asyncio-dangling-task",
+"code": "RUF006",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "zip-instead-of-pairwise",
+"code": "RUF007",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "mutable-dataclass-default",
+"code": "RUF008",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "function-call-in-dataclass-default-argument",
+"code": "RUF009",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "explicit-f-string-type-conversion",
+"code": "RUF010",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "ruff-static-key-dict-comprehension",
+"code": "RUF011",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "mutable-class-default",
+"code": "RUF012",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "implicit-optional",
+"code": "RUF013",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unnecessary-iterable-allocation-for-first-element",
+"code": "RUF015",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "invalid-index-type",
+"code": "RUF016",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "quadratic-list-summation",
+"code": "RUF017",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "assignment-in-assert",
+"code": "RUF018",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unnecessary-key-check",
+"code": "RUF019",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "never-union",
+"code": "RUF020",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "parenthesize-chained-operators",
+"code": "RUF021",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unsorted-dunder-all",
+"code": "RUF022",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unsorted-dunder-slots",
+"code": "RUF023",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "mutable-fromkeys-value",
+"code": "RUF024",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "default-factory-kwarg",
+"code": "RUF026",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "missing-f-string-syntax",
+"code": "RUF027",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "invalid-formatter-suppression-comment",
+"code": "RUF028",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unused-async",
+"code": "RUF029",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "assert-with-print-message",
+"code": "RUF030",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "incorrectly-parenthesized-tuple-in-subscript",
+"code": "RUF031",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "decimal-from-float-literal",
+"code": "RUF032",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "post-init-default",
+"code": "RUF033",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "useless-if-else",
+"code": "RUF034",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "ruff-unsafe-markup-use",
+"code": "RUF035",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "none-not-at-end-of-union",
+"code": "RUF036",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unnecessary-empty-iterable-within-deque-call",
+"code": "RUF037",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "redundant-bool-literal",
+"code": "RUF038",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unraw-re-pattern",
+"code": "RUF039",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "invalid-assert-message-literal-argument",
+"code": "RUF040",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unnecessary-nested-literal",
+"code": "RUF041",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "pytest-raises-ambiguous-pattern",
+"code": "RUF043",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "implicit-class-var-in-dataclass",
+"code": "RUF045",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unnecessary-cast-to-int",
+"code": "RUF046",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "needless-else",
+"code": "RUF047",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "map-int-version-parsing",
+"code": "RUF048",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "dataclass-enum",
+"code": "RUF049",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unnecessary-if",
+"code": "RUF050",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "if-key-in-dict-del",
+"code": "RUF051",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "used-dummy-variable",
+"code": "RUF052",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "class-with-mixed-type-vars",
+"code": "RUF053",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "indented-form-feed",
+"code": "RUF054",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unnecessary-regular-expression",
+"code": "RUF055",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "falsy-dict-get-fallback",
+"code": "RUF056",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unnecessary-round",
+"code": "RUF057",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "starmap-zip",
+"code": "RUF058",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unused-unpacked-variable",
+"code": "RUF059",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "in-empty-collection",
+"code": "RUF060",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "legacy-form-pytest-raises",
+"code": "RUF061",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "access-annotations-from-class-dict",
+"code": "RUF063",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "non-octal-permissions",
+"code": "RUF064",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "logging-eager-conversion",
+"code": "RUF065",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "property-without-return",
+"code": "RUF066",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "non-empty-init-module",
+"code": "RUF067",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "duplicate-entry-in-dunder-all",
+"code": "RUF068",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "float-equality-comparison",
+"code": "RUF069",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unnecessary-assign-before-yield",
+"code": "RUF070",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "os-path-commonprefix",
+"code": "RUF071",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "useless-finally",
+"code": "RUF072",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "f-string-percent-format",
+"code": "RUF073",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "incorrect-decorator-order",
+"code": "RUF074",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "fallible-context-manager",
+"code": "RUF075",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "method-receiver-default",
+"code": "RUF077",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unused-noqa",
+"code": "RUF100",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "redirected-noqa",
+"code": "RUF101",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "invalid-rule-code",
+"code": "RUF102",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "invalid-suppression-comment",
+"code": "RUF103",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "unmatched-suppression-comment",
+"code": "RUF104",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "noqa-comments",
+"code": "RUF105",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "rule-codes-in-suppression-comments",
+"code": "RUF106",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "invalid-pyproject-toml",
+"code": "RUF200",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "rule-codes-in-selectors",
+"code": "RUF201",
+"linter": "Ruff-specific rules"
+},
+{
+"name": "raise-vanilla-class",
+"code": "TRY002",
+"linter": "tryceratops"
+},
+{
+"name": "raise-vanilla-args",
+"code": "TRY003",
+"linter": "tryceratops"
+},
+{
+"name": "type-check-without-type-error",
+"code": "TRY004",
+"linter": "tryceratops"
+},
+{
+"name": "reraise-no-cause",
+"code": "TRY200",
+"linter": "tryceratops"
+},
+{
+"name": "verbose-raise",
+"code": "TRY201",
+"linter": "tryceratops"
+},
+{
+"name": "useless-try-except",
+"code": "TRY203",
+"linter": "tryceratops"
+},
+{
+"name": "try-consider-else",
+"code": "TRY300",
+"linter": "tryceratops"
+},
+{
+"name": "raise-within-try",
+"code": "TRY301",
+"linter": "tryceratops"
+},
+{
+"name": "error-instead-of-exception",
+"code": "TRY400",
+"linter": "tryceratops"
+},
+{
+"name": "verbose-log-message",
+"code": "TRY401",
+"linter": "tryceratops"
+},
+{
+"name": "pytest-fixture-autouse",
+"code": null,
+"linter": null
+}
+]

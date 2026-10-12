@@ -1,0 +1,14 @@
+# Reviewed by title: typescript-eslint mirrored rules -> Sonar TS key. Keys only.
+lang: typescript
+by_tag:
+  typescript-eslint:no-array-delete: [S2870]
+  typescript-eslint:only-throw-error: [S3696]
+  typescript-eslint:prefer-regexp-exec: [S6594]
+  typescript-eslint:prefer-string-starts-ends-with: [S6557]
+  typescript-eslint:no-this-alias: [S7740]
+  typescript-eslint:prefer-find: [S7750]
+  typescript-eslint:prefer-includes: [S7765]
+  typescript-eslint:no-floating-promises: [S9383]
+  typescript-eslint:max-params: [S107]
+  typescript-eslint:default-param-last: [S1788]
+  typescript-eslint:no-unnecessary-boolean-literal-compare: [S1125]

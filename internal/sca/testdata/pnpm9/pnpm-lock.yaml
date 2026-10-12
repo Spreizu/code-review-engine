@@ -1,0 +1,22 @@
+lockfileVersion: '9.0'
+
+importers:
+  .:
+    dependencies:
+      next:
+        specifier: 14.1.0
+        version: 14.1.0(react@18.2.0)
+
+packages:
+
+  next@14.1.0:
+    resolution: {integrity: sha512-z}
+
+  '@next/env@14.1.0':
+    resolution: {integrity: sha512-w}
+
+snapshots:
+
+  next@14.1.0(react@18.2.0):
+    dependencies:
+      react: 18.2.0

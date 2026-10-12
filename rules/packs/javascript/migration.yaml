@@ -1,0 +1,131 @@
+# HAND-EDITED rule file: pack javascript, topic migration. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# JavaScript pack (also applied to TypeScript files and Vue <script> blocks; queries use node
+# types shared by tree-sitter-javascript and tree-sitter-typescript). Version dimension
+# "ecmascript" = lowest supported ES edition derived from tsconfig target, browserslist,
+# ESLint ecmaVersion or engines.node (see PLAN.md §5).
+pack: javascript
+pack_version: 2026.10.0
+rules:
+- id: JS-MIG-CALLEE-001
+  title: Do not use arguments.callee
+  language: javascript
+  kind: deprecation
+  category: correctness
+  severity: major
+  applies_to:
+    ecmascript: '>=5'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (member_expression
+        object: (identifier) @o (#eq? @o "arguments")
+        property: (property_identifier) @match (#eq? @match "callee"))
+  message: arguments.callee throws in strict mode; use a named function expression.
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee
+    doc: MDN arguments.callee (deprecated)
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const f = function (n) { return n ? n * arguments.callee(n - 1) : 1 }
+    good: |
+      const f = function fact(n) { return n ? n * fact(n - 1) : 1 }
+- id: JS-MIG-ESCAPE-001
+  title: escape()/unescape() are deprecated
+  language: javascript
+  kind: deprecation
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression function: (identifier) @match (#any-of? @match "escape" "unescape"))
+  message: escape()/unescape() are deprecated; use encodeURIComponent()/encodeURI() and their decode counterparts.
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/escape
+    doc: MDN escape() (Deprecated)
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const q = escape(term)
+    good: |
+      const q = encodeURIComponent(term)
+- id: JS-MIG-GETYEAR-001
+  title: Date.prototype.getYear is deprecated
+  language: javascript
+  kind: deprecation
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression function: (member_expression property: (property_identifier) @match (#any-of? @match "getYear" "setYear")))
+  message: getYear() does not return full years ("year 2000 problem") and is replaced by getFullYear().
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/getYear
+    doc: MDN Date.prototype.getYear() (Deprecated)
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const y = d.getYear()
+    good: |
+      const y = d.getFullYear()
+- id: JS-MIG-PROTO-001
+  title: Do not use __proto__
+  language: javascript
+  kind: deprecation
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=2015'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (member_expression property: (property_identifier) @match (#eq? @match "__proto__"))
+  message: The __proto__ accessor is deprecated; prefer Object.getPrototypeOf()/Object.setPrototypeOf() (or Reflect equivalents).
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/proto
+    doc: MDN Object.prototype.__proto__ (Deprecated)
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const p = obj.__proto__
+    good: |
+      const p = Object.getPrototypeOf(obj)
+- id: JS-MIG-SUBSTR-001
+  title: String.prototype.substr is deprecated
+  language: javascript
+  kind: deprecation
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression function: (member_expression property: (property_identifier) @match (#eq? @match "substr")))
+  message: substr() is deprecated (Annex B legacy); use slice() or substring().
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr
+    doc: MDN String.prototype.substr() (Deprecated)
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const s = str.substr(1, 3)
+    good: |
+      const s = str.slice(1, 4)

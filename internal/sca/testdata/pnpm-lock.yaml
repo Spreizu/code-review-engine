@@ -1,0 +1,15 @@
+lockfileVersion: '6.0'
+
+dependencies:
+  vue:
+    specifier: ^3.4.0
+    version: 3.4.21
+
+packages:
+
+  /vue@3.4.21:
+    resolution: {integrity: sha512-x}
+    dev: false
+
+  /@vue/shared@3.4.21:
+    resolution: {integrity: sha512-y}

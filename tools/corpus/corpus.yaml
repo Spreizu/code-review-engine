@@ -1,0 +1,555 @@
+# crev false-positive corpus: popular OSS repositories pinned to exact commits.
+# Clones live in tools/corpus/cache/ (gitignored, never embedded in the binary).
+# Workflow: tools/corpus/README.md. Update a pin deliberately (re-run `fetch -update`)
+# and re-baseline; never float to HEAD silently.
+repos:
+  - name: cobra
+    url: https://github.com/spf13/cobra
+    commit: adbc8813901bba65827259daa8e22ff94ec1f30e
+    covers: [go]
+  - name: gin
+    url: https://github.com/gin-gonic/gin
+    commit: 0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646
+    covers: [go]
+  - name: requests
+    url: https://github.com/psf/requests
+    commit: 611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60
+    covers: [python]
+  - name: flask
+    url: https://github.com/pallets/flask
+    commit: d086db856be187255b8ec61ef409357393020f32
+    covers: [python]
+  - name: express
+    url: https://github.com/expressjs/express
+    commit: a419aa7350389a275ab45fde2e849ed1f02449ef
+    covers: [javascript]
+  - name: axios
+    url: https://github.com/axios/axios
+    commit: f694ecd6ac49bb1917e086b5e532e1627c62d43a
+    covers: [javascript, typescript]
+  - name: zod
+    url: https://github.com/colinhacks/zod
+    commit: 284243fb0d6532665afdc9239188773bb624f73c
+    covers: [typescript]
+  - name: pinia
+    url: https://github.com/vuejs/pinia
+    commit: f48737e9aaffcb63c70c0f4f2c977e91be657fcb
+    covers: [vue, typescript]
+  - name: zustand
+    url: https://github.com/pmndrs/zustand
+    commit: d7a5583cffd80af515f7dfb69583c95cbdc9e2ce
+    covers: [react, typescript]
+  - name: gson
+    url: https://github.com/google/gson
+    commit: 845664ba1c307e6c1910d07cfed2f622e0ad8df1
+    covers: [java, maven]
+  - name: spring-petclinic
+    url: https://github.com/spring-projects/spring-petclinic
+    commit: 500158f732419217507c7656904b8e6aa1bcc0d6
+    covers: [java, spring-boot, maven]
+  - name: okio
+    url: https://github.com/square/okio
+    commit: a6ae13ee0e7522674ae6382aaf8e6d6e9ef4bb9e
+    covers: [kotlin, gradle]
+  - name: slim
+    url: https://github.com/slimphp/Slim
+    commit: 3675bf6baac66b07032575b7bef4200b60b7974b
+    covers: [php, composer]
+  - name: guzzle
+    url: https://github.com/guzzle/guzzle
+    commit: 93939470950a9b11e2e84204166ef5e048c55fe4
+    covers: [php, composer]
+  - name: terraform-aws-vpc
+    url: https://github.com/terraform-aws-modules/terraform-aws-vpc
+    commit: b3abd6df2ecf052451a361ed55b8f06f8742a795
+    covers: [terraform]
+  - name: awesome-compose
+    url: https://github.com/docker/awesome-compose
+    commit: 30f4b7f6a6c3b0c0ecf4d4efb0de203c48d11562
+    covers: [docker, yaml, many]
+  - name: grpc-gateway
+    url: https://github.com/grpc-ecosystem/grpc-gateway
+    commit: 83ac334a0989c04f03b56031e13080c5b496fad9
+    covers: [go, protobuf, yaml]
+  - name: nuxt-examples
+    url: https://github.com/nuxt/examples
+    commit: 4607862fb28cec54c7615beb0196fd7bc76f042d
+    covers: [nuxt, vue]
+  - name: angular-realworld
+    url: https://github.com/gothinkster/angular-realworld-example-app
+    commit: dd99ed2cf39c805d719f943c5d7061a5683d98a8
+    covers: [angular, typescript]
+  - name: vitesse
+    url: https://github.com/antfu-collective/vitesse
+    commit: a8785264f83c2ebe1b3cf689296775a4949957c8
+    covers: [vue, vueuse, typescript]
+  - name: nuxt-ui-dashboard
+    url: https://github.com/nuxt-ui-templates/dashboard
+    commit: b58e7165ae1f899561b4bf2da7677194947669e7
+    covers: [nuxt, nuxt-ui, vue]
+  - name: swapi-graphql
+    url: https://github.com/graphql/swapi-graphql
+    commit: 8c0bf5868f11fe84942548180751fceeb36bd606
+    covers: [graphql, javascript]
+
+  - name: nowinandroid
+    url: https://github.com/android/nowinandroid
+    commit: a49ed253d75e61a2b6ab80a8da677b57437b08eb
+    covers: [kotlin, android, gradle]
+
+  - name: microservices-demo
+    url: https://github.com/GoogleCloudPlatform/microservices-demo
+    commit: 38e7348eb289eb5b87c0c6e8cb19ced0449dc389
+    covers: [kubernetes, go, python, javascript, docker]
+
+  - name: kubernetes-examples
+    url: https://github.com/kubernetes/examples
+    commit: d6b8cd27eacb51e651a1aa6f7c190a28713eff6e
+    covers: [kubernetes, yaml]
+
+  - name: openai-python
+    url: https://github.com/openai/openai-python
+    commit: ef676dbc199bc09d12a1d051f3b8b2486aa53dc2
+    covers: [python, llm]
+
+  - name: ai-chatbot
+    url: https://github.com/vercel/ai-chatbot
+    commit: c2f8235e1f3ea903ad8b7f61447c4f74164b5c58
+    covers: [typescript, react, llm]
+  # --- expansion 2026-10-10: clean OSS across languages (promotion phase; shallow blobless clones, pruned) ---
+  - name: scrapy
+    url: https://github.com/scrapy/scrapy
+    commit: be7bdc4cd16644018fa56ef3503dce86744fa6d5
+    covers: [python]
+  - name: django-rest-framework
+    url: https://github.com/encode/django-rest-framework
+    commit: 6f6f44bca2e193509ea108914c9e52b102ec6642
+    covers: [python]
+  - name: tf-aws-eks
+    url: https://github.com/terraform-aws-modules/terraform-aws-eks
+    commit: 91b8a8d944e3cf169483108acd12d5b1e47856f7
+    covers: [terraform]
+  - name: javalin
+    url: https://github.com/javalin/javalin
+    commit: 20ba71b211b5efa91f5c10ccb467326b86a1e5dc
+    covers: [kotlin]
+  - name: logrus
+    url: https://github.com/sirupsen/logrus
+    commit: 6ef0748d1177dadaeee9aa79ffef604570f487d7
+    covers: [go]
+  - name: jinja
+    url: https://github.com/pallets/jinja
+    commit: 5ef70112a1ff19c05324ff889dd30405b1002044
+    covers: [python]
+  - name: docker-nginx
+    url: https://github.com/nginx/docker-nginx
+    commit: ef5a25a6314e652a2dcfbce6074bef729f4d9639
+    covers: [docker]
+  - name: flysystem
+    url: https://github.com/thephpleague/flysystem
+    commit: 1e748897e0a8e897b5a8bc8942e05f4f57fa248c
+    covers: [php]
+  - name: testify
+    url: https://github.com/stretchr/testify
+    commit: 87a7b9d57689f6579db2da795ab8deeab29cb724
+    covers: [go]
+  - name: chi
+    url: https://github.com/go-chi/chi
+    commit: 167e1e3bd039d060696b99c8da4e876ae04f42c1
+    covers: [go]
+  - name: tf-aws-s3
+    url: https://github.com/terraform-aws-modules/terraform-aws-s3-bucket
+    commit: cafb64d5ffb68d9d69af973d7b0c0e537fd8c599
+    covers: [terraform]
+  - name: symfony-console
+    url: https://github.com/symfony/console
+    commit: 75bd6f012294ebb53b3c98e4a5b58b0c16dbae83
+    covers: [php]
+  - name: echo
+    url: https://github.com/labstack/echo
+    commit: 3882266a3641a36fc2111b48cd597adab1c1ecea
+    covers: [go]
+  - name: zap
+    url: https://github.com/uber-go/zap
+    commit: 4892335e05f14bce8a98a69a577fcf3844a42623
+    covers: [go]
+  - name: go-retryablehttp
+    url: https://github.com/hashicorp/go-retryablehttp
+    commit: fd004584a46724fae09e2f21d7c382e15c893f42
+    covers: [go]
+  - name: react-router
+    url: https://github.com/remix-run/react-router
+    commit: dee9ad2dab41889e8fbdc6848b5781255d9f133a
+    covers: [typescript]
+  - name: got
+    url: https://github.com/sindresorhus/got
+    commit: e1d87d2ced01d5b7d855a7dc8b091bf7b014a1e4
+    covers: [typescript]
+  - name: docker-library-python
+    url: https://github.com/docker-library/python
+    commit: 2022e05edb2807a34fe6a28c6bee87a426ae2e6c
+    covers: [docker]
+  - name: socket.io
+    url: https://github.com/socketio/socket.io
+    commit: 1eaa582d3b453e3e6f522300ed05b10da0a0799b
+    covers: [typescript]
+  - name: koin
+    url: https://github.com/InsertKoinIO/koin
+    commit: dc86ef8dd8fbe8564fb7453c03f5b738da3450bb
+    covers: [kotlin]
+  - name: tf-aws-rds
+    url: https://github.com/terraform-aws-modules/terraform-aws-rds
+    commit: 175da043429cbbe41c512f976105719f6d0e538c
+    covers: [terraform]
+  - name: koa
+    url: https://github.com/koajs/koa
+    commit: 2fecd029c6ce6b79d65158d28a76538f7f6b0378
+    covers: [javascript]
+  - name: gorilla-mux
+    url: https://github.com/gorilla/mux
+    commit: db9d1d0073d27a0a2d9a8c1bc52aa0af4374d265
+    covers: [go]
+  - name: starlette
+    url: https://github.com/encode/starlette
+    commit: 96d5023c55b29224edb8d684868c49f681d079a9
+    covers: [python]
+  - name: rich
+    url: https://github.com/Textualize/rich
+    commit: 9d8f9a372cc5916fd4781fec207ced7ddac2f08f
+    covers: [python]
+  - name: django-allauth
+    url: https://github.com/pennersr/django-allauth
+    commit: 231d55eea8634a0bd781aa8debd17d60905f645b
+    covers: [python]
+  - name: trpc
+    url: https://github.com/trpc/trpc
+    commit: 796700d8653b3832409fff997e6f5789519b9ea7
+    covers: [typescript]
+  - name: jsoup
+    url: https://github.com/jhy/jsoup
+    commit: 088614f4a1454232a1f03c63b7f80742f1f2a854
+    covers: [java]
+  - name: laravel
+    url: https://github.com/laravel/laravel
+    commit: f4000aeb018fcbf71d4a13e3ee4b80c7e2d45be5
+    covers: [php]
+  - name: architecture-samples
+    url: https://github.com/android/architecture-samples
+    commit: ee66e1526b84c026615df032c705842b7d2a521f
+    covers: [kotlin]
+  - name: black
+    url: https://github.com/psf/black
+    commit: 364941e1c29909e04f933bb0e87f365fc1d4c557
+    covers: [python]
+  - name: httpx
+    url: https://github.com/encode/httpx
+    commit: b5addb64f0161ff6bfe94c124ef76f6a1fba5254
+    covers: [python]
+  - name: composer
+    url: https://github.com/composer/composer
+    commit: 43f74517021a59ed4054a801c1472ef66355c49a
+    covers: [php]
+  - name: lodash
+    url: https://github.com/lodash/lodash
+    commit: 2b5e6f7399a7b48005140b5d5c6bc6c0e62919a8
+    covers: [javascript]
+  - name: fastapi
+    url: https://github.com/fastapi/fastapi
+    commit: f5c6e9b4f9cadc1bf0f9a1fd672e621206b63007
+    covers: [python]
+  - name: tf-google-gke
+    url: https://github.com/terraform-google-modules/terraform-google-kubernetes-engine
+    commit: 068af04e164ab3d0061d70b809ff603027e944b8
+    covers: [terraform]
+  - name: tanstack-query
+    url: https://github.com/TanStack/query
+    commit: e3ef1387054c88bed7cb031e0f1e26bf7c99bddc
+    covers: [typescript]
+  - name: viper
+    url: https://github.com/spf13/viper
+    commit: 528f7416c4b56a4948673984b190bf8713f0c3c4
+    covers: [go]
+  - name: hapi
+    url: https://github.com/hapijs/hapi
+    commit: b90c41b9006143421dc715c01d86e6f4933af1e4
+    covers: [javascript]
+  - name: migrate
+    url: https://github.com/golang-migrate/migrate
+    commit: 504568a3cbd23b8754760f55a3d89aec1b0c4963
+    covers: [go]
+  - name: click
+    url: https://github.com/pallets/click
+    commit: 2247b35ea1c47c727d7a06e51fa280e12a863ff6
+    covers: [python]
+  - name: commons-lang
+    url: https://github.com/apache/commons-lang
+    commit: 32dc4c501e3acba29d53a466eebd611bb2f093a5
+    covers: [java]
+  - name: kube-prometheus
+    url: https://github.com/prometheus-operator/kube-prometheus
+    commit: 799f3d73b5adf5758c3119c9201d9f417accb6d0
+    covers: [kubernetes]
+  - name: coil
+    url: https://github.com/coil-kt/coil
+    commit: 8efac6f9d34716e5bbdd08a7e31c6e075dfca542
+    covers: [kotlin]
+  - name: caddy
+    url: https://github.com/caddyserver/caddy
+    commit: c31d9a71ed2f628210aa607ca6c69bbf21bd73e4
+    covers: [go]
+  - name: gke-samples
+    url: https://github.com/GoogleCloudPlatform/kubernetes-engine-samples
+    commit: 2e79a7b375902c3c761a7c599b9304ade66d74ff
+    covers: [kubernetes]
+  - name: phpmailer
+    url: https://github.com/PHPMailer/PHPMailer
+    commit: 55e2a9434f041db55d047cbc52c3000ae597a97f
+    covers: [php]
+  - name: vitepress
+    url: https://github.com/vuejs/vitepress
+    commit: 8cc9e3432f8b96cab19f58961eaf842092008a65
+    covers: [vue]
+  - name: vueuse
+    url: https://github.com/vueuse/vueuse
+    commit: ad2822b3854347f9eeb1c738fd2b90b773381c4a
+    covers: [vue]
+  - name: fiber
+    url: https://github.com/gofiber/fiber
+    commit: 0f2e61f2589674a6a433ecf6e65a0c7328ce3a0d
+    covers: [go]
+  - name: sentry-python
+    url: https://github.com/getsentry/sentry-python
+    commit: 7cb80948cbdefb10831740c23b49e56e348532a5
+    covers: [python]
+  - name: mybatis-3
+    url: https://github.com/mybatis/mybatis-3
+    commit: 34147d0bd2f5ed0016ef367c92b25e174149326b
+    covers: [java]
+  - name: urfave-cli
+    url: https://github.com/urfave/cli
+    commit: 2487a8919256ac0f7e033a2a7ebf183cc9d5885b
+    covers: [go]
+  - name: jackson-databind
+    url: https://github.com/FasterXML/jackson-databind
+    commit: 26e12c98d793b2d609b663a4a90eec2bcfb4f3bd
+    covers: [java]
+  - name: okhttp
+    url: https://github.com/square/okhttp
+    commit: 42e5888d45623662c138ed27e80ea28bbe0aa5cc
+    covers: [kotlin]
+  - name: dropwizard
+    url: https://github.com/dropwizard/dropwizard
+    commit: c1441252bca946edbe3bae15c1d349df129bcbc7
+    covers: [java]
+  - name: nest
+    url: https://github.com/nestjs/nest
+    commit: 2731c18054fb348779311d81e4e20949e313be78
+    covers: [typescript]
+  - name: exposed
+    url: https://github.com/JetBrains/Exposed
+    commit: 11e9c120ce607af10a8597ed8948e07d80cf395f
+    covers: [kotlin]
+  - name: monolog
+    url: https://github.com/Seldaek/monolog
+    commit: 3bed304b1905fed5c30d172872f4d890cbb03c6a
+    covers: [php]
+  - name: retrofit
+    url: https://github.com/square/retrofit
+    commit: 50b452440d680b36c94de7467506852597fa474f
+    covers: [java]
+  - name: nuxt-content
+    url: https://github.com/nuxt/content
+    commit: 3f81b70f00dd5193414cb02a3c55e59b2d0d45be
+    covers: [vue]
+  - name: celery
+    url: https://github.com/celery/celery
+    commit: ed354d9100dbdaf7b867f103593b4dea4148670a
+    covers: [python]
+  - name: fastify
+    url: https://github.com/fastify/fastify
+    commit: 3963a5173da9ded439a12ccf4dcf528562757725
+    covers: [javascript]
+# Labelled benchmarks and deliberately vulnerable apps (kind: bench). Used for recall on known# vulnerabilities and FP rate on their 'safe' cases; excluded from OSS FP-volume flags. Local use only.
+  - name: BenchmarkJava
+    url: https://github.com/OWASP-Benchmark/BenchmarkJava
+    commit: 8b67a88d73b2594570fc21150705283de884620b
+    covers: [java]
+    kind: bench
+    path: bench/BenchmarkJava
+    license: GPL-2.0
+    sparse: [/src/main/java/org/owasp/benchmark/testcode, /expectedresults-1.2.csv, /LICENSE]
+  - name: BenchmarkPython
+    url: https://github.com/OWASP-Benchmark/BenchmarkPython
+    commit: f1291485808b66e20ddb6b01b10dc71b3df8c8ba
+    covers: [python]
+    kind: bench
+    path: bench/BenchmarkPython
+    license: GPL-2.0
+  - name: juice-shop
+    url: https://github.com/juice-shop/juice-shop
+    commit: 0e6d909b7466e76bc8deabf2fdb62bc5c849961f
+    covers: [typescript, javascript]
+    kind: bench
+    path: bench/juice-shop
+    license: MIT
+  - name: NodeGoat
+    url: https://github.com/OWASP/NodeGoat
+    commit: c5cb68a7084e4ae7dcc60e6a98768720a81841e8
+    covers: [javascript]
+    kind: bench
+    path: bench/NodeGoat
+    license: Apache-2.0
+  - name: WebGoat
+    url: https://github.com/WebGoat/WebGoat
+    commit: 044948d057b249735be2bfc14eccc9e3dc2eac34
+    covers: [java]
+    kind: bench
+    path: bench/WebGoat
+    license: GPL-2.0
+  - name: DVWA
+    url: https://github.com/digininja/DVWA
+    commit: 068d974487a297c155c48722f9fcf7180a83adc4
+    covers: [php]
+    kind: bench
+    path: bench/DVWA
+    license: GPL-3.0
+  - name: pygoat
+    url: https://github.com/adeyosemanputra/pygoat
+    commit: 19d17cc8874861142b330636d068bbde54e86b85
+    covers: [python]
+    kind: bench
+    path: bench/pygoat
+    license: MIT
+  - name: dvpwa
+    url: https://github.com/anxolerd/dvpwa
+    commit: a1d8f89fac2e57093189853c6527c2b01fc1d9c1
+    covers: [python]
+    kind: bench
+    path: bench/dvpwa
+    license: MIT
+  - name: govwa
+    url: https://github.com/0c34/govwa
+    commit: 4058f79f31eeb4a36d8f1e64bba1f0c899646e6f
+    covers: [go]
+    kind: bench
+    path: bench/govwa
+    license: unlicensed (local use only)
+  - name: terragoat
+    url: https://github.com/bridgecrewio/terragoat
+    commit: 729f8da62c6a85ce4af5ad3d123de97776d954c4
+    covers: [terraform]
+    kind: bench
+    path: bench/terragoat
+    license: Apache-2.0
+  - name: kubernetes-goat
+    url: https://github.com/madhuakula/kubernetes-goat
+    commit: 723a0db478f050d173d23b4ce5044b65bce0bdd0
+    covers: [yaml, docker]
+    kind: bench
+    path: bench/kubernetes-goat
+    license: MIT
+  - name: DVGA
+    url: https://github.com/dolevf/Damn-Vulnerable-GraphQL-Application
+    commit: a961308c02d1fb462b192681c336b0739e432da7
+    covers: [graphql, python]
+    kind: bench
+    path: bench/DVGA
+    license: MIT
+  - name: InsecureShop
+    url: https://github.com/hax0rgb/InsecureShop
+    commit: 76ed1772a12c61a60f4a685770482e0e1f6cf4a7
+    covers: [kotlin, android]
+    kind: bench
+    path: bench/InsecureShop
+    license: MIT
+
+# Linter test suites (kind: fixtures): valid -> must-not-match, invalid -> must-match. Read locally
+# by `corpus fixtures`; nothing is copied into packs or commits.
+  - name: eslint
+    url: https://github.com/eslint/eslint
+    commit: a39d9fb1fdb5db546f6407580cac531ba3370450
+    covers: []
+    kind: fixtures
+    path: fixtures-src/eslint
+    license: MIT
+    sparse: [/tests/lib/rules]
+  - name: eslint-plugin-vue
+    url: https://github.com/vuejs/eslint-plugin-vue
+    commit: 69edf073fbfd51d07420acbf057c3a880e3cb39e
+    covers: []
+    kind: fixtures
+    path: fixtures-src/eslint-plugin-vue
+    license: MIT
+    sparse: [/tests/lib/rules]
+  - name: go-tools
+    url: https://github.com/dominikh/go-tools
+    commit: 452d5bb86b45416c35891262f6a11dbd6a970117
+    covers: []
+    kind: fixtures
+    path: fixtures-src/go-tools
+    license: MIT
+    sparse: [/staticcheck, /simple, /stylecheck, /quickfix]
+  - name: graphql-eslint
+    url: https://github.com/graphql-hive/graphql-eslint
+    commit: f1c93592d388b166b4641529b5581d6e98ad1582
+    covers: []
+    kind: fixtures
+    path: fixtures-src/graphql-eslint
+    license: MIT
+    sparse: [/packages/plugin/src]
+  - name: hadolint
+    url: https://github.com/hadolint/hadolint
+    commit: b3db4dd2cb10607a53ebb87f2105bfceb9eb19b4
+    covers: []
+    kind: fixtures
+    path: fixtures-src/hadolint
+    license: GPL-3.0
+    sparse: [/test]
+  - name: react
+    url: https://github.com/facebook/react
+    commit: b618bbb4422693bbb8d387180687b3f510300f42
+    covers: []
+    kind: fixtures
+    path: fixtures-src/react
+    license: MIT
+    sparse: [/packages/eslint-plugin-react-hooks/__tests__]
+  - name: oxc
+    url: https://github.com/oxc-project/oxc
+    commit: 4b756621b65ab54c19dc66fbdcb3cd902d662c20
+    covers: []
+    kind: fixtures
+    path: fixtures-src/oxc
+    license: MIT
+    sparse: [/crates/oxc_linter/src/rules]
+  - name: ruff
+    url: https://github.com/astral-sh/ruff
+    commit: 874539b0b411239b07743a6bac2092e283227f02
+    covers: []
+    kind: fixtures
+    path: fixtures-src/ruff
+    license: MIT
+    sparse: [/crates/ruff_linter/resources/test/fixtures, /crates/ruff_linter/src/rules]
+  - name: typescript-eslint
+    url: https://github.com/typescript-eslint/typescript-eslint
+    commit: 76786e8adbfe937fb49130d7930d21d5479389d6
+    covers: []
+    kind: fixtures
+    path: fixtures-src/typescript-eslint
+    license: MIT
+    sparse: [/packages/eslint-plugin/tests/rules]
+  - name: x-tools
+    url: https://github.com/golang/tools
+    commit: a39b77340b27c5a86080ef22fa6fa5b4c489e177
+    covers: []
+    kind: fixtures
+    path: fixtures-src/x-tools
+    license: BSD-3-Clause
+    sparse: [/go/analysis/passes]
+  - name: yamllint
+    url: https://github.com/adrienverge/yamllint
+    commit: 96246fb0d5fba8c8cba48747342de3351ea64bea
+    covers: []
+    kind: fixtures
+    path: fixtures-src/yamllint
+    license: GPL-3.0
+    sparse: [/tests]

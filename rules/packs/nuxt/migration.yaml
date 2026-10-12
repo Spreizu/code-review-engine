@@ -1,0 +1,291 @@
+# HAND-EDITED rule file: pack nuxt, topic migration. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Nuxt pack. Version dimension "nuxt" from package.json/lockfile (nuxt, or nuxt-edge / @nuxt/bridge).
+# Rules also inherit the vue dimension (Nuxt 2 => Vue 2, Nuxt 3/4 => Vue 3).
+pack: nuxt
+pack_version: 2026.10.0
+rules:
+- id: NUXT-MIG-APPDIR-001
+  title: Nuxt 4 default srcDir is app/
+  language: manifest
+  framework: nuxt
+  kind: migration
+  category: structure
+  severity: info
+  applies_to:
+    nuxt: '>=4.0'
+  detection:
+    mode: deterministic
+    engine: manifest
+    manifest:
+      check: path_exists_without
+      value: pages/
+      unless: app/
+  message: Nuxt 4 resolves most things from app/ by default (with backwards compatibility for the old layout); consider moving pages/, components/, composables/ etc. into app/.
+  source:
+    url: https://nuxt.com/docs/getting-started/upgrade
+    doc: Upgrade Guide - New Directory Structure
+    doc_version: Nuxt 4
+    retrieved: '2026-10-09'
+  examples:
+    bad: pages/index.vue
+    good: app/pages/index.vue
+- id: NUXT-MIG-ASYNCDATA-001
+  title: Nuxt 2 asyncData/fetch options -> useAsyncData/useFetch
+  language: vue
+  framework: nuxt
+  kind: migration
+  category: data-fetching
+  severity: major
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (export_statement
+        (object (method_definition name: (property_identifier) @match (#any-of? @match "asyncData" "fetch"))))
+  message: The Nuxt 2 asyncData()/fetch() component options are replaced by the useAsyncData/useFetch composables in Nuxt 3+.
+  source:
+    url: https://nuxt.com/docs/migration/component-options
+    doc: 'Migration - Component Options: asyncData and fetch'
+    doc_version: Nuxt 3/4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script>export default { async asyncData({ $axios }) { return { posts: await $axios.$get('/api/posts') } } }</script>
+    good: |
+      <script setup>const { data: posts } = await useFetch('/api/posts')</script>
+- id: NUXT-MIG-CONFIG-001
+  title: Wrap nuxt.config in defineNuxtConfig
+  language: typescript
+  framework: nuxt
+  kind: migration
+  category: configuration
+  severity: minor
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - nuxt.config.ts
+    - nuxt.config.js
+    - nuxt.config.mjs
+    query: |
+      (export_statement value: (object) @match)
+  message: Nuxt 3+ configuration should use defineNuxtConfig() for the typed configuration schema.
+  source:
+    url: https://nuxt.com/docs/migration/configuration
+    doc: Migration - Configuration (nuxt.config)
+    doc_version: Nuxt 3/4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      export default { ssr: true }
+    good: |
+      export default defineNuxtConfig({ ssr: true })
+- id: NUXT-MIG-EOL-001
+  title: Nuxt 2 reached End of Life
+  language: manifest
+  framework: nuxt
+  kind: removal
+  category: platform
+  severity: major
+  applies_to:
+    nuxt: <3.0
+  detection:
+    mode: deterministic
+    engine: manifest
+    manifest:
+      check: dependency_version
+      value: nuxt
+  message: Nuxt 2 reached End of Life on June 30th, 2024; migrate to Nuxt 3/4 (Nuxt Bridge can ease the transition).
+  source:
+    url: https://nuxt.com/blog/nuxt2-eol
+    doc: Nuxt 2 End-of-Life (EOL) Announcement
+    doc_version: Nuxt 2
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "dependencies": { "nuxt": "^2.17.3" } }'
+    good: '{ "dependencies": { "nuxt": "^4.1.0" } }'
+- id: NUXT-MIG-HEAD-001
+  title: head() component option -> useHead / useSeoMeta
+  language: vue
+  framework: nuxt
+  kind: migration
+  category: seo
+  severity: minor
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (export_statement (object (method_definition name: (property_identifier) @match (#eq? @match "head"))))
+  message: Nuxt 3+ manages meta tags through nuxt.config, the useHead composable, or global meta components rather than the Nuxt 2 head() option.
+  source:
+    url: https://nuxt.com/docs/migration/meta
+    doc: Migration - Meta Tags
+    doc_version: Nuxt 3/4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script>export default { head() { return { title: 'Home' } } }</script>
+    good: |
+      <script setup>useHead({ title: 'Home' })</script>
+- id: NUXT-MIG-MIDDLEWARE-001
+  title: Nuxt 2 route middleware -> defineNuxtRouteMiddleware + navigateTo
+  language: typescript
+  framework: nuxt
+  kind: migration
+  category: migration
+  severity: major
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - middleware/**
+    - app/middleware/**
+    query: |
+      [
+        (export_statement value: (arrow_function) @match)
+        (export_statement value: (function_expression) @match)
+        (export_statement declaration: (function_declaration) @match)
+      ]
+  message: Route middleware should export defineNuxtRouteMiddleware((to, from) => ...) and return navigateTo() rather than calling context.redirect().
+  source:
+    url: https://nuxt.com/docs/migration/plugins-and-middleware
+    doc: Migration - Plugins and Middleware (Route Middleware)
+    doc_version: Nuxt 3/4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      export default function ({ store, redirect }) { if (!store.state.authenticated) { return redirect('/login') } }
+    good: |
+      export default defineNuxtRouteMiddleware((to, from) => { if (!useState('auth').value) { return navigateTo('/login') } })
+- id: NUXT-MIG-PLUGIN-001
+  title: Nuxt 2 plugin signature (ctx, inject) -> defineNuxtPlugin
+  language: typescript
+  framework: nuxt
+  kind: migration
+  category: migration
+  severity: major
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - plugins/**
+    - app/plugins/**
+    query: |
+      [
+        (export_statement value: (arrow_function) @match)
+        (export_statement value: (function_expression) @match)
+        (export_statement declaration: (function_declaration) @match)
+      ]
+  message: Plugins must export defineNuxtPlugin((nuxtApp) => { nuxtApp.provide(...) }) instead of the Nuxt 2 (context, inject) function.
+  source:
+    url: https://nuxt.com/docs/migration/plugins-and-middleware
+    doc: Migration - Plugins and Middleware
+    doc_version: Nuxt 3/4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      export default (ctx, inject) => { inject('hello', () => 'hi') }
+    good: |
+      export default defineNuxtPlugin((nuxtApp) => { nuxtApp.provide('hello', () => 'hi') })
+- id: NUXT-MIG-PROCENV-001
+  title: Use useRuntimeConfig instead of process.env in the Vue app
+  language: vue
+  framework: nuxt
+  kind: migration
+  category: configuration
+  severity: major
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (member_expression
+        object: (identifier) @o (#eq? @o "process")
+        property: (property_identifier) @p (#eq? @p "env")) @match
+  message: Migrate process.env to useRuntimeConfig throughout the Vue part of the app; process.env is not available client-side at runtime.
+  source:
+    url: https://nuxt.com/docs/migration/runtime-config
+    doc: Migration - Runtime Config
+    doc_version: Nuxt 3/4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>const base = process.env.API_BASE</script>
+    good: |
+      <script setup>const base = useRuntimeConfig().public.apiBase</script>
+- id: NUXT-MIG-RTC-LEGACY-001
+  title: privateRuntimeConfig/publicRuntimeConfig -> runtimeConfig
+  language: typescript
+  framework: nuxt
+  kind: migration
+  category: configuration
+  severity: major
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - nuxt.config.ts
+    - nuxt.config.js
+    - nuxt.config.mjs
+    query: |
+      (pair key: (property_identifier) @match (#any-of? @match "privateRuntimeConfig" "publicRuntimeConfig"))
+  message: Nuxt 3 unifies runtime config under `runtimeConfig` (private keys at top level, client-exposed keys under `public`).
+  source:
+    url: https://nuxt.com/docs/migration/runtime-config
+    doc: 'Migration - Runtime Config (Nuxt 2 syntax: https://v2.nuxt.com/docs/configuration-glossary/configuration-runtime-config)'
+    doc_version: Nuxt 2.13+ -> Nuxt 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      export default { publicRuntimeConfig: { baseURL: process.env.BASE_URL } }
+    good: |
+      export default defineNuxtConfig({ runtimeConfig: { public: { baseURL: '' } } })
+- id: NUXT-MIG-SHALLOW-001
+  title: useFetch/useAsyncData data is a shallowRef in Nuxt 4
+  language: vue
+  framework: nuxt
+  kind: migration
+  category: reactivity
+  severity: major
+  applies_to:
+    nuxt: '>=4.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    target: script
+    query: |
+      (assignment_expression
+        left: (member_expression
+          object: (member_expression
+            object: (identifier) @d
+            property: (property_identifier) @v (#eq? @v "value")))
+        (#any-of? @d "data")) @match
+  message: 'In Nuxt 4 the data returned by useAsyncData/useFetch is a shallowRef; mutating nested properties (data.value.x = ...) no longer triggers reactivity. Replace data.value or opt in with { deep: true }.'
+  ai_question: 'Does `data` come from useFetch/useAsyncData/useLazyFetch/useLazyAsyncData without `deep: true`?'
+  source:
+    url: https://nuxt.com/docs/getting-started/upgrade
+    doc: 'Upgrade Guide - Nuxt 4: Shallow Data Reactivity in useAsyncData and useFetch'
+    doc_version: Nuxt 4
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>const { data } = await useFetch('/api/user'); function rename() { data.value.name = 'x' }</script>
+    good: |
+      <script setup>const { data } = await useFetch('/api/user'); function rename() { data.value = { ...data.value, name: 'x' } }</script>

@@ -1,0 +1,331 @@
+# HAND-EDITED rule file: pack spring-boot, topic migration. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Spring Boot pack. Version dimensions: "spring-boot" (parent/BOM/plugin version),
+# "spring-framework", "spring-security" (resolved from the BOM when not pinned), "java".
+pack: spring-boot
+pack_version: 2026.10.0
+rules:
+- id: SB-MIG-AUTOCONF-001
+  title: Register auto-configurations in AutoConfiguration.imports, not spring.factories
+  language: properties
+  kind: removal
+  category: configuration
+  severity: critical
+  applies_to:
+    spring-boot: '>=2.7'
+  overrides:
+  - when:
+      spring-boot: <3.0
+    severity: minor
+    message: Deprecated since 2.7; move to META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports before upgrading to 3.0.
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/META-INF/spring.factories'
+    config:
+      key: org.springframework.boot.autoconfigure.EnableAutoConfiguration
+      op: exists
+  message: Spring Boot 3.0 removed support for registering auto-configurations in spring.factories under EnableAutoConfiguration.
+  source:
+    url: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide
+    doc: '3.0 Migration Guide - Auto-configuration Files (introduced in 2.7: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.7-Release-Notes)'
+    doc_version: 2.7 / 3.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.acme.AcmeAutoConfiguration
+    good: |-
+      # META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+      com.acme.AcmeAutoConfiguration
+- id: SB-MIG-CTORBIND-001
+  title: Type-level @ConstructorBinding is no longer needed
+  language: java
+  kind: migration
+  category: configuration
+  severity: minor
+  applies_to:
+    spring-boot: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      [
+        (class_declaration (modifiers (marker_annotation name: (identifier) @a (#eq? @a "ConstructorBinding")) @match))
+        (record_declaration (modifiers (marker_annotation name: (identifier) @b (#eq? @b "ConstructorBinding")) @match))
+      ]
+  message: '@ConstructorBinding is no longer needed at the type level on @ConfigurationProperties classes and should be removed (it moved to org.springframework.boot.context.properties.bind and is only for disambiguating constructors).'
+  source:
+    url: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide
+    doc: 3.0 Migration Guide - @ConstructingBinding No Longer Needed at the Type Level
+    doc_version: '3.0'
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      @ConstructorBinding @ConfigurationProperties("app") class Props { Props(String a) {} }
+    good: |
+      @ConfigurationProperties("app") record Props(String a) {}
+- id: SB-MIG-JACKSON-001
+  title: Spring Boot 4 prefers Jackson 3 (tools.jackson)
+  language: java
+  kind: migration
+  category: migration
+  severity: info
+  applies_to:
+    spring-boot: '>=4.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (import_declaration (scoped_identifier) @s (#match? @s "^com\\.fasterxml\\.jackson\\.(databind|core)")) @match
+  message: Spring Boot 4 uses Jackson 3 as its preferred JSON library; Jackson 3 packages moved from com.fasterxml.jackson to tools.jackson (jackson-annotations keeps its package).
+  source:
+    url: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide
+    doc: 4.0 Migration Guide - Upgrading Jackson
+    doc_version: '4.0'
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      import com.fasterxml.jackson.databind.ObjectMapper;
+      class A {}
+    good: |
+      import tools.jackson.databind.json.JsonMapper;
+      import com.fasterxml.jackson.annotation.JsonProperty;
+      class A {}
+- id: SB-MIG-JAKARTA-001
+  title: javax.* Jakarta EE imports on Spring Boot 3+
+  language: java
+  kind: migration
+  category: migration
+  severity: critical
+  applies_to:
+    spring-boot: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (import_declaration
+        (scoped_identifier) @s
+        (#match? @s "^javax\\.(servlet|persistence|validation|transaction|ws\\.rs|inject|mail|websocket|jms|ejb|faces|annotation\\.(PostConstruct|PreDestroy|Resource|security))")) @match
+  message: Spring Boot 3 moved to Jakarta EE (namespace jakarta.*). javax.* EE imports will not resolve.
+  fix: Replace `javax.` with `jakarta.` (e.g. jakarta.persistence.Entity); the Spring Boot Migrator / OpenRewrite recipes automate it.
+  source:
+    url: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide
+    doc: Spring Boot 3.0 Migration Guide - Jakarta EE
+    doc_version: '3.0'
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      import javax.persistence.Entity;
+      class A {}
+    good: |
+      import jakarta.persistence.Entity;
+      import javax.annotation.processing.Processor;
+      class A {}
+- id: SB-MIG-JAVA-001
+  title: Spring Boot 3+ requires Java 17
+  language: java
+  kind: removal
+  category: platform
+  severity: critical
+  applies_to:
+    spring-boot: '>=3.0'
+    java: <17
+  detection:
+    mode: deterministic
+    engine: manifest
+    manifest:
+      check: java_release_below
+      value: '17'
+  message: Spring Boot 3.0+ (and 4.0) require Java 17 or later.
+  source:
+    url: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide
+    doc: Spring Boot 3.0 Migration Guide - Review System Requirements; 4.0 guide repeats Java 17 baseline
+    doc_version: 3.0 / 4.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: <properties><java.version>11</java.version></properties>
+    good: <properties><java.version>21</java.version></properties>
+- id: SB-MIG-MOCK-001
+  title: '@MockBean/@SpyBean are deprecated (3.4) and removed (4.0)'
+  language: java
+  kind: removal
+  category: testing
+  severity: minor
+  applies_to:
+    spring-boot: '>=3.4'
+  overrides:
+  - when:
+      spring-boot: '>=4.0'
+    severity: critical
+    message: '@MockBean and @SpyBean were removed in Spring Boot 4.0; use @MockitoBean / @MockitoSpyBean.'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (field_declaration
+        (modifiers [(marker_annotation name: (identifier) @a) (annotation name: (identifier) @a)])
+        (#any-of? @a "MockBean" "SpyBean")) @match
+  message: '@MockBean/@SpyBean are deprecated in favour of Spring Framework''s @MockitoBean/@MockitoSpyBean.'
+  source:
+    url: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.4-Release-Notes
+    doc: 3.4 Release Notes - Deprecation of @MockBean and @SpyBean; 4.0 Migration Guide - @MockBean and @SpyBean Removal (https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide)
+    doc_version: 3.4 / 4.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      @SpringBootTest class T { @MockBean Repo repo; }
+    good: |
+      @SpringBootTest class T { @MockitoBean Repo repo; }
+- id: SB-MIG-PROP-REDIS-001
+  title: spring.redis.* moved to spring.data.redis.*
+  language: properties
+  kind: migration
+  category: configuration
+  severity: major
+  applies_to:
+    spring-boot: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/application*.properties'
+    - '**/application*.yml'
+    - '**/application*.yaml'
+    config:
+      key_prefix: spring.redis.
+      op: exists
+  message: Redis configuration properties moved from spring.redis.* to spring.data.redis.* in Spring Boot 3.0 (old keys are silently ignored). spring-boot-properties-migrator can report these at startup.
+  source:
+    url: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide
+    doc: 3.0 Migration Guide - Redis Properties
+    doc_version: '3.0'
+    retrieved: '2026-10-09'
+  examples:
+    bad: spring.redis.host=localhost
+    good: spring.data.redis.host=localhost
+- id: SB-MIG-REST-001
+  title: RestTemplate is deprecated in favour of RestClient
+  language: java
+  kind: deprecation
+  category: web
+  severity: minor
+  applies_to:
+    spring-framework: '>=7.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (object_creation_expression type: (type_identifier) @t (#any-of? @t "RestTemplate" "RestTemplateBuilder")) @match
+  message: The Spring Framework 7 reference lists RestTemplate as "now deprecated in favor of RestClient".
+  fix: RestClient.create(baseUrl) or inject RestClient.Builder.
+  source:
+    url: https://docs.spring.io/spring-framework/reference/integration/rest-clients.html
+    doc: REST Clients
+    doc_version: Spring Framework 7.0.9 reference
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class C { RestTemplate t = new RestTemplate(); }
+    good: |
+      class C { RestClient c = RestClient.create("https://api"); }
+- id: SB-MIG-SEC-001
+  title: WebSecurityConfigurerAdapter is deprecated/removed
+  language: java
+  kind: removal
+  category: security
+  severity: major
+  applies_to:
+    spring-security: '>=5.7'
+  overrides:
+  - when:
+      spring-boot: '>=3.0'
+    severity: critical
+    message: WebSecurityConfigurerAdapter no longer exists in Spring Security 6 (Spring Boot 3); declare a SecurityFilterChain @Bean.
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (class_declaration
+        superclass: (superclass (type_identifier) @t (#eq? @t "WebSecurityConfigurerAdapter"))) @match
+  message: WebSecurityConfigurerAdapter was deprecated in Spring Security 5.7; move to component-based configuration (SecurityFilterChain bean).
+  source:
+    url: https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter
+    doc: Spring Security without the WebSecurityConfigurerAdapter (official Spring blog)
+    doc_version: Spring Security 5.7
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      @Configuration class Sec extends WebSecurityConfigurerAdapter {}
+    good: |
+      @Configuration class Sec { @Bean SecurityFilterChain chain(HttpSecurity http) throws Exception { return http.build(); } }
+- id: SB-MIG-SEC-002
+  title: Migrate authorizeRequests to authorizeHttpRequests
+  language: java
+  kind: migration
+  category: security
+  severity: major
+  applies_to:
+    spring-security: '>=5.5'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation name: (identifier) @match (#eq? @match "authorizeRequests"))
+  message: authorizeRequests (FilterSecurityInterceptor) is superseded by authorizeHttpRequests (AuthorizationFilter); the reference documents the migration.
+  source:
+    url: https://docs.spring.io/spring-security/reference/servlet/authorization/authorize-http-requests.html
+    doc: Authorize HttpServletRequests (migrating from authorizeRequests)
+    doc_version: Spring Security reference (current 7.x)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class Sec { void c(HttpSecurity http) throws Exception { http.authorizeRequests(); } }
+    good: |
+      class Sec { void c(HttpSecurity http) throws Exception { http.authorizeHttpRequests(a -> a.anyRequest().authenticated()); } }
+- id: SB-MIG-TRAILSLASH-001
+  title: Trailing-slash matching is deprecated and off by default
+  language: java
+  kind: migration
+  category: web
+  severity: major
+  applies_to:
+    spring-boot: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation name: (identifier) @match (#eq? @match "setUseTrailingSlashMatch"))
+  message: Since Spring Framework 6.0 trailing-slash matching is deprecated and defaults to false; declare explicit routes or redirect instead of re-enabling it.
+  source:
+    url: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide
+    doc: 3.0 Migration Guide - Spring MVC and WebFlux URL Matching Changes
+    doc_version: '3.0'
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class W { void c(PathMatchConfigurer c) { c.setUseTrailingSlashMatch(true); } }
+    good: |
+      class W { void c(PathMatchConfigurer c) { } }
+- id: SB-MIG-UNDERTOW-001
+  title: Undertow support removed in Spring Boot 4
+  language: manifest
+  kind: removal
+  category: platform
+  severity: critical
+  applies_to:
+    spring-boot: '>=4.0'
+  detection:
+    mode: deterministic
+    engine: manifest
+    manifest:
+      check: has_dependency
+      value: org.springframework.boot:spring-boot-starter-undertow
+  message: Spring Boot 4 requires Servlet 6.1, which Undertow does not support yet; the Undertow starter was dropped. Use Tomcat or Jetty.
+  source:
+    url: https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide
+    doc: '4.0 Migration Guide - Features Removed: Undertow'
+    doc_version: '4.0'
+    retrieved: '2026-10-09'
+  examples:
+    bad: <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-undertow</artifactId></dependency>
+    good: <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-tomcat</artifactId></dependency>

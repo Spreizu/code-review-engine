@@ -1,0 +1,5 @@
+# pinned
+Jinja2==2.11.2
+urllib3[socks] == 1.26.4 ; python_version >= "3.8"
+pyyaml>=5.1
+-r other.txt

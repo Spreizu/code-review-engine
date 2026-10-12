@@ -1,0 +1,34 @@
+# HAND-EDITED rule file: pack vue, topic security. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Vue pack. Version dimension "vue" from package.json/lockfile (vue, or @vue/compat => migration build).
+# target: template -> vue grammar on the SFC; target: script -> <script>/<script setup> content
+# (and plain .js/.ts files matched by `files`) parsed with the typescript grammar.
+pack: vue
+pack_version: 2026.10.0
+rules:
+- id: VUE-SEC-VHTML-001
+  title: v-html with untrusted content is an XSS sink
+  language: vue
+  kind: security
+  category: security
+  severity: major
+  applies_to:
+    vue: '>=2.0'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    target: template
+    query: |
+      (directive_attribute (directive_name) @d (#eq? @d "v-html")) @match
+  message: v-html renders raw HTML. Vue's security guide warns that user-provided HTML is never 100% safe unless sanitized or from a trusted source.
+  ai_question: Can the bound value contain user-controlled data, and is it sanitized (e.g. DOMPurify) before rendering?
+  source:
+    url: https://vuejs.org/guide/best-practices/security.html
+    doc: 'Security - Potential Dangers: HTML Injection'
+    doc_version: Vue 3 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><div v-html="comment.body"></div></template>
+    good: |
+      <template><div>{{ comment.body }}</div></template>

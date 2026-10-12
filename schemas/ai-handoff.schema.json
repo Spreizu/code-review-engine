@@ -1,0 +1,70 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/elmo/code-review-engine/schemas/ai-handoff.schema.json",
+  "title": "crev AI confirmation handoff v2 (compressed, batched)",
+  "description": "A batch is one chat-completions request (API provider) or one line of .crev/ai-handoff/batches.jsonl (Cursor-skill fallback). Rule text is deduplicated per batch, items carry a minimal line-numbered window, identical rule+code pairs are collapsed into one item (dups), and verdicts are cached by content hash. There is no budget cap.",
+  "oneOf": [{ "$ref": "#/$defs/batch" }, { "$ref": "#/$defs/response" }, { "$ref": "#/$defs/verdict" }],
+  "$defs": {
+    "batch": {
+      "type": "object",
+      "required": ["schema", "batch_id", "prompt_version", "rules", "items"],
+      "properties": {
+        "schema": { "const": "crev.ai-handoff/v2" },
+        "batch_id": { "type": "string", "description": "sha256 of the items' cache keys (first 16 hex)" },
+        "prompt_version": { "type": "string" },
+        "instructions": { "type": "string", "description": "System prompt; embedded only in Cursor-skill exports (sent as the system message in API mode)" },
+        "rules": { "type": "object", "description": "Keyed by rule id; each rule appears once per batch", "additionalProperties": { "$ref": "#/$defs/rule" } },
+        "facts": { "type": "object", "description": "Per build unit, only the version dimensions the batch's rules depend on", "additionalProperties": { "type": "object", "additionalProperties": { "type": "string" } } },
+        "items": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/item" } }
+      },
+      "additionalProperties": false
+    },
+    "rule": {
+      "type": "object",
+      "required": ["title", "msg", "question", "url"],
+      "properties": {
+        "title": { "type": "string" }, "msg": { "type": "string" }, "question": { "type": "string", "description": "rule.ai_question, verbatim" },
+        "url": { "type": "string" }, "doc_version": { "type": "string" }, "quote": { "type": "string", "description": "Short verbatim phrase from the cited doc" },
+        "bad": { "type": "string", "maxLength": 301 }, "good": { "type": "string", "maxLength": 301 }
+      },
+      "additionalProperties": false
+    },
+    "item": {
+      "type": "object",
+      "required": ["id", "rule", "path", "lines", "code"],
+      "properties": {
+        "id": { "type": "string", "description": "Short finding id (first 12 hex of the fingerprint; full id on collision)" },
+        "rule": { "type": "string" },
+        "path": { "type": "string" },
+        "lang": { "type": "string" },
+        "lines": { "type": "array", "items": { "type": "integer" }, "minItems": 2, "maxItems": 2, "description": "First/last line of the window" },
+        "evidence": { "type": "string", "description": "Repo-index evidence for engine=index rules (tool output, not code)" },
+        "code": { "type": "string", "description": "Line-numbered ('N|') window: ±context_lines around the match, common indent stripped, ≤max_snippet_chars, secrets scrubbed" },
+        "dups": { "type": "array", "items": { "type": "string" }, "description": "Other finding ids with identical rule+code; the verdict applies to all" }
+      },
+      "additionalProperties": false
+    },
+    "verdict": {
+      "type": "object",
+      "required": ["id", "verdict", "confidence"],
+      "properties": {
+        "id": { "type": "string", "description": "Item id (or any full/short finding id of the item or its dups)" },
+        "verdict": { "enum": ["confirmed", "rejected", "uncertain"] },
+        "confidence": { "enum": ["high", "medium", "low"] },
+        "rationale": { "type": "string", "maxLength": 1200 },
+        "evidence_lines": { "type": "array", "items": { "type": "integer" } },
+        "suggested_fix": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "response": {
+      "type": "object",
+      "required": ["results"],
+      "properties": {
+        "batch_id": { "type": "string" },
+        "results": { "type": "array", "items": { "$ref": "#/$defs/verdict" } }
+      },
+      "additionalProperties": false
+    }
+  }
+}

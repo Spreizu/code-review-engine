@@ -1,0 +1,576 @@
+# Rule governance: precision tier, demotion to ai-confirm and quarantine (status: shadow),
+# decided by triage of the self-scan, corpus runs and linter-fixture evaluation (tools/corpus)
+# and by `crev feedback fp`. Applied at load time (internal/rules.ApplyData).
+#   mode: ai-confirm  a deterministic rule with measured precision below the gate: its hits reach
+#                     the review list only after a high-confidence AI confirmation.
+#   status: shadow    the rule runs, its hits are counted in the report's "shadow" map (kept with
+#                     --include-shadow) but never reach the review list or the gate.
+# Promote a rule by fixing its false positives (adding them as examples.regressions), re-running
+# `go run ./tools/corpus fixtures` / `run` and `govern -promote` (or deleting the entry).
+# Entries with a "corpus:" note were written by `go run ./tools/corpus govern`.
+#   exclude_tests: true  the rule does not run on test files (internal/index.IsTest), where the
+#                     pattern is the accepted idiom; kept by `govern -promote`.
+rules:
+  GO-QUAL-HTTP-DEFAULT-CLIENT:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  GO-QUAL-INITIALISM-CASE:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  GO-MOD-ATOMICTYPES:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 0 FP 15 FN 5 TN 1, precision 0.00 < 0.90'
+  GO-MOD-BLOOP:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 7 FP 8 FN 0 TN 1, precision 0.47 < 0.90'
+  GO-MOD-ERRORSASTYPE:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 10 FP 5 FN 1 TN 0, precision 0.67 < 0.90'
+  GO-MOD-FMTAPPENDF:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 11 FP 6 FN 0 TN 0, precision 0.65 < 0.90'
+  GO-MOD-FORVAR:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 7 FP 6 FN 3 TN 0, precision 0.54 < 0.90'
+  GO-MOD-MAPSLOOP:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 0 FP 11 FN 19 TN 0, precision 0.00 < 0.90'
+  GO-MOD-MINMAX:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 0 FP 2 FN 13 TN 8, precision 0.00 < 0.90'
+  GO-MOD-RANGEINT:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 10 FP 4 FN 32 TN 1, precision 0.71 < 0.90'
+  GO-MOD-SLICESBACKWARD:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 20 FP 17 FN 0 TN 0, precision 0.54 < 0.90'
+  GO-MOD-SLICESCLIP:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 3 FP 4 FN 1 TN 0, precision 0.43 < 0.90'
+  GO-MOD-SLICESSORT:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 2 FP 2 FN 2 TN 0, precision 0.50 < 0.90'
+  GO-MOD-SORTSLICE-FUNC:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 2 FP 6 FN 2 TN 0, precision 0.25 < 0.90'
+  GO-MOD-STRINGSBUILDER:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 10 FP 5 FN 7 TN 0, precision 0.67 < 0.90'
+  GO-MOD-TESTINGCONTEXT:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:modernize: TP 9 FP 7 FN 0 TN 1, precision 0.56 < 0.90'
+  GO-QUAL-VET-APPENDS:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:appends: TP 2 FP 2 FN 0 TN 0, precision 0.50 < 0.90'
+  GO-QUAL-VET-ASSIGN:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:assign: TP 10 FP 11 FN 8 TN 0, precision 0.48 < 0.90'
+  GO-QUAL-VET-COMPOSITES:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:composite: TP 6 FP 6 FN 4 TN 3, precision 0.50 < 0.90'
+  GO-QUAL-VET-HTTPRESPONSE:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:httpresponse: TP 9 FP 2 FN 0 TN 0, precision 0.82 < 0.90'
+  GO-QUAL-VET-PRINTF-NONCONST:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:printf: TP 0 FP 2 FN 279 TN 4, precision 0.00 < 0.90'
+  GO-QUAL-VET-TIMEFORMAT:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 govet:timeformat: TP 2 FP 2 FN 1 TN 1, precision 0.50 < 0.90'
+  GRAPHQL-QUAL-NO-HASHTAG-DESCRIPTION:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 graphql-eslint:@graphql-eslint/no-hashtag-description: TP 2 FP 4 FN 3 TN 9, precision 0.33 < 0.90'
+  JS-QUAL-NEW-WRAPPER-001:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-new-wrappers: TP 4 FP 2 FN 0 TN 2, precision 0.67 < 0.90'
+  JS-QUAL-NO-ALERT:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-alert: TP 15 FP 2 FN 2 TN 7, precision 0.88 < 0.90'
+  JS-QUAL-NO-DUPE-CLASS-MEMBERS:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-dupe-class-members: TP 8 FP 2 FN 30 TN 38, precision 0.80 < 0.90'
+  JS-QUAL-NO-EMPTY-CHARACTER-CLASS:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-empty-character-class: TP 17 FP 2 FN 0 TN 23, precision 0.89 < 0.90'
+  JS-QUAL-NO-EXTRA-BOOLEAN-CAST:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-extra-boolean-cast: TP 21 FP 3 FN 186 TN 16, precision 0.88 < 0.90'
+  JS-QUAL-NO-IMPLICIT-COERCION:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-implicit-coercion: TP 6 FP 2 FN 26 TN 65, precision 0.75 < 0.90'
+  JS-QUAL-NO-NEGATED-CONDITION:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-negated-condition: TP 1 FP 2 FN 5 TN 11, precision 0.33 < 0.90'
+  JS-SEC-NO-NEW-FUNC:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-new-func: TP 4 FP 3 FN 6 TN 8, precision 0.57 < 0.90'
+  JS-QUAL-NO-NEW-NATIVE-NONCONSTRUCTOR:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-new-native-nonconstructor: TP 4 FP 4 FN 0 TN 6, precision 0.50 < 0.90'
+  JS-QUAL-NO-PROMISE-EXECUTOR-RETURN:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  JS-QUAL-NO-REGEX-SPACES:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-regex-spaces: TP 15 FP 5 FN 13 TN 39, precision 0.75 < 0.90'
+  JS-QUAL-NO-WARNING-COMMENTS:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:no-warning-comments: TP 2 FP 4 FN 0 TN 2, precision 0.33 < 0.90'
+  JS-QUAL-PREFER-DESTRUCTURING:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:prefer-destructuring: TP 30 FP 4 FN 7 TN 18, precision 0.88 < 0.90'
+  JS-QUAL-PREFER-EXPONENTIATION-OPERATOR:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:prefer-exponentiation-operator: TP 3 FP 5 FN 2 TN 19, precision 0.38 < 0.90'
+  JS-QUAL-PREFER-SPREAD:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:prefer-spread: TP 5 FP 3 FN 13 TN 12, precision 0.62 < 0.90'
+  JS-QUAL-PRESERVE-CAUGHT-ERROR:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint:preserve-caught-error: TP 11 FP 2 FN 27 TN 14, precision 0.85 < 0.90'
+  JSON-SEC-SECRET-FIELD:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  JSON-SEC-URL-CREDENTIALS:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  KT-QUAL-EMPTY-CATCH:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  KT-SEC-HARDCODED-SECRET:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  KT-QUAL-NOT-NULL-ASSERTION:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  KT-QUAL-STRING-CONCAT:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  KT-QUAL-TEMPLATE-BRACES:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  KT-SEC-URL-CREDENTIALS:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  MAVEN-SEC-URL-CREDENTIALS:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  PHP-QUAL-ERROR-SUPPRESSION:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  PHP-SEC-URL-CREDENTIALS:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  PY-QUAL-CALLABLE-HASATTR:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 ruff:B004: TP 5 FP 4 FN 3 TN 0, precision 0.56 < 0.90'
+  PY-QUAL-DATETIME-NOW-NAIVE:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 ruff:DTZ005: TP 7 FP 6 FN 3 TN 0, precision 0.54 < 0.90'
+  PY-QUAL-GETATTR-CONSTANT:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 ruff:B009: TP 17 FP 3 FN 3 TN 0, precision 0.85 < 0.90'
+  PY-SEC-HARDCODED-PASSWORD:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  PY-SEC-HARDCODED-TMP:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  PY-QUAL-IMPORT-STAR:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 ruff:F403: TP 2 FP 3 FN 0 TN 0, precision 0.40 < 0.90'
+  PY-QUAL-REQUESTS-NO-TIMEOUT:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  PY-QUAL-TRY-EXCEPT-PASS:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  PY-SEC-URL-CREDENTIALS:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  SB-QUAL-INJ-001:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  TF-SEC-URL-CREDENTIALS:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  TS-QUAL-ANY-001:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  TS-QUAL-BAN-TS-COMMENT-NOCHECK:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  TS-QUAL-CALLBACK-ANY-001:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  TS-QUAL-CATCH-ANY-001:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  TS-QUAL-CONSISTENT-INDEXED-OBJECT-STYLE:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/consistent-indexed-object-style: TP 13 FP 9 FN 37 TN 34, precision 0.59 < 0.90'
+  TS-QUAL-NO-DUPLICATE-ENUM-VALUES:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/no-duplicate-enum-values: TP 7 FP 2 FN 8 TN 23, precision 0.78 < 0.90'
+  TS-QUAL-NO-DUPLICATE-TYPE-CONSTITUENTS:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/no-duplicate-type-constituents: TP 26 FP 4 FN 22 TN 28, precision 0.87 < 0.90'
+  TS-QUAL-NO-EMPTY-OBJECT-TYPE:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  TS-QUAL-NO-INVALID-VOID-TYPE:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/no-invalid-void-type: TP 11 FP 16 FN 23 TN 19, precision 0.41 < 0.90'
+  TS-QUAL-NO-NON-NULL-ASSERTED-NULLISH-COALESCING:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/no-non-null-asserted-nullish-coalescing: TP 15 FP 4 FN 0 TN 14, precision 0.79 < 0.90'
+  TS-QUAL-NO-NON-NULL-ASSERTED-OPTIONAL-CHAIN:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/no-non-null-asserted-optional-chain: TP 3 FP 2 FN 7 TN 11, precision 0.60 < 0.90'
+  TS-QUAL-NO-REDUNDANT-TYPE-CONSTITUENTS:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/no-redundant-type-constituents: TP 8 FP 9 FN 41 TN 46, precision 0.47 < 0.90'
+  TS-QUAL-NO-UNNECESSARY-PARAMETER-PROPERTY-ASSIGNMENT:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/no-unnecessary-parameter-property-assignment: TP 12 FP 7 FN 8 TN 18, precision 0.63 < 0.90'
+  TS-QUAL-PREFER-FIND:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/prefer-find: TP 6 FP 6 FN 22 TN 13, precision 0.50 < 0.90'
+  TS-QUAL-PREFER-FUNCTION-TYPE:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/prefer-function-type: TP 7 FP 2 FN 11 TN 3, precision 0.78 < 0.90'
+  TS-QUAL-PREFER-INCLUDES:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/prefer-includes: TP 22 FP 5 FN 7 TN 8, precision 0.81 < 0.90'
+  TS-QUAL-PREFER-REDUCE-TYPE-PARAMETER:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/prefer-reduce-type-parameter: TP 10 FP 9 FN 4 TN 8, precision 0.53 < 0.90'
+  TS-QUAL-PREFER-REGEXP-EXEC:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/prefer-regexp-exec: TP 3 FP 2 FN 9 TN 23, precision 0.60 < 0.90'
+  TS-QUAL-PREFER-STRING-STARTS-ENDS-WITH:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/prefer-string-starts-ends-with: TP 11 FP 8 FN 58 TN 54, precision 0.58 < 0.90'
+  TS-QUAL-TSIGNORE-001:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 typescript-eslint:@typescript-eslint/ban-ts-comment: TP 4 FP 5 FN 3 TN 16, precision 0.44 < 0.90'
+  TS-QUAL-USE-UNKNOWN-IN-CATCH-CALLBACK-VARIABLE:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  VUE-MIG-NO-DEPRECATED-DOLLAR-SCOPEDSLOTS-API:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint-plugin-vue:vue/no-deprecated-dollar-scopedslots-api: TP 5 FP 3 FN 0 TN 3, precision 0.62 < 0.90'
+  VUE-MIG-NO-DEPRECATED-PROPS-DEFAULT-THIS:
+      precision: low
+      status: ''
+      status_reason: ''
+      mode: ai-confirm
+      corpus: 'fixtures 2026-10-10 eslint-plugin-vue:vue/no-deprecated-props-default-this: TP 3 FP 3 FN 0 TN 2, precision 0.50 < 0.90'
+  YAML-SEC-SECRET-FIELD:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  YAML-SEC-URL-CREDENTIALS:
+      exclude_tests: true
+      corpus: 'corpus 2026-10-10: test files dominate the hits (fake credentials, assertions, timeouts/any/!! as test idiom); exclude_tests'
+  GO-SIMP-IDX-TEST-MISSING:
+      status: shadow
+      status_reason: 'bench 2026-10-10: 23/48 ai-confirm items in setup A, all answered uncertain/rejected (tests in another commit, dynamically registered modules). Tightened (tested-directory + exported for test-missing; self-registering modules for unused-file); stays shadow until a corpus diff run shows no unexplained hits'
+  JAVA-SIMP-IDX-TEST-MISSING:
+      status: shadow
+      status_reason: 'bench 2026-10-10: 23/48 ai-confirm items in setup A, all answered uncertain/rejected (tests in another commit, dynamically registered modules). Tightened (tested-directory + exported for test-missing; self-registering modules for unused-file); stays shadow until a corpus diff run shows no unexplained hits'
+  JS-SIMP-IDX-TEST-MISSING:
+      status: shadow
+      status_reason: 'bench 2026-10-10: 23/48 ai-confirm items in setup A, all answered uncertain/rejected (tests in another commit, dynamically registered modules). Tightened (tested-directory + exported for test-missing; self-registering modules for unused-file); stays shadow until a corpus diff run shows no unexplained hits'
+  KT-SIMP-IDX-TEST-MISSING:
+      status: shadow
+      status_reason: 'bench 2026-10-10: 23/48 ai-confirm items in setup A, all answered uncertain/rejected (tests in another commit, dynamically registered modules). Tightened (tested-directory + exported for test-missing; self-registering modules for unused-file); stays shadow until a corpus diff run shows no unexplained hits'
+  PHP-SIMP-IDX-TEST-MISSING:
+      status: shadow
+      status_reason: 'bench 2026-10-10: 23/48 ai-confirm items in setup A, all answered uncertain/rejected (tests in another commit, dynamically registered modules). Tightened (tested-directory + exported for test-missing; self-registering modules for unused-file); stays shadow until a corpus diff run shows no unexplained hits'
+  PY-SIMP-IDX-TEST-MISSING:
+      status: shadow
+      status_reason: 'bench 2026-10-10: 23/48 ai-confirm items in setup A, all answered uncertain/rejected (tests in another commit, dynamically registered modules). Tightened (tested-directory + exported for test-missing; self-registering modules for unused-file); stays shadow until a corpus diff run shows no unexplained hits'
+  JS-SIMP-IDX-UNUSED-FILE:
+      status: shadow
+      status_reason: 'bench 2026-10-10: 23/48 ai-confirm items in setup A, all answered uncertain/rejected (tests in another commit, dynamically registered modules). Tightened (tested-directory + exported for test-missing; self-registering modules for unused-file); stays shadow until a corpus diff run shows no unexplained hits'
+  PY-SIMP-IDX-UNUSED-FILE:
+      status: shadow
+      status_reason: 'bench 2026-10-10: 23/48 ai-confirm items in setup A, all answered uncertain/rejected (tests in another commit, dynamically registered modules). Tightened (tested-directory + exported for test-missing; self-registering modules for unused-file); stays shadow until a corpus diff run shows no unexplained hits'
+  PY-SEC-ASSERT-FOR-SECURITY:
+      exclude_tests: true
+      corpus: 'fixdiff 2026-10-10: pytest asserts on auth helpers in tests/ (lucasmarcelin0/petorlandia@34579f2f); exclude_tests'
+  JS-SEC-NO-SCRIPT-URL:
+      exclude_tests: true
+      corpus: 'fixdiff 2026-10-10: "javascript:" payload strings in spec files (yuanjian-org/app@8f72c060); exclude_tests'
+  JAVA-MAINT-CATCH-ONLY-RETHROWS:
+      mode: ai-confirm
+      ai_question: "Does removing this catch leave behaviour unchanged (no later broader catch clause it bypasses)?"
+      corpus: "corpus m3 2026-10-10: rethrow before a broader catch is the idiom to let one type through"
+  JAVA-MAINT-EQUALS-WRONG-PARAMETER:
+      mode: ai-confirm
+      ai_question: "Does the class lack a proper equals(Object) override, so this overload is mistaken for it?"
+      corpus: "corpus m3 2026-10-10: typed equals overload next to equals(Object)"
+  JAVA-MAINT-EXCEPTION-NOT-THROWN:
+      mode: ai-confirm
+      ai_question: "Is the created exception discarded by mistake (not a test or a factory)?"
+      corpus: "corpus m3 2026-10-10: tests constructing exceptions to check their fields"
+  JAVA-MAINT-FINALIZE-WRONG-SIGNATURE:
+      mode: ai-confirm
+      ai_question: "Is this meant to override Object.finalize()?"
+      corpus: "corpus m3 2026-10-10: correct protected void finalize() matched; unrelated finalize(A) helper methods"
+  JAVA-MAINT-FOR-UPDATE-OTHER-VARIABLE:
+      mode: ai-confirm
+      ai_question: "Does the update clause change a variable other than the one the condition is bounded by?"
+      corpus: "corpus m3 2026-10-10: loop condition with an extra flag while updating the counter"
+  JAVA-MAINT-INDEXOF-POSITIVE-CHECK:
+      mode: ai-confirm
+      ai_question: "Would a match at index 0 be valid and wrongly ignored here?"
+      corpus: "corpus m3 2026-10-10: > 0 is intended where position 0 cannot match"
+  JAVA-MAINT-OVERWRITTEN-ELEMENT:
+      mode: ai-confirm
+      ai_question: "Is the same key or index written twice on the same object with no read in between?"
+      corpus: "corpus m3 2026-10-10: builder calls on new child nodes matched"
+  JAVA-MAINT-REPEATED-UNARY:
+      mode: ai-confirm
+      ai_question: "Is this a real repeated unary operator in code?"
+      corpus: "corpus m3 2026-10-10: binary fuzz-corpus string matched"
+  JAVA-MAINT-RETURN-BOOLEAN-IF:
+      mode: ai-confirm
+      ai_question: "Is this if/else (or if + immediate return) that returns only boolean literals?"
+      corpus: "corpus m3 2026-10-10: if without else followed by further statements"
+  JAVA-MAINT-SPRING-CACHE-ON-INTERFACE:
+      mode: ai-confirm
+      ai_question: "Is the interface implemented by a class-based (CGLIB) proxy where the annotation is lost?"
+      corpus: "corpus m3 2026-10-10: Spring Data repository interfaces with caching annotations work through proxies"
+  JAVA-MAINT-STRING-OP-NO-EFFECT:
+      mode: ai-confirm
+      ai_question: "Is the call result unused or the call a no-op outside a test of that method?"
+      corpus: "corpus m3 2026-10-10: tests asserting substring(0) behaviour"
+  JAVA-MAINT-TOSTRING-RETURNS-NULL:
+      mode: ai-confirm
+      ai_question: "Is this an override of Object.toString() returning null?"
+      corpus: "corpus m3 2026-10-10: static toString(Object) helpers matched"
+  JAVA-SEC-STATIC-DATEFORMAT:
+      mode: ai-confirm
+      ai_question: "Is the shared DateFormat used for parsing/formatting directly from several threads (not cloned or synchronized)?"
+      corpus: "corpus m3 2026-10-10: templates that are cloned before use"
+  JS-SEC-SESSION-NO-MAXAGE:
+      mode: ai-confirm
+      ai_question: "Is the session left without any absolute or idle timeout (no maxAge/expires, no store TTL)?"
+      corpus: "corpus m3 2026-10-10: sample apps; server-side store expiry or rolling sessions may bound the lifetime"
+  KT-MAINT-SELF-ASSIGNMENT:
+      mode: ai-confirm
+      ai_question: "Is this a plain field with no custom setter, so the assignment does nothing?"
+      corpus: "corpus m3 2026-10-10: Kotlin property setters can have side effects"
+  PHP-MAINT-FOREACH-REFERENCE-NOT-UNSET:
+      mode: ai-confirm
+      ai_question: "Is the reference variable used after the loop without unset (risking writes to the last element)?"
+      corpus: "corpus m3 2026-10-10: references in functions that return right after the loop"
+  PHP-MAINT-IGNORED-PURE-RESULT:
+      mode: ai-confirm
+      ai_question: "Is the result discarded by mistake (not called for a side effect or expected exception)?"
+      corpus: "corpus m3 2026-10-10: tests calling array_map to trigger exceptions"
+  PY-MAINT-BARE-RAISE-OUTSIDE-EXCEPT:
+      mode: ai-confirm
+      ai_question: "Can this function run with no exception being handled, so the bare raise fails?"
+      corpus: "corpus m3 2026-10-10: handlers called from inside an except block re-raise the active exception (flask, celery)"
+  PY-MAINT-CANCELLED-ERROR-SWALLOWED:
+      mode: ai-confirm
+      ai_question: "Is the cancellation of the current task suppressed (not one the code itself requested on another task)?"
+      corpus: "corpus m3 2026-10-10: swallowing after cancelling your own task is the documented idiom"
+  PY-MAINT-FLASK-ROUTE-NOT-OUTERMOST:
+      mode: ai-confirm
+      ai_question: "Is @route below another decorator, so the registered view lacks that decorator?"
+      corpus: "corpus m3 2026-10-10: unverified matches in flask examples/tests"
+  PY-MAINT-IGNORED-RESULT:
+      mode: ai-confirm
+      ai_question: "Does the method return a new value (str/bytes/tuple) rather than mutating the object?"
+      corpus: "corpus m3 2026-10-10: rich Text.rstrip() mutates in place"
+  PY-MAINT-IMPLICIT-CONCAT-IN-COLLECTION:
+      mode: ai-confirm
+      ai_question: "Is a comma missing between the adjacent string literals?"
+      corpus: "corpus m3 2026-10-10: deliberate multi-line regex concatenation"
+  PY-MAINT-OVERWRITTEN-ELEMENT:
+      mode: ai-confirm
+      ai_question: "Is the same key written twice with no read in between, outside a test of overwrite behaviour?"
+      corpus: "corpus m3 2026-10-10: tests overwriting keys on purpose"
+  PY-MAINT-SELF-ASSIGNMENT:
+      mode: ai-confirm
+      ai_question: "Is this assignment in a function or module scope where it has no effect?"
+      corpus: "corpus m3 2026-10-10: class-body x = x copies a name from the enclosing scope"
+  PY-MAINT-SIZE-COMPARED-TO-NEGATIVE:
+      mode: ai-confirm
+      ai_question: "Is a length compared to a negative or zero bound so the result is constant?"
+      corpus: "corpus m3 2026-10-10: chained comparisons where the right-hand bound is checked"
+  PY-MAINT-STOPITERATION-IN-GENERATOR:
+      mode: ai-confirm
+      ai_question: "Is the raise inside a generator function body (a function containing yield)?"
+      corpus: "corpus m3 2026-10-10: raise StopIteration in non-generator helpers or iterator __next__"

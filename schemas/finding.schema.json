@@ -1,0 +1,246 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/elmo/code-review-engine/schemas/finding.schema.json",
+  "title": "Finding (native JSON output; 1:1 mappable to SARIF 2.1.0 result)",
+  "type": "object",
+  "required": [
+    "id",
+    "rule_id",
+    "rule_version",
+    "pack_version",
+    "status",
+    "severity",
+    "confidence",
+    "detection_mode",
+    "location",
+    "message",
+    "source"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Stable fingerprint: sha256(rule_id + path + normalized snippet + enclosing symbol). Maps to SARIF partialFingerprints.crev/v1"
+    },
+    "rule_id": {
+      "type": "string"
+    },
+    "rule_version": {
+      "type": "integer"
+    },
+    "pack_version": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "confirmed",
+        "pending_ai",
+        "ai_confirmed",
+        "ai_rejected",
+        "ai_uncertain",
+        "suppressed",
+        "shadow"
+      ],
+      "description": "Review list = confirmed + ai_confirmed at >= ai.review_confidence (default high). Everything else is kept with hidden_reason and listed only with --show-hidden[=reason,...]. SARIF carries the review list plus suppressed findings (as suppressions[]). shadow: finding of a quarantined rule."
+    },
+    "hidden_reason": {
+      "enum": ["pending_ai", "ai_rejected", "ai_uncertain", "ai_low_confidence", "shadow", "suppressed_config", "suppressed_inline", "crev_ignore"],
+      "description": "Why the finding is not in the review list (absent = listed)."
+    },
+    "hidden_detail": {
+      "type": "string",
+      "description": "One-line explanation of hidden_reason (e.g. no AI configured, AI rationale, suppression source, quarantine reason)."
+    },
+    "severity": {
+      "enum": [
+        "info",
+        "minor",
+        "major",
+        "critical"
+      ],
+      "description": "SARIF level: info->note, minor->warning, major->warning, critical->error; also properties.security-severity for security kind"
+    },
+    "confidence": {
+      "enum": [
+        "high",
+        "medium",
+        "low"
+      ],
+      "description": "deterministic=high; ai-confirm before AI = low; after AI = AI-reported (capped by rule max)"
+    },
+    "detection_mode": {
+      "enum": [
+        "deterministic",
+        "ai-confirm"
+      ]
+    },
+    "kind": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "location": {
+      "type": "object",
+      "required": [
+        "path",
+        "start_line",
+        "start_column",
+        "end_line",
+        "end_column"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "repo-relative, forward slashes (SARIF artifactLocation.uri + uriBaseId=%SRCROOT%)"
+        },
+        "start_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "start_column": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_column": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "start_byte": {
+          "type": "integer"
+        },
+        "end_byte": {
+          "type": "integer"
+        },
+        "sfc_block": {
+          "enum": [
+            "template",
+            "script",
+            "script-setup",
+            "style"
+          ],
+          "description": "Vue only; positions are already remapped to the .vue file"
+        },
+        "enclosing_symbol": {
+          "type": "string",
+          "description": "e.g. com.acme.UserService#save or ComponentName.setup"
+        }
+      }
+    },
+    "snippet": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "evidence": {
+      "type": "string",
+      "description": "Repo-index evidence behind engine=index findings (duplicates, callers, imports); passed to AI confirmation"
+    },
+    "fix": {
+      "type": "string"
+    },
+    "applied_versions": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Detected version facts that made the rule applicable, e.g. {\"spring-boot\":\"3.3.4\",\"java\":\"21\"}"
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "url",
+        "doc_version"
+      ],
+      "properties": {
+        "url": {
+          "type": "string"
+        },
+        "doc": {
+          "type": "string"
+        },
+        "doc_version": {
+          "type": "string"
+        }
+      }
+    },
+    "ai": {
+      "type": "object",
+      "description": "Present once AI confirmation ran",
+      "properties": {
+        "verdict": {
+          "enum": [
+            "confirmed",
+            "rejected",
+            "uncertain"
+          ]
+        },
+        "confidence": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ]
+        },
+        "rationale": {
+          "type": "string",
+          "maxLength": 1200
+        },
+        "suggested_fix": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "prompt_version": {
+          "type": "string"
+        },
+        "cache_key": {
+          "type": "string"
+        },
+        "via": {
+          "type": "string",
+          "description": "api | cursor-skill | cache:<origin>"
+        },
+        "evidence_lines": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "assumed_versions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Version dimensions that were not detectable and were assumed latest (unknown_version_policy: assume-latest)"
+    },
+    "cwe": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "owasp": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "xref": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

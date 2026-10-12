@@ -1,0 +1,39 @@
+# HAND-EDITED rule file: pack nuxt, topic modernization. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Nuxt pack. Version dimension "nuxt" from package.json/lockfile (nuxt, or nuxt-edge / @nuxt/bridge).
+# Rules also inherit the vue dimension (Nuxt 2 => Vue 2, Nuxt 3/4 => Vue 3).
+pack: nuxt
+pack_version: 2026.10.0
+rules:
+- id: NUXT-MOD-IMPORTMETA-001
+  title: Use import.meta.client / import.meta.server
+  language: vue
+  framework: nuxt
+  kind: modernization
+  category: ssr
+  severity: minor
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    files:
+    - '**/*.vue'
+    - '**/*.ts'
+    - '**/*.js'
+    query: |
+      (member_expression
+        object: (identifier) @o (#eq? @o "process")
+        property: (property_identifier) @match (#any-of? @match "client" "server" "browser" "static" "dev"))
+  message: Nuxt 3+ provides statically injected import.meta.client/server/browser/dev flags (tree-shakeable) in place of Nuxt 2's process.client/process.server.
+  source:
+    url: https://nuxt.com/docs/api/advanced/import-meta
+    doc: import.meta - Runtime (App) Properties
+    doc_version: Nuxt 4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>if (process.client) { window.scrollTo(0, 0) }</script>
+    good: |
+      <script setup>if (import.meta.client) { window.scrollTo(0, 0) }</script>

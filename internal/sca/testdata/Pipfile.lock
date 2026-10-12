@@ -1,0 +1,5 @@
+{
+  "_meta": {"hash": {"sha256": "x"}},
+  "default": { "requests": { "version": "==2.25.0" }, "flask": { "version": "==2.0.0" } },
+  "develop": { "pytest": { "version": "==7.0.0" } }
+}

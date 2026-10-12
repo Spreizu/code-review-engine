@@ -1,0 +1,4 @@
+# Reviewed by title: crev PHP rule -> Sonar PHP key. Keys only.
+lang: php
+by_id:
+  PHP-QUAL-GOTO: [S907]

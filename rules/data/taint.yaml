@@ -1,0 +1,362 @@
+# taint-lite sources, sinks and sanitizers (internal/taint). Each language block lists:
+#   sources:       regexes matched against a normalised call/member/variable expression
+#                  (whitespace removed, -> :: ?. unified to ".", call arguments collapsed to "()"),
+#                  optionally only in files matching `file`;
+#   param_sources: regexes over a parameter declaration (framework-bound request parameters);
+#   route_params:  decorator regex whose functions receive request data in every parameter;
+#   sanitizers:    per class (or `all`): callee regexes whose result no longer carries that class;
+#   sinks:         per class: callee regex, argument positions checked ([] = any, -1 = receiver),
+#                  optional `when`/`unless` regexes on the whitespace-free call text, `file` guard,
+#                  or `return_in` (a return value in a function whose decorators match).
+# Classes: sqli cmdi path ldap xss ssrf redirect xpath code trust smtp regex. A sink written as "obj.__setitem__"
+# matches the assignment obj[key] = value (args: 0 = key, 1 = value), e.g. a web session store. Rules pick a class with
+# detection.config.class. Everything here is crev's own data written from the cited API docs.
+languages:
+  java:
+    sources:
+      - re: '^\w*([Rr]equest|[Rr]eq)\.(getParameter|getParameterValues|getParameterMap|getParameterNames|getHeader|getHeaders|getHeaderNames|getQueryString|getCookies|getInputStream|getReader|getRequestURI|getRequestURL|getPathInfo|getPart|getParts|getRemoteUser)\(\)$'
+    param_sources:
+      - '@(RequestParam|PathVariable|RequestHeader|CookieValue|RequestBody|RequestPart|MatrixVariable)\b'
+      - '@(QueryParam|PathParam|FormParam|HeaderParam|CookieParam|MatrixParam)\b'
+    mutators: '^(append|add|addAll|put|putAll|push|insert|offer|addElement|write|print|println|setProperty|addLast|addFirst)$'
+    sanitizers:
+      regex: ['(^|\.)Pattern\.quote$']
+      smtp: ['(^|\.)(InternetAddress|validate|encodeText|encodeWord)$']
+      all:
+        - '(^|\.)(length|size|hashCode|equals|equalsIgnoreCase|isEmpty|isBlank|contains|containsKey|startsWith|endsWith|matches|compareTo|indexOf|lastIndexOf|getClass|hasMoreElements|hasNext|exists|isFile|isDirectory|getName)$'
+        - '(^|\.)(Integer|Long|Double|Float|Short|Byte|Boolean|UUID)\.(parseInt|parseLong|parseDouble|parseFloat|parseShort|parseByte|parseBoolean|valueOf|fromString)$'
+        # results of a query/XPath evaluation are stored data, not this request's input
+        - '(^|\.)(queryForObject|queryForList|queryForMap|queryForLong|queryForInt|queryForRowSet|queryForStream|executeQuery|evaluate)$'
+      sqli: ['(^|\.)(encodeForSQL|escapeSql)$']
+      cmdi: ['(^|\.)encodeForOS$']
+      xss: ['(^|\.)(encodeForHTML\w*|encodeForJavaScript|encodeForCSS|escapeHtml\d*|htmlEscape\w*|forHtml\w*|forJavaScript\w*|escapeEcmaScript|escapeXml\d*|Jsoup\.clean|clean)$']
+      ldap: ['(^|\.)(encodeForLDAP|encodeForDN|escapeLDAPSearchFilter|filterEncode|nameEncode)$']
+      path: ['(^|\.)(getFileName|FilenameUtils\.getName)$']
+      xpath: ['(^|\.)encodeForXPath$']
+    sinks:
+      sqli:
+        - {callee: '(^|\.)(executeQuery|executeUpdate|executeLargeUpdate|execute|addBatch|prepareStatement|prepareCall|nativeSQL)$', args: [0], file: '(java\.sql|javax\.sql|Statement|Connection)'}
+        - {callee: '(^|\.)(query|queryForObject|queryForList|queryForMap|queryForRowSet|queryForStream|queryForLong|queryForInt|update|batchUpdate|execute)$', args: [0], file: '(JdbcTemplate|JDBCtemplate|jdbcTemplate|JdbcOperations)'}
+        - {callee: '(^|\.)(createQuery|createNativeQuery|createSQLQuery)$', args: [0], file: '(EntityManager|Session|persistence|hibernate)'}
+      cmdi:
+        - {callee: '(^|\.)exec$', file: 'Runtime'}
+        - {callee: '^new (java\.lang\.)?ProcessBuilder$'}
+        - {callee: '\.command$', file: 'ProcessBuilder'}
+      path:
+        - {callee: '^new (java\.io\.)?(File|FileInputStream|FileOutputStream|FileReader|FileWriter|RandomAccessFile|ZipFile|JarFile|FileSystemResource)$', unless_parent: '^new(java\.io\.)?File\(.*\)\.getName\(\)$'}
+        - {callee: '(^|\.)(Paths\.get|Path\.of)$'}
+        - {callee: '(^|\.)Files\.(newInputStream|newOutputStream|newBufferedReader|newBufferedWriter|readAllBytes|readAllLines|readString|write|writeString|delete|deleteIfExists|copy|move|createFile|lines)$'}
+      ldap:
+        - {callee: '\.search$', args: [0, 1], file: '(javax\.naming|DirContext|LdapTemplate|LdapContext)'}
+      xss:
+        - {callee: '(^|\.)getWriter\(\)\.(print|println|printf|format|write|append)$'}
+        - {callee: '^(out|writer|pw|printWriter|w)\.(print|println|printf|format|write|append)$', file: 'getWriter\(\)'}
+      ssrf:
+        - {callee: '^new (java\.net\.)?URL$'}
+        - {callee: '\.(getForObject|getForEntity|postForObject|postForEntity|exchange|execute)$', args: [0], file: 'RestTemplate'}
+        - {callee: '(^|\.)HttpRequest\.newBuilder$', args: [0]}
+        - {callee: '\.uri$', args: [0], file: '(HttpRequest|WebClient|RestClient)'}
+      redirect:
+        - {callee: '\.sendRedirect$', args: [0]}
+        - {callee: '\.(setHeader|addHeader)$', args: [1], when: '\("Location"'}
+      xpath:
+        - {callee: '\.(evaluate|compile)$', args: [0], file: '(javax\.xml\.xpath|XPath)'}
+      code:
+        - {callee: '\.eval$', args: [0], file: 'ScriptEngine'}
+      trust:
+        - {callee: '\.(setAttribute|putValue)$', args: [0, 1], when: '[Ss]ession'}
+      smtp:
+        - {callee: '\.(setSubject|setFrom|setReplyTo|addRecipient|addRecipients|setRecipients|setRecipient|addHeader|setHeader)$', file: '(javax|jakarta)\.mail'}
+      regex:
+        - {callee: '(^|\.)Pattern\.(compile|matches)$', args: [0]}
+        - {callee: '\.(matches|replaceAll|replaceFirst|split)$', args: [0], unless: '^\w+\.(matches|replaceAll|replaceFirst|split)\("'}
+
+  kotlin:
+    sources:
+      - re: '^\w*([Rr]equest|[Rr]eq)\.(getParameter|getParameterValues|getParameterMap|getHeader|getHeaders|getQueryString|getCookies|getInputStream|getReader|getRequestURI|getPathInfo|getPart)\(\)$'
+      - re: '^\w*([Rr]equest|[Rr]eq)\.(queryString|cookies|reader|inputStream|requestURI|requestURL|pathInfo|parameterMap|parameterNames|headerNames|parts)$'
+      - re: '^call\.(parameters|request\.queryParameters|request\.headers|request\.cookies|request\.uri|receiveText|receiveParameters|receive|receiveMultipart)\b'
+    param_sources:
+      - '@(RequestParam|PathVariable|RequestHeader|CookieValue|RequestBody|RequestPart|MatrixVariable)\b'
+      - '@(QueryParam|PathParam|FormParam|HeaderParam|CookieParam)\b'
+    mutators: '^(append|add|addAll|put|putAll|push|insert|offer|write|print|println|set)$'
+    sanitizers:
+      regex: ['(^|\.)(Pattern\.quote|Regex\.escape|escape)$']
+      all:
+        - '(^|\.)(length|size|hashCode|equals|isEmpty|isBlank|isNotEmpty|isNotBlank|contains|containsKey|startsWith|endsWith|matches|compareTo|indexOf|toInt|toLong|toDouble|toIntOrNull|toLongOrNull|toBoolean|exists|isFile|isDirectory)$'
+        - '(^|\.)(Integer|Long|UUID)\.(parseInt|parseLong|valueOf|fromString)$'
+      xss: ['(^|\.)(encodeForHTML\w*|escapeHtml\d*|htmlEscape\w*|forHtml\w*|escapeHTML|Jsoup\.clean)$']
+      sqli: ['(^|\.)encodeForSQL$']
+      ldap: ['(^|\.)(encodeForLDAP|encodeForDN|filterEncode)$']
+      path: ['(^|\.)(name|fileName|getFileName)$']
+    sinks:
+      sqli:
+        - {callee: '(^|\.)(executeQuery|executeUpdate|executeLargeUpdate|execute|addBatch|prepareStatement|prepareCall)$', args: [0], file: '(java\.sql|Statement|Connection)'}
+        - {callee: '(^|\.)(query|queryForObject|queryForList|queryForMap|queryForRowSet|update|batchUpdate|execute)$', args: [0], file: '(JdbcTemplate|jdbcTemplate|JdbcOperations)'}
+        - {callee: '(^|\.)(createQuery|createNativeQuery)$', args: [0], file: '(EntityManager|persistence)'}
+        - {callee: '(^|\.)exec$', args: [0], file: 'org\.jetbrains\.exposed'}
+      cmdi:
+        - {callee: '(^|\.)exec$', file: 'Runtime'}
+        - {callee: '^(java\.lang\.)?ProcessBuilder$'}
+        - {callee: '\.command$', file: 'ProcessBuilder'}
+      path:
+        - {callee: '^(java\.io\.)?(File|FileInputStream|FileOutputStream|FileReader|FileWriter|RandomAccessFile)$'}
+        - {callee: '(^|\.)(Paths\.get|Path\.of)$'}
+        - {callee: '(^|\.)Files\.(newInputStream|newOutputStream|readAllBytes|readAllLines|readString|write|writeString|delete|copy|move)$'}
+      ldap:
+        - {callee: '\.search$', args: [0, 1], file: '(javax\.naming|DirContext|LdapTemplate)'}
+      xss:
+        - {callee: '(^|\.)writer\.(print|println|write|append)$', file: 'HttpServletResponse'}
+        - {callee: '(^|\.)getWriter\(\)\.(print|println|printf|format|write|append)$'}
+        - {callee: '(^|\.)respondText$', args: [0], when: 'ContentType\.Text\.Html'}
+      ssrf:
+        - {callee: '^(java\.net\.)?URL$'}
+        - {callee: '\.(getForObject|getForEntity|postForObject|exchange)$', args: [0], file: 'RestTemplate'}
+        - {callee: '(^|\.)(client\.)?(get|post|request)$', args: [0], file: 'io\.ktor\.client'}
+      redirect:
+        - {callee: '\.sendRedirect$', args: [0]}
+        - {callee: '(^|\.)respondRedirect$', args: [0]}
+      trust:
+        - {callee: '\.(setAttribute|putValue)$', args: [0, 1], when: '[Ss]ession'}
+      code:
+        - {callee: '\.eval$', args: [0], file: 'ScriptEngine'}
+      smtp:
+        - {callee: '\.(setSubject|setFrom|setReplyTo|addRecipient|addRecipients|setRecipients|addHeader|setHeader)$', file: '(javax|jakarta)\.mail'}
+      regex:
+        - {callee: '^(Regex|kotlin\.text\.Regex|Pattern\.compile|java\.util\.regex\.Pattern\.compile)$', args: [0]}
+        - {callee: '\.toRegex$', args: [-1]}
+
+  python:
+    sources:
+      - re: '^(flask\.)?request\.(args|form|values|cookies|headers|files|data|json|get_json|get_data|query_string|full_path|url|stream|environ|view_args|GET|POST|COOKIES|META|body|FILES|query_params|path_params)\b'
+        file: '(?m)^\s*(from|import) (flask|django|starlette|fastapi|werkzeug|rest_framework|bottle|tornado|pyramid|falcon|quart|sanic|aiohttp|litestar|masonite)\b'
+      - re: '^self\.request\.(arguments|body|GET|POST|COOKIES|META|query_arguments|body_arguments|headers|data|query_params)\b'
+      - re: '^self\.get_(argument|arguments|query_argument|query_arguments|body_argument|body_arguments|cookie|secure_cookie)\(\)$'
+      # request-wrapper accessors named after what they read (wrapped.get_form_parameter("x"))
+      - re: '^\w+\.get_(form|query|body|path|header|request)_(parameter|param|arg|argument|value)s?\(\)$'
+        file: '(?m)^\s*(from flask|import flask|from django|from starlette|from fastapi)'
+      - re: '^\w+\.get_(cookie|header)\(\)$'
+        file: '(?m)^\s*(from flask|import flask|from django|from starlette|from fastapi)'
+    # Flask request.path is matched against the route rule before the view runs: not a source.
+    context_sources: '^(flask\.)?request\.(path|base_url|url_rule|endpoint|method)\b'
+    route_params: '@\w+(\.\w+)*\.(route|get|post|put|delete|patch|api_route|websocket)\('
+    mutators: '^(append|extend|insert|add|update|write|setdefault|appendleft|put|set)$'
+    sanitizers:
+      regex: ['(^|\.)(re\.escape|regex\.escape)$']
+      smtp: ['(^|\.)(formataddr|Header|parseaddr)$']
+      all:
+        - '^(int|float|bool|len|abs|round|hash|isinstance|ord|uuid\.UUID)$'
+        - '(^|\.)(isdigit|isalnum|isnumeric|isdecimal|startswith|endswith|count|index|find|exists|isfile|isdir|match|fullmatch)$'
+        # query APIs return stored data, not the query text that went in
+        - '(^|\.)(xpath|select|findall|iterfind|findtext|fetchone|fetchall|fetchmany|search_s|search_ext_s|evaluate)$'
+      sqli: ['(^|\.)(escape_string|quote_ident|escape_literal)$']
+      cmdi: ['(^|\.)(shlex\.quote|shlex\.join)$', '^quote$']
+      xss:
+        - '(^|\.)(html\.escape|markupsafe\.escape|escape|escape_html|html_escape|escape_for_html|bleach\.clean|saxutils\.escape|quoteattr|conditional_escape|format_html|urlencode|quote_plus|urllib\.parse\.quote|parse\.quote)$'
+        - '(^|\.)(render_template|render|jsonify|redirect|abort|send_file|send_from_directory|url_for|JsonResponse|TemplateResponse)$'
+      path: ['(^|\.)(secure_filename|basename|safe_join)$']
+      ldap: ['(^|\.)(escape_filter_chars|escape_rdn|filter_format|escape_dn_chars)$']
+      redirect: ['(^|\.)url_for$']
+      xpath: ['(^|\.)(escape_for_xpath|xpath_escape)$']
+    sinks:
+      sqli:
+        - {callee: '(^|\.)(execute|executemany|executescript|mogrify)$', args: [0]}
+        - {callee: '(^|\.)(raw|extra)$', args: [0], file: 'django'}
+        - {callee: '(^|\.)text$', args: [0], file: 'sqlalchemy'}
+        - {callee: '(^|\.)read_sql(_query)?$', args: [0]}
+      cmdi:
+        - {callee: '^os\.(system|popen|popen2|popen3|execl|execlp|execle|execv|execve|execvp|execvpe|spawnl|spawnle|spawnlp|spawnv|spawnve|spawnvp)$'}
+        - {callee: '^(subprocess\.)?(run|call|check_call|check_output|Popen)$', args: [0], when: 'shell=True', file: 'subprocess'}
+        - {callee: '^(subprocess\.)?(getoutput|getstatusoutput)$', args: [0], file: 'subprocess'}
+        # argv list whose program is a shell run with -c (["sh", "-c", cmd]): the string is shell-parsed
+        - {callee: '^(subprocess\.)?(run|call|check_call|check_output|Popen)$', args: [0], file: '(?s)subprocess.*[''"](sh|bash|zsh|cmd|cmd\.exe|/bin/sh|/bin/bash)[''"].{0,300}[''"](-c|/c)[''"]'}
+        - {callee: '(^|\.)create_subprocess_shell$', args: [0]}
+      path:
+        - {callee: '^(open|io\.open|codecs\.open|os\.open|os\.remove|os\.unlink|os\.rmdir|os\.mkdir|os\.makedirs|os\.rename|os\.replace|os\.listdir|os\.scandir|os\.chmod|shutil\.(copy|copy2|copyfile|copytree|move|rmtree)|pathlib\.Path|Path|send_file|flask\.send_file|FileResponse|tarfile\.open|zipfile\.ZipFile)$'}
+        - {callee: '^os\.path\.(exists|isfile|isdir|getsize|getmtime)$', args: [0]}
+        - {callee: '\.(exists|is_file|is_dir|open|read_text|read_bytes|write_text|write_bytes|unlink|rmdir|mkdir|touch|stat|iterdir)$', args: [-1], file: 'pathlib'}
+      ldap:
+        - {callee: '\.(search_s|search_st|search_ext|search_ext_s|search)$', args: [0, 1, 2], file: 'ldap'}
+      xss:
+        - {return_in: '@\w+(\.\w+)*\.(route|get|post|put|patch|delete)\(', file: '(?m)^\s*(from flask|import flask)'}
+        - {callee: '(^|\.)(make_response|HttpResponse|render_template_string|Markup|HTMLResponse|mark_safe)$', args: [0]}
+        - {callee: '(^|\.)Response$', args: [0], unless_file: '(?m)^\s*from rest_framework(\.response)? import'}
+      ssrf:
+        # the host is fixed when the URL starts with a constant (UPPER_CASE config name or literal origin)
+        - {callee: '^(requests|httpx)\.(get|post|put|delete|patch|head|options|stream)$', args: [0], unless: '^[\w.]+\(f[''"](\{[A-Z][A-Z0-9_]*\}|https?://[^/{''"]+)/'}
+        - {callee: '^(requests|httpx)\.request$', args: [1]}
+        - {callee: '(^|\.)(urlopen|urllib\.request\.Request|Request)$', args: [0], file: 'urllib'}
+        - {callee: '^(session|s|client|http)\.(get|post|put|delete|patch|head|request)$', args: [0], file: '(requests|httpx|aiohttp)'}
+      redirect:
+        - {callee: '^(flask\.)?redirect$', args: [0], file: 'flask', unless: '^(flask\.)?redirect\(f?[''"]/[^/\\''"]'}
+        # a target built from reverse()/a fixed path only carries user data in the query string
+        - {callee: '(^|\.)(redirect|HttpResponseRedirect|HttpResponsePermanentRedirect|RedirectResponse)$', args: [0], file: '(django|starlette|fastapi)', unless: '^[\w.]+\((f[''"]\{reverse\(|reverse\(|f?[''"]/[^/\\''"])'}
+      xpath:
+        - {callee: '(^|\.)(XPath|ETXPath|xpath|XPathEvaluator)$', args: [0], file: 'lxml'}
+        - {callee: '^elementpath\.(select|iter_select|Selector)$', args: [1]}
+        - {callee: '\.(find|findall|iterfind|findtext)$', args: [0], file: 'xml\.etree'}
+      code:
+        - {callee: '^(eval|exec)$', args: [0]}
+      trust:
+        - {callee: '(^|\.)session\.__setitem__$', args: [0, 1], note: 'flask.session[k] = v / request.session[k] = v (Django)'}
+      smtp:
+        - {callee: '\.(sendmail|send_message)$', file: 'smtplib'}
+        # django.core.mail.send_mail, not a project method of the same name (self.send_mail / adapter.send_mail)
+        - {callee: '^((django\.core\.)?mail\.)?send_mail$', args: [0, 1, 2, 3], file: 'django\.core\.mail'}
+      regex:
+        - {callee: '^(re|regex)\.(compile|match|search|fullmatch|sub|subn|split|findall|finditer)$', args: [0]}
+
+  javascript:
+    sources:
+      - re: '^(req|request|ctx\.request|ctx|context\.req|event)\.(query|body|params|cookies|signedCookies|headers|hostname|ip|path|originalUrl|url|files|file|queryStringParameters|pathParameters)\b'
+      - re: '^(req|request)\.(get|header|param)\(\)$'
+      - re: '^(window\.|document\.)?location\.(search|hash|href|pathname)$'
+      - re: '^document\.(URL|documentURI|referrer|cookie|baseURI)$'
+      - re: '^(request|req)\.(json|text|formData)\(\)$'
+      - re: '^(request\.)?nextUrl\.searchParams\.get\(\)$'
+    mutators: '^(push|unshift|splice|set|append|write|assign)$'
+    sanitizers:
+      regex: ['(^|\.)(escapeRegExp|escapeStringRegexp|escapeRegex|_\.escapeRegExp|RegExp\.escape)$']
+      all:
+        - '^(parseInt|parseFloat|Number|Boolean|isNaN|isFinite|Math\.\w+)$'
+        - '(^|\.)(length|includes|startsWith|endsWith|indexOf|test|hasOwnProperty|isArray|isInteger|isSafeInteger)$'
+      xss: ['(^|\.)(escape|escapeHtml|escapeHTML|encodeHTML|htmlEscape|sanitize|DOMPurify\.sanitize|filterXSS|xss|he\.encode|encode|encodeURIComponent|sanitizeHtml)$']
+      sqli: ['(^|\.)(escape|escapeId|escapeLiteral|escapeIdentifier|format)$']
+      path: ['(^|\.)basename$']
+      cmdi: ['(^|\.)(quote|shellEscape|escapeShellArg)$']
+      ldap: ['(^|\.)(escapeFilter|escapeDN)$']
+    sinks:
+      sqli:
+        - {callee: '(^|\.)(query|execute|raw|\$queryRawUnsafe|\$executeRawUnsafe|queryRawUnsafe|executeRawUnsafe|whereRaw|orderByRaw|havingRaw|joinRaw|unsafe)$', args: [0], file: '(?i)(require\(.(mysql2?|pg|sequelize|knex|sqlite3?|better-sqlite3|mssql|oracledb|typeorm|postgres)|from .(mysql2?|pg|sequelize|knex|sqlite3?|better-sqlite3|mssql|oracledb|typeorm|@prisma/client|postgres|mysql2/promise))'}
+      cmdi:
+        - {callee: '^((child_process|cp|childProcess)\.)?(exec|execSync)$', args: [0], file: 'child_process'}
+        - {callee: '^((child_process|cp|childProcess)\.)?(spawn|spawnSync|execFile|execFileSync)$', args: [0], file: 'child_process'}
+        - {callee: '^((child_process|cp|childProcess)\.)?(spawn|spawnSync)$', when: 'shell:true', file: 'child_process'}
+      path:
+        - {callee: '^((fs|fsp|fse|fs\.promises|promises)\.)?(readFile|readFileSync|writeFile|writeFileSync|appendFile|appendFileSync|createReadStream|createWriteStream|unlink|unlinkSync|rm|rmSync|rmdir|readdir|readdirSync|open|openSync|copyFile|rename|mkdir|readJson|outputFile)$', args: [0], file: '(node:)?fs(/promises|-extra)?.'}
+        - {callee: '^res\.(sendFile|download)$', args: [0], unless: '\{[^}]*root:'}
+      ldap:
+        - {callee: '\.search$', args: [0, 1], file: '(ldapjs|ldapts)'}
+      xss:
+        - {callee: '^res(\.status\(\))?\.(send|write|end)$', args: [0]}
+        - {callee: '(^|\.)(document\.write|document\.writeln)$'}
+        - {callee: '(^|\.)insertAdjacentHTML$', args: [1]}
+      ssrf:
+        - {callee: '^(fetch|axios|got|needle|ky|undici\.request|request)$', args: [0]}
+        - {callee: '^(axios|got|ky|superagent|needle)\.(get|post|put|delete|patch|head|request)$', args: [0]}
+        - {callee: '^(http|https)\.(get|request)$', args: [0]}
+      redirect:
+        # a literal same-site path prefix ("/user/" + id) cannot become an off-site URL
+        - {callee: '^res\.redirect$', unless: '^res\.redirect\((\d+,)?[''"`]/[^/\\''"`]'}
+        - {callee: '^(window\.)?location\.(assign|replace)$', args: [0]}
+      code:
+        - {callee: '^(eval|Function|new Function|vm\.runInNewContext|vm\.runInThisContext|new vm\.Script)$', args: [0]}
+      trust:
+        - {callee: '(^|\.)session\.__setitem__$', args: [0, 1], note: 'req.session[k] = v (express-session)'}
+      smtp:
+        - {callee: '\.sendMail$', args: [0], file: 'nodemailer'}
+      regex:
+        - {callee: '^(new RegExp|RegExp)$', args: [0]}
+
+  php:
+    sources:
+      - re: '^\$_(GET|POST|REQUEST|COOKIE|FILES)\b'
+      - re: '^\$_SERVER\[.(QUERY_STRING|REQUEST_URI|PHP_SELF|PATH_INFO|HTTP_[A-Z_]+|argv).\]'
+      - re: '^filter_input\(\)$'
+      - re: '^\$request\.(input|get|query|post|all|cookie|header|route|json|file|only|except|string|str)\(\)$'
+      - re: '^\$request\.(query|request|cookies|headers|attributes)\.(get|all)\(\)$'
+      - re: '^(request\(\)\.(input|get|query|all)|request|Request\.(input|get|query|all)|Input\.get)\(\)$'
+    mutators: '^(append|add|push|set|offsetSet)$'
+    sanitizers:
+      regex: ['^preg_quote$']
+      all: ['^(intval|floatval|boolval|is_numeric|ctype_digit|ctype_alnum|count|strlen|abs|in_array|isset|empty|md5|sha1|hash|crc32|password_hash|uniqid|is_int|preg_match)$']
+      sqli: ['(^|\.)(mysqli_real_escape_string|real_escape_string|mysql_real_escape_string|pg_escape_string|pg_escape_literal|addslashes|quote|escape)$']
+      cmdi: ['^(escapeshellarg|escapeshellcmd)$']
+      xss: ['^(htmlspecialchars|htmlentities|strip_tags|e|esc_html|esc_attr|esc_url|wp_kses|wp_kses_post|urlencode|rawurlencode|json_encode)$']
+      path: ['^basename$']
+      ldap: ['^ldap_escape$']
+    sinks:
+      sqli:
+        - {callee: '^(mysqli_query|mysqli_multi_query|mysqli_real_query|mysql_query|mysql_db_query|pg_query|pg_send_query|sqlite_query|mssql_query|odbc_exec|db2_exec)$'}
+        - {callee: '\.(query|exec|prepare|multi_query|real_query|rawQuery)$', args: [0]}
+        - {callee: '^DB\.(select|statement|unprepared|raw|insert|update|delete)$', args: [0]}
+        - {callee: '\.(whereRaw|selectRaw|orderByRaw|havingRaw|groupByRaw)$', args: [0]}
+      cmdi:
+        - {callee: '^(exec|system|shell_exec|passthru|popen|proc_open|pcntl_exec)$', args: [0]}
+      path:
+        - {callee: '^(fopen|file|file_get_contents|file_put_contents|readfile|unlink|rmdir|mkdir|copy|rename|opendir|scandir|fpassthru|parse_ini_file|highlight_file|show_source|simplexml_load_file|touch)$', args: [0]}
+        - {callee: '^include$'}
+      ldap:
+        - {callee: '^ldap_(search|list|read)$', args: [1, 2]}
+      xss:
+        - {callee: '^(echo|print|printf|vprintf|print_r|die|exit)$'}
+      ssrf:
+        - {callee: '^(curl_init|file_get_contents|get_headers|fsockopen)$', args: [0]}
+        - {callee: '^curl_setopt$', args: [2], when: 'CURLOPT_URL'}
+        - {callee: '\.(get|post|put|delete|request)$', args: [0], file: 'GuzzleHttp', unless: '\.request\('}
+        - {callee: '\.request$', args: [1], file: 'GuzzleHttp'}
+      redirect:
+        - {callee: '^header$', args: [0], when: '(?i)\(.Location:'}
+      xpath:
+        - {callee: '\.(query|evaluate)$', args: [0], file: 'DOMXPath'}
+      code:
+        - {callee: '^(eval|assert|create_function)$', args: [0]}
+      trust:
+        - {callee: '^\$_SESSION\.__setitem__$', args: [0, 1]}
+      smtp:
+        - {callee: '^mail$', args: [0, 1, 3]}
+        - {callee: '\.(addAddress|addReplyTo|addCC|addBCC|setFrom|addCustomHeader)$', file: 'PHPMailer'}
+      regex:
+        - {callee: '^preg_(match|match_all|replace|replace_callback|split|grep)$', args: [0]}
+
+  go:
+    sources:
+      - re: '^(r|req|request|httpReq|hr)\.(FormValue|PostFormValue|URL\.Query\(\)\.Get|URL\.Query\(\)|Header\.Get|Header\.Values|Cookie|Cookies|Body|URL\.RawQuery|URL\.Path|Form\.Get|PostForm\.Get|FormFile|Referer|UserAgent|RequestURI)\b'
+      - re: '^(c|ctx|gc)\.(Query|DefaultQuery|Param|PostForm|DefaultPostForm|GetHeader|GetQuery|QueryArray|PostFormArray|GetPostForm|Cookie|FormFile|GetRawData)\(\)$'
+        file: 'gin-gonic/gin'
+      - re: '^(c|ctx)\.(QueryParam|QueryParams|FormValue|Param|Cookie|FormFile|QueryString)\(\)$'
+        file: 'labstack/echo'
+      - re: '^mux\.Vars\(\)'
+    sanitizers:
+      regex: ['^regexp\.QuoteMeta$']
+      all: ['^(strconv\.(Atoi|ParseInt|ParseUint|ParseFloat|ParseBool)|len|uuid\.Parse|net\.ParseIP|strings\.(HasPrefix|HasSuffix|Contains|EqualFold)|filepath\.IsLocal)$']
+      path: ['^(filepath|path)\.Base$']
+      # project helpers named sanitize*/safeRedirect* that normalise a redirect target
+      redirect: ['(?i)(^|\.)(sanitize\w*|safe\w*redirect\w*)$']
+      # encoding/json escapes <, > and & in strings (HTMLEscape) unless SetEscapeHTML(false)
+      xss: ['^(html\.EscapeString|template\.HTMLEscapeString|template\.HTMLEscaper|template\.JSEscapeString|url\.QueryEscape|url\.PathEscape|json\.Marshal|json\.MarshalIndent)$']
+      ldap: ['^ldap\.(EscapeFilter|EscapeDN)$']
+    sinks:
+      sqli:
+        - {callee: '\.(Query|QueryRow|Exec|Prepare|Raw)$', args: [0], file: '(database/sql|jmoiron/sqlx|gorm\.io|jackc/pgx)'}
+        - {callee: '\.(QueryContext|QueryRowContext|ExecContext|PrepareContext)$', args: [1], file: '(database/sql|jmoiron/sqlx|jackc/pgx)'}
+        - {callee: '\.(Select|Get)$', args: [1], file: 'jmoiron/sqlx'}
+        - {callee: '\.(Where|Order|Group|Having|Joins)$', args: [0], file: 'gorm\.io'}
+      cmdi:
+        - {callee: '^exec\.(Command|CommandContext)$'}
+        - {callee: '^syscall\.Exec$'}
+      path:
+        - {callee: '^(os\.(Open|OpenFile|ReadFile|WriteFile|Create|Remove|RemoveAll|Mkdir|MkdirAll|ReadDir|Chmod|Rename)|ioutil\.(ReadFile|WriteFile|ReadDir))$'}
+        # ServeFile itself rejects ".." elements when the name is the request's own URL path
+        - {callee: '^http\.ServeFile$', args: [2], unless: '^http\.ServeFile\(\w+,\w+,\w+\.URL\.Path\)$', unless_source: '^line \d+: \w+\.URL\.Path$'}
+      ldap:
+        - {callee: '^ldap\.NewSearchRequest$', args: [0, 6]}
+      xss:
+        - {callee: '^(w|rw|writer|resp|res)\.Write$', args: [0]}
+        - {callee: '^fmt\.(Fprintf|Fprint|Fprintln)$', when: '^fmt\.Fprint\w*\((w|rw|writer|resp|res|c\.Writer),'}
+        - {callee: '^io\.WriteString$', args: [1], when: '^io\.WriteString\((w|rw|writer|resp|res|c\.Writer),'}
+        - {callee: '^template\.(HTML|JS|HTMLAttr|URL|CSS)$', args: [0]}
+      ssrf:
+        - {callee: '^http\.(Get|Post|Head|PostForm)$', args: [0]}
+        - {callee: '^http\.NewRequest$', args: [1]}
+        - {callee: '^http\.NewRequestWithContext$', args: [2]}
+      redirect:
+        # a function that strips or rejects a leading "//" (or "/\") only redirects to same-origin paths
+        - {callee: '^http\.Redirect$', args: [2], unless: '^http\.Redirect\(\w+,\w+,"/[^/\\"]', unless_func: '"//"|Trim(Left|Prefix)?\([^()]*,\s*"/"\)'}
+        - {callee: '^(c|ctx)\.Redirect$', args: [1], file: '(gin-gonic/gin|labstack/echo)', unless_func: '"//"|Trim(Left|Prefix)?\([^()]*,\s*"/"\)'}
+      trust:
+        - {callee: '(^|\.)Values\.__setitem__$', args: [0, 1], file: 'gorilla/sessions'}
+      smtp:
+        - {callee: '^smtp\.SendMail$', args: [3, 4]}
+      regex:
+        - {callee: '^regexp\.(Compile|MustCompile|MatchString|Match|CompilePOSIX|MustCompilePOSIX)$', args: [0]}

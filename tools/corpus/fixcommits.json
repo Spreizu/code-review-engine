@@ -1,0 +1,914 @@
+[
+ {
+  "repo": "physercoe/starquant",
+  "sha": "606dd950eaf8f25bef11bb3a1c605a7602e8c5fc",
+  "bucket": "yaml",
+  "message": "fix: use yaml.safe_load instead of yaml.load (security)"
+ },
+ {
+  "repo": "Scorpio-meow/AskMiao",
+  "sha": "292cdcd76c491063d4cce558f22e709f2de81bc0",
+  "bucket": "yaml",
+  "message": "fix(security): OpenAPI \u898f\u683c\u7684 YAML \u6539\u4ee5 safe_load \u8f09\u5165\uff0c\u5225\u540d\u5148\u4ee5\u4e8b\u4ef6\u4e32\u6d41\u6aa2\u67e5"
+ },
+ {
+  "repo": "Netflix/metaflow",
+  "sha": "7ea928f925843754bb1fc4cec53c6295087a61b6",
+  "bucket": "yaml",
+  "message": "security(chevron): use yaml.safe_load instead of yaml.load with configurable loader (#3216)"
+ },
+ {
+  "repo": "vamseeachanta/digitalmodel",
+  "sha": "f898734a28b0a7d0ecb16ee6d367364a03ebe3c3",
+  "bucket": "sqli",
+  "message": "fix(security): parameterize SQL, yaml.safe_load, guard pickle, dedup modules (#620)"
+ },
+ {
+  "repo": "vamseeachanta/assethold",
+  "sha": "404d0154cfc1d464edd9f17e206a86b781e4a464",
+  "bucket": "yaml",
+  "message": "fix(security): remediate review findings \u2014 yaml.safe_load, SEC calc, request timeout, .loc, substrin"
+ },
+ {
+  "repo": "Bay-State-Pet-and-Garden-Supply/bay-state-cms",
+  "sha": "a90dde03fbaa08042b8c7bacb918e2b1e2e7549e",
+  "bucket": "ssrf",
+  "message": "\ud83d\udee1\ufe0f Sentinel: Fix SSRF bypass vulnerability in snapshot route (#99)"
+ },
+ {
+  "repo": "IcanBENCHurCAT/kya",
+  "sha": "ea3e45954288bdf717f1ed248e1c3171bc70c7c4",
+  "bucket": "ssrf",
+  "message": "\ud83d\udee1\ufe0f Sentinel: Fix SSRF vulnerability in webhook callback validation"
+ },
+ {
+  "repo": "bjohnson1279/js-ddd-inventory",
+  "sha": "1547e6f78d3b3bccb57316ab7e7fd3db1c972905",
+  "bucket": "ssrf",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [HIGH] Fix SSRF vulnerability in webhook delivery (#737)"
+ },
+ {
+  "repo": "ozgurulukir/opencode-personal",
+  "sha": "ef6056262cf3684413a91cabcbb4be94e87f45a4",
+  "bucket": "ssrf",
+  "message": "\ud83d\udee1\ufe0f Sentinel: HIGH Fix SSRF vulnerability in webfetch tool (#138)"
+ },
+ {
+  "repo": "danielBingham/communities",
+  "sha": "62e639df2eb995411e5953704fb320a1d36f6bc9",
+  "bucket": "ssrf",
+  "message": "fix: SSRF vulnerability in link previews (#546)"
+ },
+ {
+  "repo": "lucasmarcelin0/petorlandia",
+  "sha": "34579f2f4bb7c01ade1ae815503a00404dcd01a2",
+  "bucket": "redirect",
+  "message": "Fix Open Redirect vulnerability in _sanitize_login_next_url"
+ },
+ {
+  "repo": "abdullah-eymen-asru/abdullah-eymen-asru.github.io",
+  "sha": "8b2c298736acd460995a361706732b52df547aa3",
+  "bucket": "redirect",
+  "message": "Fix open redirect vulnerability in auth-pages.js"
+ },
+ {
+  "repo": "ieepirzy/origo",
+  "sha": "042c174cc0cb9f8784cc42c2448825418aa89c42",
+  "bucket": "redirect",
+  "message": "Fix open redirect vulnerability in redirect_uri validation (#62)"
+ },
+ {
+  "repo": "Coder-s-OG-s/MergeShip",
+  "sha": "7570a4d1aa06782fd6fa6eade1f560e40e502fa5",
+  "bucket": "redirect",
+  "message": "fix: validate next redirect param to prevent open redirect vulnerability (#827) (#853)"
+ },
+ {
+  "repo": "yuanjian-org/app",
+  "sha": "8f72c060de38bc9d8b84acfeeac05c3f50ef9edb",
+  "bucket": "redirect",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [HIGH] Fix Open Redirect Vulnerability in NextAuth Callback (#1448)"
+ },
+ {
+  "repo": "openSUSE/kudos",
+  "sha": "cabb617d6cde812fb994aa20d496ee293b377615",
+  "bucket": "secret",
+  "message": "fix: javascript.express.security.audit.express-session-hardcoded-secret.express-session-hardcoded-se"
+ },
+ {
+  "repo": "DesignArtWorks/FullStack",
+  "sha": "dc314a7e5d55f6d78f836736a15ec44667511894",
+  "bucket": "secret",
+  "message": "fix(security): remove versioned hardcoded secrets (#49)"
+ },
+ {
+  "repo": "twazevedo/precosmart",
+  "sha": "5f9e959018f68efdf24a037091ea3ab7b21755f8",
+  "bucket": "secret",
+  "message": "security: remove hardcoded secrets, fix weak key fallbacks and strengthen API auth"
+ },
+ {
+  "repo": "gacinfotech-sudo/FLEETPRO",
+  "sha": "fc10e7e339ba190752f1e40e98ad2928768462f2",
+  "bucket": "secret",
+  "message": "\ud83d\udd12 CRITICAL FIX: Security Hardening - Remove Hardcoded Secrets & URLs"
+ },
+ {
+  "repo": "cheshir78/hostel",
+  "sha": "cb1175990d2173965e08c06cb8f914cc8da37f23",
+  "bucket": "secret",
+  "message": "Apply security fixes: remove hardcoded secrets and restrict CORS"
+ },
+ {
+  "repo": "XKNX/knx-telegram-store",
+  "sha": "1cc6c1826233b32ca98236c20854b1f40d283132",
+  "bucket": "xxe",
+  "message": "\ud83d\udd12 Fix XXE Vulnerability in ETS XML Parser (#37)"
+ },
+ {
+  "repo": "BashfulBits/city-meeting-podcasts",
+  "sha": "e7aa7092653cca85ab946bf8f1aa17dd300f5a21",
+  "bucket": "xxe",
+  "message": "\ud83d\udd12 Fix XXE Vulnerability by using defusedxml"
+ },
+ {
+  "repo": "BashfulBits/city-meeting-podcasts",
+  "sha": "f779add8eeabadd5e706521c8bfa290c000cc0bc",
+  "bucket": "xxe",
+  "message": "\ud83d\udd12 Fix XXE Vulnerability by using defusedxml"
+ },
+ {
+  "repo": "dinoo333/EventBob",
+  "sha": "9f86d06500e8ed02eda9a6a631b9ef0ac7685aa7",
+  "bucket": "xxe",
+  "message": "Fix AssertJ XXE vulnerability (CVE-2026-24400) (#8)"
+ },
+ {
+  "repo": "fzdzzj/examOnline",
+  "sha": "47292a2dde9f6e67709e357f96334a6048d005a0",
+  "bucket": "sqli",
+  "message": "feat(sql): optimize sweep query and fix SQL injection"
+ },
+ {
+  "repo": "mantix-utility/mantix-devsecops-lab",
+  "sha": "12b436e63317580961bd62b9c699f9c03199dbe4",
+  "bucket": "sqli",
+  "message": "Fix SQL injection using parameterized query"
+ },
+ {
+  "repo": "estebanescuelaing/laboratorio04-sast-FDSI",
+  "sha": "278d016d453234f8bc25286946d9c46760b02bd2",
+  "bucket": "sqli",
+  "message": "Fix SQL injection vulnerability in buscar_usuario"
+ },
+ {
+  "repo": "Garcia-Ventures/gvtech-design",
+  "sha": "c191b3dfb9e2d9d31aba28a8b17be95a00d4cedc",
+  "bucket": "cmdi",
+  "message": "\ud83d\udd12 fix command injection vulnerability in validate.ts (#98)"
+ },
+ {
+  "repo": "Vazilll/hartes",
+  "sha": "a60bbbda6ee63acb19e130dbbce8c14c76e9387b",
+  "bucket": "cmdi",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix command injection in Quality Engine"
+ },
+ {
+  "repo": "pietrondo/pit-panel",
+  "sha": "8f61c3fbe28b163c3a7cc49462e4e1feb33bf604",
+  "bucket": "cmdi",
+  "message": "\ud83d\udee1\ufe0f Sentinel: Fix command injection in Caddy certificate check"
+ },
+ {
+  "repo": "emc-openstack/storops",
+  "sha": "09fb0292b985b1ee7e29eee082717a6679c1ef4e",
+  "bucket": "tls",
+  "message": "[ECS02C-1210]: Fix TLS verification default to True for security (#393)"
+ },
+ {
+  "repo": "thuyee/chatgpt2api",
+  "sha": "c63790215e81ea094a0387c8b2551d46a1f6cbf5",
+  "bucket": "tls",
+  "message": "fix(security B): b\u1eadt l\u1ea1i TLS verify cho lu\u1ed3ng \u0111\u0103ng k\u00fd + mail-provider"
+ },
+ {
+  "repo": "xuange-hu/bilibili-video-crawler",
+  "sha": "413e77b0ff78268673353b1ce5cc6bc6a373b683",
+  "bucket": "tls",
+  "message": "fix(security): \u79fb\u9664 verify=False \u5e76\u8865\u9f50\u5408\u89c4/CI"
+ },
+ {
+  "repo": "DRIP360/ghanashield",
+  "sha": "27f942aef0b173e64520339f079f6a13398cccb1",
+  "bucket": "tls",
+  "message": "Security fixes - CSRF protection, remove verify=False, fix exception handling"
+ },
+ {
+  "repo": "Intrusive-Thots/LeagueLoop.DEV",
+  "sha": "f56523553a30b7fd21b811dd4b1fd327a317cd56",
+  "bucket": "tls",
+  "message": "fix(security): remove verify=False in RiotClientAPI request"
+ },
+ {
+  "repo": "IBM/unitxt",
+  "sha": "449712793563eb6bac4b07ea5f2793ba6db3c689",
+  "bucket": "eval",
+  "message": "Security: Fix CWE-95 (Eval Injection) in _get_torch_dtype() (#1964)"
+ },
+ {
+  "repo": "zach909/.my-ai",
+  "sha": "de38c4e2b884b9402261b29d2c831a00b7848105",
+  "bucket": "eval",
+  "message": "\ud83d\udee1\ufe0f Sentinel: Fix shell command and JS eval injection in GNOME workspace management"
+ },
+ {
+  "repo": "zach909/.my-ai",
+  "sha": "c418077b59e6f95debe8b8912d13a9b04819aead",
+  "bucket": "eval",
+  "message": "\ud83d\udee1\ufe0f Sentinel: Fix shell command and JS eval injection in GNOME workspace management"
+ },
+ {
+  "repo": "lanryweezy/Kreathief",
+  "sha": "1f645e9feab4c0644f55d91269dffeb5449b238a",
+  "bucket": "eval",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [HIGH] Fix code injection risk by replacing new Function with mathjs"
+ },
+ {
+  "repo": "Liehu/Aura-Launcher",
+  "sha": "4025841650dce1a4752df713a13d488a4bf4cbde",
+  "bucket": "eval",
+  "message": "fix(security): calculator.py eval replaced with AST safe evaluator"
+ },
+ {
+  "repo": "Mantaray91/agent-ci",
+  "sha": "61ac933e435777dcb09843e4c833c3d88e672d15",
+  "bucket": "path",
+  "message": "fix(security): harden runtime execution against RCE, git injection, and path traversal"
+ },
+ {
+  "repo": "Deepak3699/Ai_Mentor",
+  "sha": "b47af0c94dc4b05738ee4db530dd866b826f4a80",
+  "bucket": "path",
+  "message": "Fix transcript path traversal vulnerability (#144)"
+ },
+ {
+  "repo": "imdhson/cciicc.cc",
+  "sha": "761f8f1c8c61b5b010dd7941d68466432f3f52db",
+  "bucket": "path",
+  "message": "Fix path traversal vulnerability in AssetsHandler"
+ },
+ {
+  "repo": "RemyLoveLogicAI/RemysBolt",
+  "sha": "16384d76b05997274d7320b6a8ab1a51bc26e6a2",
+  "bucket": "path",
+  "message": "security: fix critical Path Traversal vulnerability in @react-router/node (GHSA-9583-h5hc-x8cw) (#3)"
+ },
+ {
+  "repo": "dj4oC/get-owncloud",
+  "sha": "08057ef7ae0a4f6301ad8e73fea20ce636831b54",
+  "bucket": "path",
+  "message": "security: Fix path traversal vulnerability in isSafeStoragePath"
+ },
+ {
+  "repo": "EduardoLatoucheH/autocita-dashboard",
+  "sha": "b6c1b0d8331d9981da9b75c1a3bbf4c0b2470ebd",
+  "bucket": "xss",
+  "message": "Fix XSS vulnerability by escaping names in index.html"
+ },
+ {
+  "repo": "spupuz/OmniState",
+  "sha": "c50e1ea146dab24cf8dedba168eb995b07c2786d",
+  "bucket": "xss",
+  "message": "Fix XSS vulnerability in dashboard HTML escaping"
+ },
+ {
+  "repo": "orpheus497/jenova",
+  "sha": "b6216eb8a9015f0cf35907cc9d522ae2ff8b65a2",
+  "bucket": "xss",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix XSS vulnerability in image error fallback (#82)"
+ },
+ {
+  "repo": "HSBHexagon/hsb-boden",
+  "sha": "ee956fb0dddf89fa5688e6c681a9ce14f921f546",
+  "bucket": "xss",
+  "message": "\ud83d\udd12 Fix XSS Vulnerability in JSON-LD Sanitization (#164)"
+ },
+ {
+  "repo": "adi-0903/CreditCard_fraudDetection",
+  "sha": "3342cbdb941189680ae77f6abb351ba52ec8a9eb",
+  "bucket": "deser",
+  "message": "\ud83d\udd12 Fix insecure deserialization risk by removing unused pickle import"
+ },
+ {
+  "repo": "edithatogo/mars",
+  "sha": "ada3b73539b5b41c68f576b98d71fe476fab0c9c",
+  "bucket": "deser",
+  "message": "\ud83d\udd12 [security fix] Fix insecure deserialization via pickle.load in cli.py (#135)"
+ },
+ {
+  "repo": "RitechSolutions/genassist",
+  "sha": "2dfb3747bb3ff655a761aa54b607151602ab43fe",
+  "bucket": "deser",
+  "message": "fix: block insecure pickle deserialization in ML model loader (#1041)"
+ },
+ {
+  "repo": "D-sorganization/UpstreamDrift",
+  "sha": "35c6585f6c23bbdbf358fe497f660c62c814deb4",
+  "bucket": "deser",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix insecure deserialization via pandas read_pickle (#2336)"
+ },
+ {
+  "repo": "waotw/roe",
+  "sha": "50c66c5b11f46162faabcf2b58954eb0ea84aa8c",
+  "bucket": "yaml",
+  "message": "fix(security): harden config YAML parsing and the public theme route"
+ },
+ {
+  "repo": "krkn-chaos/krkn",
+  "sha": "a912f958e5b4126c4b3ef2a07c79d6355a96816c",
+  "bucket": "yaml",
+  "message": "fix(security): replace yaml.full_load with yaml.safe_load to prevent RCE (#1242)"
+ },
+ {
+  "repo": "twilio/twilio-webchat-react-app",
+  "sha": "6136781423103a2d1e98cc8d15f3f2ff6418b8db",
+  "bucket": "ssrf",
+  "message": "Fix SSRF vulnerability in /email endpoint (#165)"
+ },
+ {
+  "repo": "Tcode-Motion/techscript",
+  "sha": "f259f444faaf4ee4269c4a5430f44a0e85861b57",
+  "bucket": "ssrf",
+  "message": "Fix TOCTOU SSRF Vulnerability in URL Fetching"
+ },
+ {
+  "repo": "n24q02m/web-core",
+  "sha": "a0dda40b47dcf3a9bd9cddcda1f5e6a939b83783",
+  "bucket": "ssrf",
+  "message": "fix: prevent SSRF bypass via custom HTTP client"
+ },
+ {
+  "repo": "wryenmeek/knowledgebase",
+  "sha": "a4f16bb8c9057c0a5445f2e621afecf7574e3672",
+  "bucket": "ssrf",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [MEDIUM] Fix Server-Side Request Forgery (SSRF) risk (#575)"
+ },
+ {
+  "repo": "Adnin1/onnesha-hospital",
+  "sha": "32a0fc95ce9ec3c36aa41ac0985a444434a08022",
+  "bucket": "redirect",
+  "message": "fix(security): sanitize redirect paths to eliminate open redirect vulnerability (CWE-601)"
+ },
+ {
+  "repo": "MG-Rezliant/Juicy-Shop-MG",
+  "sha": "faef95650b8c8f2a2121ee3a34f9a42ff10a142b",
+  "bucket": "redirect",
+  "message": "fix: The application builds a URL using user-controlled input which can lead to an open redirect vul"
+ },
+ {
+  "repo": "mgi24/portofolio-web",
+  "sha": "ad44870d44ebada6cc0edd4b966f21bc3cc1d0c9",
+  "bucket": "redirect",
+  "message": "fix: whitelist redirect paths to prevent open redirect vulnerability"
+ },
+ {
+  "repo": "learning-unlimited/ESP-Website",
+  "sha": "bd3130faad7e604bf2713b3e57220f8afc82cebf",
+  "bucket": "redirect",
+  "message": "Fix open redirect vulnerability in AdminClass views (#4312) (#4862)"
+ },
+ {
+  "repo": "qintopia-agent-studio/qintopia-agent-os",
+  "sha": "f43d28ba1c84eaef60529028b7054f2f98cd678d",
+  "bucket": "secret",
+  "message": "fix(security): drop hardcoded Feishu tokens and stale secret-bearing backups (#671)"
+ },
+ {
+  "repo": "Megha-r20/Skill2Job.ai",
+  "sha": "66c74a4ab3cd26564f521f832ce1de4f436cca42",
+  "bucket": "secret",
+  "message": "fix(security): remove hardcoded JWT_SECRET fallbacks and refuse startup without secret"
+ },
+ {
+  "repo": "YaHyARamadan/GymBackend",
+  "sha": "5edc483b8c8cc8d26f2f7373d3a548884184005c",
+  "bucket": "secret",
+  "message": "fix(security): CRITICAL - remove hardcoded fallback secrets across all services"
+ },
+ {
+  "repo": "rogeraclaro/AI-Bookmark-Manager",
+  "sha": "7688c8dc5a8c8b58f2a0a2c1a29a84dbed7f8f60",
+  "bucket": "secret",
+  "message": "fix(security): read API secret from VITE_API_SECRET instead of hardcoding it"
+ },
+ {
+  "repo": "OSLC/oslc4net",
+  "sha": "9bd4a73c82417fb6366b9800240eb3f2a5a1c44d",
+  "bucket": "xxe",
+  "message": "\ud83d\udd12 Fix XXE vulnerability in RootServicesDto XML parsing (#1007)"
+ },
+ {
+  "repo": "OpenIntegrationEngine/engine",
+  "sha": "10627668e63653a9ef382f8be46069ec382f7bb7",
+  "bucket": "xxe",
+  "message": "Fix XXE in XML batch parsing"
+ },
+ {
+  "repo": "Madhumasa84/cyberdigest_84",
+  "sha": "106b06d6e3d24414d3921eb90dd748e6b49c1ea4",
+  "bucket": "xxe",
+  "message": "\ud83d\udd12 Fix XXE vulnerability in feed parser by using defusedxml"
+ },
+ {
+  "repo": "GITomprasad/Career-Intelligence-Engine",
+  "sha": "a07a931c5771cc952d2e2a9db6a6c1f221903a5b",
+  "bucket": "xxe",
+  "message": "fix: mitigate XXE vulnerability in DOCX parser"
+ },
+ {
+  "repo": "edithatogo/foi-o",
+  "sha": "270632f6bc34b0ce8aa318969b725bcc5775e32f",
+  "bucket": "xxe",
+  "message": "Fix XXE vulnerability in process models"
+ },
+ {
+  "repo": "rashmiD-GK/codescanningRepo",
+  "sha": "00785c9992c65c3c4b37525e1f2618e2820a38ca",
+  "bucket": "sqli",
+  "message": "Fix SQL injection vulnerability in user query"
+ },
+ {
+  "repo": "devthenet-labs/patchy-target",
+  "sha": "3e4e42dcb161686639ae3855535201677d81d29b",
+  "bucket": "sqli",
+  "message": "fix(security): parameterize SQL query in userHandler (#14)"
+ },
+ {
+  "repo": "rubinder/employee-feedback-pipeline",
+  "sha": "c8b806112fefc211ba4481ca08103e3e39d15cdf",
+  "bucket": "sqli",
+  "message": "fix: prevent SQL injection in query_team_metrics using parameterized queries"
+ },
+ {
+  "repo": "agbusinesskyle-a11y/Opsmemory",
+  "sha": "c513b388e169139ba974f9adf7984981c46d7ea2",
+  "bucket": "sqli",
+  "message": "Fix SQL injection vulnerabilities in Slack tasks queries (#1)"
+ },
+ {
+  "repo": "daniellelarregui/skills-introduction-to-codeql",
+  "sha": "6af7f370f91ac2b3b1353cbff4036dbb2a3f2a06",
+  "bucket": "sqli",
+  "message": "Fix SQL injection vulnerability in book query"
+ },
+ {
+  "repo": "AleksSmash2019/LocalComet-Claude",
+  "sha": "1833d0fc2c55efbeb6ca854b5567f150e2c279ca",
+  "bucket": "cmdi",
+  "message": "fix(security): remove shell=True from py_compile in self_edit (C-01, M-05)"
+ },
+ {
+  "repo": "coff33ninja/JARVIS_SYSTEM",
+  "sha": "2b9942000a4fdcdb1cdbea347ca985300923b39c",
+  "bucket": "cmdi",
+  "message": "fix(tools): remove shell=True command injection in open_app"
+ },
+ {
+  "repo": "Vazilll/hartes",
+  "sha": "6a180a08f06b4119a5620e81ad64298feb9ac0fd",
+  "bucket": "cmdi",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix command injection vulnerability"
+ },
+ {
+  "repo": "Sonic-DE/sonic-pyside",
+  "sha": "f09483634f7c5e82bff71e07f54fa83f5441c43d",
+  "bucket": "cmdi",
+  "message": "Threat: Fix shell injection in deploy run_command() on Windows"
+ },
+ {
+  "repo": "Eli9051/devsecops-week2",
+  "sha": "8bc95380ace046cb78a400cdc78f1c9bf39bb947",
+  "bucket": "cmdi",
+  "message": "fix: remove shell=True to fix command injection vulnerability"
+ },
+ {
+  "repo": "DimasAditya06/devsecops-week2",
+  "sha": "d92c39fcad287da6f20530e23d5ba852869de3f8",
+  "bucket": "cmdi",
+  "message": "Fix command injection: remove shell=True"
+ },
+ {
+  "repo": "lasha-kvara/Job-Hunter",
+  "sha": "e447c88718d11ca2ac8514f6311f6f1258f5e967",
+  "bucket": "tls",
+  "message": "fix(security): enforce TLS certificate verification and remove verify=False fallbacks in jobs_ge_pro"
+ },
+ {
+  "repo": "mehdijalalii03work/zioto-new-backend",
+  "sha": "99b794a7974268d4022eda9a5c80a85eefdabceb",
+  "bucket": "tls",
+  "message": "fix(security): enable SSL verification on all external HTTP calls"
+ },
+ {
+  "repo": "mapatir/loveheart",
+  "sha": "257eeaaa793cdc82c3dc193aa4b4de1e0a87d6c8",
+  "bucket": "tls",
+  "message": "Security: Remove SSL verification bypass (verify=False) from API requests"
+ },
+ {
+  "repo": "sixiang-world/opencode-go-usage",
+  "sha": "085679153ee04e55f3121e4f59a9255bb23b7e82",
+  "bucket": "tls",
+  "message": "fix(security): remove verify=False, add requirements.txt (\u961f\u957f)"
+ },
+ {
+  "repo": "kr8tiv-ai/Jarvis",
+  "sha": "2c40d121be2b62681bc64df4bddb9ae48f72e004",
+  "bucket": "eval",
+  "message": "security: fix CRITICAL eval() vulnerability + complete audit"
+ },
+ {
+  "repo": "yizhao95/prov_ledger",
+  "sha": "ed0f463ce9fe53ba6bc26042ef01052ad0aee9ee",
+  "bucket": "eval",
+  "message": "fix(security): base64-encode step_id/type to close run-step eval injection (SK-S1)"
+ },
+ {
+  "repo": "zirnhelt/curated-podcast-generator",
+  "sha": "65242493c4bb2c1736e4dc0f017b5125a1985110",
+  "bucket": "eval",
+  "message": "Fix expression injection in tts-eval workflow run block"
+ },
+ {
+  "repo": "MatressPolice/bloggeragent",
+  "sha": "d8fc25ff8b77ea178210c13ca59e30e13352d55b",
+  "bucket": "path",
+  "message": "\ud83d\udd12 Fix path traversal vulnerability in static file serving"
+ },
+ {
+  "repo": "taserjs/taserjs",
+  "sha": "d152aa2f8f52f66d5e18d2d869f0dc0d3a4b4bf8",
+  "bucket": "path",
+  "message": "\ud83d\udd12 Fix path traversal vulnerability in resolveSafeFilePath (#20)"
+ },
+ {
+  "repo": "spelech/model-context-gateway",
+  "sha": "684015b6491328eae37b4c3604d98993ce2ca29e",
+  "bucket": "path",
+  "message": "\ud83d\udd12 Fix sibling directory path traversal vulnerability in custom files endpoints (#221)"
+ },
+ {
+  "repo": "wsajafridi/qdrant",
+  "sha": "90910b34bb882d76d577b93ed4e3aad07de0be55",
+  "bucket": "path",
+  "message": "Fix S3 snapshot path traversal vulnerability (#10085)"
+ },
+ {
+  "repo": "arditore/RedirectMe",
+  "sha": "48c1396a1c12b56b6d051ed65ac2c1331c9b563e",
+  "bucket": "xss",
+  "message": "fix: escape HTML output in report.py to prevent stored XSS"
+ },
+ {
+  "repo": "j-stork/inguitive",
+  "sha": "05e05e2f2815fa4dec80b914c632a4d7f3e150ae",
+  "bucket": "xss",
+  "message": "Fix XSS vulnerability in component rendering"
+ },
+ {
+  "repo": "j-stork/inguitive",
+  "sha": "3be14d8c0ae5a76d287453a47fbdf659fd2d759b",
+  "bucket": "xss",
+  "message": "Fix XSS vulnerability in component rendering"
+ },
+ {
+  "repo": "chistianslater/pageblitz",
+  "sha": "5a019fa5df140d47acfee892bdd478333f60334a",
+  "bucket": "xss",
+  "message": "fix: legalGenerator escaped alle interpolierten Nutzerwerte (Stored-XSS \u00fcber Impressum/Datenschutz)"
+ },
+ {
+  "repo": "dkj121/chain",
+  "sha": "de4e90557c945a702710171917ba309c5a14e3f1",
+  "bucket": "xss",
+  "message": "security: fix XSS vulnerability in CSS value injection"
+ },
+ {
+  "repo": "mfloryan/inky-home-display",
+  "sha": "82fa14fc24e113bff00b4caf4c7ea6c6e599ec26",
+  "bucket": "deser",
+  "message": "\ud83d\udd12 Fix Insecure Deserialization via pickle.load() in cache.py (#25)"
+ },
+ {
+  "repo": "D-sorganization/Tools",
+  "sha": "1c37e9091102c5c55d186bbf1c8ea6f0d5f1ee81",
+  "bucket": "deser",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix insecure pickle deserialization (#2139)"
+ },
+ {
+  "repo": "jakobengdahl/CommunityOverview",
+  "sha": "0ce7b3763f50f82a85cf57e3e70c2c14c98ab8bd",
+  "bucket": "deser",
+  "message": "Fix insecure deserialization of pickle files in migration script (#381)"
+ },
+ {
+  "repo": "ContextualWisdomLab/appguardrail",
+  "sha": "51325a02e31624e5760f902899cd223b8d757a70",
+  "bucket": "deser",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix insecure deserialization risks"
+ },
+ {
+  "repo": "keras-team/keras",
+  "sha": "2d166b6575c21055da94e4731ba12ec526b308ab",
+  "bucket": "deser",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [HIGH] Fix insecure deserialization in dataset utilities (#23026)"
+ },
+ {
+  "repo": "MG-Rezliant/Juicy-Shop-MG",
+  "sha": "3c9dcc45f9c0ea764c9b43e85617d5cc1b392188",
+  "bucket": "ssrf",
+  "message": "fix: Untrusted input might be used to build an HTTP request, which can lead to a Server-side request"
+ },
+ {
+  "repo": "EliteaAI/elitea-sdk",
+  "sha": "6bb4168dff4038eca3ee7557d8b967829a35ac33",
+  "bucket": "ssrf",
+  "message": "fix: remediate critical Unstructured SSRF vulnerability (#595)"
+ },
+ {
+  "repo": "tinyhumansai/tinymemory",
+  "sha": "4f396fa7abedcc1b0c28216d7a219d5cfeb8980d",
+  "bucket": "ssrf",
+  "message": "fix(ssrf): add SSRF protection to fetch source"
+ },
+ {
+  "repo": "n24q02m/web-core",
+  "sha": "a64f07b21487c2ae790ee261ba5e668739757220",
+  "bucket": "ssrf",
+  "message": "[CLEANUP] fix: implement SSRF protection for Patchright browser (#476)"
+ },
+ {
+  "repo": "bjohnson1279/python-ddd-inventory",
+  "sha": "9d33a7d579e6754ecd11282647813b7853247a0c",
+  "bucket": "ssrf",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix Server-Side Request Forgery (SSRF) and unencrypted transmission in webho"
+ },
+ {
+  "repo": "Tugamer89/booklib",
+  "sha": "cb54ea63c697be80421f8f87d2b39893ae6bd38c",
+  "bucket": "redirect",
+  "message": "fix(security): [CRITICAL] resolve open redirect vulnerability (#88)"
+ },
+ {
+  "repo": "Nicolas125-tech/AssistenciaTech",
+  "sha": "5448e33c376343dc97a21b9ff6e0e05d4551bbfa",
+  "bucket": "redirect",
+  "message": "\ud83d\udd12 Fix Open Redirect vulnerability in EquipamentoBackupController"
+ },
+ {
+  "repo": "Jay09990/ERP-dashboard",
+  "sha": "da3dd54e62cf1b8f9228863be360497349bda2f6",
+  "bucket": "redirect",
+  "message": "\ud83d\udee1\ufe0f Sentinel: Fix open redirect vulnerability via URL-encoded redirect paths"
+ },
+ {
+  "repo": "kkjanura123/devsecops-project",
+  "sha": "f8f5bd80d8b4613fc55eea8bc84e95ca6738238d",
+  "bucket": "redirect",
+  "message": "Fix open redirect vulnerability"
+ },
+ {
+  "repo": "printezy247/AiAffil",
+  "sha": "c373e532d917f14afaba9d3c3b60892163c69d0b",
+  "bucket": "redirect",
+  "message": "Fix open redirect vulnerability in redirector"
+ },
+ {
+  "repo": "Contribuv/infowe_blog",
+  "sha": "ba470c724ce31ab652d9adecff65d4fac543631d",
+  "bucket": "ssrf",
+  "message": "v1.3.56: security hardening (secret key, default password, XSS/SSRF defenses)"
+ },
+ {
+  "repo": "vladcheck/DesktopApplicationClientJava",
+  "sha": "61a196911470c11a2c4c95e5c9607af92e158adb",
+  "bucket": "xxe",
+  "message": "fix: AssertJ has XML External Entity (XXE) vulnerability when parsing untrusted XML via isXmlEqualTo"
+ },
+ {
+  "repo": "devdownin/Kafkaexplorer",
+  "sha": "407fd5f6ac25c1e3a65709796f4c88bb8220f6e3",
+  "bucket": "xxe",
+  "message": "Fix XML External Entity (XXE) vulnerabilities"
+ },
+ {
+  "repo": "Bodani16/Gnix",
+  "sha": "5e4914b9639d6ffc42018e3a35c351d99bace16b",
+  "bucket": "xxe",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix XML External Entity (XXE) Vulnerability"
+ },
+ {
+  "repo": "petrolal/TetraVim",
+  "sha": "0601a1ffa88ce7b8fb3e605197aa2dcc05b45197",
+  "bucket": "xxe",
+  "message": "fix(coverage): fix XXE vulnerability in CoverageParser"
+ },
+ {
+  "repo": "petrolal/TetraVim",
+  "sha": "eca81ad64371d3cabb0a51e96073230b0ef12346",
+  "bucket": "xxe",
+  "message": "fix(maven): fix XXE vulnerability in MavenParser"
+ },
+ {
+  "repo": "vikasparabkar/seleniumCucumberTests",
+  "sha": "ba284dac56616bb9e39aac5df4b4f209ad1a8f7d",
+  "bucket": "xxe",
+  "message": "Step 6: CVE Security Fix - CVE-2025-4641 XXE Vulnerability Fixed"
+ },
+ {
+  "repo": "beer-sakthai/Sak-Family-Agent",
+  "sha": "22d03ba7a9ea8d0247a420fe9a3a06ef57e3f53a",
+  "bucket": "sqli",
+  "message": "Fix SQL injection in memory store delete operations"
+ },
+ {
+  "repo": "MarsLuay/Fluent-AI-Assistance",
+  "sha": "0acb0e4287d183f5589ee621a86ef60613cc96f0",
+  "bucket": "sqli",
+  "message": "Fix SQL injection in catalog.database.py by using static parameterized queries"
+ },
+ {
+  "repo": "wishboards/wishboard",
+  "sha": "2b60f37362127d49ef40e339cdea1c6c271d3e5f",
+  "bucket": "sqli",
+  "message": "fix(security): \ud83d\udd12 Fix SQL injection vulnerability in wishes filters using json_each (#361)"
+ },
+ {
+  "repo": "Shangjin-Xiao/ThoughtEcho",
+  "sha": "5f4389031ffbdf726511bb6bbbef78cc1c1abe0c",
+  "bucket": "sqli",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [HIGH] Fix potential SQL injection in schema_definitions (#400)"
+ },
+ {
+  "repo": "codecoradev/cora-code",
+  "sha": "4c4e291655e490a2eed79cded6d640636eefcad8",
+  "bucket": "sqli",
+  "message": "fix(findings): use parameterized queries to prevent SQL injection in list (#481)"
+ },
+ {
+  "repo": "xxDCBxx/GearUp",
+  "sha": "39dbfaac5939a64fa037e19bc69b440580245430",
+  "bucket": "sqli",
+  "message": "fix(admin_func): use prepared statements to prevent SQL injection"
+ },
+ {
+  "repo": "EAbaracus/malt_radar",
+  "sha": "24a1d1b02de91c682374574630a2e71e1e1c99f5",
+  "bucket": "cmdi",
+  "message": "\ud83d\udd12 Fix command injection vulnerability in subprocess.run calls (#38)"
+ },
+ {
+  "repo": "beer-sakthai/Sak-Family-Agent",
+  "sha": "e515e028d13ea53fc9098a5cde8491d90e3cf96d",
+  "bucket": "cmdi",
+  "message": "\ud83d\udd12 Security: fix subprocess shell injection in training script"
+ },
+ {
+  "repo": "brenkgpt-star/sitebugs",
+  "sha": "cad1de6f67cc18328d52163bc064144a74b7ec3e",
+  "bucket": "cmdi",
+  "message": "fix: command injection via shell True"
+ },
+ {
+  "repo": "MuhammadApriansyah/Aeryn",
+  "sha": "37d808d9578be6ed9d1bfa122752d26a1db18746",
+  "bucket": "cmdi",
+  "message": "Security Audit + Hardening: Path Traversal, Command Injection, SQL Injection fixes"
+ },
+ {
+  "repo": "Job4874/jules-bridge",
+  "sha": "9797fb2b15eae6b0742a7c5499984db10c059ca2",
+  "bucket": "cmdi",
+  "message": "?? Fix Command Injection via shell=True in Execute Task (#95)"
+ },
+ {
+  "repo": "Aries-Serpent/_codex_",
+  "sha": "28918ad30b271e0e57db315a4e7a9b0edbd4ae9f",
+  "bucket": "cmdi",
+  "message": "CRITICAL SECURITY FIX: XXE & Command Injection vulnerabilities remediated"
+ },
+ {
+  "repo": "PritiLande/corpocalm-gateway",
+  "sha": "4decafa136a5af113a2ce519ccb87b40afeb84ce",
+  "bucket": "tls",
+  "message": "Security fix P2: remove SSL verify=False - enable secure TLS for Supabase and Groq clients"
+ },
+ {
+  "repo": "matthewvaishnav/computational-pathology-research",
+  "sha": "7b15015326bcef6514133bff3617a8b5bd0c035b",
+  "bucket": "eval",
+  "message": "security: fix eval() arbitrary code execution in feature_cache.py"
+ },
+ {
+  "repo": "ekkis/js-prototype-lib",
+  "sha": "5da1b6204fe42eb8ac8f9cbd1bcba27214057f5b",
+  "bucket": "eval",
+  "message": "security: fix code injection via eval; update dependencies"
+ },
+ {
+  "repo": "reysaf14/AI-HR-Recruitment-Automation",
+  "sha": "c98e7cdcc1e32d6e424d57378e802f5402189daf",
+  "bucket": "path",
+  "message": "Fix buffer path traversal checks"
+ },
+ {
+  "repo": "Aver005/PoopRusteek",
+  "sha": "00b301b34096a1cc102b29175329d9e3be1b784d",
+  "bucket": "path",
+  "message": "fix(safe-write): \ud83d\udd12 Fix path traversal bypass in guarded directory checks"
+ },
+ {
+  "repo": "warpcode/dotfiles",
+  "sha": "3506b0dbc8708a2a84a2679c76607ba3071ca6fe",
+  "bucket": "path",
+  "message": "Fix path traversal vulnerability in apply_mutation.py (#176)"
+ },
+ {
+  "repo": "KDM-cli/kdm-cli",
+  "sha": "ec7d479596cb02cc42d52547e17e4053f0cedea5",
+  "bucket": "path",
+  "message": "Fix path traversal vulnerability in FileCacheProvider"
+ },
+ {
+  "repo": "danrods/danrods.github.io",
+  "sha": "89fad92e4f94d38ec8089320a4a21ffec11288b0",
+  "bucket": "xss",
+  "message": "\ud83d\udee1\ufe0f Sentinel: Fix XSS vulnerability in head.html Liquid variables"
+ },
+ {
+  "repo": "Manusi4hiu/it_ticket",
+  "sha": "df99dbb2e0c4794464f8a26b3a9931d4b8634704",
+  "bucket": "xss",
+  "message": "security: fix XSS vulnerability in email HTML body"
+ },
+ {
+  "repo": "denidarta/revou-cc3",
+  "sha": "a9da0ecc44d9ce84c7c243610b42cd0b121d3b1d",
+  "bucket": "xss",
+  "message": "Fix XSS vulnerability in todo rendering"
+ },
+ {
+  "repo": "Olwyne/wedding",
+  "sha": "85c913d7fda67c09ede4d7f71f66996bb14f9a90",
+  "bucket": "xss",
+  "message": "fix: Add HTML escaping to prevent XSS in guest-controlled fields"
+ },
+ {
+  "repo": "guibranco/gstraccini-bot-website",
+  "sha": "47644896eec0f51c050f289d3e5b6d07d361e8e0",
+  "bucket": "xss",
+  "message": "fix: escape HTML output to prevent XSS vulnerabilities"
+ },
+ {
+  "repo": "Hackedghost64/gupta-traders",
+  "sha": "fcf2b69674aab63182321504fcf88e0d285ee6b8",
+  "bucket": "xss",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [HIGH] Fix XSS vulnerability in InventoryGrid.ts"
+ },
+ {
+  "repo": "LordRobertShaw/googlepython",
+  "sha": "86e57cb9b6ec4266773e99e8a5f60eda78cd1e11",
+  "bucket": "deser",
+  "message": "fix(spanner_dbapi): replace insecure pickle with json for partition deserialization (#17014)"
+ },
+ {
+  "repo": "valyntxyz/Fabric_4L",
+  "sha": "e36fb409e4a3e9514fda13ec737a88210a508cfb",
+  "bucket": "deser",
+  "message": "fix(security): resolve unsafe pickle deserialization and supply chain advisories (#1399)"
+ },
+ {
+  "repo": "pvdro/uc-googleapis-google-cloud-python",
+  "sha": "6cbf5ce452f97a25a70cbe7b06ace2937d23080f",
+  "bucket": "deser",
+  "message": "fix(spanner_dbapi): replace insecure pickle with json for partition deserialization (#17014)"
+ },
+ {
+  "repo": "ContextualWisdomLab/appguardrail",
+  "sha": "cd8da66b3cbb6ff6995c6f7b8553923d738f9efb",
+  "bucket": "deser",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix insecure deserialization risks"
+ },
+ {
+  "repo": "supervisely/supervisely",
+  "sha": "52bb45d681fad08116e44300ebc02ec8e27222eb",
+  "bucket": "deser",
+  "message": "Fix RCE via insecure pickle deserialization (CWE-502) (#1729)"
+ },
+ {
+  "repo": "ContextualWisdomLab/appguardrail",
+  "sha": "2de8e9a30df870242cd902991b6484d8547999b1",
+  "bucket": "deser",
+  "message": "\ud83d\udee1\ufe0f Sentinel: [CRITICAL] Fix insecure deserialization risks"
+ }
+]

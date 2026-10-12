@@ -1,0 +1,520 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/elmo/code-review-engine/schemas/rule-pack.schema.json",
+  "title": "Rule pack",
+  "type": "object",
+  "required": [
+    "pack",
+    "pack_version",
+    "rules"
+  ],
+  "properties": {
+    "pack": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "pack_version": {
+      "type": "string",
+      "description": "CalVer YYYY.MM.PATCH of the pack contents"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/rule"
+      }
+    }
+  },
+  "$defs": {
+    "versionRange": {
+      "type": "string",
+      "description": "Space-separated comparator set (AND); '||' for OR. e.g. \">=3.0 <3.5\", \">=21\", \"<17 || >=25\" '*' = any detected or assumed version; true/false for boolean facts.",
+      "pattern": "^\\s*(\\*|true|false|(((>=|<=|>|<|=|\\^|~)?\\s*[0-9]+(\\.[0-9]+){0,2}\\s*|\\|\\|\\s*)+))\\s*$"
+    },
+    "appliesTo": {
+      "type": "object",
+      "minProperties": 1,
+      "description": "Version facts that must ALL hold. Keys: any, java, kotlin, gradle, maven, spring-boot, spring-framework, spring-security, vue, nuxt, nuxt-ui, vueuse, angular, react, payload, typescript, ecmascript, node, npm, go, python, php, composer, graphql, terraform, tf-provider.<name>, ytt; or tsconfig.<option> / dependency:<coord> facts. Values: version range, '*' or true/false.",
+      "additionalProperties": {
+        "$ref": "#/$defs/versionRange"
+      }
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "url",
+        "doc",
+        "doc_version",
+        "retrieved"
+      ],
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "pattern": "^https://"
+        },
+        "doc": {
+          "type": "string",
+          "description": "Human title / section of the official document (may list secondary URLs)"
+        },
+        "doc_version": {
+          "type": "string"
+        },
+        "retrieved": {
+          "type": "string",
+          "format": "date"
+        },
+        "anchor_text": {
+          "type": "string",
+          "maxLength": 300,
+          "description": "Short verbatim phrase used by the update pipeline to re-locate the section (kept short for licensing)"
+        },
+        "content_hash": {
+          "type": "string",
+          "description": "sha256 of the normalised section text at retrieval; set by the ingestion pipeline"
+        },
+        "quote": {
+          "type": "string",
+          "maxLength": 400,
+          "description": "Short verbatim sentence/phrase from the cited page that supports the rule; checked (whitespace/case-normalised) by tools/rulegen/rulegen.py verify"
+        }
+      }
+    },
+    "detection": {
+      "type": "object",
+      "required": [
+        "mode",
+        "engine"
+      ],
+      "properties": {
+        "mode": {
+          "enum": [
+            "deterministic",
+            "ai-confirm"
+          ]
+        },
+        "engine": {
+          "enum": [
+            "tree-sitter",
+            "config",
+            "manifest",
+            "index",
+            "taint"
+          ]
+        },
+        "target": {
+          "enum": [
+            "template",
+            "script",
+            "style"
+          ],
+          "description": "Vue SFC block (vue rules only): template|script|style"
+        },
+        "grammar": {
+          "enum": [
+            "java",
+            "javascript",
+            "typescript",
+            "tsx",
+            "vue",
+            "html",
+            "go",
+            "python",
+            "php",
+            "kotlin",
+            "groovy",
+            "json",
+            "yaml",
+            "xml",
+            "hcl",
+            "dockerfile",
+            "proto",
+            "graphql"
+          ],
+          "description": "Override the grammar derived from language/target"
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "doublestar globs relative to the project root"
+        },
+        "query": {
+          "type": "string",
+          "description": "tree-sitter S-expression query; must define capture @match (or `capture`)"
+        },
+        "capture": {
+          "type": "string",
+          "default": "match"
+        },
+        "filters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Named Go post-filters: vue.start_tag_lacks_attr:NAME, node.lacks_ancestor:/node.has_ancestor:KIND|KIND, node.lacks_descendant_text:/node.has_descendant_text:TEXT, file.lacks_text:/file.has_text:TEXT, node.not_in_try_with_resources"
+        },
+        "config": {
+          "type": "object",
+          "description": "For engine=config: key|key_prefix|key_any_of|key_re (+ unless_key, unless_value, unless_child), op (exists|absent|equals|not_equals|contains|in|matches), value; .xml files flatten to element paths and .@attr keys; for engine=index: options of detection.check"
+        },
+        "manifest": {
+          "type": "object",
+          "description": "For engine=manifest: check name + value"
+        },
+        "requires_dependency": {
+          "type": "string"
+        },
+        "requires_dependency_glob": {
+          "type": "string"
+        },
+        "check": {
+          "enum": [
+            "unused-export",
+            "unused-flag",
+            "unused-file",
+            "middle-man",
+            "nested-loop-no-limit-note",
+            "limit-note-incomplete",
+            "global-lock-no-limit-note",
+            "duplicate-helper",
+            "helper-replacement",
+            "call-site-patches",
+            "test-missing"
+          ],
+          "description": "For engine=index: repo-index check (internal/index). config carries check options, e.g. helper-replacement {names, name_re, api, uses, requires_loop, max_lines, dependency}; duplicate-helper {min_statements}; middle-man {min_functions, max_other_statements}; call-site-patches {min_sites}; test-missing {min_complexity, min_lines}; unused-export {full_scan}."
+        },
+        "requires_config": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Run only when the project configures one of these tools (yamllint, editorconfig, ...)."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "engine": {
+                "const": "tree-sitter"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "query"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "engine": {
+                "const": "config"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "config",
+              "files"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "engine": {
+                "const": "manifest"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "manifest"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "engine": {
+                "const": "index"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "check"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "engine": {
+                "const": "taint"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "config"
+            ]
+          }
+        }
+      ]
+    },
+    "rule": {
+      "type": "object",
+      "required": [
+        "id",
+        "title",
+        "language",
+        "kind",
+        "category",
+        "severity",
+        "applies_to",
+        "detection",
+        "message",
+        "source",
+        "examples"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[A-Z]+(-[A-Z0-9]+)+$"
+        },
+        "title": {
+          "type": "string"
+        },
+        "language": {
+          "enum": [
+            "java",
+            "javascript",
+            "typescript",
+            "tsx",
+            "jsx",
+            "vue",
+            "html",
+            "go",
+            "python",
+            "php",
+            "kotlin",
+            "groovy",
+            "json",
+            "yaml",
+            "xml",
+            "hcl",
+            "dockerfile",
+            "proto",
+            "graphql",
+            "properties",
+            "tsconfig",
+            "manifest"
+          ]
+        },
+        "framework": {
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "best-practice",
+            "anti-pattern",
+            "deprecation",
+            "removal",
+            "migration",
+            "security",
+            "modernization"
+          ]
+        },
+        "category": {
+          "type": "string",
+          "description": "Free-form; 'simplification' and 'test' are the advisory simplification categories: severity capped at minor, never gating CI."
+        },
+        "severity": {
+          "enum": [
+            "info",
+            "minor",
+            "major",
+            "critical"
+          ]
+        },
+        "applies_to": {
+          "$ref": "#/$defs/appliesTo"
+        },
+        "overrides": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "when"
+            ],
+            "properties": {
+              "when": {
+                "$ref": "#/$defs/appliesTo"
+              },
+              "severity": {
+                "enum": [
+                  "info",
+                  "minor",
+                  "major",
+                  "critical"
+                ]
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "detection": {
+          "$ref": "#/$defs/detection"
+        },
+        "message": {
+          "type": "string"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "fix": {
+          "type": "string"
+        },
+        "ai_question": {
+          "type": "string"
+        },
+        "source": {
+          "$ref": "#/$defs/source"
+        },
+        "examples": {
+          "type": "object",
+          "required": [
+            "bad",
+            "good"
+          ],
+          "properties": {
+            "bad": {
+              "type": "string"
+            },
+            "good": {
+              "type": "string"
+            },
+            "regressions": {
+              "type": "array",
+              "description": "Former false positives: must-not-match examples run by rulecheck.",
+              "items": {
+                "type": "object",
+                "required": [
+                  "code"
+                ],
+                "properties": {
+                  "code": {
+                    "type": "string"
+                  },
+                  "path": {
+                    "type": "string"
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "status": {
+          "enum": [
+            "active",
+            "shadow",
+            "retired"
+          ],
+          "description": "shadow: quarantined (run and counted, not reported) until validated on the corpus; shadow/retired need status_reason.",
+          "default": "active"
+        },
+        "rule_version": {
+          "type": "integer",
+          "minimum": 1,
+          "default": 1
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "xref": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Equivalent rules in existing linters (e.g. eslint:no-var). Informational only: crev reports these findings regardless (no skip)."
+        },
+        "status_reason": {
+          "type": "string"
+        },
+        "precision": {
+          "enum": [
+            "high",
+            "medium",
+            "low"
+          ],
+          "description": "Precision tier. low (known FP risk) requires detection.mode ai-confirm. Default: high for deterministic, low for ai-confirm."
+        },
+        "cwe": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^CWE-[1-9][0-9]*$"
+          }
+        },
+        "owasp": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(A(0[1-9]|10):(2021|2025)|API([1-9]|10):2023|M([1-9]|10):2024|LLM(0[1-9]|10):2025|D(0[1-9]|10)|K(0[1-9]|10):2022|C([1-9]|10):2024|MASVS-(STORAGE|CRYPTO|AUTH|NETWORK|PLATFORM|CODE|RESILIENCE|PRIVACY)-[1-9])$"
+          }
+        },
+        "asvs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^V[0-9]+(\\.[0-9]+){1,2}$"
+          }
+        },
+        "params": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "default": {},
+              "from": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "if": {
+        "properties": {
+          "detection": {
+            "properties": {
+              "mode": {
+                "const": "ai-confirm"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "ai_question"
+        ]
+      }
+    }
+  }
+}

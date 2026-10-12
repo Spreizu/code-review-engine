@@ -1,0 +1,4406 @@
+{
+ "eslint": {
+  "accessor-pairs": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce getter and setter pairs in objects and classes",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "array-bracket-newline": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce linebreaks after opening and before closing array brackets",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "array-bracket-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing inside array brackets",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "array-callback-return": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce `return` statements in callbacks of array methods",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "array-element-newline": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce line breaks after each array element",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "arrow-body-style": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require braces around arrow function bodies",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "arrow-parens": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require parentheses around arrow function arguments",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "arrow-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing before and after the arrow in arrow functions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "block-scoped-var": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce the use of variables within the scope they are defined",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "block-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow or enforce spaces inside of blocks after opening block and before closing block",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "brace-style": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent brace style for blocks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "callback-return": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require `return` statements after callbacks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "camelcase": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce camelcase naming convention",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "capitalized-comments": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce or disallow capitalization of the first letter of a comment",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "class-methods-use-this": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce that class methods utilize `this`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "comma-dangle": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow trailing commas",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "comma-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing before and after commas",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "comma-style": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent comma style",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "complexity": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce a maximum cyclomatic complexity allowed in a program",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "computed-property-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing inside computed property brackets",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "consistent-return": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require `return` statements to either always or never specify values",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "consistent-this": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce consistent naming when capturing the current execution context",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "constructor-super": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require `super()` calls in constructors",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "curly": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce consistent brace style for all control statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "default-case": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require `default` cases in `switch` statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "default-case-last": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce `default` clauses in `switch` statements to be last",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "default-param-last": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce default parameters to be last",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "dot-location": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent newlines before and after dots",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "dot-notation": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce dot notation whenever possible",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "eol-last": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow newline at the end of files",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "eqeqeq": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require the use of `===` and `!==`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "for-direction": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce `for` loop update clause moving the counter in the right direction",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "func-call-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow spacing between function identifiers and their invocations",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "func-name-matching": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require function names to match the name of the variable or property to which they are assigned",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "func-names": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require or disallow named `function` expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "func-style": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce the consistent use of either `function` declarations or expressions assigned to variables",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "function-call-argument-newline": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce line breaks between arguments of a function call",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "function-paren-newline": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent line breaks inside function parentheses",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "generator-star-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing around `*` operators in generator functions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "getter-return": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce `return` statements in getters",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "global-require": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require `require()` calls to be placed at top-level module scope",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "grouped-accessor-pairs": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require grouped accessor pairs in object literals and classes",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "guard-for-in": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require `for-in` loops to include an `if` statement",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "handle-callback-err": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require error handling in callbacks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "id-blacklist": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow specified identifiers",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "id-denylist": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow specified identifiers",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "id-length": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce minimum and maximum identifier lengths",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "id-match": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require identifiers to match a specified regular expression",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "implicit-arrow-linebreak": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce the location of arrow function bodies",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "indent": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent indentation",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "indent-legacy": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent indentation",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "init-declarations": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require or disallow initialization in variable declarations",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "jsx-quotes": {
+   "categories": null,
+   "deprecated": true,
+   "description": "singlequote",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "key-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing between keys and values in object literal properties",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "keyword-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing before and after keywords",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "line-comment-position": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce position of line comments",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "linebreak-style": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent linebreak style",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "lines-around-comment": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require empty lines around comments",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "lines-around-directive": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow newlines around directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "lines-between-class-members": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow an empty line between class members",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "logical-assignment-operators": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require or disallow logical assignment operator shorthand",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "max-classes-per-file": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce a maximum number of classes per file",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "max-depth": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce a maximum depth that blocks can be nested",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "max-len": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce a maximum line length",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "max-lines": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce a maximum number of lines per file",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "max-lines-per-function": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce a maximum number of lines of code in a function",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "max-nested-callbacks": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce a maximum depth that callbacks can be nested",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "max-params": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce a maximum number of parameters in function definitions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "max-statements": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce a maximum number of statements allowed in function blocks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "max-statements-per-line": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce a maximum number of statements allowed per line",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "multiline-comment-style": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce a particular style for multiline comments",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "multiline-ternary": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce newlines between operands of ternary expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "new-cap": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require constructor names to begin with a capital letter",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "new-parens": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce or disallow parentheses when invoking a constructor with no arguments",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "newline-after-var": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow an empty line after variable declarations",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "newline-before-return": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require an empty line before `return` statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "newline-per-chained-call": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require a newline after each call in a method chain",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-alert": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of `alert`, `confirm`, and `prompt`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-array-constructor": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `Array` constructors",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-async-promise-executor": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow using an async function as a Promise executor",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-await-in-loop": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `await` inside of loops",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-bitwise": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow bitwise operators",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-buffer-constructor": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow use of the `Buffer()` constructor",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-caller": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of `arguments.caller` or `arguments.callee`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-case-declarations": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow lexical declarations in case clauses",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-catch-shadow": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow `catch` clause parameters from shadowing variables in the outer scope",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-class-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow reassigning class members",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-compare-neg-zero": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow comparing against `-0`",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-cond-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow assignment operators in conditional expressions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-confusing-arrow": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow arrow functions where they could be confused with comparisons",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-console": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of `console`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-const-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow reassigning `const`, `using`, and `await using` variables",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-constant-binary-expression": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow expressions where the operation doesn't affect the value",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-constant-condition": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow constant expressions in conditions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-constructor-return": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow returning value from constructor",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-continue": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `continue` statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-control-regex": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow control characters in regular expressions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-debugger": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of `debugger`",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-delete-var": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow deleting variables",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-div-regex": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow equal signs explicitly at the beginning of regular expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-dupe-args": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow duplicate arguments in `function` definitions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-dupe-class-members": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow duplicate class members",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-dupe-else-if": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow duplicate conditions in if-else-if chains",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-dupe-keys": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow duplicate keys in object literals",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-duplicate-case": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow duplicate case labels",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-duplicate-imports": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow duplicate module imports",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-else-return": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `else` blocks after `return` statements in `if` statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-empty": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow empty block statements",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-empty-character-class": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow empty character classes in regular expressions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-empty-function": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow empty functions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-empty-pattern": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow empty destructuring patterns",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-empty-static-block": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow empty static blocks",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-eq-null": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `null` comparisons without type-checking operators",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-eval": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of `eval()`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-ex-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow reassigning exceptions in `catch` clauses",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-extend-native": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow extending native types",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-extra-bind": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary calls to `.bind()`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-extra-boolean-cast": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary boolean casts",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-extra-label": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary labels",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-extra-parens": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow unnecessary parentheses",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-extra-semi": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow unnecessary semicolons",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-fallthrough": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow fallthrough of `case` statements",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-floating-decimal": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow leading or trailing decimal points in numeric literals",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-func-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow reassigning `function` declarations",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-global-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow assignments to native objects or read-only global variables",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-implicit-coercion": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow shorthand type conversions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-implicit-globals": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow declarations in the global scope",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-implied-eval": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of `eval()`-like methods",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-import-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow assigning to imported bindings",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-inline-comments": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow inline comments after code",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-inner-declarations": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow variable or `function` declarations in nested blocks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-invalid-regexp": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow invalid regular expression strings in `RegExp` constructors",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-invalid-this": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow use of `this` in contexts where the value of `this` is `undefined`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-irregular-whitespace": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow irregular whitespace",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-iterator": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of the `__iterator__` property",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-label-var": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow labels that share a name with a variable",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-labels": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow labeled statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-lone-blocks": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary nested blocks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-lonely-if": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `if` statements as the only statement in `else` blocks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-loop-func": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow function declarations that contain unsafe references inside loop statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-loss-of-precision": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow literal numbers that lose precision",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-magic-numbers": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow magic numbers",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-misleading-character-class": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow characters which are made with multiple code points in character class syntax",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-mixed-operators": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow mixed binary operators",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-mixed-requires": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow `require` calls to be mixed with regular variable declarations",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-mixed-spaces-and-tabs": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow mixed spaces and tabs for indentation",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-multi-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow use of chained assignment expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-multi-spaces": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow multiple spaces",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-multi-str": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow multiline strings",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-multiple-empty-lines": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow multiple empty lines",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-native-reassign": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow assignments to native objects or read-only global variables",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-negated-condition": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow negated conditions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-negated-in-lhs": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow negating the left operand in `in` expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-nested-ternary": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow nested ternary expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-new": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `new` operators outside of assignments or comparisons",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-new-func": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `new` operators with the `Function` object",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-new-native-nonconstructor": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `new` operators with global non-constructor functions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-new-object": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow `Object` constructors",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-new-require": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow `new` operators with calls to `require`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-new-symbol": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow `new` operators with the `Symbol` object",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-new-wrappers": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `new` operators with the `String`, `Number`, and `Boolean` objects",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-nonoctal-decimal-escape": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `\\\\8` and `\\\\9` escape sequences in string literals",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-obj-calls": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow calling global object properties as functions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-object-constructor": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow calls to the `Object` constructor without an argument",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-octal": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow octal literals",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-octal-escape": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow octal escape sequences in string literals",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-param-reassign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow reassigning function parameters",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-path-concat": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow string concatenation with `__dirname` and `__filename`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-plusplus": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the unary operators `++` and `--`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-process-env": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow the use of `process.env`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-process-exit": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow the use of `process.exit()`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-promise-executor-return": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow returning values from Promise executor functions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-proto": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of the `__proto__` property",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-prototype-builtins": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow calling some `Object.prototype` methods directly on objects",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-redeclare": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow variable redeclaration",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-regex-spaces": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow multiple spaces in regular expressions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-restricted-exports": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow specified names in exports",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-restricted-globals": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow specified global variables",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-restricted-imports": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Whether to allow type-only imports for a path.",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-restricted-modules": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow specified modules when loaded by `require`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-restricted-properties": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow certain properties on certain objects",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-restricted-syntax": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow specified syntax",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-return-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow assignment operators in `return` statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-return-await": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow unnecessary `return await`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-script-url": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `javascript:` URLs",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-self-assign": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow assignments where both sides are exactly the same",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-self-compare": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow comparisons where both sides are exactly the same",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-sequences": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow comma operators",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-setter-return": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow returning values from setters",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-shadow": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow variable declarations from shadowing variables declared in the outer scope",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-shadow-restricted-names": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow identifiers from shadowing restricted names",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-spaced-func": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow spacing between function identifiers and their applications (deprecated)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-sparse-arrays": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow sparse arrays",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-sync": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow synchronous methods",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-tabs": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow all tabs",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-template-curly-in-string": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow template literal placeholder syntax in regular strings",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-ternary": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow ternary operators",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-this-before-super": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `this`/`super` before calling `super()` in constructors",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-throw-literal": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow throwing literals as exceptions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-trailing-spaces": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow trailing whitespace at the end of lines",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-unassigned-vars": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `let` or `var` variables that are read but never assigned",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-undef": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of undeclared variables unless mentioned in `/*global */` comments",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-undef-init": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow initializing variables to `undefined`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-undefined": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of `undefined` as an identifier",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-underscore-dangle": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow dangling underscores in identifiers",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-unexpected-multiline": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow confusing multiline expressions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-unmodified-loop-condition": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unmodified loop conditions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-unneeded-ternary": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow ternary operators when simpler alternatives exist",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-unreachable": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unreachable code after `return`, `throw`, `continue`, and `break` statements",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-unreachable-loop": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow loops with a body that allows only one iteration",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-unsafe-finally": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow control flow statements in `finally` blocks",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-unsafe-negation": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow negating the left operand of relational operators",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-unsafe-optional-chaining": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow use of optional chaining in contexts where the `undefined` value is not allowed",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-unused-expressions": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unused expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-unused-labels": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unused labels",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-unused-private-class-members": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unused private class members",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-unused-vars": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unused variables",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-use-before-define": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of variables before they are defined",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-useless-assignment": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow variable assignments when the value is not used",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-useless-backreference": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow useless backreferences in regular expressions",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-useless-call": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary calls to `.call()` and `.apply()`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-useless-catch": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary `catch` clauses",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-useless-computed-key": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary computed property keys in objects and classes",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-useless-concat": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary concatenation of literals or template literals",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-useless-constructor": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary constructors",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-useless-escape": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow unnecessary escape characters",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-useless-rename": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow renaming import, export, and destructured assignments to the same name",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-useless-return": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow redundant return statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-var": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require `let` or `const` instead of `var`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-void": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `void` operators",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-warning-comments": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow specified warning terms in comments",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-whitespace-before-property": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Disallow whitespace before properties",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-with": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `with` statements",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "nonblock-statement-body-position": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce the location of single-line statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "object-curly-newline": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent line breaks after opening and before closing braces",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "object-curly-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing inside braces",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "object-property-newline": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce placing object properties on separate lines",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "object-shorthand": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require or disallow method and property shorthand syntax for object literals",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "one-var": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce variables to be declared either together or separately in functions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "one-var-declaration-per-line": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow newlines around variable declarations",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "operator-assignment": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require or disallow assignment operator shorthand where possible",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "operator-linebreak": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent linebreak style for operators",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "padded-blocks": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow padding within blocks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "padding-line-between-statements": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow padding lines between statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "prefer-arrow-callback": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require using arrow functions for callbacks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-const": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require `const` declarations for variables that are never reassigned after declared",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-destructuring": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require destructuring from arrays and/or objects",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-exponentiation-operator": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow the use of `Math.pow` in favor of the `**` operator",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-named-capture-group": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce using named capture group in regular expression",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-numeric-literals": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow `parseInt()` and `Number.parseInt()` in favor of binary, octal, and hexadecimal literals",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-object-has-own": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow use of `Object.prototype.hasOwnProperty.call()` and prefer use of `Object.hasOwn()`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-object-spread": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow using `Object.assign` with an object literal as the first argument and prefer the use of object spread instead",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-promise-reject-errors": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require using Error objects as Promise rejection reasons",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-reflect": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require `Reflect` methods where applicable",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-regex-literals": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow use of the `RegExp` constructor in favor of regular expression literals",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-rest-params": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require rest parameters instead of `arguments`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-spread": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require spread operators instead of `.apply()`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-template": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require template literals instead of string concatenation",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "preserve-caught-error": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow losing originally caught error when re-throwing custom errors",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "quote-props": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require quotes around object literal property names",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "quotes": {
+   "categories": null,
+   "deprecated": true,
+   "description": "doublequote",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "radix": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce the use of the radix argument when using `parseInt()`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-atomic-updates": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow assignments that can lead to race conditions due to usage of `await` or `yield`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "require-await": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Disallow async functions which have no `await` expression",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-unicode-regexp": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce the use of `u` or `v` flag on regular expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-yield": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require generator functions to contain `yield`",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "rest-spread-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce spacing between rest and spread operators and their expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "semi": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow semicolons instead of ASI",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "semi-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing before and after semicolons",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "semi-style": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce location of semicolons",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "sort-imports": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce sorted `import` declarations within modules",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "sort-keys": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require object keys to be sorted",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "sort-vars": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require variables within the same declaration block to be sorted",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "space-before-blocks": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing before blocks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "space-before-function-paren": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing before `function` definition opening parenthesis",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "space-in-parens": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing inside parentheses",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "space-infix-ops": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require spacing around infix operators",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "space-unary-ops": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing before or after unary operators",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "spaced-comment": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce consistent spacing after the `//` or `/*` in a comment",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "strict": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require or disallow strict mode directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "switch-colon-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Enforce spacing around colons of switch statements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "symbol-description": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require symbol descriptions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "template-curly-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow spacing around embedded expressions of template strings",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "template-tag-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow spacing between template tags and their literals",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "unicode-bom": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require or disallow Unicode byte order mark (BOM)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "use-isnan": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require calls to `isNaN()` when checking for `NaN`",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-typeof": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Enforce comparing `typeof` expressions against valid strings",
+   "recommended": true,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "vars-on-top": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require `var` declarations be placed at the top of their containing scope",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "wrap-iife": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require parentheses around immediate `function` invocations",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "wrap-regex": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require parenthesis around regex literals",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "yield-star-spacing": {
+   "categories": null,
+   "deprecated": true,
+   "description": "Require or disallow spacing around the `*` in `yield*` expressions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "yoda": {
+   "categories": null,
+   "deprecated": false,
+   "description": "Require or disallow \"Yoda\" conditions",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  }
+ },
+ "eslint-plugin-vue": {
+  "attributes-order": {
+   "categories": [
+    "vue3-recommended",
+    "vue2-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce order of attributes",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "block-lang": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow use other than available `lang`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "block-tag-newline": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce line breaks after opening and before closing block-level tags",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "comment-directive": {
+   "categories": [
+    "base"
+   ],
+   "deprecated": false,
+   "description": "support comment-directives in `<template>`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "component-api-style": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce component API style",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "define-emits-declaration": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce declaration style of `defineEmits`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "define-macros-order": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce order of compiler macros (`defineProps`, `defineEmits`, etc.)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "define-props-declaration": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce declaration style of `defineProps`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "define-props-destructuring": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce consistent style for props destructuring",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "enforce-style-attribute": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce or forbid the use of the `scoped` and `module` attributes in SFC top level style tags",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "first-attribute-linebreak": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce the location of first attribute",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "html-button-has-type": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow usage of button without an explicit type attribute",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "html-closing-bracket-newline": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "require or disallow a line break before tag's closing brackets",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "html-closing-bracket-spacing": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "require or disallow a space before tag's closing brackets",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "html-end-tags": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce end tag style",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "html-quotes": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce quotes style of HTML attributes",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "jsx-uses-vars": {
+   "categories": [
+    "base"
+   ],
+   "deprecated": false,
+   "description": "prevent variables used in JSX to be marked as unused",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "max-attributes-per-line": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce the maximum number of attributes per line",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "max-len": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce a maximum line length in `.vue` files",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "max-lines-per-block": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce maximum number of lines in Vue SFC blocks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "max-props": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce maximum number of props in Vue component",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "max-template-depth": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce maximum depth of template",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "mustache-interpolation-spacing": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce unified spacing in mustache interpolations",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "new-line-between-multi-line-property": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce new lines between multi-line properties in Vue components",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "next-tick-style": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce Promise or callback style in `nextTick`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-arrow-functions-in-watch": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using arrow functions to define watcher",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-async-in-computed-properties": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow asynchronous actions in computed properties",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-boolean-default": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow boolean defaults",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-child-content": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow element's child contents which would be overwritten by a directive like `v-html` or `v-text`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-computed-properties-in-data": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow accessing computed properties in `data`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-custom-modifiers-on-v-model": {
+   "categories": [
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow custom modifiers on v-model used on the component",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-data-object-declaration": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated object declaration on data (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-delete-set": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated `$delete` and `$set` (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-destroyed-lifecycle": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated `destroyed` and `beforeDestroy` lifecycle hooks (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-dollar-listeners-api": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated `$listeners` (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-dollar-scopedslots-api": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated `$scopedSlots` (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-events-api": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated events api (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-filter": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated filters syntax (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-functional-template": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated the `functional` template (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-html-element-is": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated the `is` attribute on HTML elements (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-inline-template": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated `inline-template` attribute (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-model-definition": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow deprecated `model` definition (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-props-default-this": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow deprecated `this` access in props default function (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-scope-attribute": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow deprecated `scope` attribute (in Vue.js 2.5.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-deprecated-slot-scope-attribute": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow deprecated `slot-scope` attribute (in Vue.js 2.6.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-deprecated-v-bind-sync": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow use of deprecated `.sync` modifier on `v-bind` directive (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-v-is": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow deprecated `v-is` directive (in Vue.js 3.1.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-deprecated-v-on-native-modifier": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated `.native` modifiers (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-deprecated-vue-config-keycodes": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using deprecated `Vue.config.keyCodes` (in Vue.js 3.0.0+)",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-dupe-keys": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow duplication of field names",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-dupe-v-else-if": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow duplicate conditions in `v-if` / `v-else-if` chains",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-duplicate-attr-inheritance": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce `inheritAttrs` to be set to `false` when using `v-bind=\"$attrs\"`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-duplicate-attributes": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow duplication of attributes",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-duplicate-class-names": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow duplication of class names in class attributes",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-empty-component-block": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow the `<template>` `<script>` `<style>` block to be empty",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-export-in-script-setup": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow `export` in `<script setup>`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-expose-after-await": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow asynchronously registered `expose`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-import-compiler-macros": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow importing Vue compiler macros",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-irregular-whitespace": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow irregular whitespace in `.vue` files",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-lifecycle-after-await": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow asynchronously registered lifecycle hooks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-lone-template": {
+   "categories": [
+    "vue3-recommended",
+    "vue2-recommended"
+   ],
+   "deprecated": false,
+   "description": "disallow unnecessary `<template>`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-multi-spaces": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "disallow multiple spaces",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-multiple-objects-in-class": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow passing multiple objects in an array to class",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-multiple-slot-args": {
+   "categories": [
+    "vue3-recommended",
+    "vue2-recommended"
+   ],
+   "deprecated": false,
+   "description": "disallow passing multiple arguments to scoped slots",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-multiple-template-root": {
+   "categories": [
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow adding multiple root nodes to the template",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-mutating-props": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow mutation of component props",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-negated-v-if-condition": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow negated conditions in v-if/v-else",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-parsing-error": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow parsing errors in `<template>`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-potential-component-option-typo": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow a potential typo in your component property",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-required-prop-with-default": {
+   "categories": [
+    "vue2-recommended",
+    "vue3-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce props with default values to be optional",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-reserved-keys": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow overwriting reserved keys",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-restricted-call-after-await": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow asynchronously called restricted methods",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-restricted-html-elements": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow specific elements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-root-v-if": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow `v-if` directives on root element",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-setup-props-reactivity-loss": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow usages that lose the reactivity of `props` passed to `setup`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-shared-component-data": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce component's data property to be a function",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-side-effects-in-computed-properties": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow side effects in computed properties",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-spaces-around-equal-signs-in-attribute": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "disallow spaces around equal signs in attribute",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "no-static-inline-styles": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow static inline `style` attributes",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-template-key": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow `key` attribute on `<template>`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-template-shadow": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "disallow variable declarations from shadowing variables declared in the outer scope",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-template-target-blank": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow target=\"_blank\" attribute without rel=\"noopener noreferrer\"",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-textarea-mustache": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow mustaches in `<textarea>`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-this-in-before-route-enter": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow `this` usage in a `beforeRouteEnter` method",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-unused-emit-declarations": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow unused emit declarations",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-unused-refs": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow unused refs",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-unused-vars": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow unused variable definitions of v-for directives or scope attributes",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-use-computed-property-like-method": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow use computed property like method",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-use-v-else-with-v-for": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow using `v-else-if`/`v-else` on the same element as `v-for`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-use-v-if-with-v-for": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow using `v-if` on the same element as `v-for`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-useless-mustaches": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow unnecessary mustache interpolations",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-useless-template-attributes": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow useless attribute on `<template>`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-useless-v-bind": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow unnecessary `v-bind` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-v-for-template-key": {
+   "categories": [
+    "vue2-essential"
+   ],
+   "deprecated": true,
+   "description": "disallow `key` attribute on `<template v-for>`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-v-for-template-key-on-child": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow key of `<template v-for>` placed on child elements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-v-html": {
+   "categories": [
+    "vue3-recommended",
+    "vue2-recommended"
+   ],
+   "deprecated": false,
+   "description": "disallow use of v-html to prevent XSS attack",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-v-model-argument": {
+   "categories": [
+    "vue2-essential"
+   ],
+   "deprecated": true,
+   "description": "disallow adding an argument to `v-model` used in custom component",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "no-v-text": {
+   "categories": null,
+   "deprecated": false,
+   "description": "disallow use of v-text",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "no-watch-after-await": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "disallow asynchronously registered `watch`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "one-component-per-file": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce that each component should be in its own file",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "order-in-components": {
+   "categories": [
+    "vue3-recommended",
+    "vue2-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce order of properties in components",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "padding-line-between-blocks": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require or disallow padding lines between blocks",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "padding-line-between-tags": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require or disallow newlines between sibling tags in template",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "padding-lines-in-component-definition": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require or disallow padding lines in component definition",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "prefer-define-options": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce use of `defineOptions` instead of default export",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-import-from-vue": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce import from 'vue' instead of import from '@vue/*'",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-prop-type-boolean-first": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce `Boolean` comes first in component prop types",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "prefer-separate-static-class": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require static class names in template to be in a separate `class` attribute",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "prefer-use-template-ref": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require using `useTemplateRef` instead of `ref`/`shallowRef` for template refs",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-component-is": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "require `v-bind:is` of `<component>` elements",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "require-default-export": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require components to be the default export",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "require-default-prop": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "require default value for props",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-direct-export": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require the component to be directly exported",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-emit-validator": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require type definitions in emits",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-explicit-slots": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require slots to be explicitly defined",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "require-expose": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require declare public properties using `expose`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-macro-variable-name": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require a certain macro variable name",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-name-property": {
+   "categories": null,
+   "deprecated": false,
+   "description": "require a name property in Vue components",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-prop-type-constructor": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "require prop type to be a constructor",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-prop-types": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "require type definitions in props",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-render-return": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce render function to always return value",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "require-slots-as-functions": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce properties of `$slots` to be used as a function",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "require-toggle-inside-transition": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "require control the display of the content inside `<transition>`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "require-typed-object-prop": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce adding type declarations to object props",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "require-v-for-key": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "require `v-bind:key` with `v-for` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "return-in-computed-property": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce that a return statement is present in computed property",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "return-in-emits-validator": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce that a return statement is present in emits validator",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "sort-keys": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce sort-keys in a manner that is compatible with order-in-components",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "static-class-names-order": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce static class names order",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "this-in-template": {
+   "categories": [
+    "vue3-recommended",
+    "vue2-recommended"
+   ],
+   "deprecated": false,
+   "description": "disallow usage of `this` in template",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "use-v-on-exact": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce usage of `exact` modifier on `v-on`",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "v-for-delimiter-style": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce `v-for` directive's delimiter style",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "layout"
+  },
+  "v-on-handler-style": {
+   "categories": null,
+   "deprecated": false,
+   "description": "enforce writing style for handlers in `v-on` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "v-on-style": {
+   "categories": [
+    "vue3-strongly-recommended",
+    "vue2-strongly-recommended"
+   ],
+   "deprecated": false,
+   "description": "enforce `v-on` directive style",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "suggestion"
+  },
+  "valid-attribute-name": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "require valid attribute names",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-define-emits": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `defineEmits` compiler macro",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-define-options": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `defineOptions` compiler macro",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-define-props": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `defineProps` compiler macro",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-model-definition": {
+   "categories": [
+    "vue2-essential"
+   ],
+   "deprecated": true,
+   "description": "require valid keys in model option",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-next-tick": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `nextTick` function calls",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-template-root": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid template root",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-bind": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-bind` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-bind-sync": {
+   "categories": [
+    "vue2-essential"
+   ],
+   "deprecated": true,
+   "description": "enforce valid `.sync` modifier on `v-bind` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-cloak": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-cloak` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-else": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-else` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-else-if": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-else-if` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-for": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-for` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-html": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-html` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-if": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-if` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-is": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-is` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-memo": {
+   "categories": [
+    "vue3-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-memo` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-model": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-model` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-on": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-on` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-once": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-once` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-pre": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-pre` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-show": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-show` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-slot": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-slot` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  },
+  "valid-v-text": {
+   "categories": [
+    "vue3-essential",
+    "vue2-essential"
+   ],
+   "deprecated": false,
+   "description": "enforce valid `v-text` directives",
+   "recommended": false,
+   "requiresTypeChecking": false,
+   "type": "problem"
+  }
+ },
+ "typescript-eslint": {
+  "adjacent-overload-signatures": {
+   "deprecated": false,
+   "description": "Require that function overload signatures be consecutive."
+  },
+  "array-type": {
+   "deprecated": false,
+   "description": "Require consistently using either `T[]` or `Array<T>` for arrays."
+  },
+  "await-thenable": {
+   "deprecated": false,
+   "description": "Disallow awaiting a value that is not a Thenable."
+  },
+  "ban-ts-comment": {
+   "deprecated": false,
+   "description": "Disallow `@ts-<directive>` comments or require descriptions after directives."
+  },
+  "ban-tslint-comment": {
+   "deprecated": false,
+   "description": "Disallow `// tslint:<rule-flag>` comments."
+  },
+  "class-literal-property-style": {
+   "deprecated": false,
+   "description": "Enforce that literals on classes are exposed in a consistent style."
+  },
+  "class-methods-use-this": {
+   "deprecated": false,
+   "description": "Enforce that class methods utilize `this`."
+  },
+  "consistent-generic-constructors": {
+   "deprecated": false,
+   "description": "Enforce specifying generic type arguments on type annotation or constructor name of a constructor call."
+  },
+  "consistent-indexed-object-style": {
+   "deprecated": false,
+   "description": "Require or disallow the `Record` type."
+  },
+  "consistent-return": {
+   "deprecated": false,
+   "description": "Require `return` statements to either always or never specify values."
+  },
+  "consistent-type-assertions": {
+   "deprecated": false,
+   "description": "Enforce consistent usage of type assertions."
+  },
+  "consistent-type-definitions": {
+   "deprecated": false,
+   "description": "Enforce type definitions to consistently use either `interface` or `type`."
+  },
+  "consistent-type-exports": {
+   "deprecated": false,
+   "description": "Enforce consistent usage of type exports."
+  },
+  "consistent-type-imports": {
+   "deprecated": false,
+   "description": "Enforce consistent usage of type imports."
+  },
+  "default-param-last": {
+   "deprecated": false,
+   "description": "Enforce default parameters to be last."
+  },
+  "dot-notation": {
+   "deprecated": false,
+   "description": "Enforce dot notation whenever possible."
+  },
+  "explicit-function-return-type": {
+   "deprecated": false,
+   "description": "Require explicit return types on functions and class methods."
+  },
+  "explicit-member-accessibility": {
+   "deprecated": false,
+   "description": "Require explicit accessibility modifiers on class properties and methods."
+  },
+  "init-declarations": {
+   "deprecated": false,
+   "description": "Require or disallow initialization in variable declarations."
+  },
+  "max-params": {
+   "deprecated": false,
+   "description": "Enforce a maximum number of parameters in function definitions."
+  },
+  "member-ordering": {
+   "deprecated": false,
+   "description": "Require a consistent member declaration order."
+  },
+  "method-signature-style": {
+   "deprecated": false,
+   "description": "Enforce using a particular method signature syntax."
+  },
+  "naming-convention": {
+   "deprecated": false,
+   "description": "Enforce naming conventions for everything across a codebase."
+  },
+  "no-array-constructor": {
+   "deprecated": false,
+   "description": "Disallow generic `Array` constructors."
+  },
+  "no-array-delete": {
+   "deprecated": false,
+   "description": "Disallow using the `delete` operator on array values."
+  },
+  "no-base-to-string": {
+   "deprecated": false,
+   "description": "Require `.toString()` and `.toLocaleString()` to only be called on objects which provide useful information when stringified."
+  },
+  "no-confusing-non-null-assertion": {
+   "deprecated": false,
+   "description": "Disallow non-null assertion in locations that may be confusing."
+  },
+  "no-confusing-void-expression": {
+   "deprecated": false,
+   "description": "Require expressions of type void to appear in statement position."
+  },
+  "no-deprecated": {
+   "deprecated": false,
+   "description": "Disallow using code marked as `@deprecated`."
+  },
+  "no-dupe-class-members": {
+   "deprecated": false,
+   "description": "Disallow duplicate class members."
+  },
+  "no-duplicate-enum-values": {
+   "deprecated": false,
+   "description": "Disallow duplicate enum member values."
+  },
+  "no-duplicate-type-constituents": {
+   "deprecated": false,
+   "description": "Disallow duplicate constituents of union or intersection types."
+  },
+  "no-dynamic-delete": {
+   "deprecated": false,
+   "description": "Disallow using the `delete` operator on computed key expressions."
+  },
+  "no-empty-function": {
+   "deprecated": false,
+   "description": "Disallow empty functions."
+  },
+  "no-empty-interface": {
+   "deprecated": true,
+   "description": "Disallow the declaration of empty interfaces."
+  },
+  "no-empty-object-type": {
+   "deprecated": false,
+   "description": "Disallow accidentally using the \"empty object\" type."
+  },
+  "no-explicit-any": {
+   "deprecated": false,
+   "description": "Disallow the `any` type."
+  },
+  "no-extra-non-null-assertion": {
+   "deprecated": false,
+   "description": "Disallow extra non-null assertions."
+  },
+  "no-extraneous-class": {
+   "deprecated": false,
+   "description": "Disallow classes used as namespaces."
+  },
+  "no-floating-promises": {
+   "deprecated": false,
+   "description": "Require Promise-like statements to be handled appropriately."
+  },
+  "no-for-in-array": {
+   "deprecated": false,
+   "description": "Disallow iterating over an array with a for-in loop."
+  },
+  "no-generated-empty-object-type": {
+   "deprecated": false,
+   "description": "Disallow type operations that resolve to the \"empty object\" type."
+  },
+  "no-implied-eval": {
+   "deprecated": false,
+   "description": "Disallow the use of `eval()`-like functions."
+  },
+  "no-import-type-side-effects": {
+   "deprecated": false,
+   "description": "Enforce the use of top-level import type qualifier when an import only has specifiers with inline type qualifiers."
+  },
+  "no-inferrable-types": {
+   "deprecated": false,
+   "description": "Disallow explicit type declarations for variables or parameters initialized to a number, string, or boolean."
+  },
+  "no-invalid-this": {
+   "deprecated": false,
+   "description": "Disallow `this` keywords outside of classes or class-like objects."
+  },
+  "no-invalid-void-type": {
+   "deprecated": false,
+   "description": "Disallow `void` type outside of generic or return types."
+  },
+  "no-loop-func": {
+   "deprecated": true,
+   "description": "Disallow function declarations that contain unsafe references inside loop statements."
+  },
+  "no-loss-of-precision": {
+   "deprecated": true,
+   "description": "Disallow literal numbers that lose precision."
+  },
+  "no-magic-numbers": {
+   "deprecated": false,
+   "description": "Disallow magic numbers."
+  },
+  "no-meaningless-void-operator": {
+   "deprecated": false,
+   "description": "Disallow the `void` operator except when used to discard a value."
+  },
+  "no-misused-new": {
+   "deprecated": false,
+   "description": "Enforce valid definition of `new` and `constructor`."
+  },
+  "no-misused-promises": {
+   "deprecated": false,
+   "description": "Disallow Promises in places not designed to handle them."
+  },
+  "no-misused-spread": {
+   "deprecated": false,
+   "description": "Disallow using the spread operator when it might cause unexpected behavior."
+  },
+  "no-mixed-enums": {
+   "deprecated": false,
+   "description": "Disallow enums from having both number and string members."
+  },
+  "no-namespace": {
+   "deprecated": false,
+   "description": "Disallow TypeScript namespaces."
+  },
+  "no-non-null-asserted-nullish-coalescing": {
+   "deprecated": false,
+   "description": "Disallow non-null assertions in the left operand of a nullish coalescing operator."
+  },
+  "no-non-null-asserted-optional-chain": {
+   "deprecated": false,
+   "description": "Disallow non-null assertions after an optional chain expression."
+  },
+  "no-non-null-assertion": {
+   "deprecated": false,
+   "description": "Disallow non-null assertions using the `!` postfix operator."
+  },
+  "no-redeclare": {
+   "deprecated": false,
+   "description": "Disallow variable redeclaration."
+  },
+  "no-redundant-type-constituents": {
+   "deprecated": false,
+   "description": "Disallow members of unions and intersections that do nothing or override type information."
+  },
+  "no-require-imports": {
+   "deprecated": false,
+   "description": "Disallow invocation of `require()`."
+  },
+  "no-restricted-imports": {
+   "deprecated": true,
+   "description": "Disallow specified modules when loaded by `import`."
+  },
+  "no-restricted-types": {
+   "deprecated": false,
+   "description": "Disallow certain types."
+  },
+  "no-shadow": {
+   "deprecated": false,
+   "description": "Disallow variable declarations from shadowing variables declared in the outer scope."
+  },
+  "no-this-alias": {
+   "deprecated": false,
+   "description": "Disallow aliasing `this`."
+  },
+  "no-type-alias": {
+   "deprecated": true,
+   "description": "Disallow type aliases."
+  },
+  "no-unnecessary-boolean-literal-compare": {
+   "deprecated": false,
+   "description": "Disallow unnecessary equality comparisons against boolean literals."
+  },
+  "no-unnecessary-condition": {
+   "deprecated": false,
+   "description": "Disallow conditionals where the type is always truthy or always falsy."
+  },
+  "no-unnecessary-parameter-property-assignment": {
+   "deprecated": false,
+   "description": "Disallow unnecessary assignment of constructor property parameter."
+  },
+  "no-unnecessary-qualifier": {
+   "deprecated": false,
+   "description": "Disallow unnecessary namespace qualifiers."
+  },
+  "no-unnecessary-template-expression": {
+   "deprecated": false,
+   "description": "Disallow unnecessary template expressions."
+  },
+  "no-unnecessary-type-arguments": {
+   "deprecated": false,
+   "description": "Disallow type arguments that are equal to the default."
+  },
+  "no-unnecessary-type-assertion": {
+   "deprecated": false,
+   "description": "Disallow type assertions that do not change the type of an expression."
+  },
+  "no-unnecessary-type-constraint": {
+   "deprecated": false,
+   "description": "Disallow unnecessary constraints on generic types."
+  },
+  "no-unnecessary-type-conversion": {
+   "deprecated": false,
+   "description": "Disallow conversion idioms when they do not change the type or value of the expression."
+  },
+  "no-unsafe-argument": {
+   "deprecated": false,
+   "description": "Disallow calling a function with a value with type `any`."
+  },
+  "no-unsafe-assignment": {
+   "deprecated": false,
+   "description": "Disallow assigning a value with type `any` to variables and properties."
+  },
+  "no-unsafe-call": {
+   "deprecated": false,
+   "description": "Disallow calling a value with type `any`."
+  },
+  "no-unsafe-declaration-merging": {
+   "deprecated": false,
+   "description": "Disallow unsafe declaration merging."
+  },
+  "no-unsafe-enum-assignment": {
+   "deprecated": false,
+   "description": "Disallow assigning non-enum values to enum typed locations."
+  },
+  "no-unsafe-enum-comparison": {
+   "deprecated": false,
+   "description": "Disallow comparing an enum value with a non-enum value."
+  },
+  "no-unsafe-function-type": {
+   "deprecated": false,
+   "description": "Disallow using the unsafe built-in Function type."
+  },
+  "no-unsafe-member-access": {
+   "deprecated": false,
+   "description": "Disallow member access on a value with type `any`."
+  },
+  "no-unsafe-return": {
+   "deprecated": false,
+   "description": "Disallow returning a value with type `any` from a function."
+  },
+  "no-unsafe-type-assertion": {
+   "deprecated": false,
+   "description": "Disallow type assertions that narrow a type."
+  },
+  "no-unsafe-unary-minus": {
+   "deprecated": false,
+   "description": "Require unary negation to take a number."
+  },
+  "no-unused-expressions": {
+   "deprecated": false,
+   "description": "Disallow unused expressions."
+  },
+  "no-unused-private-class-members": {
+   "deprecated": false,
+   "description": "Disallow unused private class members."
+  },
+  "no-unused-vars": {
+   "deprecated": false,
+   "description": "Disallow unused variables."
+  },
+  "no-use-before-define": {
+   "deprecated": false,
+   "description": "Disallow the use of variables before they are defined."
+  },
+  "no-useless-constructor": {
+   "deprecated": false,
+   "description": "Disallow unnecessary constructors."
+  },
+  "no-useless-default-assignment": {
+   "deprecated": false,
+   "description": "Disallow default values that will never be used."
+  },
+  "no-var-requires": {
+   "deprecated": true,
+   "description": "Disallow `require` statements except in import statements."
+  },
+  "no-wrapper-object-types": {
+   "deprecated": false,
+   "description": "Disallow using confusing built-in primitive class wrappers."
+  },
+  "non-nullable-type-assertion-style": {
+   "deprecated": false,
+   "description": "Enforce non-null assertions over explicit type assertions."
+  },
+  "only-throw-error": {
+   "deprecated": false,
+   "description": "Disallow throwing non-`Error` values as exceptions."
+  },
+  "parameter-properties": {
+   "deprecated": false,
+   "description": "Require or disallow parameter properties in class constructors."
+  },
+  "prefer-as-const": {
+   "deprecated": false,
+   "description": "Enforce the use of `as const` over literal type."
+  },
+  "prefer-destructuring": {
+   "deprecated": false,
+   "description": "Require destructuring from arrays and/or objects."
+  },
+  "prefer-enum-initializers": {
+   "deprecated": false,
+   "description": "Require each enum member value to be explicitly initialized."
+  },
+  "prefer-find": {
+   "deprecated": false,
+   "description": "Enforce the use of Array.prototype.find() over Array.prototype.filter() followed by [0] when looking for a single result."
+  },
+  "prefer-for-of": {
+   "deprecated": false,
+   "description": "Enforce the use of `for-of` loop over the standard `for` loop where possible."
+  },
+  "prefer-function-type": {
+   "deprecated": false,
+   "description": "Enforce using function types instead of interfaces with call signatures."
+  },
+  "prefer-includes": {
+   "deprecated": false,
+   "description": "Enforce `includes` method over `indexOf` method."
+  },
+  "prefer-literal-enum-member": {
+   "deprecated": false,
+   "description": "Require all enum members to be literal values."
+  },
+  "prefer-namespace-keyword": {
+   "deprecated": false,
+   "description": "Require using `namespace` keyword over `module` keyword to declare custom TypeScript modules."
+  },
+  "prefer-nullish-coalescing": {
+   "deprecated": false,
+   "description": "Enforce using the nullish coalescing operator instead of logical assignments or chaining."
+  },
+  "prefer-optional-chain": {
+   "deprecated": false,
+   "description": "Enforce using concise optional chain expressions instead of chained logical ands, negated logical ors, or empty objects."
+  },
+  "prefer-promise-reject-errors": {
+   "deprecated": false,
+   "description": "Require using Error objects as Promise rejection reasons."
+  },
+  "prefer-readonly-parameter-types": {
+   "deprecated": false,
+   "description": "Require function parameters to be typed as `readonly` to prevent accidental mutation of inputs."
+  },
+  "prefer-reduce-type-parameter": {
+   "deprecated": false,
+   "description": "Enforce using type parameter when calling `Array#reduce` instead of using a type assertion."
+  },
+  "prefer-regexp-exec": {
+   "deprecated": false,
+   "description": "Enforce `RegExp#exec` over `String#match` if no global flag is provided."
+  },
+  "prefer-return-this-type": {
+   "deprecated": false,
+   "description": "Enforce that `this` is used when only `this` type is returned."
+  },
+  "prefer-string-starts-ends-with": {
+   "deprecated": false,
+   "description": "Enforce using `String#startsWith` and `String#endsWith` over other equivalent methods of checking substrings."
+  },
+  "prefer-ts-expect-error": {
+   "deprecated": true,
+   "description": "Enforce using `@ts-expect-error` over `@ts-ignore`."
+  },
+  "promise-function-async": {
+   "deprecated": false,
+   "description": "Require any function or method that returns a Promise to be marked async."
+  },
+  "related-getter-setter-pairs": {
+   "deprecated": false,
+   "description": "Enforce that `get()` types should be assignable to their equivalent `set()` type."
+  },
+  "require-array-sort-compare": {
+   "deprecated": false,
+   "description": "Require `Array#sort` and `Array#toSorted` calls to always provide a `compareFunction`."
+  },
+  "require-await": {
+   "deprecated": false,
+   "description": "Disallow async functions which do not return promises and have no `await` expression."
+  },
+  "restrict-plus-operands": {
+   "deprecated": false,
+   "description": "Require both operands of addition to be the same type and be `bigint`, `number`, or `string`."
+  },
+  "restrict-template-expressions": {
+   "deprecated": false,
+   "description": "Enforce template literal expressions to be of `string` type."
+  },
+  "return-await": {
+   "deprecated": false,
+   "description": "Enforce consistent awaiting of returned promises."
+  },
+  "sort-type-constituents": {
+   "deprecated": true,
+   "description": "Enforce constituents of a type union/intersection to be sorted alphabetically."
+  },
+  "strict-boolean-expressions": {
+   "deprecated": false,
+   "description": "Disallow certain types in boolean expressions."
+  },
+  "strict-void-return": {
+   "deprecated": false,
+   "description": "Disallow passing a value-returning function in a position accepting a void function."
+  },
+  "switch-exhaustiveness-check": {
+   "deprecated": false,
+   "description": "Require switch-case statements to be exhaustive."
+  },
+  "triple-slash-reference": {
+   "deprecated": false,
+   "description": "Disallow certain triple slash directives in favor of ES6-style import declarations."
+  },
+  "typedef": {
+   "deprecated": false,
+   "description": "Require type annotations in certain places."
+  },
+  "unbound-method": {
+   "deprecated": false,
+   "description": "Enforce unbound methods are called with their expected scope."
+  },
+  "unified-signatures": {
+   "deprecated": false,
+   "description": "Disallow two overloads that could be unified into one with a union or an optional/rest parameter."
+  },
+  "use-unknown-in-catch-callback-variable": {
+   "deprecated": false,
+   "description": "Enforce typing arguments in Promise rejection callbacks as `unknown`."
+  }
+ }
+}

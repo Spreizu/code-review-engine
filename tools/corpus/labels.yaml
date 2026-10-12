@@ -1,0 +1,117 @@
+# Manual triage of OSS corpus hits (tools/corpus/results/<label>). Read by tools/trust compute:
+# tp/fp verdicts add to the rule's labelled cases; unlabelled OSS hits count as false positives
+# for promotion (Wilson lower bound), never as true positives.
+rules:
+  GO-TAINT-XSS:
+    - {repo: kubernetes-examples, path: _archived/explorer/explorer.go, line: 84, verdict: tp, note: request query reflected into an HTML response}
+  PHP-TAINT-XSS:
+    - {repo: kubernetes-examples, path: web/guestbook/php-redis/guestbook.php, line: 37, verdict: tp, note: "stored value (set from $_GET) printed without escaping; default text/html content type"}
+  JS-TAINT-XSS:
+    - {repo: express, path: examples/vhost/index.js, line: 30, verdict: tp, note: req.vhost subdomain reflected into res.send HTML}
+    - {repo: axios, path: sandbox/server.js, line: 62, verdict: fp, note: JSON.stringify body with Content-Type application/json}
+    - {repo: koa, path: lib/application.js, line: 331, verdict: fp, note: framework core writes the body the application set}
+    - {repo: koa, path: lib/application.js, line: 332, verdict: fp, note: framework core writes the body the application set}
+    - {repo: koa, path: lib/application.js, line: 351, verdict: fp, note: framework core writes the body the application set}
+    - {repo: vitepress, path: src/node/plugin.ts, line: 352, verdict: fp, note: dev server serves the rendered page}
+    - {repo: vitepress, path: src/node/plugins/iconsPlugin.ts, line: 26, verdict: fp, note: dev server serves a resolved svg icon}
+  JAVA-TAINT-XSS:
+    - {repo: dropwizard, path: dropwizard-health/src/main/java/io/dropwizard/health/response/ServletHealthResponder.java, line: 51, verdict: fp, note: query map only selects health checks; body is the provider's JSON}
+  JS-TAINT-PATH:
+    - {repo: axios, path: examples/server.js, line: 162, verdict: tp, note: request path joined into a file read without containment check}
+    - {repo: axios, path: examples/server.js, line: 172, verdict: tp, note: same flow, second read}
+    - {repo: react-router, path: integration/helpers/create-fixture.ts, line: 362, verdict: fp, note: "existsSync probe only (fixed: existsSync no longer a path sink)"}
+    - {repo: react-router, path: integration/helpers/create-fixture.ts, line: 368, verdict: fp, note: "existsSync probe only (fixed)"}
+    - {repo: react-router, path: integration/helpers/create-fixture.ts, line: 369, verdict: tp, note: "test static server joins req.path into sendFile without a containment check"}
+    - {repo: react-router, path: packages/react-router-dev/vite/plugin.ts, line: 1781, verdict: fp, note: "existsSync probe of a preview pathname (fixed)"}
+  JAVA-SEC-RANDOM-001:
+    - {repo: microservices-demo, path: src/adservice/src/main/java/hipstershop/AdService.java, line: 127, verdict: fp, note: picks random ads}
+    - {repo: okio, path: okio/jvm/jmh/src/jmh/java/com/squareup/okio/benchmarks/AsyncTimeoutBenchmark.java, line: 65, verdict: fp, note: seeded benchmark data}
+    - {repo: okio, path: okio/jvm/jmh/src/jmh/java/com/squareup/okio/benchmarks/SelectBenchmark.java, line: 80, verdict: fp, note: seeded benchmark data}
+    - {repo: okio, path: samples/src/jvmMain/java/okio/samples/Interceptors.java, line: 48, verdict: fp, note: sample payload bytes}
+    - {repo: okio, path: samples/src/jvmMain/java/okio/samples/Randoms.java, line: 28, verdict: fp, note: seeded sample generator}
+    - {repo: gson, path: gson/src/test/java/com/google/gson/internal/LinkedTreeMapTest.java, line: 167, verdict: fp, note: seeded test data}
+  JAVA-SEC-XSS-WRITER-001:
+    - {repo: dropwizard, path: dropwizard-health/src/main/java/io/dropwizard/health/response/ServletHealthResponder.java, line: 51, verdict: fp, note: health-check body from a provider with its own content type}
+  PY-SEC-RANDOM-SESSION-VALUE:
+    - {repo: django-allauth, path: tests/apps/socialaccount/base.py, line: 74, verdict: fp, note: test fixture data}
+    - {repo: fastapi, path: scripts/notify_translations.py, line: 330, verdict: fp, note: retry back-off jitter}
+    - {repo: sentry-python, path: sentry_sdk/utils.py, line: 1428, verdict: fp, note: trace/span id, not a secret}
+  PY-SEC-BIND-ALL-INTERFACES:
+    - {repo: microservices-demo, path: src/shoppingassistantservice/shoppingassistantservice.py, line: 120, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: starlette, path: tests/test_datastructures.py, line: 111, verdict: fp, note: string list in a test assertion (deny-list style literal)}
+    - {repo: starlette, path: tests/test_datastructures.py, line: 118, verdict: fp, note: string list in a test assertion (deny-list style literal)}
+    - {repo: starlette, path: tests/test_datastructures.py, line: 123, verdict: fp, note: string list in a test assertion (deny-list style literal)}
+    - {repo: starlette, path: tests/test_datastructures.py, line: 127, verdict: fp, note: string list in a test assertion (deny-list style literal)}
+    - {repo: starlette, path: tests/test_datastructures.py, line: 128, verdict: fp, note: string list in a test assertion (deny-list style literal)}
+    - {repo: awesome-compose, path: flask-redis/app.py, line: 14, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: awesome-compose, path: flask/app/app.py, line: 9, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: awesome-compose, path: nginx-flask-mongo/flask/server.py, line: 21, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: awesome-compose, path: nginx-wsgi-flask/flask/wsgi.py, line: 5, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: sentry-python, path: tests/integrations/aws_lambda/utils.py, line: 225, verdict: tp, note: test helper server binds all interfaces}
+    - {repo: gke-samples, path: ai-ml/adk-vertex/app/main.py, line: 47, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: ai-ml/adk-vllm/deploy-agent/main.py, line: 47, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: ai-ml/anthropic-agent-sandbox/src/worker/entrypoint.py, line: 56, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: ai-ml/llm-serving-gemma/gradio/app/app.py, line: 200, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: ai-ml/physical-ai-on-gke/models/pi05/scripts/03_serving_and_sim_eval.py, line: 161, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: databases/elasticsearch/docker/embed-docs/endpoint.py, line: 88, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: databases/postgres-pgvector/docker/embed-docs/endpoint.py, line: 90, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: databases/qdrant/docker/embed-docs/endpoint.py, line: 88, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: databases/weaviate/docker/embed-docs/endpoint.py, line: 88, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: management/gitops-style-delivery/app.py, line: 24, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/languages/python/app.py, line: 28, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/containerized/book_details_app/book_details_app.py, line: 39, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/containerized/book_reviews_app/book_reviews_app.py, line: 34, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/containerized/home_app/home_app.py, line: 52, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/containerized/images_app/images_app.py, line: 28, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/modular/book_details.py, line: 40, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/modular/book_reviews.py, line: 35, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/modular/home.py, line: 49, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/modular/images.py, line: 29, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/monolith/mono.py, line: 59, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: gke-samples, path: quickstarts/whereami/app.py, line: 69, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: fastapi, path: docs_src/debugging/tutorial001_py310.py, line: 15, verdict: tp, note: server/host literal bound to all interfaces}
+    - {repo: fastapi, path: tests/test_tutorial/test_debugging/test_tutorial001.py, line: 40, verdict: fp, note: mock call assertion in a test}
+  GO-TAINT-REDIRECT:
+    - {repo: caddy, path: modules/caddyhttp/fileserver/staticfiles.go, line: 867, verdict: fp, note: "same-origin path; leading // stripped before the redirect (fixed: unless_func)"}
+    - {repo: chi, path: middleware/strip.go, line: 62, verdict: fp, note: "path normalised to a single leading slash (fixed: unless_func)"}
+    - {repo: echo, path: middleware/slash.go, line: 67, verdict: fp, note: "sanitizeURI collapses leading slashes (fixed: sanitize* helper)"}
+    - {repo: echo, path: middleware/slash.go, line: 132, verdict: fp, note: "sanitizeURI collapses leading slashes (fixed: sanitize* helper)"}
+    - {repo: chi, path: middleware/profiler.go, line: 27, verdict: fp, note: "route-matched RequestURI plus a constant suffix; cannot start with //"}
+    - {repo: chi, path: middleware/profiler.go, line: 30, verdict: fp, note: "route-matched RequestURI plus a constant suffix; cannot start with //"}
+  KT-TAINT-PATH:
+    - {repo: exposed, path: samples/springboot3-exposed-r2dbc/src/main/kotlin/com/example/controller/HelloController.kt, line: 47, verdict: tp, note: "@RequestParam fileName joined into uploads/ path and served"}
+  PHP-TAINT-REDIRECT:
+    - {repo: phpmailer, path: get_oauth_token.php, line: 163, verdict: fp, note: provider authorization URL; host fixed by the OAuth provider class}
+  PHP-TAINT-TRUST:
+    - {repo: phpmailer, path: get_oauth_token.php, line: 92, verdict: tp, note: request parameter stored in the session without validation}
+    - {repo: phpmailer, path: get_oauth_token.php, line: 93, verdict: tp, note: request parameter stored in the session without validation}
+    - {repo: phpmailer, path: get_oauth_token.php, line: 94, verdict: tp, note: request parameter stored in the session without validation}
+    - {repo: phpmailer, path: get_oauth_token.php, line: 95, verdict: tp, note: request parameter stored in the session without validation}
+    - {repo: phpmailer, path: get_oauth_token.php, line: 162, verdict: fp, note: provider-generated state, not request data}
+  PY-TAINT-REDIRECT:
+    - {repo: django-allauth, path: allauth/idp/oidc/views.py, line: 190, verdict: fp, note: "target is reverse(); user data only in the query string (fixed)"}
+  PY-TAINT-SMTP:
+    - {repo: django-allauth, path: allauth/account/adapter.py, line: 949, verdict: fp, note: "project adapter method named send_mail (fixed: callee must be django send_mail)"}
+  PY-TAINT-SSRF:
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/containerized/home_app/home_app.py, line: 37, verdict: fp, note: "host fixed by a config constant (fixed)"}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/containerized/home_app/home_app.py, line: 43, verdict: fp, note: "host fixed by a config constant (fixed)"}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/containerized/home_app/home_app.py, line: 48, verdict: fp, note: "host fixed by a config constant (fixed)"}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/modular/home.py, line: 34, verdict: fp, note: "host fixed by a config constant (fixed)"}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/modular/home.py, line: 40, verdict: fp, note: "host fixed by a config constant (fixed)"}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/modular/home.py, line: 45, verdict: fp, note: "host fixed by a config constant (fixed)"}
+  PY-TAINT-XSS:
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/containerized/home_app/home_app.py, line: 49, verdict: fp, note: proxied backend response body, not request data}
+    - {repo: gke-samples, path: quickstarts/monolith-to-microservices/modular/home.py, line: 46, verdict: fp, note: proxied backend response body, not request data}
+    - {repo: gke-samples, path: quickstarts/whereami/app.py, line: 217, verdict: debatable, note: "payload value selected by a path key; values are mostly server metadata"}
+    - {repo: fastapi, path: fastapi/routing.py, line: 763, verdict: fp, note: framework core builds the response from the endpoint result}
+  PHP-MAINT-VARIABLE-VARIABLE:
+    - {repo: phpmailer, path: test/TestCase.php, line: 324, verdict: tp, note: "${$name} is a real variable variable (dynamic property name in a test helper)"}
+    - {repo: phpmailer, path: test/TestCase.php, line: 325, verdict: tp, note: "${$name} is a real variable variable (dynamic property name in a test helper)"}
+  JAVA-MAINT-SWITCH-FALLTHROUGH:
+    - {repo: jackson-databind, path: src/main/java/tools/jackson/databind/ser/UnrolledBeanSerializer.java, line: 189, verdict: tp, note: "unrolled serializer switch: later cases fall through without a fall-through comment (only the first is commented)"}
+    - {repo: jackson-databind, path: src/main/java/tools/jackson/databind/ser/bean/BeanAsArraySerializer.java, line: 225, verdict: tp, note: "unrolled serializer switch: later cases fall through without a fall-through comment (only the first is commented)"}
+    - {repo: jackson-databind, path: src/main/java/tools/jackson/databind/ser/bean/BeanAsArraySerializer.java, line: 291, verdict: tp, note: "unrolled serializer switch: later cases fall through without a fall-through comment (only the first is commented)"}
+    - {repo: jackson-databind, path: src/main/java/tools/jackson/databind/ser/bean/BeanSerializerBase.java, line: 890, verdict: tp, note: "unrolled serializer switch: later cases fall through without a fall-through comment (only the first is commented)"}
+    - {repo: jackson-databind, path: src/main/java/tools/jackson/databind/ser/bean/BeanSerializerBase.java, line: 951, verdict: tp, note: "unrolled serializer switch: later cases fall through without a fall-through comment (only the first is commented)"}
+    - {repo: jackson-databind, path: src/main/java/tools/jackson/databind/ser/bean/UnrolledBeanAsArraySerializer.java, line: 208, verdict: tp, note: "unrolled serializer switch: later cases fall through without a fall-through comment (only the first is commented)"}
+    - {repo: jackson-databind, path: src/main/java/tools/jackson/databind/util/StdDateFormat.java, line: 733, verdict: tp, note: "digit-accumulation switch: case 3 and 2 fall through without a fall-through comment"}

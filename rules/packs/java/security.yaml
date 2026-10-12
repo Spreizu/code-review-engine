@@ -1,0 +1,604 @@
+# HAND-EDITED rule file: pack java, topic security. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Java security rules added from the Sonar way / Semgrep / Snyk gap checklists (catalog keys only;
+# detection, wording and examples are crev's own, citing official JDK / Jakarta / OWASP docs).
+# Injection-shaped rules need data flow crev does not have, so they are ai-confirm: they reach the
+# review list only after a high-confidence AI confirmation that the value is attacker-controlled.
+pack: java
+pack_version: 2026.10.0
+rules:
+- id: JAVA-SEC-COOKIE-HTTPONLY-001
+  title: Cookie explicitly marked not HttpOnly
+  language: java
+  kind: security
+  category: security
+  severity: major
+  precision: high
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_invocation name: (identifier) @m arguments: (argument_list . (false) .)) @match (#eq? @m "setHttpOnly"))
+    filters:
+    - file.has_re:\bCookie\b
+  message: Without HttpOnly the cookie is readable from JavaScript, so any XSS can steal it; call setHttpOnly(true).
+  source:
+    url: https://jakarta.ee/specifications/servlet/6.1/apidocs/jakarta.servlet/jakarta/servlet/http/cookie
+    doc: 'Jakarta Servlet 6.1 API: Cookie.setHttpOnly'
+    doc_version: Jakarta Servlet 6.1
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class K { void k() { Cookie c = new Cookie("sid", id); c.setHttpOnly(false); } }
+    good: |
+      class K { void k() { Cookie c = new Cookie("sid", id); c.setHttpOnly(true); } }
+  xref:
+  - sonar:java:S3330
+  - semgrep:java.lang.security.audit.cookie-missing-httponly
+  cwe:
+  - CWE-1004
+  owasp:
+  - A05:2021
+  - A02:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-COOKIE-SECURE-001
+  title: Cookie explicitly marked not Secure
+  language: java
+  kind: security
+  category: security
+  severity: major
+  precision: high
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_invocation name: (identifier) @m arguments: (argument_list . (false) .)) @match (#eq? @m "setSecure"))
+    filters:
+    - file.has_re:\bCookie\b
+  message: A cookie without the Secure attribute is also sent over plain HTTP; call setSecure(true) (and serve the site over HTTPS only).
+  source:
+    url: https://jakarta.ee/specifications/servlet/6.1/apidocs/jakarta.servlet/jakarta/servlet/http/cookie
+    doc: 'Jakarta Servlet 6.1 API: Cookie.setSecure'
+    doc_version: Jakarta Servlet 6.1
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class K { void k(jakarta.servlet.http.HttpServletResponse r) { Cookie c = new Cookie("sid", id); c.setSecure(false); r.addCookie(c); } }
+    good: |
+      class K { void k(jakarta.servlet.http.HttpServletResponse r) { Cookie c = new Cookie("sid", id); c.setSecure(true); r.addCookie(c); } }
+  xref:
+  - sonar:java:S2092
+  - semgrep:java.lang.security.audit.cookie-missing-secure-flag
+  cwe:
+  - CWE-614
+  owasp:
+  - A05:2021
+  - A02:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-COOKIE-SECURE-002
+  title: Cookie created without setSecure(true)
+  language: java
+  kind: security
+  category: security
+  severity: minor
+  precision: medium
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((object_creation_expression type: [(type_identifier) (scoped_type_identifier)] @t) @match (#match? @t "(^|\\.)Cookie$"))
+    filters:
+    - file.lacks_re:setSecure\s*\(\s*true
+    - file.has_re:addCookie
+  message: The cookie is added without the Secure attribute; set it (or configure secure session cookies globally).
+  ai_question: Does this cookie carry session, authentication or other sensitive data, and is the Secure flag not applied elsewhere (container config, framework default)?
+  source:
+    url: https://jakarta.ee/specifications/servlet/6.1/apidocs/jakarta.servlet/jakarta/servlet/http/cookie
+    doc: 'Jakarta Servlet 6.1 API: Cookie.setSecure'
+    doc_version: Jakarta Servlet 6.1
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class K { void k(jakarta.servlet.http.HttpServletResponse r) { Cookie c = new Cookie("sid", id); r.addCookie(c); } }
+    good: |
+      class K { void k(jakarta.servlet.http.HttpServletResponse r) { Cookie c = new Cookie("sid", id); c.setSecure(true); r.addCookie(c); } }
+  xref:
+  - sonar:java:S2092
+  - semgrep:java.lang.security.audit.cookie-missing-secure-flag
+  cwe:
+  - CWE-614
+  owasp:
+  - A05:2021
+  - A02:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-ECB-001
+  title: Cipher in ECB mode (explicit or the "AES" default)
+  language: java
+  kind: security
+  category: security
+  severity: major
+  precision: high
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_invocation object: [(identifier) (field_access)] @c name: (identifier) @m arguments: (argument_list . (string_literal) @alg)) @match
+        (#match? @c "Cipher$") (#eq? @m "getInstance") (#match? @alg "^\"(AES|[A-Za-z0-9]+/ECB/[^\"]*)\"$"))
+  message: ECB encrypts equal blocks to equal ciphertext and leaks patterns; "AES" without a mode means AES/ECB/PKCS5Padding in the JDK providers. Use AES/GCM/NoPadding with a unique IV.
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/security/java-cryptography-architecture-jca-reference-guide.html
+    doc: JCA Reference Guide - Creating a Cipher Object (provider default mode and padding)
+    doc_version: JDK 25
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class C { javax.crypto.Cipher c() throws Exception { return javax.crypto.Cipher.getInstance("AES"); } }
+    good: |
+      class C { javax.crypto.Cipher c() throws Exception { return javax.crypto.Cipher.getInstance("AES/GCM/NoPadding"); } }
+    regressions:
+    - note: RSA with explicit mode/padding is not ECB block chaining of data
+      code: |
+        class C { javax.crypto.Cipher c() throws Exception { return javax.crypto.Cipher.getInstance("RSA/None/OAEPWithSHA-256AndMGF1Padding"); } }
+  xref:
+  - sonar:java:S5542
+  - semgrep:java.lang.security.audit.crypto.ecb-cipher
+  - semgrep:java.lang.security.audit.crypto.use-of-default-aes
+  - semgrep:java.lang.security.audit.crypto.use-of-aes-ecb
+  cwe:
+  - CWE-327
+  owasp:
+  - A02:2021
+  - A04:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-HOSTNAME-VERIFIER-001
+  title: HostnameVerifier that always returns true
+  language: java
+  kind: security
+  category: security
+  severity: critical
+  precision: high
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_declaration name: (identifier) @n parameters: (formal_parameters) @p body: (block) @b) @match
+        (#eq? @n "verify") (#match? @p "SSLSession") (#match? @b "^\\{\\s*return\\s+true\\s*;\\s*\\}$"))
+      ((lambda_expression parameters: (inferred_parameters (identifier) (identifier)) body: (true)) @match
+        (#match? @match "^\\("))
+    filters:
+    - ancestor.has_re:method_invocation:(?s)setHostnameVerifier|setDefaultHostnameVerifier|HostnameVerifier
+  message: Accepting every host name lets any certificate holder impersonate the server; keep the default verifier.
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/net/ssl/HostnameVerifier.html
+    doc: 'Javadoc: HostnameVerifier.verify'
+    doc_version: JDK 25 API
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class V { void s(javax.net.ssl.HttpsURLConnection c) { c.setHostnameVerifier((host, session) -> true); } }
+    good: |
+      class V { void s(javax.net.ssl.HttpsURLConnection c) { c.setHostnameVerifier(javax.net.ssl.HttpsURLConnection.getDefaultHostnameVerifier()); } }
+  xref:
+  - sonar:java:S5527
+  - semgrep:java.lang.security.audit.crypto.ssl.insecure-hostname-verifier
+  cwe:
+  - CWE-297
+  owasp:
+  - A07:2021
+  - A07:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-LDAP-INJECTION-001
+  title: LDAP search filter built by concatenation
+  language: java
+  kind: security
+  category: security
+  severity: critical
+  precision: low
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((method_invocation name: (identifier) @m arguments: (argument_list (_) (binary_expression) @f)) @match
+        (#eq? @m "search"))
+    filters:
+    - taint.clean:ldap
+    - cap.has_re:f:"\s*\+\s*[A-Za-z_]
+    - file.has_re:javax\.naming|DirContext|LdapTemplate|InitialDirContext
+  message: A search filter concatenated from input allows LDAP injection; escape values per RFC 4515 or use filter builders with parameters (search(name, filterExpr, filterArgs, controls)).
+  ai_question: Does the concatenated part of the LDAP filter come from a request, user or other untrusted input without RFC 4515 escaping?
+  source:
+    url: https://cheatsheetseries.owasp.org/cheatsheets/LDAP_Injection_Prevention_Cheat_Sheet.html
+    doc: OWASP LDAP Injection Prevention Cheat Sheet
+    doc_version: OWASP Cheat Sheet Series 2026
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class L { void s(javax.naming.directory.DirContext ctx, String user) throws Exception { ctx.search("ou=users", "(uid=" + user + ")", new javax.naming.directory.SearchControls()); } }
+    good: |
+      class L { void s(javax.naming.directory.DirContext ctx, String user) throws Exception { ctx.search("ou=users", "(uid={0})", new Object[] { user }, new javax.naming.directory.SearchControls()); } }
+  xref:
+  - sonar:javasecurity:S2078
+  - semgrep:java.lang.security.audit.ldap-injection
+  - semgrep:java.lang.security.audit.tainted-ldapi-from-http-request
+  cwe:
+  - CWE-90
+  owasp:
+  - A03:2021
+  - A05:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-PATH-TRAVERSAL-001
+  title: File path built from request input
+  language: java
+  kind: security
+  category: security
+  severity: major
+  precision: low
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((object_creation_expression type: [(type_identifier) (scoped_type_identifier)] @t arguments: (argument_list (binary_expression operator: "+"))) @match
+        (#match? @t "(^|\\.)(File|FileInputStream|FileOutputStream|FileReader|FileWriter|RandomAccessFile)$"))
+      ((method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list (binary_expression operator: "+"))) @match
+        (#match? @o "(^|\\.)(Paths|Path)$") (#match? @m "^(get|of)$"))
+    filters:
+    - taint.clean:path
+    - file.has_re:getParameter|getHeader|getCookies|getQueryString|getInputStream|@RequestParam|@PathVariable|@RequestBody
+  message: A path concatenated from request data can escape the intended directory (../); normalise and check the canonical path stays under the base directory.
+  ai_question: Does the concatenated path segment come from the request (parameter, header, cookie, body) without normalisation and a base-directory check?
+  source:
+    url: https://owasp.org/www-community/attacks/Path_Traversal
+    doc: OWASP Path Traversal
+    doc_version: OWASP community 2026
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class P { void p(jakarta.servlet.http.HttpServletRequest req) throws Exception { new java.io.FileInputStream("/srv/files/" + req.getParameter("name")); } }
+    good: |
+      class P { void p(jakarta.servlet.http.HttpServletRequest req) throws Exception { new java.io.FileInputStream(resolveUnder(BASE, req.getParameter("name"))); } }
+  xref:
+  - sonar:javasecurity:S2083
+  - semgrep:java.lang.security.httpservlet-path-traversal
+  cwe:
+  - CWE-22
+  owasp:
+  - A01:2021
+  - A01:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-RSA-KEYSIZE-001
+  title: RSA/DSA/DH key smaller than 2048 bits
+  language: java
+  kind: security
+  category: security
+  severity: major
+  precision: medium
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((method_invocation name: (identifier) @m arguments: (argument_list . (decimal_integer_literal) @n)) @match
+        (#eq? @m "initialize") (#match? @n "^(512|768|1024)$"))
+    filters:
+    - file.has_re:KeyPairGenerator
+  message: Keys below 2048 bits are no longer acceptable for RSA, DSA or DH (NIST SP 800-131A); use 3072 or an elliptic curve.
+  ai_question: Is this a KeyPairGenerator for RSA, DSA or DH (not EC, where the number is a curve size)?
+  source:
+    url: https://csrc.nist.gov/pubs/sp/800/131/a/r2/final
+    doc: NIST SP 800-131A Rev. 2
+    doc_version: Rev. 2
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class K { void k() throws Exception { java.security.KeyPairGenerator g = java.security.KeyPairGenerator.getInstance("RSA"); g.initialize(1024); } }
+    good: |
+      class K { void k() throws Exception { java.security.KeyPairGenerator g = java.security.KeyPairGenerator.getInstance("RSA"); g.initialize(3072); } }
+  xref:
+  - sonar:java:S4426
+  - semgrep:java.lang.security.audit.crypto.weak-rsa
+  cwe:
+  - CWE-326
+  owasp:
+  - A02:2021
+  - A04:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-TRUST-ALL-001
+  title: X509TrustManager that accepts every certificate
+  language: java
+  kind: security
+  category: security
+  severity: critical
+  precision: high
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_declaration name: (identifier) @n body: (block) @b) @match
+        (#match? @n "^check(Server|Client)Trusted$") (#match? @b "^\\{\\s*(//[^\\n]*\\s*)*\\}$"))
+  message: An empty checkServerTrusted/checkClientTrusted disables certificate validation and allows man-in-the-middle attacks; use the default TrustManager or pin a specific CA.
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/net/ssl/X509TrustManager.html
+    doc: 'Javadoc: X509TrustManager.checkServerTrusted (throws CertificateException if the chain is not trusted)'
+    doc_version: JDK 25 API
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class T implements javax.net.ssl.X509TrustManager {
+        public void checkServerTrusted(java.security.cert.X509Certificate[] c, String a) {}
+        public void checkClientTrusted(java.security.cert.X509Certificate[] c, String a) { delegate.checkClientTrusted(c, a); }
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return new java.security.cert.X509Certificate[0]; }
+      }
+    good: |
+      class T implements javax.net.ssl.X509TrustManager {
+        public void checkServerTrusted(java.security.cert.X509Certificate[] c, String a) throws java.security.cert.CertificateException { delegate.checkServerTrusted(c, a); }
+        public void checkClientTrusted(java.security.cert.X509Certificate[] c, String a) throws java.security.cert.CertificateException { delegate.checkClientTrusted(c, a); }
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() { return delegate.getAcceptedIssuers(); }
+      }
+  xref:
+  - sonar:java:S4830
+  - semgrep:java.lang.security.audit.crypto.ssl.insecure-trust-manager
+  cwe:
+  - CWE-295
+  owasp:
+  - A07:2021
+  - A07:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-TRUST-BOUNDARY-001
+  title: Request data stored in the HTTP session
+  language: java
+  kind: security
+  category: security
+  severity: minor
+  precision: low
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((method_invocation name: (identifier) @m arguments: (argument_list (_) [(identifier) (method_invocation) (binary_expression) (array_access)] @v)) @match
+        (#match? @m "^(setAttribute|putValue)$") (#match? @match "[Ss]ession"))
+    filters:
+    - taint.clean:trust
+    - file.has_re:getParameter|getHeader|getCookies|getQueryString
+  message: Mixing unvalidated request data with trusted session state (trust boundary violation) lets later code treat attacker input as validated; validate before storing.
+  ai_question: Is the value stored in the session taken from the request without validation?
+  source:
+    url: https://cwe.mitre.org/data/definitions/501.html
+    doc: 'CWE-501: Trust Boundary Violation'
+    doc_version: CWE 4.x
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class T { void t(jakarta.servlet.http.HttpServletRequest req) { req.getSession().setAttribute("user", req.getParameter("user")); } }
+    good: |
+      class T { void t(jakarta.servlet.http.HttpServletRequest req) { req.getSession().setAttribute("visits", 1); } }
+  xref:
+  - semgrep:java.lang.security.audit.tainted-session-from-http-request
+  cwe:
+  - CWE-501
+  owasp:
+  - A04:2021
+  - A06:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-WEAK-CIPHER-001
+  title: Broken cipher (DES, 3DES, RC2, RC4, Blowfish)
+  language: java
+  kind: security
+  category: security
+  severity: critical
+  precision: high
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_invocation object: [(identifier) (field_access)] @c name: (identifier) @m arguments: (argument_list . (string_literal) @alg)) @match
+        (#match? @c "Cipher$") (#eq? @m "getInstance") (#match? @alg "^\"(DES|DESede|TripleDES|RC2|RC4|ARCFOUR|Blowfish)(/|\")"))
+  message: This cipher is obsolete (small block or key size, known attacks); use AES-GCM or ChaCha20-Poly1305.
+  source:
+    url: https://csrc.nist.gov/pubs/sp/800/131/a/r2/final
+    doc: NIST SP 800-131A Rev. 2 - Transitioning the Use of Cryptographic Algorithms and Key Lengths
+    doc_version: Rev. 2
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class C { javax.crypto.Cipher c() throws Exception { return javax.crypto.Cipher.getInstance("DES/CBC/PKCS5Padding"); } }
+    good: |
+      class C { javax.crypto.Cipher c() throws Exception { return javax.crypto.Cipher.getInstance("AES/GCM/NoPadding"); } }
+  xref:
+  - sonar:java:S5547
+  - semgrep:java.lang.security.audit.crypto.des-is-deprecated
+  - semgrep:java.lang.security.audit.crypto.desede-is-deprecated
+  - semgrep:java.lang.security.audit.crypto.use-of-rc2
+  - semgrep:java.lang.security.audit.crypto.use-of-rc4
+  - semgrep:java.lang.security.audit.crypto.use-of-blowfish
+  cwe:
+  - CWE-327
+  owasp:
+  - A02:2021
+  - A04:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-WEAK-HASH-001
+  title: MD5 / SHA-1 / MD2 message digest
+  language: java
+  kind: security
+  category: security
+  severity: major
+  precision: medium
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((method_invocation object: [(identifier) (field_access)] @c name: (identifier) @m arguments: (argument_list . (string_literal) @alg)) @match
+        (#match? @c "MessageDigest$") (#eq? @m "getInstance") (#match? @alg "^\"(MD2|MD4|MD5|SHA|SHA1|SHA-1)\"$"))
+  message: MD5 and SHA-1 are broken for collision resistance; use SHA-256 or stronger for integrity, and a password hash (PBKDF2, bcrypt, scrypt, Argon2) for passwords.
+  ai_question: Is the digest used for a security purpose (password storage, signature, integrity of untrusted data, tokens) rather than a non-security checksum or cache key?
+  source:
+    url: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+    doc: OWASP Password Storage Cheat Sheet; JDK Security Standard Algorithm Names
+    doc_version: OWASP Cheat Sheet Series 2026
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class H { byte[] h(byte[] in) throws Exception { return java.security.MessageDigest.getInstance("MD5").digest(in); } }
+    good: |
+      class H { byte[] h(byte[] in) throws Exception { return java.security.MessageDigest.getInstance("SHA-256").digest(in); } }
+  xref:
+  - sonar:java:S4790
+  - semgrep:java.lang.security.audit.crypto.use-of-md5
+  - semgrep:java.lang.security.audit.crypto.use-of-sha1
+  cwe:
+  - CWE-328
+  owasp:
+  - A02:2021
+  - A04:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-WEAK-TLS-001
+  title: SSLContext for SSL / TLS 1.0 / TLS 1.1
+  language: java
+  kind: security
+  category: security
+  severity: major
+  precision: high
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_invocation object: [(identifier) (field_access)] @c name: (identifier) @m arguments: (argument_list . (string_literal) @p)) @match
+        (#match? @c "SSLContext$") (#eq? @m "getInstance") (#match? @p "^\"(SSL|SSLv2|SSLv3|TLSv1|TLSv1\\.1)\"$"))
+  message: SSL 3.0, TLS 1.0 and TLS 1.1 are deprecated (RFC 8996); request "TLSv1.3" or "TLS" and let the JDK negotiate 1.2+.
+  source:
+    url: https://www.rfc-editor.org/rfc/rfc8996
+    doc: RFC 8996 - Deprecating TLS 1.0 and TLS 1.1
+    doc_version: RFC 8996
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class T { javax.net.ssl.SSLContext c() throws Exception { return javax.net.ssl.SSLContext.getInstance("TLSv1"); } }
+    good: |
+      class T { javax.net.ssl.SSLContext c() throws Exception { return javax.net.ssl.SSLContext.getInstance("TLSv1.3"); } }
+  xref:
+  - sonar:java:S4423
+  - semgrep:java.lang.security.audit.weak-ssl-context
+  cwe:
+  - CWE-327
+  owasp:
+  - A02:2021
+  - A04:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-XPATH-INJECTION-001
+  title: XPath expression built by concatenation
+  language: java
+  kind: security
+  category: security
+  severity: critical
+  precision: low
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((method_invocation name: (identifier) @m arguments: (argument_list . (binary_expression operator: "+") @e)) @match
+        (#match? @m "^(evaluate|compile|evaluateExpression)$"))
+    filters:
+    - taint.clean:xpath
+    - file.has_re:javax\.xml\.xpath|XPath
+  message: Concatenating input into an XPath expression allows XPath injection; bind values with an XPathVariableResolver.
+  ai_question: Does the concatenated part of the XPath expression come from untrusted input?
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.xml/javax/xml/xpath/XPathVariableResolver.html
+    doc: 'Javadoc: XPathVariableResolver'
+    doc_version: JDK 25 API
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class X { Object q(javax.xml.xpath.XPath xp, Object doc, String id) throws Exception { return xp.evaluate("/users/user[@id='" + id + "']", doc); } }
+    good: |
+      class X { Object q(javax.xml.xpath.XPath xp, Object doc) throws Exception { return xp.evaluate("/users/user[@id=$id]", doc); } }
+  xref:
+  - sonar:javasecurity:S2091
+  - semgrep:java.lang.security.audit.tainted-xpath-from-http-request
+  cwe:
+  - CWE-643
+  owasp:
+  - A03:2021
+  - A05:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-XSS-WRITER-001
+  title: Response writer prints a non-constant value in a servlet
+  language: java
+  kind: security
+  category: security
+  severity: major
+  precision: low
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((method_invocation object: (method_invocation name: (identifier) @g) name: (identifier) @m arguments: (argument_list . [(identifier) (binary_expression) (method_invocation) (array_access) (field_access)])) @match
+        (#eq? @g "getWriter") (#match? @m "^(print|println|write|format|printf|append)$"))
+    filters:
+    - taint.clean:xss
+    - file.has_re:getParameter|getHeader|getCookies|getQueryString|getParameterValues|getParameterMap
+  message: Writing request-derived data into the HTML response without context-aware encoding allows cross-site scripting; encode (e.g. OWASP Java Encoder Encode.forHtml) or use an auto-escaping template engine.
+  ai_question: Is the printed value derived from request input and written to an HTML response without HTML encoding?
+  source:
+    url: https://cheatsheetseries.owasp.org/cheatsheets/Cross_Site_Scripting_Prevention_Cheat_Sheet.html
+    doc: OWASP Cross Site Scripting Prevention Cheat Sheet
+    doc_version: OWASP Cheat Sheet Series 2026
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class S { void g(jakarta.servlet.http.HttpServletRequest req, jakarta.servlet.http.HttpServletResponse r) throws Exception { r.getWriter().println("Hello " + req.getParameter("name")); } }
+    good: |
+      class S { void g(jakarta.servlet.http.HttpServletRequest req, jakarta.servlet.http.HttpServletResponse r) throws Exception { r.getWriter().println("Hello"); } }
+  xref:
+  - sonar:javasecurity:S5131
+  - semgrep:java.lang.security.audit.xss.no-direct-response-writer
+  cwe:
+  - CWE-79
+  owasp:
+  - A03:2021
+  - A05:2025
+  tags:
+  - appsec

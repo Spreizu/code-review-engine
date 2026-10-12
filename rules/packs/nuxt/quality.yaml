@@ -1,0 +1,133 @@
+# HAND-EDITED rule file: pack nuxt, topic quality. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Nuxt pack. Version dimension "nuxt" from package.json/lockfile (nuxt, or nuxt-edge / @nuxt/bridge).
+# Rules also inherit the vue dimension (Nuxt 2 => Vue 2, Nuxt 3/4 => Vue 3).
+pack: nuxt
+pack_version: 2026.10.0
+rules:
+- id: NUXT-QUAL-FETCH-SETUP-001
+  title: Do not call $fetch directly at setup top level
+  language: vue
+  framework: nuxt
+  kind: anti-pattern
+  category: data-fetching
+  severity: major
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (program
+        (lexical_declaration
+          (variable_declarator
+            value: (await_expression (call_expression function: (identifier) @f (#eq? @f "$fetch"))) @match)))
+  message: Using $fetch in component setup may fetch twice (server render + client hydration), causing hydration issues; use useFetch/useAsyncData which forward the server payload.
+  source:
+    url: https://nuxt.com/docs/getting-started/data-fetching
+    doc: Data Fetching (Network calls duplication)
+    doc_version: Nuxt 4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>const posts = await $fetch('/api/posts')</script>
+    good: |
+      <script setup>const { data: posts } = await useFetch('/api/posts')
+      async function save() { await $fetch('/api/posts', { method: 'POST' }) }</script>
+- id: NUXT-QUAL-LINK-001
+  title: Use <NuxtLink> for internal navigation
+  language: vue
+  framework: nuxt
+  kind: best-practice
+  category: performance
+  severity: minor
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      (start_tag
+        (tag_name) @t (#eq? @t "a")
+        (attribute (attribute_name) @h (#eq? @h "href")
+          (quoted_attribute_value (attribute_value) @v (#match? @v "^/[^/]")))) @match
+  message: A plain <a href="/..."> to an internal route triggers a full page load; <NuxtLink> handles client-side navigation and prefetching.
+  source:
+    url: https://nuxt.com/docs/api/components/nuxt-link
+    doc: <NuxtLink>
+    doc_version: Nuxt 4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><a href="/about">About</a></template>
+    good: |
+      <template><NuxtLink to="/about">About</NuxtLink> <a href="https://vuejs.org">Vue</a></template>
+- id: NUXT-QUAL-NAVIGATE-001
+  title: Always await or return navigateTo
+  language: vue
+  framework: nuxt
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    files:
+    - '**/*.vue'
+    - middleware/**
+    - app/middleware/**
+    - plugins/**
+    - app/plugins/**
+    query: |
+      (expression_statement (call_expression function: (identifier) @f (#eq? @f "navigateTo")) @match)
+  message: The docs say "Make sure to always use await or return on result of navigateTo when calling it."
+  source:
+    url: https://nuxt.com/docs/api/utils/navigate-to
+    doc: navigateTo
+    doc_version: Nuxt 4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script setup>function go() { navigateTo('/login') }</script>
+    good: |
+      <script setup>async function go() { await navigateTo('/login') }</script>
+- id: NUXT-QUAL-STATE-001
+  title: No module-scope ref()/reactive() state (cross-request pollution)
+  language: typescript
+  framework: nuxt
+  kind: anti-pattern
+  category: ssr
+  severity: critical
+  applies_to:
+    nuxt: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - composables/**
+    - utils/**
+    - app/composables/**
+    - app/utils/**
+    - stores/**
+    - app/stores/**
+    query: |
+      (program
+        (export_statement
+          (lexical_declaration
+            (variable_declarator value: (call_expression function: (identifier) @f (#any-of? @f "ref" "reactive" "shallowRef")) @match))))
+  message: Never define `const state = ref()` outside setup(); module-scope state is shared across requests on the server and can leak data between users. Use useState().
+  source:
+    url: https://nuxt.com/docs/getting-started/state-management
+    doc: State Management - Best Practices
+    doc_version: Nuxt 4 docs
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      export const user = ref(null)
+    good: |
+      export const useUser = () => useState('user', () => null)

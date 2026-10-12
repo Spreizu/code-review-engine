@@ -1,0 +1,259 @@
+# HAND-EDITED rule file: pack javascript, topic quality. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# JavaScript pack (also applied to TypeScript files and Vue <script> blocks; queries use node
+# types shared by tree-sitter-javascript and tree-sitter-typescript). Version dimension
+# "ecmascript" = lowest supported ES edition derived from tsconfig target, browserslist,
+# ESLint ecmaVersion or engines.node (see PLAN.md §5).
+pack: javascript
+pack_version: 2026.10.0
+rules:
+- id: JS-QUAL-AWAIT-LOOP-001
+  title: Sequential await inside loops
+  language: javascript
+  kind: anti-pattern
+  category: performance
+  severity: info
+  applies_to:
+    ecmascript: '>=2017'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      [
+        (for_statement body: (statement_block (expression_statement (await_expression) @match)))
+        (for_in_statement body: (statement_block (expression_statement (await_expression) @match)))
+      ]
+  message: Awaiting inside a loop serialises independent operations; if iterations are independent, use Promise.all over mapped promises.
+  ai_question: Are the loop iterations independent (no ordering, rate-limit or data dependency between them)? If they must be sequential this is fine.
+  source:
+    url: https://eslint.org/docs/latest/rules/no-await-in-loop
+    doc: ESLint no-await-in-loop
+    doc_version: ESLint latest
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      async function f(ids) { for (const id of ids) { await fetchOne(id) } }
+    good: |
+      async function f(ids) { await Promise.all(ids.map(fetchOne)) }
+- id: JS-QUAL-EQ-001
+  title: Use strict equality (=== / !==)
+  language: javascript
+  kind: best-practice
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (binary_expression operator: ["==" "!="] @match)
+  message: Loose equality performs type coercion; MDN recommends strict equality in almost all cases (x == null is the one common, deliberate exception - configurable).
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness
+    doc: 'MDN Equality comparisons and sameness (rule mirror: https://eslint.org/docs/latest/rules/eqeqeq)'
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      if (a == '1') {}
+    good: |
+      if (a === 1) {}
+- id: JS-QUAL-FOREACH-ASYNC-001
+  title: forEach does not await async callbacks
+  language: javascript
+  kind: anti-pattern
+  category: async
+  severity: major
+  applies_to:
+    ecmascript: '>=2017'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression
+        function: (member_expression property: (property_identifier) @p (#eq? @p "forEach"))
+        arguments: (arguments [(arrow_function) (function_expression)] @match (#match? @match "^async")))
+  message: forEach() expects a synchronous function and does not wait for promises; use for...of with await, or Promise.all(items.map(...)).
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+    doc: MDN Array.prototype.forEach()
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      items.forEach(async (i) => { await save(i) })
+    good: |
+      for (const i of items) { await save(i) }
+- id: JS-QUAL-FORIN-ARRAY-001
+  title: Do not iterate arrays with for...in
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=2015'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (for_in_statement operator: "in") @match
+  message: for...in iterates enumerable string keys (including inherited ones) in no guaranteed array order; use for...of, forEach, or an index loop for arrays.
+  ai_question: Is the iterated value an array (or array-like) rather than a plain object?
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in
+    doc: MDN for...in - Array iteration and for...in
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      for (const i in items) { use(items[i]) }
+    good: |
+      for (const item of items) { use(item) }
+- id: JS-QUAL-NEW-WRAPPER-001
+  title: Do not use new String/Number/Boolean
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (new_expression constructor: (identifier) @match (#any-of? @match "String" "Number" "Boolean"))
+  message: Primitive wrapper objects behave unexpectedly (typeof 'object', always truthy); call String()/Number()/Boolean() without new for conversion.
+  source:
+    url: https://eslint.org/docs/latest/rules/no-new-wrappers
+    doc: ESLint no-new-wrappers
+    doc_version: ESLint latest
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const s = new String('x')
+    good: |
+      const s = String(x)
+- id: JS-QUAL-PARSEINT-001
+  title: Always pass a radix to parseInt
+  language: javascript
+  kind: best-practice
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression function: (identifier) @f (#eq? @f "parseInt") arguments: (arguments . (_) .) @match)
+  message: Without a radix, parseInt infers the base from the string (e.g. 0x prefix); pass 10 explicitly.
+  source:
+    url: https://eslint.org/docs/latest/rules/radix
+    doc: ESLint radix (see MDN parseInt https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt)
+    doc_version: ESLint latest
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const n = parseInt(s)
+    good: |
+      const n = parseInt(s, 10)
+- id: JS-QUAL-PROMISE-EXEC-001
+  title: Promise executor must not be async
+  language: javascript
+  kind: anti-pattern
+  category: async
+  severity: major
+  applies_to:
+    ecmascript: '>=2017'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (new_expression
+        constructor: (identifier) @c (#eq? @c "Promise")
+        arguments: (arguments [(arrow_function) (function_expression)] @match (#match? @match "^async")))
+  message: An async executor swallows thrown errors (the promise never rejects) and usually means the Promise wrapper is unnecessary.
+  source:
+    url: https://eslint.org/docs/latest/rules/no-async-promise-executor
+    doc: ESLint no-async-promise-executor (see MDN Promise() constructor https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/Promise)
+    doc_version: ESLint latest
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const p = new Promise(async (resolve) => { resolve(await load()) })
+    good: |
+      const p = load()
+- id: JS-QUAL-THROW-LITERAL-001
+  title: Throw Error objects, not literals
+  language: javascript
+  kind: best-practice
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (throw_statement [(string) (template_string) (number)] @match)
+  message: Throwing a literal loses the stack trace; throw new Error(...) (ES2022 adds the `cause` option).
+  source:
+    url: https://eslint.org/docs/latest/rules/no-throw-literal
+    doc: ESLint no-throw-literal
+    doc_version: ESLint latest
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      throw 'not found'
+    good: |
+      throw new Error('not found', { cause: err })
+- id: JS-QUAL-VAR-001
+  title: Use let/const instead of var
+  language: javascript
+  kind: best-practice
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=2015'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (variable_declaration) @match
+  message: var is function-scoped and hoisted (usable before its declaration); block-scoped let/const avoid that class of bugs.
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var
+    doc: 'MDN var - Hoisting / Redeclarations (rule mirror: https://eslint.org/docs/latest/rules/no-var)'
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      var count = 0
+    good: |
+      let count = 0
+- id: JS-QUAL-WITH-001
+  title: Do not use the with statement
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    ecmascript: '>=3'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    grammar: javascript
+    query: |
+      (with_statement) @match
+  message: with is not recommended (confusing bugs, prevents optimization) and is forbidden in strict mode / ES modules.
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with
+    doc: MDN with
+    doc_version: MDN (living)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      with (Math) { x = cos(PI) }
+    good: |
+      const { cos, PI } = Math; x = cos(PI)

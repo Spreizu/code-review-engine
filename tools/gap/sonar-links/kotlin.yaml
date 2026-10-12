@@ -1,0 +1,9 @@
+# Reviewed by title: crev Kotlin rule -> Sonar Kotlin key. Keys only.
+lang: kotlin
+by_id:
+  KT-QUAL-EQUALS-WITHOUT-HASHCODE: [S1206]
+  KT-QUAL-CLASS-NAMING: [S101]
+  KT-QUAL-FILTER-FIRST: [S6527]
+  KT-QUAL-SIZE-ZERO: [S6529]
+  KT-QUAL-NULL-OR-EMPTY: [S6529]
+  KT-QUAL-FUN-INTERFACE: [S6516]

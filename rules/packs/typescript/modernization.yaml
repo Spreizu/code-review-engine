@@ -1,0 +1,87 @@
+# HAND-EDITED rule file: pack typescript, topic modernization. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# TypeScript pack. Version dimension "typescript" from package.json/lockfile (typescript, or
+# @typescript/native / @typescript/typescript6 aliases). tsconfig.json options are exposed as
+# "tsconfig.<option>" facts (after resolving "extends").
+pack: typescript
+pack_version: 2026.10.0
+rules:
+- id: TS-MOD-CFG-DECORATORS-001
+  title: experimentalDecorators selects legacy decorators
+  language: tsconfig
+  kind: modernization
+  category: configuration
+  severity: info
+  applies_to:
+    typescript: '>=5.0'
+  detection:
+    mode: ai-confirm
+    engine: config
+    files:
+    - '**/tsconfig*.json'
+    config:
+      key: compilerOptions.experimentalDecorators
+      op: equals
+      value: true
+  message: TS 5.0 implements standard ECMAScript decorators; --experimentalDecorators keeps the older proposal semantics (still required by some frameworks).
+  ai_question: Does the project depend on a framework that still requires legacy decorators (e.g. older Angular/TypeORM/NestJS/class-validator patterns or emitDecoratorMetadata)?
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-0.html
+    doc: TypeScript 5.0 - Decorators
+    doc_version: TypeScript 5.0
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "compilerOptions": { "experimentalDecorators": true } }'
+    good: '{ "compilerOptions": { } }'
+- id: TS-MOD-SATISFIES-001
+  title: Prefer satisfies over `as` for object literals
+  language: typescript
+  kind: modernization
+  category: type-safety
+  severity: info
+  applies_to:
+    typescript: '>=4.9'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (as_expression (object) (type_identifier)) @match
+  message: '`{...} as T` silences excess/missing-property errors; `satisfies T` validates the literal while keeping its precise inferred type.'
+  ai_question: Is the `as` cast used to type-check a literal (where satisfies fits) rather than to deliberately widen/narrow a type?
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-4-9.html
+    doc: TypeScript 4.9 - The satisfies Operator
+    doc_version: TypeScript 4.9
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const palette = { red: [255, 0, 0] } as Colors
+    good: |
+      const palette = { red: [255, 0, 0] } satisfies Colors
+- id: TS-MOD-USING-001
+  title: Consider `using` declarations for disposable resources
+  language: typescript
+  kind: modernization
+  category: resource-management
+  severity: info
+  applies_to:
+    typescript: '>=5.2'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (try_statement
+        finalizer: (finally_clause (statement_block (expression_statement
+          (call_expression function: (member_expression property: (property_identifier) @p (#any-of? @p "close" "dispose" "release" "end"))))))) @match
+  message: try/finally used only to dispose a resource; TS 5.2 supports explicit resource management (`using` / `await using`, ES2027 Explicit Resource Management).
+  ai_question: Does the resource implement (or can it be wrapped to implement) Symbol.dispose / Symbol.asyncDispose, and do the runtime/lib targets support it?
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/release-notes/typescript-5-2.html
+    doc: TypeScript 5.2 - using Declarations and Explicit Resource Management
+    doc_version: TypeScript 5.2
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const f = open(); try { f.read() } finally { f.close() }
+    good: |
+      using f = open(); f.read()

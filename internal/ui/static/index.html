@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>crev</title>
+<style>
+:root{--bg:#f7f7f8;--panel:#fff;--fg:#17171a;--mut:#5f6068;--line:#e3e3e8;--acc:#4338ca;--accbg:#eef0ff;--ok:#15803d;--crit:#b91c1c;--maj:#c2410c;--min:#a16207;--inf:#475569;--code:#f3f3f5;--r:10px;
+--k:#7c3aed;--s:#047857;--n:#b45309;--c:#6b7280;--hl:rgba(234,88,12,.16)}
+:root[data-theme=dark]{--bg:#0c0d10;--panel:#14161b;--fg:#e7e7ea;--mut:#9a9ca6;--line:#262932;--acc:#a5b4fc;--accbg:#1e1b4b;--code:#1a1c22;--ok:#4ade80;--crit:#f87171;--maj:#fb923c;--min:#facc15;--inf:#94a3b8;--k:#c4b5fd;--s:#6ee7b7;--n:#fcd34d;--c:#8b8d98;--hl:rgba(251,146,60,.18)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0c0d10;--panel:#14161b;--fg:#e7e7ea;--mut:#9a9ca6;--line:#262932;--acc:#a5b4fc;--accbg:#1e1b4b;--code:#1a1c22;--ok:#4ade80;--crit:#f87171;--maj:#fb923c;--min:#facc15;--inf:#94a3b8;--k:#c4b5fd;--s:#6ee7b7;--n:#fcd34d;--c:#8b8d98;--hl:rgba(251,146,60,.18)}}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--fg);font:14px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Inter,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acc);text-decoration:none}a:hover{text-decoration:underline}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:50;background:var(--panel);padding:6px 10px}
+header{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:18px;padding:10px 20px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.brand{font-weight:700;letter-spacing:-.02em;font-size:16px;color:var(--fg)}.brand span{color:var(--acc)}
+nav{display:flex;gap:2px;flex-wrap:wrap}nav a{padding:6px 10px;border-radius:8px;color:var(--mut)}nav a[aria-current=page],nav a:hover{background:var(--accbg);color:var(--acc);text-decoration:none}
+.sp{flex:1}button,select,input{font:inherit;color:inherit;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px 9px}button{cursor:pointer}button:hover{border-color:var(--acc)}button:disabled{opacity:.5;cursor:default}
+main{max-width:1500px;margin:0 auto;padding:20px}h1{font-size:21px;letter-spacing:-.02em;margin:0 0 4px}h2{font-size:14px;margin:22px 0 8px}h3{font-size:13px;margin:14px 0 6px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.mut{color:var(--mut)}.mono,code,pre,kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:12.5px}kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 4px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}.pad{padding:14px 16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin:14px 0}.kpi{padding:10px 14px}.kpi b{display:block;font-size:21px;letter-spacing:-.02em}.kpi small{color:var(--mut)}
+table{width:100%;border-collapse:collapse}th{font-weight:500;color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.04em}th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}tr:last-child td{border-bottom:0}
+.wrap{overflow-x:auto}.pill{display:inline-block;font-size:11px;font-weight:600;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}
+.sev{color:#fff;border:0}.critical{background:#b91c1c}.major{background:#c2410c}.minor{background:#a16207}.info{background:#475569}
+.new{color:var(--maj);border-color:currentColor}.fixed{color:var(--ok);border-color:currentColor}.hr{color:var(--maj);border-style:dashed}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}.bar input[type=search]{min-width:220px;flex:1}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dash{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.spark{width:100%;height:46px;display:block}.spark polyline{fill:none;stroke:var(--acc);stroke-width:2}.spark .a{fill:var(--acc);opacity:.08;stroke:none}
+.hbar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--line);margin:6px 0}.hbar i{display:block}
+.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:16px}.layout.open{grid-template-columns:250px minmax(0,1fr) minmax(360px,42%)}
+aside.side{font-size:13px;position:sticky;top:64px;max-height:calc(100vh - 80px);overflow:auto;padding-right:4px}
+.facet{margin-bottom:10px}.facet summary{cursor:pointer;font-weight:600;color:var(--mut);font-size:12px;text-transform:uppercase;letter-spacing:.04em;padding:4px 0}
+.facet label{display:flex;gap:6px;align-items:center;padding:1px 0;cursor:pointer}.facet label span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.facet label em{font-style:normal;color:var(--mut);font-size:12px}
+.tree details{margin-left:10px}.tree summary,.tree .leaf{cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:1px 0}.tree .leaf{margin-left:24px;display:block;color:var(--fg)}.tree .on{color:var(--acc);font-weight:600}.tree em{font-style:normal;color:var(--mut);font-size:12px;margin-left:4px}
+.list{min-width:0}.grp{border-bottom:1px solid var(--line)}.grp:last-child{border-bottom:0}.grp>summary{cursor:pointer;padding:8px 12px;font-weight:600;display:flex;gap:8px;align-items:center;background:color-mix(in srgb,var(--code) 60%,transparent)}
+.rg>summary{cursor:pointer;padding:6px 12px 6px 26px;display:flex;gap:8px;align-items:center;font-size:13px}
+.row{display:flex;gap:8px;align-items:baseline;width:100%;text-align:left;border:0;border-top:1px solid var(--line);border-radius:0;background:none;padding:7px 12px 7px 40px;cursor:pointer}
+.row:hover{background:color-mix(in srgb,var(--accbg) 50%,transparent)}.row.sel{background:var(--accbg);box-shadow:inset 3px 0 var(--acc)}.row .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.flat .row{padding-left:12px}
+.detail{position:sticky;top:64px;max-height:calc(100vh - 80px);overflow:auto;overflow-x:hidden;padding:14px 16px;min-width:0}
+.detail .x{float:right}
+pre{background:var(--code);border:1px solid var(--line);border-radius:8px;padding:8px 10px;overflow:auto;margin:6px 0;white-space:pre;max-height:420px}
+.code .row2{display:block}.code .ln{display:inline-block;width:3.2em;color:var(--mut);user-select:none}.code .h{background:var(--hl);display:block}
+.tk-k{color:var(--k)}.tk-s{color:var(--s)}.tk-n{color:var(--n)}.tk-c{color:var(--c);font-style:italic}
+.copy{display:flex;gap:6px;align-items:center}.copy code{flex:1;overflow:auto;white-space:nowrap;background:var(--code);border:1px solid var(--line);border-radius:6px;padding:3px 6px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin:12px 0}.tabs button{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;padding:8px 12px}.tabs button[aria-selected=true]{border-color:var(--acc);color:var(--acc);font-weight:600}
+.pager{display:flex;gap:8px;align-items:center;justify-content:flex-end;margin:10px 0}
+.empty{padding:40px;text-align:center;color:var(--mut)}.err{color:var(--crit)}
+blockquote{margin:8px 0;padding:6px 12px;border-left:3px solid var(--acc);color:var(--mut);overflow-wrap:anywhere}
+svg.chart{width:100%;height:220px;display:block}svg .ax{stroke:var(--line)}svg text{fill:var(--mut);font-size:11px}svg .open{fill:none;stroke:var(--acc);stroke-width:2}svg .area{fill:var(--acc);opacity:.08}svg .nb{fill:var(--maj)}svg .fb{fill:var(--ok)}
+.legend{display:flex;gap:16px;font-size:12px;color:var(--mut)}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:6px 14px;border-radius:8px;font-size:13px;z-index:60}
+@media(max-width:1000px){.layout,.layout.open{grid-template-columns:1fr}aside.side{position:static;max-height:none}.detail{position:fixed;inset:56px 0 0 0;z-index:30;border-radius:0}.grid2{grid-template-columns:1fr}header{gap:10px;padding:8px 12px}main{padding:12px}#ver{display:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#app">Skip to content</a>
+<header><a class="brand" href="#/">crev<span>.</span></a><nav id="nav" aria-label="Main"><a href="#/">Dashboard</a><a href="#/run/latest">Findings</a><a href="#/runs">Runs</a><a href="#/compare">Compare</a><a href="#/timeline">Timeline</a><a href="#/rules">Rules</a></nav><div class="sp"></div><span class="mut mono" id="ver"></span><button id="help" aria-label="Keyboard shortcuts" title="Keyboard shortcuts">?</button><button id="theme" title="Toggle dark/light theme" aria-label="Toggle dark/light theme">◐</button></header>
+<main id="app" tabindex="-1"><div class="empty">Loading…</div></main>
+<div id="live" class="skip" aria-live="polite"></div>
+<script>
+"use strict";
+const $=s=>document.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)],app=$("#app");
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const url=u=>/^https?:\/\//.test(u||"")?esc(u):"#";
+const api=async p=>{const r=await fetch("/api/"+p);const j=await r.json();if(!r.ok)throw new Error(j.error||r.statusText);return j};
+const SEV=["critical","major","minor","info"],SEVC={critical:"#b91c1c",major:"#c2410c",minor:"#a16207",info:"#475569"};
+const sev=s=>`<span class="pill sev ${esc(s)}">${esc(s)}</span>`;
+const pill=(s,c="",t="")=>`<span class="pill ${c}"${t?` title="${esc(t)}"`:""}>${esc(s)}</span>`;
+const short=c=>esc((c||"").slice(0,9));
+const when=t=>{if(!t)return"";const d=new Date(t);return isNaN(d)?esc(t):esc(d.toLocaleString())};
+const q=()=>Object.fromEntries(new URLSearchParams(location.hash.split("?")[1]||""));
+const qs=o=>{const p=new URLSearchParams();for(const[k,v]of Object.entries(o))if(v!==""&&v!=null)p.set(k,v);const s=p.toString();return s?"?"+s:""};
+const go=(path,params,replace)=>{const h=path+(params?qs(params):"");if(replace)history.replaceState(null,"",h),route();else location.hash=h};
+const REASONS={pending_ai:"pending AI confirmation",ai_rejected:"rejected by AI",ai_uncertain:"AI uncertain",ai_low_confidence:"AI-confirmed below review confidence",shadow:"quarantined rule",suppressed_config:"suppressed by linter config",suppressed_inline:"suppressed inline",crev_ignore:"crev-ignore"};
+const toast=m=>{const t=document.createElement("div");t.className="toast";t.setAttribute("role","status");t.textContent=m;document.body.append(t);setTimeout(()=>t.remove(),1600)};
+const copy=t=>navigator.clipboard?.writeText(t).then(()=>toast("Copied"),()=>toast("Copy failed"));
+document.addEventListener("click",e=>{const b=e.target.closest("[data-copy]");if(b)copy(b.dataset.copy)});
+const th=localStorage.getItem("crev-theme");if(th)document.documentElement.dataset.theme=th;
+$("#theme").onclick=()=>{const cur=document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");const n=cur==="dark"?"light":"dark";document.documentElement.dataset.theme=n;localStorage.setItem("crev-theme",n)};
+$("#help").onclick=()=>toast("j/k next/prev · Enter open · / search · Esc close · g d dashboard · g f findings · g r rules");
+api("info").then(i=>$("#ver").textContent=`v${i.version} · ${i.rules} rules`).catch(()=>{});
+const live=m=>{$("#live").textContent=m};
+
+// ---- tiny syntax highlighter (comments, strings, numbers, keywords)
+const KW=new Set("if else for while do return func function def class import from package const let var new try catch finally throw throws raise with as in of is not and or switch case default break continue go defer select type interface struct map chan range public private protected static final void int long bool boolean string fun val object when null nil None True False true false this self super extends implements async await yield lambda echo use namespace require include FROM RUN COPY ADD ENV ARG USER WORKDIR CMD ENTRYPOINT EXPOSE resource variable module provider data output".split(" "));
+function hl(code,lang){
+  const hash=/^(python|yaml|dockerfile|terraform|toml|shell|ruby|php)$/.test(lang||"")||/^\s*#/.test(code);
+  const re=new RegExp([String.raw`\/\*[\s\S]*?\*\/`,String.raw`\/\/[^\n]*`,hash?String.raw`#[^\n]*`:null,String.raw`"(?:[^"\\\n]|\\.)*"`,String.raw`'(?:[^'\\\n]|\\.)*'`,"`(?:[^`\\\\]|\\\\.)*`",String.raw`\b\d[\d_.xXa-fA-F]*\b`,String.raw`[A-Za-z_$][\w$]*`].filter(Boolean).join("|"),"g");
+  let out="",i=0,m;
+  while((m=re.exec(code))){out+=esc(code.slice(i,m.index));const t=m[0];let c="";
+    if(t[0]==="/"&&(t[1]==="/"||t[1]==="*")||t[0]==="#")c="c";else if(/^["'`]/.test(t))c="s";else if(/^\d/.test(t))c="n";else if(KW.has(t))c="k";
+    out+=c?`<span class="tk-${c}">${esc(t)}</span>`:esc(t);i=m.index+t.length}
+  return out+esc(code.slice(i));
+}
+const block=(code,lang)=>`<pre class="code">${hl(code||"—",lang)}</pre>`;
+function lines(s,L,lang){return`<pre class="code" aria-label="code snippet">${(s.lines||[]).map((l,i)=>{const n=s.start+i,h=n>=L.start_line&&n<=(L.end_line||L.start_line);return`<span class="row2${h?" h":""}"><span class="ln">${n}</span>${hl(l,lang)||" "}</span>`}).join("")}</pre><div class="mut" style="font-size:12px">${esc(s.source)}</div>`}
+function spark(vals,label){if(!vals.length)return"";const W=300,H=46,mx=Math.max(1,...vals),x=i=>vals.length===1?W/2:i*W/(vals.length-1),y=v=>H-3-v*(H-6)/mx;const pts=vals.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  return`<svg class="spark" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(label)}"><polygon class="a" points="0,${H} ${pts} ${W},${H}"/><polyline points="${pts}"/></svg>`}
+function sevbar(b){b=b||{};const t=SEV.reduce((a,s)=>a+(b[s]||0),0);if(!t)return'<div class="hbar"></div>';return`<div class="hbar" role="img" aria-label="${esc(SEV.map(s=>(b[s]||0)+" "+s).join(", "))}">${SEV.map(s=>b[s]?`<i style="width:${100*b[s]/t}%;background:${SEVC[s]}"></i>`:"").join("")}</div>`}
+const sum=o=>Object.values(o||{}).reduce((a,b)=>a+b,0);
+
+// ---- dashboard
+async function viewDash(){
+  const d=await api("dashboard"),B=d.branches||[];
+  if(!B.length){app.innerHTML=`<div class="empty"><h1>No runs yet</h1><p>Run <code>crev scan</code> in this repository; each scan is recorded in <code>.crev/runs</code>.</p></div>`;return}
+  const L=B[0],c=L;
+  app.innerHTML=`<h1>Dashboard</h1><div class="mut">${d.runs} run(s) on ${B.length} branch(es) · latest <a href="#/run/${esc(d.latest)}">${esc(d.latest)}</a></div>
+  <div class="kpis"><div class="card kpi"><b>${c.review}</b><small>in review list (${esc(L.branch)})</small></div><div class="card kpi"><b class="${L.latest.counts.gating?"err":""}">${L.latest.counts.gating||0}</b><small>gating</small></div>
+  <div class="card kpi"><b style="color:var(--maj)">${L.new}</b><small>new since last run</small></div><div class="card kpi"><b style="color:var(--ok)">${L.fixed}</b><small>fixed since last run</small></div>
+  <div class="card kpi"><a href="#/run/${esc(L.latest.id)}?hidden=only"><b class="mut">${sum(L.hidden)}</b></a><small>hidden</small></div>
+  ${SEV.map(s=>`<div class="card kpi"><a href="#/run/${esc(L.latest.id)}?severity=${s}"><b>${(c.by_severity||{})[s]||0}</b></a><small>${s} (all statuses)</small></div>`).join("")}</div>
+  <div class="grid2"><div class="card pad"><h3 style="margin-top:0">By category (incl. hidden) · ${esc(L.branch)}</h3>${Object.entries(c.by_category||{}).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div style="display:flex;gap:8px;align-items:center"><a style="width:150px" href="#/run/${esc(L.latest.id)}?category=${encodeURIComponent(k)}&hidden=1">${esc(k)}</a><div class="hbar" style="flex:1"><i style="width:${100*v/Math.max(...Object.values(c.by_category))}%;background:var(--acc)"></i></div><span class="mono">${v}</span></div>`).join("")||'<span class="mut">none</span>'}</div>
+  <div class="card pad"><h3 style="margin-top:0">Hidden findings · why</h3>${Object.entries(L.hidden||{}).map(([k,v])=>`<div><a href="#/run/${esc(L.latest.id)}?hidden=only&reason=${k}">${pill(REASONS[k]||k,"hr")}</a> <span class="mono">${v}</span></div>`).join("")||'<span class="mut">none</span>'}</div></div>
+  <h2>Branches</h2><div class="dash">${B.map(b=>`<div class="card pad"><div style="display:flex;gap:8px;align-items:baseline"><b>${esc(b.branch)}</b><span class="sp"></span><a class="mono" href="#/run/${esc(b.latest.id)}">${short(b.latest.commit)||esc(b.latest.id)}</a></div>
+   <div class="mut" style="font-size:12px">${when(b.latest.timestamp)} · ${b.runs} run(s) · ${esc(b.latest.scope_mode||"full")}</div>
+   <div style="display:flex;gap:14px;margin:8px 0"><span><b>${b.review}</b> <span class="mut">review</span></span><span style="color:var(--maj)"><b>${b.new}</b> new</span><span style="color:var(--ok)"><b>${b.fixed}</b> fixed</span>${b.latest.counts.gating?`<span class="err"><b>${b.latest.counts.gating}</b> gating</span>`:""}<span class="mut">${sum(b.hidden)} hidden</span></div>
+   ${sevbar(b.by_severity)}${spark(b.trend.map(t=>t.review),"review-list findings over the last "+b.trend.length+" runs")}
+   <div class="bar" style="margin:4px 0 0"><a href="#/run/${esc(b.latest.id)}">Findings</a><a href="#/timeline?branch=${encodeURIComponent(b.branch)}">Timeline</a>${b.trend.length>1?`<a href="#/compare?a=${esc(b.trend[b.trend.length-2].run)}&b=${esc(b.latest.id)}">Compare with previous</a>`:""}</div></div>`).join("")}</div>`;
+}
+
+// ---- runs list
+async function viewRuns(){
+  const p=q(),idx=await api("runs"+(p.branch?"?branch="+encodeURIComponent(p.branch):"")),runs=(idx.runs||[]).slice().reverse(),brs=await api("branches");
+  if(!runs.length&&!p.branch){app.innerHTML=`<div class="empty"><h1>No runs yet</h1><p>Run <code>crev scan</code>.</p></div>`;return}
+  const per=50,pg=+p.page||0,page=runs.slice(pg*per,pg*per+per);
+  app.innerHTML=`<h1>Runs</h1><div class="bar"><select id="br" aria-label="Branch"><option value="">All branches</option>${brs.map(b=>`<option ${b.branch===p.branch?"selected":""}>${esc(b.branch)}</option>`).join("")}</select><button id="cmp" disabled>Compare selected</button><span class="mut">${runs.length} run(s)</span></div>
+  <div class="card wrap"><table><thead><tr><th><span class="skip">Select</span></th><th>Run</th><th>Branch</th><th>Commit</th><th>Scope</th><th>Review</th><th>Severity</th><th>Gating</th><th>Hidden</th><th>When</th></tr></thead><tbody>
+  ${page.map(r=>{const c=r.counts||{},h=sum(c.hidden);return`<tr><td><input type="checkbox" value="${esc(r.id)}" aria-label="select ${esc(r.id)}"></td><td class="mono"><a href="#/run/${esc(r.id)}">${esc(r.id)}</a></td><td>${esc(r.branch)}</td><td class="mono">${short(r.commit)}${r.dirty?' <span class="pill">dirty</span>':""}</td><td>${esc(r.scope_mode||"full")}</td><td>${(c.total||0)-h}</td><td style="min-width:120px">${sevbar(c.by_severity)}</td><td>${c.gating?`<b class="err">${c.gating}</b>`:"0"}</td><td>${h?`<a href="#/run/${esc(r.id)}?hidden=only" title="${esc(Object.entries(c.hidden||{}).map(([k,v])=>v+" "+(REASONS[k]||k)).join(", "))}">${h}</a>`:"0"}</td><td class="mut">${when(r.timestamp)}</td></tr>`}).join("")}
+  </tbody></table></div>${runs.length>per?`<div class="pager"><button id="pp" ${pg?"":"disabled"}>‹ Prev</button><span class="mut">page ${pg+1} / ${Math.ceil(runs.length/per)}</span><button id="pn" ${pg*per+per<runs.length?"":"disabled"}>Next ›</button></div>`:""}`;
+  $("#br").onchange=e=>go("#/runs",{branch:e.target.value});
+  const boxes=$$("input[type=checkbox]",app),btn=$("#cmp");boxes.forEach(b=>b.onchange=()=>{btn.disabled=boxes.filter(x=>x.checked).length!==2});
+  btn.onclick=()=>{const s=boxes.filter(x=>x.checked).map(x=>x.value).reverse();go("#/compare",{a:s[0],b:s[1]})};
+  if($("#pp")){$("#pp").onclick=()=>go("#/runs",{...p,page:pg-1});$("#pn").onclick=()=>go("#/runs",{...p,page:pg+1})}
+}
+
+// ---- findings view
+const FACETS=[["change","Status"],["severity","Severity"],["category","Category"],["lang","Language"],["pack","Pack"],["rule","Rule"],["cwe","CWE"],["owasp","OWASP"],["trust","Trust"],["reason","Hidden reason"]];
+const PER=200,ruleCache={};
+const getRule=id=>ruleCache[id]||(ruleCache[id]=api("rules/"+encodeURIComponent(id)).catch(()=>null));
+let cur={items:[],run:null,sel:-1};
+function facetHTML(name,label,counts,p){
+  const sel=new Set((p[name]||"").split(",").filter(Boolean)),ents=Object.entries(counts||{}).sort((a,b)=>name==="severity"?SEV.indexOf(a[0])-SEV.indexOf(b[0]):b[1]-a[1]||a[0].localeCompare(b[0]));
+  if(!ents.length&&!sel.size)return"";
+  const show=ents.slice(0,sel.size||ents.length<=10?ents.length:8),more=ents.length-show.length;
+  const nice=v=>name==="reason"?(REASONS[v]||v):v;
+  return`<details class="facet" open><summary>${esc(label)}${sel.size?` <a href="#" data-clear="${name}">clear</a>`:""}</summary><div role="group" aria-label="${esc(label)}">${show.map(([v,n])=>`<label><input type="checkbox" data-f="${name}" value="${esc(v)}" ${sel.has(v)?"checked":""}><span title="${esc(v)}">${esc(nice(v))}</span><em>${n}</em></label>`).join("")}
+   ${more>0?`<details><summary class="mut" style="text-transform:none;font-weight:400">${more} more…</summary>${ents.slice(show.length).map(([v,n])=>`<label><input type="checkbox" data-f="${name}" value="${esc(v)}"><span title="${esc(v)}">${esc(nice(v))}</span><em>${n}</em></label>`).join("")}</details>`:""}</div></details>`;
+}
+function treeHTML(files,active){
+  const root={d:{},n:0};for(const[p,n]of Object.entries(files||{})){let t=root;t.n+=n;const parts=p.split("/");parts.forEach((s,i)=>{if(i===parts.length-1){(t.f=t.f||{})[s]=[p,n]}else{t=t.d[s]=t.d[s]||{d:{},n:0,path:parts.slice(0,i+1).join("/")};t.n+=n}})}
+  const rec=t=>Object.keys(t.d).sort().map(k=>{let c=t.d[k],name=k;while(!c.f&&Object.keys(c.d).length===1){const k2=Object.keys(c.d)[0];name+="/"+k2;c=c.d[k2]}
+    return`<details ${active&&active.startsWith(c.path)?"open":""}><summary><a href="#" data-file="${esc(c.path)}" class="${active===c.path?"on":""}">${esc(name)}</a><em>${c.n}</em></summary>${rec(c)}</details>`}).join("")+Object.entries(t.f||{}).sort().map(([k,[p,n]])=>`<a href="#" class="leaf ${active===p?"on":""}" data-file="${esc(p)}">${esc(k)}<em>${n}</em></a>`).join("");
+  return`<details class="facet" open><summary>Files${active?` <a href="#" data-clear="file">clear</a>`:""}</summary><div class="tree">${rec(root)||'<span class="mut">none</span>'}</div></details>`;
+}
+function rowHTML(f,i){return`<button class="row" data-i="${i}" id="r${i}" aria-label="${esc(f.severity+" "+(f.title||f.rule_id)+" at "+f.location.path+" line "+f.location.start_line)}">${sev(f.severity)}<span class="t">${esc(f.title||f.message)}</span>${f.change==="new"?pill("new","new"):f.change==="fixed"?pill("fixed","fixed"):""}${f.reason?pill(REASONS[f.reason]||f.reason,"hr",f.hidden_detail):""}<span class="mono mut">:${f.location.start_line}</span></button>`}
+function listHTML(items,sort){
+  if(!items.length)return`<div class="empty">No findings match these filters.</div>`;
+  if(sort&&sort!=="file")return`<div class="card flat" role="list">${items.map((f,i)=>`<div role="listitem">${rowHTML(f,i).replace('<span class="t">',`<span class="mono mut">${esc(f.location.path)}</span><span class="t">`)}</div>`).join("")}</div>`;
+  let h="",i=0;
+  while(i<items.length){const file=items[i].location.path;let j=i;while(j<items.length&&items[j].location.path===file)j++;
+    h+=`<details class="grp" open><summary><span class="mono">${esc(file)}</span><span class="pill">${j-i}</span></summary>`;
+    let k=i;while(k<j){const rid=items[k].rule_id;let m=k;while(m<j&&items[m].rule_id===rid)m++;
+      h+=`<details class="rg" open><summary><a class="mono" href="#/rule/${encodeURIComponent(rid)}">${esc(rid)}</a><span class="mut">${esc(items[k].title||"")}</span><span class="pill">${m-k}</span></summary>${items.slice(k,m).map((f,x)=>rowHTML(f,k+x)).join("")}</details>`;k=m}
+    h+=`</details>`;i=j}
+  return`<div class="card" role="list">${h}</div>`;
+}
+async function viewRun(id){
+  const p=q(),pg=+p.page||0,params={...p,offset:pg*PER,limit:PER};delete params.page;delete params.f;
+  const d=await api(`runs/${encodeURIComponent(id)}/findings${qs(params)}`),m=d.run,items=d.items;
+  cur={items,run:m,sel:-1,id};
+  const hid=sum(d.hidden),pages=Math.ceil(d.total/PER);
+  app.innerHTML=`<div style="display:flex;gap:10px;align-items:baseline;flex-wrap:wrap"><h1>Findings</h1><a class="mono" href="#/runs">${esc(m.id)}</a><span class="mut">${esc(m.branch)} · ${short(m.commit)}${m.dirty?" (dirty)":""} · ${when(m.timestamp)} · exit ${m.exit_code}</span></div>
+  <div class="bar"><span><b>${d.review}</b> in review list</span><span style="color:var(--maj)">${d.changes.new||0} new</span><span style="color:var(--ok)"><a href="#" id="showfixed">${d.changes.fixed||0} fixed</a></span>${m.counts?.gating?`<span class="err">${m.counts.gating} gating</span>`:""}<span class="mut">${hid} hidden${hid?": "+Object.entries(d.hidden).map(([k,v])=>esc(v+" "+(REASONS[k]||k))).join(", "):""}</span></div>
+  <div class="layout" id="lay"><aside class="side" aria-label="Filters">${FACETS.map(([k,l])=>facetHTML(k,l,d.facets[k],p)).join("")}${treeHTML(d.files,p.file)}</aside>
+  <section class="list" aria-label="Findings list"><div class="bar"><input type="search" id="fq" placeholder="Search findings…  ( / )" value="${esc(p.q||"")}" aria-label="Search findings">
+   <select id="fs" aria-label="Sort"><option value="file">Group by file › rule</option><option value="severity" ${p.sort==="severity"?"selected":""}>Sort by severity</option><option value="rule" ${p.sort==="rule"?"selected":""}>Sort by rule</option></select>
+   <label class="mut"><input type="checkbox" id="fh" ${p.hidden?"checked":""}> Show hidden</label>${p.hidden?`<select id="fho" aria-label="Hidden mode"><option value="1">all</option><option value="only" ${p.hidden==="only"?"selected":""}>hidden only</option></select>`:""}
+   <button id="save" title="Save this filter set">Save view</button><select id="views" aria-label="Saved views"><option value="">Saved views…</option>${savedViews().map((v,i)=>`<option value="${i}">${esc(v.name)}</option>`).join("")}</select><button data-copy="${esc(location.href)}" title="Copy link to this view">Copy link</button></div>
+   <div class="mut" style="font-size:12px;margin-bottom:6px" id="cnt">${d.total} finding(s)${d.total>PER?` · showing ${d.offset+1}–${d.offset+items.length}`:""}${d.truncated?" · rule facet truncated":""} · <kbd>j</kbd>/<kbd>k</kbd> move, <kbd>Enter</kbd> open, <kbd>Esc</kbd> close</div>
+   <div id="fl">${listHTML(items,p.sort)}</div>
+   ${pages>1?`<div class="pager"><button id="pp" ${pg?"":"disabled"}>‹ Prev</button><span class="mut">page ${pg+1} / ${pages}</span><button id="pn" ${pg+1<pages?"":"disabled"}>Next ›</button></div>`:""}</section>
+  <section class="card detail" id="det" hidden aria-label="Finding detail"></section></div>`;
+  live(`${d.total} findings`);
+  const upd=o=>{const n={...q(),...o,page:""};for(const k in n)if(n[k]===""||n[k]==null)delete n[k];delete n.f;go("#/run/"+encodeURIComponent(id),n)};
+  $$("input[data-f]",app).forEach(cb=>cb.onchange=()=>{const k=cb.dataset.f,set=new Set((q()[k]||"").split(",").filter(Boolean));cb.checked?set.add(cb.value):set.delete(cb.value);
+    const o={[k]:[...set].join(",")};if(k==="reason"&&set.size&&!q().hidden)o.hidden="1";if(k==="change"&&set.has("fixed"))o.change=[...set].join(",");upd(o)});
+  $$("[data-clear]",app).forEach(a=>a.onclick=e=>{e.preventDefault();upd({[a.dataset.clear]:""})});
+  $$("[data-file]",app).forEach(a=>a.onclick=e=>{e.preventDefault();e.stopPropagation();upd({file:q().file===a.dataset.file?"":a.dataset.file})});
+  let tm;$("#fq").oninput=e=>{clearTimeout(tm);tm=setTimeout(()=>upd({q:e.target.value}),300)};
+  $("#fs").onchange=e=>upd({sort:e.target.value==="file"?"":e.target.value});
+  $("#fh").onchange=e=>upd({hidden:e.target.checked?"1":"",reason:e.target.checked?q().reason:""});
+  if($("#fho"))$("#fho").onchange=e=>upd({hidden:e.target.value});
+  $("#showfixed").onclick=e=>{e.preventDefault();upd({change:"fixed"})};
+  $("#save").onclick=()=>{const name=prompt("Name this view");if(!name)return;const v=savedViews();v.push({name,hash:location.hash});localStorage.setItem("crev-views",JSON.stringify(v));toast("Saved");route()};
+  $("#views").onchange=e=>{const v=savedViews()[+e.target.value];if(v)location.hash=v.hash};
+  if($("#pp")){$("#pp").onclick=()=>upd({page:pg-1||""});$("#pn").onclick=()=>{const n={...q(),page:pg+1};delete n.f;go("#/run/"+encodeURIComponent(id),n)}}
+  $$(".row",app).forEach(b=>b.onclick=()=>select(+b.dataset.i,true));
+  if(p.f){const i=items.findIndex(f=>f.id===p.f);if(i>=0)select(i,true)}
+  if(p.q&&document.activeElement===document.body){const el=$("#fq");el.focus();el.setSelectionRange(el.value.length,el.value.length)}
+}
+const savedViews=()=>{try{return JSON.parse(localStorage.getItem("crev-views")||"[]")}catch{return[]}};
+function select(i,open){
+  const rows=$$(".row",app);if(!rows.length)return;i=Math.max(0,Math.min(rows.length-1,i));cur.sel=i;
+  rows.forEach(r=>r.classList.toggle("sel",+r.dataset.i===i));const r=$("#r"+i);if(!r)return;r.closest("details.rg")?.setAttribute("open","");r.closest("details.grp")?.setAttribute("open","");r.focus({preventScroll:true});r.scrollIntoView({block:"nearest"});
+  if(open||!$("#det").hidden)detail(cur.items[i]);
+}
+const CMT={python:"#",yaml:"#",dockerfile:"#",terraform:"#",toml:"#",shell:"#",xml:"<!--",vue:"//"};
+async function detail(f,root=app,runId=cur.run?.id){
+  const det=root.querySelector("#det");if(!det||!f)return;det.hidden=false;root.querySelector("#lay")?.classList.add("open");
+  const L=f.location,c=CMT[f.lang]||"//",ign=c==="<!--"?`<!-- crev-ignore-next-line ${f.rule_id} -->`:`${c} crev-ignore-next-line ${f.rule_id}`;
+  if(root===app&&location.hash.startsWith("#/run/")){const p=q();if(p.f!==f.id)history.replaceState(null,"","#/run/"+encodeURIComponent(cur.id)+qs({...p,f:f.id}))}
+  det.innerHTML=`<button class="x" aria-label="Close detail (Esc)" id="dx">✕</button><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${sev(f.severity)}${pill(f.category)}${f.lang?pill(f.lang):""}${f.change&&f.change!=="existing"?pill(f.change,f.change):""}${pill(f.status)}${f.trust?pill("trust "+f.trust):""}</div>
+   <h2 style="margin:8px 0 2px;font-size:16px">${esc(f.title||f.rule_id)}</h2><div class="mono mut">${esc(L.path)}:${L.start_line}${L.enclosing_symbol?" · "+esc(L.enclosing_symbol):""}</div>
+   <p>${esc(f.message)}</p>${f.fix?`<p><b>Fix:</b> ${esc(f.fix)}</p>`:""}
+   ${f.reason?`<blockquote><b>Why hidden:</b> ${pill(REASONS[f.reason]||f.reason,"hr")} ${esc(f.hidden_detail||"")}</blockquote>`:""}
+   ${f.ai?`<blockquote><b>AI ${esc(f.ai.verdict)}</b> (${esc(f.ai.confidence)}${f.ai.model?", "+esc(f.ai.model):""}${f.ai.via?", via "+esc(f.ai.via):""}): ${esc(f.ai.rationale||"")}${f.ai.suggested_fix?`<div><b>Suggested fix:</b> ${esc(f.ai.suggested_fix)}</div>`:""}</blockquote>`:""}
+   ${f.suppressed_by?`<blockquote>Suppressed by ${esc(f.suppressed_by.kind)} · ${esc(f.suppressed_by.tool)}:${esc(f.suppressed_by.id)} · <span class="mono">${esc(f.suppressed_by.source)}</span></blockquote>`:""}
+   <div id="snip" class="mut">loading code…</div>
+   ${(f.cwe||[]).length||(f.owasp||[]).length?`<div class="bar">${(f.cwe||[]).map(x=>`<a class="pill" href="https://cwe.mitre.org/data/definitions/${esc(x.replace("CWE-",""))}.html" target="_blank" rel="noopener noreferrer">${esc(x)}</a>`).join("")}${(f.owasp||[]).map(x=>pill("OWASP "+x)).join("")}</div>`:""}
+   ${f.evidence?`<h3>Evidence</h3><div class="mono" style="white-space:pre-wrap">${esc(f.evidence)}</div>`:""}
+   ${f.vuln?`<h3>Advisory</h3><div><a href="https://osv.dev/vulnerability/${encodeURIComponent(f.vuln.id)}" target="_blank" rel="noopener noreferrer">${esc(f.vuln.id)}</a> ${esc((f.vuln.cve||[]).join(", "))} · <span class="mono">${esc(f.vuln.package)} ${esc(f.vuln.version)}</span> · ${f.vuln.fixed_version?"fixed in <b>"+esc(f.vuln.fixed_version)+"</b>":"no fix published"}</div>`:""}
+   <h3>Fingerprint</h3><div class="copy"><code>${esc(f.id)}</code><button data-copy="${esc(f.id)}" aria-label="Copy fingerprint">Copy</button></div>
+   <h3>Suppress here</h3><div class="copy"><code>${esc(ign)}</code><button data-copy="${esc(ign)}" aria-label="Copy crev-ignore comment">Copy</button></div>
+   <div id="rx"></div>`;
+  det.querySelector("#dx").onclick=()=>closeDetail(root);
+  try{const s=await api(`snippet?path=${encodeURIComponent(L.path)}&line=${L.start_line}&end=${L.end_line||L.start_line}${runId?"&run="+encodeURIComponent(runId):""}`);const el=det.querySelector("#snip");if(el)el.outerHTML=lines(s,L,f.lang)}
+  catch(e){const el=det.querySelector("#snip");if(el)el.innerHTML=f.snippet?block(f.snippet,f.lang)+`<div class="mut">file unavailable: ${esc(e.message)}</div>`:"snippet unavailable: "+esc(e.message)}
+  const rd=await getRule(f.rule_id),rx=det.querySelector("#rx");if(!rd||!rx)return;const r=rd.rule,s=r.source||{};
+  rx.innerHTML=`<h3>Rule <a class="mono" href="#/rule/${encodeURIComponent(r.id)}">${esc(r.id)}</a></h3>${r.rationale?`<p>${esc(r.rationale)}</p>`:""}
+   <div>Source: <a href="${url(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.doc||s.url)}</a>${s.doc_version?` <span class="mut">(${esc(s.doc_version)})</span>`:""}</div>${s.quote?`<blockquote>“${esc(s.quote)}”</blockquote>`:""}
+   ${r.trust_summary?`<div class="mut">Trust: ${esc(r.trust_summary)}</div>`:""}
+   <div class="grid2"><div><h3>Bad</h3>${block(r.examples?.bad,r.language)}</div><div><h3>Good</h3>${block(r.examples?.good,r.language)}</div></div>`;
+}
+function closeDetail(root=app){const det=root.querySelector("#det");if(!det||det.hidden)return false;det.hidden=true;root.querySelector("#lay")?.classList.remove("open");
+  if(root===app&&location.hash.startsWith("#/run/")){const p=q();delete p.f;history.replaceState(null,"","#/run/"+encodeURIComponent(cur.id)+qs(p))}return true}
+let gk=0;
+document.addEventListener("keydown",e=>{
+  const t=e.target,typing=/INPUT|SELECT|TEXTAREA/.test(t.tagName)&&t.type!=="checkbox";
+  if(e.key==="Escape"){if(typing){t.blur();return}if(closeDetail())return;return}
+  if(typing||e.metaKey||e.ctrlKey||e.altKey)return;
+  if(e.key==="/"){const s=$("#fq")||$("#rq");if(s){e.preventDefault();s.focus();s.select()}return}
+  if(gk&&Date.now()-gk<800){gk=0;const m={d:"#/",f:"#/run/latest",r:"#/rules",u:"#/runs",c:"#/compare",t:"#/timeline"}[e.key];if(m){location.hash=m;return}}
+  if(e.key==="g"){gk=Date.now();return}
+  if(!$$(".row",app).length)return;
+  if(e.key==="j"||e.key==="ArrowDown"&&t.classList.contains("row")){e.preventDefault();select(cur.sel+1,false)}
+  else if(e.key==="k"||e.key==="ArrowUp"&&t.classList.contains("row")){e.preventDefault();select(cur.sel-1,false)}
+  else if(e.key==="Enter"||e.key==="o"){if(cur.sel>=0){e.preventDefault();detail(cur.items[cur.sel])}}
+});
+
+// ---- compare
+async function viewCompare(){
+  const p=q(),idx=await api("runs"),runs=(idx.runs||[]).slice().reverse();
+  if(runs.length<2){app.innerHTML=`<div class="empty">Need at least two runs to compare.</div>`;return}
+  let a=p.a,b=p.b;if(!a||!b){const br=runs[0].branch,same=runs.filter(r=>r.branch===br);b=same[0].id;a=(same[1]||runs[1]).id}
+  const tab=p.tab||"new",opt=s=>runs.map(r=>`<option value="${esc(r.id)}" ${r.id===s?"selected":""}>${esc(r.id)} · ${esc(r.branch)}</option>`).join("");
+  const c=await api(`compare?a=${encodeURIComponent(a)}&b=${encodeURIComponent(b)}`);
+  const L={new:c.new,fixed:c.fixed,unchanged:c.unchanged_list},list=(L[tab]||[]).map(f=>({...f,change:tab==="unchanged"?"existing":tab}));
+  cur={items:list,run:tab==="fixed"?c.a:c.b,sel:-1,id:null};
+  app.innerHTML=`<h1>Compare runs</h1><div class="bar"><label class="mut">Base <select id="ca">${opt(a)}</select></label><span class="mut">→</span><label class="mut">Head <select id="cb">${opt(b)}</select></label><button id="sw" title="Swap">⇄</button></div>
+  ${c.caveat?`<div class="card pad" role="note">⚠ ${esc(c.caveat)}</div>`:""}
+  <div class="tabs" role="tablist">${[["new","New",c.new.length],["fixed","Fixed / gone",c.fixed.length],["unchanged","Unchanged",c.unchanged]].map(([k,l,n])=>`<button role="tab" aria-selected="${k===tab}" data-tab="${k}">${l} <span class="pill">${n}</span></button>`).join("")}</div>
+  ${c.truncated?'<div class="mut">Lists capped; narrow the comparison for the full set.</div>':""}
+  <div class="layout" id="lay" style="grid-template-columns:minmax(0,1fr)"><section class="list" role="tabpanel">${listHTML(list,"file")}</section><section class="card detail" id="det" hidden aria-label="Finding detail"></section></div>`;
+  const upd=o=>go("#/compare",{a:$("#ca").value,b:$("#cb").value,tab,...o});
+  $("#ca").onchange=()=>upd({});$("#cb").onchange=()=>upd({});$("#sw").onclick=()=>go("#/compare",{a:b,b:a,tab});
+  $$("[data-tab]",app).forEach(t=>t.onclick=()=>upd({tab:t.dataset.tab}));
+  $$(".row",app).forEach(r=>r.onclick=()=>{select(+r.dataset.i,true);$("#lay").style.gridTemplateColumns=""});
+}
+
+// ---- timeline
+function chart(tl){
+  if(!tl.length)return`<div class="empty">No timeline yet</div>`;
+  const W=1000,H=220,P=32,mx=Math.max(1,...tl.map(t=>Math.max(t.open,t.new,t.fixed)));
+  const x=i=>tl.length===1?W/2:P+i*(W-2*P)/(tl.length-1),y=v=>H-P-v*(H-2*P)/mx,bw=Math.max(3,Math.min(14,(W-2*P)/tl.length/3));
+  const pts=tl.map((t,i)=>`${x(i).toFixed(1)},${y(t.open).toFixed(1)}`).join(" ");
+  const ticks=[0,Math.round(mx/2),mx].map(v=>`<line class="ax" x1="${P}" x2="${W-P}" y1="${y(v)}" y2="${y(v)}"/><text x="4" y="${y(v)+4}">${v}</text>`).join("");
+  const bars=tl.map((t,i)=>(t.new?`<rect class="nb" x="${x(i)-bw-1}" y="${y(t.new)}" width="${bw}" height="${y(0)-y(t.new)}"><title>${esc(t.run)}: ${t.new} new</title></rect>`:"")+(t.fixed?`<rect class="fb" x="${x(i)+1}" y="${y(t.fixed)}" width="${bw}" height="${y(0)-y(t.fixed)}"><title>${esc(t.run)}: ${t.fixed} fixed</title></rect>`:"")).join("");
+  const dots=tl.map((t,i)=>`<circle cx="${x(i)}" cy="${y(t.open)}" r="3" fill="var(--acc)"><title>${esc(t.run)}: ${t.open} open</title></circle>`).join("");
+  return`<svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="open findings over time">${ticks}<polygon class="area" points="${x(0)},${y(0)} ${pts} ${x(tl.length-1)},${y(0)}"/>${bars}<polyline class="open" points="${pts}"/>${dots}</svg>
+  <div class="legend"><span><i style="background:var(--acc)"></i>open</span><span><i style="background:var(--maj)"></i>new</span><span><i style="background:var(--ok)"></i>fixed</span></div>`;
+}
+async function viewTimeline(){
+  const p=q(),brs=await api("branches");
+  if(!brs.length){app.innerHTML=`<div class="empty">No runs yet.</div>`;return}
+  const b=p.branch||brs[0].branch,l=await api("ledger?branch="+encodeURIComponent(b)),E=Object.values(l.entries||{});
+  const by=s=>E.filter(e=>e.status===s).length;
+  E.sort((a,b)=>(a.status==="fixed")-(b.status==="fixed")||SEV.indexOf(a.severity)-SEV.indexOf(b.severity));
+  const per=200,pg=+p.page||0;
+  app.innerHTML=`<h1>Timeline</h1><div class="bar"><select id="tb" aria-label="Branch">${brs.map(x=>`<option ${x.branch===b?"selected":""}>${esc(x.branch)}</option>`).join("")}</select><span class="mut">${(l.timeline||[]).length} run(s) in the ledger</span></div>
+  <div class="kpis"><div class="card kpi"><b>${E.length}</b><small>found (all time)</small></div><div class="card kpi"><b style="color:var(--maj)">${by("open")}</b><small>open</small></div><div class="card kpi"><b style="color:var(--ok)">${by("fixed")}</b><small>fixed</small></div><div class="card kpi"><b>${by("reopened")}</b><small>reopened</small></div><div class="card kpi"><b>${by("suppressed")}</b><small>suppressed</small></div></div>
+  <div class="card pad">${chart(l.timeline||[])}</div>
+  <h2>Findings lifecycle</h2><div class="card wrap"><table><thead><tr><th>Status</th><th>Severity</th><th>Finding</th><th>First seen</th><th>Fixed in</th></tr></thead><tbody>
+  ${E.slice(pg*per,pg*per+per).map(e=>`<tr><td>${pill(e.status,e.status==="fixed"?"fixed":e.status==="open"||e.status==="reopened"?"new":"")}</td><td>${sev(e.severity)}</td><td><a href="#/rule/${encodeURIComponent(e.rule_id)}">${esc(e.title||e.rule_id)}</a><div class="mono mut">${esc(e.path)}:${e.line}</div></td>
+   <td class="mono"><a href="#/run/${esc(e.first_seen?.run)}">${short(e.first_seen?.commit)}</a><div class="mut">${when(e.first_seen?.time)}</div></td><td class="mono">${e.fixed_in?`<a href="#/run/${esc(e.fixed_in.run)}">${short(e.fixed_in.commit)}</a>`:""}</td></tr>`).join("")}
+  </tbody></table></div>${E.length>per?`<div class="pager"><button id="pp" ${pg?"":"disabled"}>‹ Prev</button><span class="mut">page ${pg+1} / ${Math.ceil(E.length/per)}</span><button id="pn" ${pg*per+per<E.length?"":"disabled"}>Next ›</button></div>`:""}`;
+  $("#tb").onchange=e=>go("#/timeline",{branch:e.target.value});
+  if($("#pp")){$("#pp").onclick=()=>go("#/timeline",{branch:b,page:pg-1});$("#pn").onclick=()=>go("#/timeline",{branch:b,page:pg+1})}
+}
+
+// ---- rules
+let rulesFacets=null;
+async function viewRules(){
+  const p=q(),pg=+p.page||0,per=100,params={...p,offset:pg*per,limit:per};delete params.page;
+  if(!rulesFacets)rulesFacets=(await api("rules?limit=1")).facets;
+  const r=await api("rules"+qs(params)),F=rulesFacets,pages=Math.ceil(r.total/per);
+  const sel=(k,label)=>`<select data-k="${k}" aria-label="${label}"><option value="">${label}</option>${Object.keys(F[k]||{}).sort().map(v=>`<option ${p[k]===v?"selected":""}>${esc(v)}</option>`).join("")}</select>`;
+  app.innerHTML=`<h1>Rules</h1><div class="mut">${r.total} matching rule(s) · hit stats over the last ${r.sampled_runs} run(s)</div>
+  <div class="bar"><input type="search" id="rq" placeholder="Search id, title, message, tag…  ( / )" value="${esc(p.q||"")}" aria-label="Search rules">${sel("pack","All packs")}${sel("topic","All topics")}${sel("tag","All tags")}${sel("language","All languages")}${sel("category","All categories")}${sel("severity","All severities")}${sel("mode","All modes")}${sel("trust","All trust levels")}
+   <input id="rv" placeholder="version e.g. java >=21" value="${esc(p.version||"")}" style="width:160px" aria-label="Version filter"><select id="rs" aria-label="Sort"><option value="">Sort by id</option><option value="hits" ${p.sort==="hits"?"selected":""}>Most hits</option><option value="severity" ${p.sort==="severity"?"selected":""}>Severity</option></select><label class="mut"><input type="checkbox" id="rf" ${p.fired?"checked":""}> fired only</label></div>
+  <div class="card wrap"><table><thead><tr><th>Rule</th><th>Severity</th><th>Pack</th><th>Mode / trust</th><th>Hits</th><th>Runs</th></tr></thead><tbody>
+  ${r.rules.map(x=>`<tr><td><a class="mono" href="#/rule/${encodeURIComponent(x.id)}">${esc(x.id)}</a><div>${esc(x.title)}</div><div class="mut" style="font-size:12px">${esc([x.language,x.category,...(x.cwe||[])].filter(Boolean).join(" · "))}</div></td><td>${sev(x.severity)}</td><td>${esc(x.pack)}${x.topic?" / "+esc(x.topic):""} <span class="mut mono">${esc(x.pack_version||"")}</span>${x.origin?" "+pill(x.origin):""}</td><td>${esc(x.mode)}${x.trust?" "+pill(x.trust):""}</td><td class="mono">${x.stats?`${x.stats.hits}${x.stats.hidden?` <span class="mut">(${x.stats.hidden} hidden)</span>`:""}`:"0"}</td><td class="mono">${x.stats?.runs||0}</td></tr>`).join("")}
+  </tbody></table></div>${pages>1?`<div class="pager"><button id="pp" ${pg?"":"disabled"}>‹ Prev</button><span class="mut">page ${pg+1} / ${pages}</span><button id="pn" ${pg+1<pages?"":"disabled"}>Next ›</button></div>`:""}`;
+  let tm;const upd=o=>{const n={};$$("select[data-k]",app).forEach(s=>s.value&&(n[s.dataset.k]=s.value));if($("#rq").value)n.q=$("#rq").value;if($("#rv").value)n.version=$("#rv").value;if($("#rs").value)n.sort=$("#rs").value;if($("#rf").checked)n.fired="1";Object.assign(n,o||{});clearTimeout(tm);tm=setTimeout(()=>go("#/rules",n),250)};
+  $$("select[data-k]",app).forEach(s=>s.onchange=()=>upd());$("#rq").oninput=()=>upd();$("#rv").oninput=()=>upd();$("#rs").onchange=()=>upd();$("#rf").onchange=()=>upd();
+  if($("#pp")){$("#pp").onclick=()=>go("#/rules",{...p,page:pg-1});$("#pn").onclick=()=>go("#/rules",{...p,page:pg+1})}
+  if(p.q||p.version){const el=p.version&&!p.q?$("#rv"):$("#rq");el.focus();el.setSelectionRange(el.value.length,el.value.length)}
+}
+async function viewRule(id){
+  const d=await api("rules/"+encodeURIComponent(id)),r=d.rule,s=r.source||{},st=d.stats;
+  app.innerHTML=`<div class="mut"><a href="#/rules">← Rules</a></div><h1 class="mono">${esc(r.id)}</h1><div style="font-size:16px">${esc(r.title)}</div>
+  <div class="bar">${sev(r.severity)}${pill(r.category)}${pill(r.language)}${r.framework?pill(r.framework):""}${pill(r.mode)}${r.trust?pill("trust "+r.trust.level):""}${pill("pack "+d.pack+" "+d.pack_version)}${r.origin?pill(r.origin):""}${Object.entries(r.applies_to||{}).map(([k,v])=>pill(k+" "+v)).join("")}${(r.cwe||[]).map(x=>pill(x)).join("")}${(r.owasp||[]).map(x=>pill("OWASP "+x)).join("")}${(r.asvs||[]).map(x=>pill("ASVS "+x)).join("")}</div>
+  <div class="kpis"><div class="card kpi"><b>${st?.hits||0}</b><small>hits (last ${d.sampled_runs} runs)</small></div><div class="card kpi"><b>${st?.runs||0}</b><small>runs fired</small></div><div class="card kpi"><b>${st?.latest||0}</b><small>in latest run</small></div><div class="card kpi"><b class="mut">${st?.hidden||0}</b><small>hidden</small></div></div>
+  ${st?.latest?`<div><a href="#/run/latest?rule=${encodeURIComponent(r.id)}&hidden=1">Show findings in the latest run →</a></div>`:""}
+  <div class="card pad"><div>${esc(r.message)}</div>${r.rationale?`<p class="mut">${esc(r.rationale)}</p>`:""}${r.fix?`<p><b>Fix:</b> ${esc(r.fix)}</p>`:""}${r.ai_question?`<p class="mut"><b>AI confirmation question:</b> ${esc(r.ai_question)}</p>`:""}
+  <div>Documentation: <a href="${url(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.doc||s.url)}</a>${s.doc_version?` <span class="mut">(${esc(s.doc_version)})</span>`:""}</div>${s.quote?`<blockquote>“${esc(s.quote)}”</blockquote>`:""}
+  ${r.trust_summary?`<div class="mut">Trust: ${esc(r.trust_summary)}${r.trust?.why?" ("+esc(r.trust.why)+")":""}</div>`:""}
+  ${(r.xref||[]).length?`<div class="mut">Equivalent linter rules: ${r.xref.map(esc).join(", ")}</div>`:""}</div>
+  <div class="grid2"><div><h2>Bad</h2>${block(r.examples?.bad,r.language)}</div><div><h2>Good</h2>${block(r.examples?.good,r.language)}</div></div>
+  <details><summary class="mut" style="cursor:pointer;margin-top:16px">Rule YAML (${esc(d.file)})</summary>${block(d.yaml,"yaml")}</details>`;
+}
+
+// ---- router
+async function route(){
+  const h=location.hash||"#/",[path]=h.split("?"),parts=path.slice(2).split("/"),top=parts[0];
+  const navOf={"":"#/",run:"#/run/latest",runs:"#/runs",compare:"#/compare",timeline:"#/timeline",rules:"#/rules",rule:"#/rules"};
+  $$("#nav a").forEach(a=>a.getAttribute("href")===navOf[top]?a.setAttribute("aria-current","page"):a.removeAttribute("aria-current"));
+  try{switch(top){case"run":await viewRun(decodeURIComponent(parts[1]||"latest"));break;case"runs":await viewRuns();break;case"compare":await viewCompare();break;case"timeline":await viewTimeline();break;case"rules":await viewRules();break;case"rule":await viewRule(decodeURIComponent(parts[1]));break;default:await viewDash()}}
+  catch(e){app.innerHTML=`<div class="empty err" role="alert">${esc(e.message)}</div>`}
+}
+addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>

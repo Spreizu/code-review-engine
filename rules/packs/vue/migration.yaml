@@ -1,0 +1,369 @@
+# HAND-EDITED rule file: pack vue, topic migration. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Vue pack. Version dimension "vue" from package.json/lockfile (vue, or @vue/compat => migration build).
+# target: template -> vue grammar on the SFC; target: script -> <script>/<script setup> content
+# (and plain .js/.ts files matched by `files`) parsed with the typescript grammar.
+pack: vue
+pack_version: 2026.10.0
+rules:
+- id: VUE-MIG-DATA-FN-001
+  title: data must be a function
+  language: vue
+  kind: removal
+  category: correctness
+  severity: major
+  applies_to:
+    vue: '>=2.0'
+  overrides:
+  - when:
+      vue: '>=3.0'
+    severity: critical
+    message: Vue 3 only accepts data as a function returning an object.
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (export_statement (object (pair key: (property_identifier) @k (#eq? @k "data") value: (object)) @match))
+  message: Component data declared as a plain object is shared between instances; declare data() { return {...} }.
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/data-option.html
+    doc: Vue 3 Migration Guide - Data Option
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script>export default { data: { count: 0 } }</script>
+    good: |
+      <script>export default { data() { return { count: 0 } } }</script>
+- id: VUE-MIG-EOL-001
+  title: Vue 2 reached End of Life
+  language: manifest
+  kind: removal
+  category: platform
+  severity: major
+  applies_to:
+    vue: <3.0
+  detection:
+    mode: deterministic
+    engine: manifest
+    manifest:
+      check: dependency_version
+      value: vue
+  message: Vue 2 reached End of Life on December 31st, 2023 and receives no further updates or fixes; plan migration to Vue 3 (Vue 2.7 + @vue/compat ease the path).
+  source:
+    url: https://v2.vuejs.org/eol/
+    doc: Vue 2 End of Life
+    doc_version: Vue 2
+    retrieved: '2026-10-09'
+  examples:
+    bad: '{ "dependencies": { "vue": "^2.7.16" } }'
+    good: '{ "dependencies": { "vue": "^3.5.0" } }'
+- id: VUE-MIG-EVENTS-API-001
+  title: $on / $off / $once were removed in Vue 3
+  language: vue
+  kind: removal
+  category: migration
+  severity: critical
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    files:
+    - '**/*.vue'
+    - '**/*.js'
+    - '**/*.ts'
+    query: |
+      (call_expression
+        function: (member_expression property: (property_identifier) @match (#any-of? @match "$on" "$off" "$once")))
+  message: Component instances no longer implement the event-emitter interface; replace event-bus usage with an external library (e.g. mitt) or props/emits/provide-inject.
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/events-api.html
+    doc: Vue 3 Migration Guide - Events API
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script>export default { created() { this.$root.$on('refresh', this.load) } }</script>
+    good: |
+      <script>import { emitter } from './bus'; export default { created() { emitter.on('refresh', this.load) } }</script>
+- id: VUE-MIG-FILTER-001
+  title: Filters were removed in Vue 3
+  language: vue
+  kind: removal
+  category: migration
+  severity: critical
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      (interpolation (raw_text) @match (#match? @match "[^|]\\|[^|]"))
+  message: Interpolation uses a filter (`value | filter`). Filters are removed in Vue 3; use a method call or computed property.
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/filters.html
+    doc: Vue 3 Migration Guide - Filters
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><p>{{ price | currency }}</p></template>
+    good: |
+      <template><p>{{ formatCurrency(price) }} {{ a || b }}</p></template>
+- id: VUE-MIG-GLOBAL-API-001
+  title: Global Vue API replaced by createApp
+  language: vue
+  kind: removal
+  category: migration
+  severity: critical
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    files:
+    - '**/*.vue'
+    - '**/*.js'
+    - '**/*.ts'
+    query: |
+      [
+        (new_expression constructor: (identifier) @c (#eq? @c "Vue")) @match
+        (call_expression function: (member_expression
+          object: (identifier) @o (#eq? @o "Vue")
+          property: (property_identifier) @p (#any-of? @p "use" "component" "directive" "mixin" "filter" "set" "delete"))) @match
+        (member_expression object: (member_expression
+          object: (identifier) @o2 (#eq? @o2 "Vue")
+          property: (property_identifier) @p2 (#eq? @p2 "prototype"))) @match
+      ]
+  message: new Vue(), Vue.use/component/directive/mixin and Vue.prototype are replaced by the app instance API (createApp(App).use(...), app.config.globalProperties). Vue.set/delete are no longer needed.
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/global-api.html
+    doc: Vue 3 Migration Guide - Global API
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      import Vue from 'vue'
+      Vue.use(Router)
+      Vue.prototype.$http = axios
+      new Vue({ render: h => h(App) }).$mount('#app')
+    good: |
+      import { createApp } from 'vue'
+      const app = createApp(App)
+      app.use(router)
+      app.config.globalProperties.$http = axios
+      app.mount('#app')
+- id: VUE-MIG-INLINE-TPL-001
+  title: inline-template attribute was removed in Vue 3
+  language: vue
+  kind: removal
+  category: migration
+  severity: critical
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      (attribute (attribute_name) @match (#eq? @match "inline-template"))
+  message: inline-template is no longer supported; move the template into the child component (or use a default slot).
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/inline-template-attribute.html
+    doc: Vue 3 Migration Guide - Inline Template Attribute
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><my-comp inline-template><div>{{ x }}</div></my-comp></template>
+    good: |
+      <template><my-comp><div>{{ x }}</div></my-comp></template>
+- id: VUE-MIG-KEYCODE-001
+  title: KeyCode modifiers were removed in Vue 3
+  language: vue
+  kind: removal
+  category: migration
+  severity: critical
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      (directive_attribute (directive_modifiers (directive_modifier) @match (#match? @match "^[0-9]+$")))
+  message: Numeric keyCode modifiers (e.g. @keyup.13) are no longer supported; use kebab-case key names (@keyup.enter).
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/keycode-modifiers.html
+    doc: Vue 3 Migration Guide - KeyCode Modifiers
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><input @keyup.13="submit" /></template>
+    good: |
+      <template><input @keyup.enter="submit" /></template>
+- id: VUE-MIG-LIFECYCLE-001
+  title: destroyed / beforeDestroy were renamed
+  language: vue
+  kind: removal
+  category: migration
+  severity: major
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      [
+        (method_definition name: (property_identifier) @match (#any-of? @match "destroyed" "beforeDestroy"))
+        (pair key: (property_identifier) @match (#any-of? @match "destroyed" "beforeDestroy"))
+      ]
+  message: The destroyed option is renamed to unmounted and beforeDestroy to beforeUnmount in Vue 3.
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/
+    doc: 'Vue 3 Migration Guide - Breaking Changes: Other Minor Changes'
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script>export default { beforeDestroy() { this.stop() } }</script>
+    good: |
+      <script>export default { beforeUnmount() { this.stop() } }</script>
+- id: VUE-MIG-LISTENERS-001
+  title: $listeners was removed in Vue 3
+  language: vue
+  kind: removal
+  category: migration
+  severity: critical
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      (directive_attribute (quoted_attribute_value (attribute_value) @match (#eq? @match "$listeners")))
+  message: $listeners is merged into $attrs in Vue 3; use v-bind="$attrs".
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/listeners-removed.html
+    doc: Vue 3 Migration Guide - $listeners removed
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><input v-bind="$attrs" v-on="$listeners" /></template>
+    good: |
+      <template><input v-bind="$attrs" /></template>
+- id: VUE-MIG-NATIVE-001
+  title: The .native modifier was removed in Vue 3
+  language: vue
+  kind: removal
+  category: migration
+  severity: critical
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      (directive_attribute (directive_modifiers (directive_modifier) @match (#eq? @match "native")))
+  message: v-on .native is removed; listeners not declared in the child's `emits` fall through to its root element.
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/v-on-native-modifier-removed.html
+    doc: Vue 3 Migration Guide - v-on.native modifier removed
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><my-btn @click.native="go" /></template>
+    good: |
+      <template><my-btn @click="go" /></template>
+- id: VUE-MIG-SET-001
+  title: $set / $delete are unnecessary and removed in Vue 3
+  language: vue
+  kind: removal
+  category: migration
+  severity: major
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: script
+    query: |
+      (call_expression
+        function: (member_expression object: (this) property: (property_identifier) @match (#any-of? @match "$set" "$delete")))
+  message: $set/$delete (and Vue.set/Vue.delete) are removed; proxy-based reactivity tracks property addition/deletion directly.
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/
+    doc: Vue 3 Migration Guide - Removed APIs
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <script>export default { methods: { add() { this.$set(this.map, 'k', 1) } } }</script>
+    good: |
+      <script>export default { methods: { add() { this.map.k = 1 } } }</script>
+- id: VUE-MIG-SLOT-001
+  title: Use v-slot instead of slot / slot-scope attributes
+  language: vue
+  kind: deprecation
+  category: migration
+  severity: major
+  applies_to:
+    vue: '>=2.6'
+  overrides:
+  - when:
+      vue: '>=3.0'
+    severity: critical
+    message: slot/slot-scope attributes are not supported in Vue 3; use v-slot (#name).
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      (attribute (attribute_name) @match (#any-of? @match "slot-scope" "slot" "scope"))
+  message: Since Vue 2.6 the v-slot directive replaces the slot and slot-scope attributes, which are deprecated.
+  source:
+    url: https://v2.vuejs.org/v2/guide/components-slots.html
+    doc: Vue 2 Guide - Slots (Deprecated Syntax)
+    doc_version: Vue 2.6+
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><list><template slot="item" slot-scope="{ row }">{{ row }}</template></list></template>
+    good: |
+      <template><list><template #item="{ row }">{{ row }}</template></list></template>
+- id: VUE-MIG-SYNC-001
+  title: v-bind .sync was replaced by v-model arguments
+  language: vue
+  kind: removal
+  category: migration
+  severity: critical
+  applies_to:
+    vue: '>=3.0'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      (directive_attribute (directive_modifiers (directive_modifier) @match (#eq? @match "sync")))
+  message: .sync is removed in Vue 3; use v-model:propName (emitting update:propName).
+  source:
+    url: https://v3-migration.vuejs.org/breaking-changes/v-model.html
+    doc: Vue 3 Migration Guide - v-model
+    doc_version: Vue 3
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      <template><child :title.sync="title" /></template>
+    good: |
+      <template><child v-model:title="title" /></template>

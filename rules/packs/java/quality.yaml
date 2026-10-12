@@ -1,0 +1,172 @@
+# HAND-EDITED rule file: pack java, topic quality. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Java language pack. Version dimension: "java" = effective release level
+# (maven.compiler.release / <java.version> / Gradle toolchain languageVersion).
+pack: java
+pack_version: 2026.10.0
+rules:
+- id: JAVA-QUAL-OPT-001
+  title: Optional is intended as a return type, not a field or parameter type
+  language: java
+  kind: anti-pattern
+  category: design
+  severity: minor
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      [
+        (field_declaration type: (generic_type (type_identifier) @t (#eq? @t "Optional"))) @match
+        (formal_parameter type: (generic_type (type_identifier) @t2 (#eq? @t2 "Optional"))) @match
+      ]
+  message: Optional used as a field or parameter type. Optional's API note says it is "primarily intended for use as a method return type".
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html
+    doc: java.util.Optional (API Note)
+    doc_version: Java SE 25 API
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { private Optional<String> name; void set(Optional<String> n) { name = n; } }
+    good: |
+      class A { private String name; Optional<String> name() { return Optional.ofNullable(name); } }
+- id: JAVA-QUAL-OPT-002
+  title: Prefer Optional.orElseThrow() over get()
+  language: java
+  kind: best-practice
+  category: correctness
+  severity: minor
+  applies_to:
+    java: '>=10'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (method_invocation
+        name: (identifier) @n (#eq? @n "get")
+        arguments: (argument_list) @a (#eq? @a "()")) @match
+  message: Optional.get() - the javadoc states "The preferred alternative to this method is orElseThrow()".
+  ai_question: Is the receiver of this zero-argument get() a java.util.Optional?
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Optional.html
+    doc: java.util.Optional#get()
+    doc_version: Java SE 25 API
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { String f(Optional<String> o) { return o.get(); } }
+    good: |
+      class A { String f(Optional<String> o) { return o.orElseThrow(); } }
+- id: JAVA-QUAL-UTF8-001
+  title: Be explicit about charsets in Reader/Writer constructors
+  language: java
+  kind: best-practice
+  category: portability
+  severity: info
+  applies_to:
+    java: '>=18'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (object_creation_expression
+        type: (type_identifier) @t (#any-of? @t "FileReader" "FileWriter" "InputStreamReader" "OutputStreamWriter")
+        arguments: (argument_list . (_) .)) @match
+  message: Constructor relies on the default charset, which became UTF-8 in JDK 18 (JEP 400). Pass a Charset explicitly so behaviour does not depend on JDK version or file.encoding.
+  source:
+    url: https://openjdk.org/jeps/400
+    doc: 'JEP 400: UTF-8 by Default'
+    doc_version: JDK 18
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { void f(java.io.File f) throws Exception { var r = new FileReader(f); } }
+    good: |
+      class A { void f(java.io.File f) throws Exception { var r = new FileReader(f, java.nio.charset.StandardCharsets.UTF_8); } }
+- id: JAVA-QUAL-VT-001
+  title: Never pool virtual threads
+  language: java
+  kind: anti-pattern
+  category: concurrency
+  severity: major
+  applies_to:
+    java: '>=21'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation
+        object: (identifier) @o (#eq? @o "Executors")
+        name: (identifier) @n (#any-of? @n "newFixedThreadPool" "newCachedThreadPool" "newScheduledThreadPool" "newWorkStealingPool")
+        arguments: (argument_list
+          (method_invocation
+            object: (method_invocation name: (identifier) @ov (#eq? @ov "ofVirtual"))
+            name: (identifier) @f (#eq? @f "factory")))) @match
+  message: A thread pool is backed by a virtual-thread factory. Virtual threads are cheap and should be created per task, not pooled; use a Semaphore to limit concurrency.
+  fix: try (var ex = Executors.newVirtualThreadPerTaskExecutor()) { ... }
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html
+    doc: 'Java Core Libraries: Virtual Threads (Adoption Guide: ''Never Pool Virtual Threads'')'
+    doc_version: Java SE 21
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { void f() { var ex = Executors.newFixedThreadPool(10, Thread.ofVirtual().factory()); } }
+    good: |
+      class A { void f() { try (var ex = Executors.newVirtualThreadPerTaskExecutor()) { ex.submit(() -> 1); } } }
+- id: JAVA-QUAL-VT-002
+  title: synchronized blocks pin virtual threads before JDK 24
+  language: java
+  kind: anti-pattern
+  category: concurrency
+  severity: minor
+  applies_to:
+    java: '>=21 <24'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (synchronized_statement) @match
+  message: On JDK 21-23 a virtual thread that blocks inside `synchronized` pins its carrier thread; frequent, long-lived pinning hurts scalability. JDK 24 (JEP 491) removes this limitation.
+  fix: Guard blocking I/O with java.util.concurrent.locks.ReentrantLock, or upgrade to JDK 24+.
+  ai_question: Can this synchronized block run on a virtual thread AND perform blocking operations (I/O, sleep, lock waits) while holding the monitor?
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html
+    doc: 'Virtual Threads: Scheduling Virtual Threads and Pinned Virtual Threads'
+    doc_version: Java SE 21; fixed by JEP 491 in JDK 24 (https://openjdk.org/jeps/491)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { final Object lock = new Object(); void f() throws Exception { synchronized (lock) { Thread.sleep(100); } } }
+    good: |
+      class A { final java.util.concurrent.locks.ReentrantLock lock = new java.util.concurrent.locks.ReentrantLock(); void f() { lock.lock(); try { } finally { lock.unlock(); } } }
+- id: JAVA-QUAL-VT-003
+  title: ThreadLocal caches of expensive objects defeat virtual threads
+  language: java
+  kind: anti-pattern
+  category: concurrency
+  severity: minor
+  applies_to:
+    java: '>=21'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (method_invocation
+        object: (identifier) @o (#eq? @o "ThreadLocal")
+        name: (identifier) @n (#eq? @n "withInitial")) @match
+  message: ThreadLocal used as a per-thread cache. With one virtual thread per task, every task allocates its own instance, so the cache never pays off.
+  fix: Use an immutable/thread-safe alternative (e.g. DateTimeFormatter instead of SimpleDateFormat) or an explicit shared pool.
+  ai_question: Is this ThreadLocal caching an expensive, reusable object (formatter, buffer, connection) in code that may run on virtual threads?
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html
+    doc: 'Virtual Threads Adoption Guide: Don''t Cache Expensive Reusable Objects in Thread-Local Variables'
+    doc_version: Java SE 21
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { static final ThreadLocal<java.text.SimpleDateFormat> F = ThreadLocal.withInitial(() -> new java.text.SimpleDateFormat("yyyy")); }
+    good: |
+      class A { static final java.time.format.DateTimeFormatter F = java.time.format.DateTimeFormatter.ofPattern("yyyy"); }

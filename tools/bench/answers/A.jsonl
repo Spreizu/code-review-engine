@@ -1,0 +1,89 @@
+{"case":"c01","id":"b31ed7cdaf33","verdict":"confirmed","confidence":"high","rationale":"name is a public method parameter concatenated into executeQuery on line 163.","evidence_lines":[163]}
+{"case":"c02","id":"e3f316cf5acd","verdict":"rejected","confidence":"high","rationale":"JsonPrimitive extends JsonElement and has a mutable value field set via setValue; not a record candidate.","evidence_lines":[33,42]}
+{"case":"c07","id":"cd4ddf57db9a","verdict":"confirmed","confidence":"high","rationale":"subprocess.run(f\"tool {arg}\", shell=True) on line 196 with a caller-controlled argument.","evidence_lines":[196]}
+{"case":"c07","id":"3a18d6f437ad","verdict":"confirmed","confidence":"medium","rationale":"run_tool is new and nothing references it.","evidence_lines":[194]}
+{"case":"c08","id":"708bf40d2a03","verdict":"uncertain","confidence":"low","rationale":"Only logger.go is visible; cannot tell whether tests accompany the change.","evidence_lines":[107]}
+{"case":"c09","id":"dfe97c302e75","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible from this code.","evidence_lines":[21]}
+{"case":"c09","id":"ded86025608d","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible from this code.","evidence_lines":[28]}
+{"case":"c09","id":"a5f0835145fe","verdict":"rejected","confidence":"high","rationale":"Module exposes init(app) registering Flask routes; it is loaded by the app dynamically, not imported by name.","evidence_lines":[21]}
+{"case":"c11","id":"be2447a533d2","verdict":"confirmed","confidence":"medium","rationale":"hashPassword (line 87) is new and unreferenced.","evidence_lines":[87]}
+{"case":"c13","id":"b7763198a4eb","verdict":"confirmed","confidence":"medium","rationale":"evaluate (line 309) is a new export nothing uses.","evidence_lines":[309]}
+{"case":"c15","id":"fa8b594263b6","verdict":"rejected","confidence":"high","rationale":"Bytes are base64 round-tripped and decoded in-process with the same default charset (line 51-54); never exchanged or persisted.","evidence_lines":[51,54]}
+{"case":"c15","id":"44c6fa029ecf","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[39]}
+{"case":"c16","id":"1465053c8c07","verdict":"rejected","confidence":"high","rationale":"Lines 48-52 print a constant string only.","evidence_lines":[48]}
+{"case":"c16","id":"b8e17ed45a70","verdict":"confirmed","confidence":"high","rationale":"bar derives from the query string (lines 68-70) and is written unencoded as the format string on line 74.","evidence_lines":[70,74]}
+{"case":"c16","id":"0bd6cecfaf9d","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[39]}
+{"case":"c17","id":"b2f567f037fc","verdict":"confirmed","confidence":"high","rationale":"Exported runTool interpolates its parameter into exec() on line 92.","evidence_lines":[92]}
+{"case":"c22","id":"f928fa232ae1","verdict":"rejected","confidence":"high","rationale":"The only non-constant value printed is encodeForHTML(sql) (line 60); the error branch prints a constant.","evidence_lines":[60,67]}
+{"case":"c22","id":"3c75b5e857a2","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[39]}
+{"case":"c27","id":"e8247a8558eb","verdict":"uncertain","confidence":"low","rationale":"Only src/Client.php is visible; cannot tell whether tests cover the dropped-header path.","evidence_lines":[958]}
+{"case":"c28","id":"215d38c9ba32","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[370]}
+{"case":"c31","id":"947e1a439ada","verdict":"confirmed","confidence":"high","rationale":"unserialize($_COOKIE['state']) on line 92: cookie is user-controlled, no allowed_classes.","evidence_lines":[92]}
+{"case":"c32","id":"b1516bc4c701","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[21]}
+{"case":"c32","id":"8a9e5b7bc709","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[28]}
+{"case":"c32","id":"e019fcc17811","verdict":"rejected","confidence":"high","rationale":"Route module exposing init(app); loaded dynamically by the app.","evidence_lines":[21]}
+{"case":"c34","id":"08d063f61e8c","verdict":"confirmed","confidence":"medium","rationale":"Public helper unpickles its argument (line 175); the source of data is not visible but nothing restricts it to trusted input.","evidence_lines":[175]}
+{"case":"c41","id":"b9af1b9a8771","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[21]}
+{"case":"c41","id":"a1639be79ee1","verdict":"rejected","confidence":"high","rationale":"Route module exposing init(app); loaded dynamically.","evidence_lines":[21]}
+{"case":"c43","id":"b0cd02e06660","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[21]}
+{"case":"c43","id":"60d1b6db923b","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[28]}
+{"case":"c43","id":"ea854c67bd4e","verdict":"rejected","confidence":"high","rationale":"Route module exposing init(app); loaded dynamically.","evidence_lines":[21]}
+{"case":"c47","id":"83898106e0bb","verdict":"confirmed","confidence":"medium","rationale":"arg is concatenated into Runtime.exec (line 181); no shell is involved, so this is argument injection rather than full shell injection.","evidence_lines":[181]}
+{"case":"c53","id":"a6a67fa4d669","verdict":"confirmed","confidence":"high","rationale":"Runtime.exec(\"tool $arg\") on line 115 builds the command from a parameter.","evidence_lines":[115]}
+{"case":"c53","id":"6dc3f77528ae","verdict":"confirmed","confidence":"medium","rationale":"runTool is new and unreferenced.","evidence_lines":[114]}
+{"case":"c57","id":"6247b6b9fea2","verdict":"rejected","confidence":"high","rationale":"extendLocale is public API of a UI library composable module, intended for consumers rather than internal callers.","evidence_lines":[18]}
+{"case":"c67","id":"a173847778a4","verdict":"rejected","confidence":"high","rationale":"doSomething always returns a constant: (7*42)-86 = 208 > 200, so bar never carries param (lines 71-74).","evidence_lines":[63,73]}
+{"case":"c67","id":"e7fae0c0c6cb","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[39]}
+{"case":"c69","id":"b97fefa9f9d2","verdict":"rejected","confidence":"high","rationale":"Public setter on a CLI library's options struct; meant for library users, not internal callers.","evidence_lines":[123]}
+{"case":"c71","id":"7d24792be3b1","verdict":"confirmed","confidence":"high","rationale":"$_GET['name'] concatenated unescaped into the SQL on line 102.","evidence_lines":[102]}
+{"case":"c73","id":"8597c482792b","verdict":"rejected","confidence":"medium","rationale":"The change removes a null check; no new logic was added that would need a new test.","evidence_lines":[233]}
+{"case":"c78","id":"3f314b54a423","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[21]}
+{"case":"c78","id":"84450fc6aa96","verdict":"rejected","confidence":"high","rationale":"Route module exposing init(app); loaded dynamically.","evidence_lines":[21]}
+{"case":"c80","id":"c4a431cdda65","verdict":"rejected","confidence":"high","rationale":"Public exception class added to a framework's API for users to throw.","evidence_lines":[13]}
+{"case":"c85","id":"0ee9f2680430","verdict":"rejected","confidence":"high","rationale":"Test.doSomething always returns a constant ((7*42)-86 = 208 > 200), so bar is never request data.","evidence_lines":[60,64]}
+{"case":"c85","id":"bae9a2514fe2","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[39]}
+{"case":"c86","id":"ac73da23989c","verdict":"rejected","confidence":"high","rationale":"patchToApply is a DeepPartial state object (plain object), not an array.","evidence_lines":[55,58]}
+{"case":"c86","id":"de7195515ce7","verdict":"rejected","confidence":"high","rationale":"setupStore is the object returned by setup(), not an array.","evidence_lines":[418,424]}
+{"case":"c90","id":"bfeb98ffa7f8","verdict":"uncertain","confidence":"low","rationale":"Test presence not visible.","evidence_lines":[21]}
+{"case":"c90","id":"981865b396ac","verdict":"rejected","confidence":"high","rationale":"Route module exposing init(app); loaded dynamically.","evidence_lines":[21]}
+{"case": "c11", "id": "a409517039af", "verdict": "confirmed", "confidence": "high", "rationale": "hashPassword digests a password with MessageDigest MD5 (line 88); MD5 is unsuitable for password hashing.", "evidence_lines": [88]}
+{"case": "c71", "id": "6030e7cd2505", "verdict": "confirmed", "confidence": "high", "rationale": "$_GET['name'] is concatenated into the SQL string passed to $db->query on line 102.", "evidence_lines": [102]}
+{"case": "c16", "id": "9257217b866a", "verdict": "confirmed", "confidence": "high", "rationale": "bar derives from the decoded request parameter and is used as the format string written to the response with X-XSS-Protection disabled (line 74).", "evidence_lines": [74]}
+{"case": "c22", "id": "05bc64100633", "verdict": "confirmed", "confidence": "high", "rationale": "bar (from the request via doSomething) is concatenated into the SQL passed to JdbcTemplate.batchUpdate on line 56.", "evidence_lines": [54, 56]}
+{"case": "c41", "id": "e8c3ca5d61f9", "verdict": "confirmed", "confidence": "high", "rationale": "bar is the cookie value and is interpolated into the path opened with codecs.open on line 47; no normalisation or containment check.", "evidence_lines": [47]}
+{"case": "c09", "id": "1d154b417a5c", "verdict": "confirmed", "confidence": "high", "rationale": "bar is the query-string parameter (round-tripped through configparser) formatted unescaped into the HTML response returned on line 59.", "evidence_lines": [56, 59]}
+{"case": "c02", "id": "7ca5a844325c", "verdict": "rejected", "confidence": "high", "rationale": "JsonPrimitive keeps a mutable value field (setValue); not a record candidate.", "evidence_lines": [33]}
+{"case": "c60", "id": "2e6fff277698", "verdict": "confirmed", "confidence": "high", "rationale": "The outer if body contains only the inner if, so the two conditions can be joined with &&.", "evidence_lines": [1043]}
+{"case": "c60", "id": "69b1f18065ca", "verdict": "confirmed", "confidence": "high", "rationale": "The outer if body contains only the inner if, so the two conditions can be joined with &&.", "evidence_lines": [1215]}
+{"case": "c86", "id": "22e0bbecf0c7", "verdict": "rejected", "confidence": "high", "rationale": "The iterated value is a plain object (patch/setup store), not an array.", "evidence_lines": [58]}
+{"case": "c86", "id": "5b8475b12679", "verdict": "rejected", "confidence": "high", "rationale": "The iterated value is a plain object (patch/setup store), not an array.", "evidence_lines": [424]}
+{"case": "c49", "id": "65363a333c2e", "verdict": "rejected", "confidence": "high", "rationale": "Skipping the session save when the with-body raises is the intended behaviour here.", "evidence_lines": [122]}
+{"case": "c69", "id": "84de39dbe04d", "verdict": "rejected", "confidence": "high", "rationale": "Exported method of a library: callers live outside the repository.", "evidence_lines": [123]}
+{"case": "c80", "id": "8636639ff83e", "verdict": "rejected", "confidence": "high", "rationale": "Public class of a library: used by applications outside the repository.", "evidence_lines": [13]}
+{"case": "c57", "id": "7426d9715e7d", "verdict": "rejected", "confidence": "high", "rationale": "Exported function of a library: callers live outside the repository.", "evidence_lines": [18]}
+{"case": "c89", "id": "aa7726cc24e7", "verdict": "confirmed", "confidence": "high", "rationale": "Line 134: untrusted or caller-controlled data reaches the sink (GO-SEC-SQL-STRING-BUILD); no sanitisation in between.", "evidence_lines": [134]}
+{"case": "c53", "id": "9eac985ac55f", "verdict": "rejected", "confidence": "high", "rationale": "Public top-level function in a library module; external callers are possible.", "evidence_lines": [114]}
+{"case": "c53", "id": "51ac8ab4e12c", "verdict": "confirmed", "confidence": "high", "rationale": "Line 115: untrusted or caller-controlled data reaches the sink (KT-SEC-RUNTIME-EXEC-TEMPLATE); no sanitisation in between.", "evidence_lines": [115]}
+{"case": "c11", "id": "7d79acb35b58", "verdict": "rejected", "confidence": "high", "rationale": "Public top-level function in a library module; external callers are possible.", "evidence_lines": [87]}
+{"case": "c11", "id": "da456478ee0c", "verdict": "confirmed", "confidence": "high", "rationale": "MD5 used to hash a password on line 88.", "evidence_lines": [88]}
+{"case": "c71", "id": "e89e8415e5f9", "verdict": "confirmed", "confidence": "high", "rationale": "Line 102: untrusted or caller-controlled data reaches the sink (PHP-SEC-SQL-INJECTION); no sanitisation in between.", "evidence_lines": [102]}
+{"case": "c71", "id": "1c7b757abdef", "verdict": "confirmed", "confidence": "high", "rationale": "Line 102: untrusted or caller-controlled data reaches the sink (PHP-TAINT-SQLI); no sanitisation in between.", "evidence_lines": [102]}
+{"case": "c31", "id": "0bd4b62381fa", "verdict": "confirmed", "confidence": "high", "rationale": "Line 92: untrusted or caller-controlled data reaches the sink (PHP-SEC-UNSERIALIZE-INPUT); no sanitisation in between.", "evidence_lines": [92]}
+{"case": "c07", "id": "4b4735e2c257", "verdict": "rejected", "confidence": "high", "rationale": "Module-level function in a library package; external callers are possible.", "evidence_lines": [194]}
+{"case": "c34", "id": "e0a5c0434b1f", "verdict": "confirmed", "confidence": "high", "rationale": "Line 175: untrusted or caller-controlled data reaches the sink (PY-SEC-PICKLE-LOADS); no sanitisation in between.", "evidence_lines": [175]}
+{"case": "c13", "id": "addf53b08076", "verdict": "rejected", "confidence": "high", "rationale": "Exported function of a library: callers live outside the repository.", "evidence_lines": [309]}
+{"case": "c17", "id": "4ad7f6827312", "verdict": "confirmed", "confidence": "high", "rationale": "Line 92: untrusted or caller-controlled data reaches the sink (JS-SEC-NODE-CHILD-EXEC-INJECTION-001); no sanitisation in between.", "evidence_lines": [92]}
+{"case": "c17", "id": "ff84591c46c9", "verdict": "confirmed", "confidence": "high", "rationale": "require() inside an ES-module TypeScript config file; an import statement is expected.", "evidence_lines": [92]}
+{"case": "c15", "id": "e2ad3a1ccdef", "verdict": "confirmed", "confidence": "high", "rationale": "getBytes() without a charset uses the platform default encoding.", "evidence_lines": [54]}
+{"case": "c15", "id": "32342246e137", "verdict": "confirmed", "confidence": "high", "rationale": "Servlet code reports the error with System.out instead of a logger.", "evidence_lines": [70]}
+{"case": "c15", "id": "0d0cd7d02202", "verdict": "confirmed", "confidence": "high", "rationale": "Line 71 is a commented-out println statement.", "evidence_lines": [71]}
+{"case": "c16", "id": "d51b7e989b0e", "verdict": "confirmed", "confidence": "high", "rationale": "The private helper never reads its request parameter.", "evidence_lines": [77]}
+{"case": "c16", "id": "6e693a053318", "verdict": "confirmed", "confidence": "high", "rationale": "bar is assigned and returned on the next statement without other use.", "evidence_lines": [81]}
+{"case": "c22", "id": "4d2955dcbaeb", "verdict": "confirmed", "confidence": "high", "rationale": "The private helper never reads its request parameter.", "evidence_lines": [72]}
+{"case": "c22", "id": "e14d9bbf8fbb", "verdict": "confirmed", "confidence": "high", "rationale": "bar is assigned and returned on the next statement without other use.", "evidence_lines": [75]}
+{"case": "c67", "id": "0da68930f755", "verdict": "confirmed", "confidence": "high", "rationale": "The private helper never reads its request parameter.", "evidence_lines": [66]}
+{"case": "c37", "id": "eb32d614d948", "verdict": "confirmed", "confidence": "high", "rationale": "The private helper never reads its request parameter.", "evidence_lines": [53]}
+{"case": "c32", "id": "71aee932d9d0", "verdict": "confirmed", "confidence": "high", "rationale": "Line 51: untrusted or caller-controlled data reaches the sink (PY-TAINT-PATH); no sanitisation in between.", "evidence_lines": [51]}
+{"case": "c41", "id": "ea5ba37b9b3c", "verdict": "confirmed", "confidence": "high", "rationale": "The second return directly follows return response and can never run.", "evidence_lines": [32]}
+{"case": "c41", "id": "03d08057a598", "verdict": "confirmed", "confidence": "high", "rationale": "Line 47: untrusted or caller-controlled data reaches the sink (PY-TAINT-PATH); no sanitisation in between.", "evidence_lines": [47]}
+{"case": "c09", "id": "9eaa6b7cb338", "verdict": "confirmed", "confidence": "high", "rationale": "Line 59: untrusted or caller-controlled data reaches the sink (PY-TAINT-XSS); no sanitisation in between.", "evidence_lines": [59]}

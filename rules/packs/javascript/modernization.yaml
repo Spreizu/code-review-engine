@@ -1,0 +1,177 @@
+# HAND-EDITED rule file: pack javascript, topic modernization. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# JavaScript pack (also applied to TypeScript files and Vue <script> blocks; queries use node
+# types shared by tree-sitter-javascript and tree-sitter-typescript). Version dimension
+# "ecmascript" = lowest supported ES edition derived from tsconfig target, browserslist,
+# ESLint ecmaVersion or engines.node (see PLAN.md §5).
+pack: javascript
+pack_version: 2026.10.0
+rules:
+- id: JS-MOD-AT-001
+  title: Use .at(-1) for the last element
+  language: javascript
+  kind: modernization
+  category: readability
+  severity: info
+  applies_to:
+    ecmascript: '>=2022'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (subscript_expression
+        object: (identifier) @a
+        index: (binary_expression
+          left: (member_expression object: (identifier) @b property: (property_identifier) @l (#eq? @l "length"))
+          operator: "-"
+          right: (number) @n (#eq? @n "1"))
+        (#eq? @a @b)) @match
+  message: '`arr[arr.length - 1]` can be written `arr.at(-1)` (ES2022).'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at
+    doc: MDN Array.prototype.at()
+    doc_version: MDN (living); ES2022
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const last = arr[arr.length - 1]
+    good: |
+      const last = arr.at(-1)
+- id: JS-MOD-HASOWN-001
+  title: Prefer Object.hasOwn over hasOwnProperty
+  language: javascript
+  kind: modernization
+  category: correctness
+  severity: minor
+  applies_to:
+    ecmascript: '>=2022'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression
+        function: (member_expression property: (property_identifier) @match (#eq? @match "hasOwnProperty")))
+  message: Object.hasOwn() (ES2022) "is recommended over Object.prototype.hasOwnProperty()" - it works for null-prototype objects and objects that override hasOwnProperty.
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/hasOwn
+    doc: MDN Object.hasOwn()
+    doc_version: MDN (living); ES2022
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      if (obj.hasOwnProperty('k')) {}
+    good: |
+      if (Object.hasOwn(obj, 'k')) {}
+- id: JS-MOD-JSON-CLONE-001
+  title: Prefer structuredClone over JSON round-trip cloning
+  language: javascript
+  kind: modernization
+  category: correctness
+  severity: info
+  applies_to:
+    ecmascript: '>=2022'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (call_expression
+        function: (member_expression object: (identifier) @j (#eq? @j "JSON") property: (property_identifier) @p (#eq? @p "parse"))
+        arguments: (arguments (call_expression
+          function: (member_expression object: (identifier) @j2 (#eq? @j2 "JSON") property: (property_identifier) @s (#eq? @s "stringify"))))) @match
+  message: JSON.parse(JSON.stringify(x)) drops Dates/Maps/Sets/undefined and fails on cycles; structuredClone() performs a real deep clone (browsers and Node 17+).
+  ai_question: Do all target runtimes provide structuredClone, and is the value free of functions/DOM nodes (which structuredClone rejects)?
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone
+    doc: MDN structuredClone()
+    doc_version: MDN (living; HTML standard, not ECMA-262)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const copy = JSON.parse(JSON.stringify(state))
+    good: |
+      const copy = structuredClone(state)
+- id: JS-MOD-NULLISH-001
+  title: Use ?? for defaults when 0/''/false are valid
+  language: javascript
+  kind: modernization
+  category: correctness
+  severity: info
+  applies_to:
+    ecmascript: '>=2020'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (variable_declarator value: (binary_expression operator: "||" right: [(number) (string) (true) (false)]) @match)
+  message: '|| falls back on any falsy value (0, '''', false); ?? only on null/undefined.'
+  ai_question: Can the left operand legitimately be 0, '' or false (values that should NOT fall back to the default)?
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing
+    doc: MDN Nullish coalescing operator (??)
+    doc_version: MDN (living); ES2020
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const timeout = opts.timeout || 3000
+    good: |
+      const timeout = opts.timeout ?? 3000
+- id: JS-MOD-OPTCHAIN-001
+  title: Use optional chaining instead of a && a.b
+  language: javascript
+  kind: modernization
+  category: readability
+  severity: info
+  applies_to:
+    ecmascript: '>=2020'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (binary_expression
+        left: (identifier) @a
+        operator: "&&"
+        right: (member_expression object: (identifier) @b)
+        (#eq? @a @b)) @match
+  message: '`a && a.b` can be written `a?.b` (ES2020).'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining
+    doc: MDN Optional chaining (?.)
+    doc_version: MDN (living); ES2020
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const n = user && user.name
+    good: |
+      const n = user?.name
+- id: JS-MOD-TOSORTED-001
+  title: Use toSorted()/toReversed() instead of copy-then-mutate
+  language: javascript
+  kind: modernization
+  category: readability
+  severity: info
+  applies_to:
+    ecmascript: '>=2023'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      [
+        (call_expression function: (member_expression
+          object: (call_expression function: (member_expression property: (property_identifier) @s (#eq? @s "slice")) arguments: (arguments) @a (#eq? @a "()"))
+          property: (property_identifier) @p (#any-of? @p "sort" "reverse"))) @match
+        (call_expression function: (member_expression
+          object: (array . (spread_element) .)
+          property: (property_identifier) @p2 (#any-of? @p2 "sort" "reverse"))) @match
+      ]
+  message: ES2023 "Change Array by Copy" adds toSorted()/toReversed()/toSpliced()/with(), which return a new array without the explicit copy.
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted
+    doc: MDN Array.prototype.toSorted()
+    doc_version: MDN (living); ES2023
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      const sorted = [...items].sort(cmp)
+      const r = items.slice().reverse()
+    good: |
+      const sorted = items.toSorted(cmp)

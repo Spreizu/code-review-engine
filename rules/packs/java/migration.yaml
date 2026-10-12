@@ -1,0 +1,273 @@
+# HAND-EDITED rule file: pack java, topic migration. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Java language pack. Version dimension: "java" = effective release level
+# (maven.compiler.release / <java.version> / Gradle toolchain languageVersion).
+pack: java
+pack_version: 2026.10.0
+rules:
+- id: JAVA-MIG-APPLET-001
+  title: The Applet API has been removed
+  language: java
+  kind: removal
+  category: portability
+  severity: critical
+  applies_to:
+    java: '>=26'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (import_declaration (scoped_identifier) @s (#match? @s "^java\\.applet")) @match
+  message: java.applet was removed in JDK 26 (JEP 504); code will not compile.
+  source:
+    url: https://openjdk.org/jeps/504
+    doc: 'JEP 504: Remove the Applet API'
+    doc_version: JDK 26
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      import java.applet.Applet;
+      class A {}
+    good: |
+      import java.util.List;
+      class A {}
+- id: JAVA-MIG-ENC-001
+  title: JDK internals are strongly encapsulated
+  language: java
+  kind: removal
+  category: portability
+  severity: major
+  applies_to:
+    java: '>=17'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (import_declaration
+        (scoped_identifier) @s
+        (#match? @s "^(sun\\.(nio|security|net|reflect\\.misc|util)|com\\.sun\\.[a-z.]*internal)\\.")) @match
+  message: Import of a JDK-internal package. Since JDK 17 these are strongly encapsulated (JEP 403) and need --add-opens/--add-exports; use the standard API.
+  source:
+    url: https://openjdk.org/jeps/403
+    doc: 'JEP 403: Strongly Encapsulate JDK Internals'
+    doc_version: JDK 17
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      import sun.security.x509.X500Name;
+      class A {}
+    good: |
+      import javax.security.auth.x500.X500Principal;
+      class A {}
+- id: JAVA-MIG-FIN-001
+  title: Do not override Object.finalize()
+  language: java
+  kind: deprecation
+  category: resource-management
+  severity: major
+  applies_to:
+    java: '>=18'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_declaration
+        name: (identifier) @match (#eq? @match "finalize")
+        parameters: (formal_parameters) @p (#eq? @p "()"))
+  message: Finalization is deprecated for removal (JEP 421). Use try-with-resources / AutoCloseable, or java.lang.ref.Cleaner.
+  source:
+    url: https://openjdk.org/jeps/421
+    doc: 'JEP 421: Deprecate Finalization for Removal'
+    doc_version: JDK 18
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class R { @Override protected void finalize() throws Throwable { close(); } void close() {} }
+    good: |
+      class R implements AutoCloseable { @Override public void close() {} }
+- id: JAVA-MIG-FINAL-001
+  title: Deep reflection that mutates final fields
+  language: java
+  kind: deprecation
+  category: correctness
+  severity: minor
+  applies_to:
+    java: '>=26'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (method_invocation
+        name: (identifier) @n (#eq? @n "setAccessible")
+        arguments: (argument_list (true))) @match
+  message: JDK 26 (JEP 500) warns when deep reflection mutates final fields, preparing to make final truly final.
+  ai_question: Is setAccessible(true) used on a java.lang.reflect.Field that is final, followed by Field.set*()?
+  source:
+    url: https://openjdk.org/jeps/500
+    doc: 'JEP 500: Prepare to Make Final Mean Final'
+    doc_version: JDK 26
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { void f(java.lang.reflect.Field fld, Object o) throws Exception { fld.setAccessible(true); fld.set(o, 1); } }
+    good: |
+      class A { void f(Object o) { } }
+- id: JAVA-MIG-LOC-001
+  title: Use Locale.of / forLanguageTag instead of Locale constructors
+  language: java
+  kind: deprecation
+  category: i18n
+  severity: minor
+  applies_to:
+    java: '>=19'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (object_creation_expression type: (type_identifier) @t (#eq? @t "Locale")) @match
+  message: Locale constructors are deprecated; use Locale.of(...), Locale.forLanguageTag(...) or Locale.Builder.
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Locale.html
+    doc: java.util.Locale (Obtaining a Locale)
+    doc_version: Java SE 25 API (constructors deprecated since 19)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { java.util.Locale l = new Locale("en", "US"); }
+    good: |
+      class A { java.util.Locale l = Locale.of("en", "US"); }
+- id: JAVA-MIG-SM-001
+  title: Security Manager APIs are deprecated / permanently disabled
+  language: java
+  kind: removal
+  category: security
+  severity: major
+  applies_to:
+    java: '>=17'
+  overrides:
+  - when:
+      java: '>=24'
+    severity: critical
+    message: The Security Manager is permanently disabled in JDK 24 (JEP 486); setSecurityManager throws UnsupportedOperationException.
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation
+        object: (identifier) @o (#eq? @o "System")
+        name: (identifier) @match (#any-of? @match "setSecurityManager" "getSecurityManager"))
+  message: The Security Manager is deprecated for removal since JDK 17 (JEP 411).
+  source:
+    url: https://openjdk.org/jeps/411
+    doc: 'JEP 411: Deprecate the Security Manager for Removal (JDK 17); JEP 486 Permanently Disable (JDK 24) https://openjdk.org/jeps/486'
+    doc_version: JDK 17 / JDK 24
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { void f() { System.setSecurityManager(null); } }
+    good: |
+      class A { void f() { } }
+- id: JAVA-MIG-THR-001
+  title: Thread.stop() always throws
+  language: java
+  kind: removal
+  category: concurrency
+  severity: critical
+  applies_to:
+    java: '>=20'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (method_invocation
+        name: (identifier) @n (#eq? @n "stop")
+        arguments: (argument_list) @a (#eq? @a "()")) @match
+  message: Thread.stop() throws UnsupportedOperationException on current JDKs; use cooperative cancellation via interrupt().
+  ai_question: Is the receiver of this `stop()` call a java.lang.Thread (or subclass)?
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html
+    doc: java.lang.Thread#stop()
+    doc_version: Java SE 25 API
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { void f(Thread t) { t.stop(); } }
+    good: |
+      class A { void f(Thread t) { t.interrupt(); } }
+- id: JAVA-MIG-UNSAFE-001
+  title: sun.misc.Unsafe memory-access methods are deprecated for removal
+  language: java
+  kind: deprecation
+  category: portability
+  severity: major
+  applies_to:
+    java: '>=23'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (import_declaration (scoped_identifier) @s (#eq? @s "sun.misc.Unsafe")) @match
+  message: sun.misc.Unsafe memory-access methods are deprecated for removal (JEP 471) and warn at runtime from JDK 24 (JEP 498). Use VarHandle or the FFM API (MemorySegment).
+  source:
+    url: https://openjdk.org/jeps/471
+    doc: JEP 471 (JDK 23); JEP 498 https://openjdk.org/jeps/498 (JDK 24)
+    doc_version: JDK 23 / 24
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      import sun.misc.Unsafe;
+      class A {}
+    good: |
+      import java.lang.invoke.VarHandle;
+      class A {}
+- id: JAVA-MIG-URL-001
+  title: java.net.URL constructors are deprecated
+  language: java
+  kind: deprecation
+  category: correctness
+  severity: minor
+  applies_to:
+    java: '>=20'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (object_creation_expression type: (type_identifier) @t (#eq? @t "URL")) @match
+  message: URL constructors are deprecated; the javadoc says "Use URI.toURL() to construct an instance of URL".
+  fix: URI.create(s).toURL()
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html
+    doc: java.net.URL (Constructing instances of URL)
+    doc_version: Java SE 25 API (constructors deprecated since 20)
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { java.net.URL u() throws Exception { return new URL("https://example.com"); } }
+    good: |
+      class A { java.net.URL u() throws Exception { return java.net.URI.create("https://example.com").toURL(); } }
+- id: JAVA-MIG-VBC-001
+  title: Do not call boxed-primitive constructors
+  language: java
+  kind: deprecation
+  category: correctness
+  severity: major
+  applies_to:
+    java: '>=16'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (object_creation_expression
+        type: (type_identifier) @t (#any-of? @t "Integer" "Long" "Short" "Byte" "Character" "Boolean" "Double" "Float")) @match
+  message: Wrapper-class constructors are deprecated for removal (JEP 390); use valueOf / autoboxing. Wrapper types are value-based classes.
+  fix: Integer.valueOf(42)
+  source:
+    url: https://openjdk.org/jeps/390
+    doc: 'JEP 390: Warnings for Value-Based Classes'
+    doc_version: JDK 16
+    retrieved: '2026-10-09'
+  examples:
+    bad: |
+      class A { Integer i = new Integer(42); }
+    good: |
+      class A { Integer i = Integer.valueOf(42); }

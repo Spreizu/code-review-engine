@@ -1,0 +1,35 @@
+# HAND-EDITED rule file: pack spring-boot, topic security. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Spring Boot pack. Version dimensions: "spring-boot" (parent/BOM/plugin version),
+# "spring-framework", "spring-security" (resolved from the BOM when not pinned), "java".
+pack: spring-boot
+pack_version: 2026.10.0
+rules:
+- id: SB-SEC-ACT-001
+  title: Do not expose all actuator endpoints over HTTP
+  language: properties
+  kind: security
+  category: security
+  severity: major
+  applies_to:
+    spring-boot: '>=2.0'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/application*.properties'
+    - '**/application*.yml'
+    - '**/application*.yaml'
+    config:
+      key: management.endpoints.web.exposure.include
+      op: contains
+      value: '*'
+  message: Endpoints "may contain sensitive information"; by default only health is exposed. Expose an explicit list and secure the actuator path.
+  source:
+    url: https://docs.spring.io/spring-boot/reference/actuator/endpoints.html
+    doc: Actuator Endpoints - Exposing Endpoints
+    doc_version: Spring Boot reference (current 4.x)
+    retrieved: '2026-10-09'
+  examples:
+    bad: management.endpoints.web.exposure.include=*
+    good: management.endpoints.web.exposure.include=health,info

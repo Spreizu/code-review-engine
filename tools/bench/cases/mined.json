@@ -1,0 +1,691 @@
+[
+ {
+  "source": "szz",
+  "lang": "java",
+  "repo": "gson",
+  "head": "845664ba1c307e6c1910d07cfed2f622e0ad8df1",
+  "commit": "410b4a8c62de693d38a0ee9a566a4a4c0863f934",
+  "fix": "8b4b55051489132190cb8d1c61eb9dc7f5381295",
+  "fix_subject": "fix: reject unpaired surrogates in strict JSON (#3116)",
+  "labels": [
+   {
+    "path": "gson/src/main/java/com/google/gson/stream/JsonReader.java",
+    "lines": [
+     1001,
+     1004
+    ]
+   }
+  ],
+  "files": [
+   "gson/src/main/java/com/google/gson/stream/JsonReader.java"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "java",
+  "repo": "gson",
+  "head": "845664ba1c307e6c1910d07cfed2f622e0ad8df1",
+  "commit": "0bcd1b341f2f4f7d93738272f5a6a2c3d2dfb0f7",
+  "fix": "af2179843601c73aa96062208d8f324a45243e47",
+  "fix_subject": "Fix the `equals` method of `JsonPrimitive` to work with `BigInteger` (#2311)",
+  "labels": [
+   {
+    "path": "gson/src/main/java/com/google/gson/JsonPrimitive.java",
+    "lines": [
+     216
+    ]
+   }
+  ],
+  "files": [
+   "gson/src/main/java/com/google/gson/JsonPrimitive.java",
+   "gson/src/main/java/com/google/gson/LazilyParsedNumber.java"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "java",
+  "repo": "gson",
+  "head": "845664ba1c307e6c1910d07cfed2f622e0ad8df1",
+  "commit": "164ac9dfe1e9b056faf5e37ec1a2baaf4681dc4f",
+  "fix": null,
+  "fix_subject": "Remove `GsonPreconditions#checkNotNull` (#2878)",
+  "labels": [],
+  "files": [
+   "gson/src/main/java/com/google/gson/internal/GsonPreconditions.java"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "java",
+  "repo": "commons-lang",
+  "head": "32dc4c501e3acba29d53a466eebd611bb2f093a5",
+  "commit": "19c1b7bb1e92e3da937ffd86ff7dd05d5c3075d4",
+  "fix": "4ee32aa56d596e31f50fbf325c2641591e9e1ea4",
+  "fix_subject": "Fix low surrogate false match in containsAny/containsNone/indexOfAny (#1771)",
+  "labels": [
+   {
+    "path": "src/main/java/org/apache/commons/lang3/StringUtils.java",
+    "lines": [
+     1044,
+     1216
+    ]
+   }
+  ],
+  "files": [
+   "src/main/java/org/apache/commons/lang3/StringUtils.java"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "java",
+  "repo": "commons-lang",
+  "head": "32dc4c501e3acba29d53a466eebd611bb2f093a5",
+  "commit": "6e02b0a4d22f376a9414ff0a73f00ad9ef265241",
+  "fix": "9288e2c95f39abd1ff115aeddafaa276ceafae6d",
+  "fix_subject": "Fix the overflow bound direction in Instants.toMillisSince(Instant) (#1766)",
+  "labels": [
+   {
+    "path": "src/main/java/org/apache/commons/lang3/time/Instants.java",
+    "lines": [
+     89,
+     91,
+     93
+    ]
+   }
+  ],
+  "files": [
+   "src/main/java/org/apache/commons/lang3/time/Instants.java"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "java",
+  "repo": "commons-lang",
+  "head": "32dc4c501e3acba29d53a466eebd611bb2f093a5",
+  "commit": "e1da3a23a177e73a0d22ec95ac319d7956cf417a",
+  "fix": null,
+  "fix_subject": "Simplify Javadoc",
+  "labels": [],
+  "files": [
+   "src/main/java/org/apache/commons/lang3/tuple/MutablePair.java"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "ts",
+  "repo": "axios",
+  "head": "f694ecd6ac49bb1917e086b5e532e1627c62d43a",
+  "commit": "947f7091d849435220accd2e656f34c824810200",
+  "fix": "878bb29de570765b0d4c0970e30400d9ea9399f7",
+  "fix_subject": "fix(sandbox): resolve TypeError on constant variable path assignment (#11073)",
+  "labels": [
+   {
+    "path": "sandbox/server.js",
+    "lines": [
+     79
+    ]
+   }
+  ],
+  "files": [
+   "lib/adapters/http.js",
+   "sandbox/server.js"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "ts",
+  "repo": "axios",
+  "head": "f694ecd6ac49bb1917e086b5e532e1627c62d43a",
+  "commit": "38726c7586c6a2583b7e7dcdce0c4fedd013055d",
+  "fix": null,
+  "fix_subject": "refactor: change if in else to else if (#7028)",
+  "labels": [],
+  "files": [
+   "lib/utils.js"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "ts",
+  "repo": "pinia",
+  "head": "f48737e9aaffcb63c70c0f4f2c977e91be657fcb",
+  "commit": "4fbacfcd87362515902e3f98fd53a51a39216b9f",
+  "fix": "5bdf26c702999921a08ce8361f865fdc78c6dfb7",
+  "fix_subject": "fix(ssr): replace reactive Set/Map state on hydration instead of unioning it (#3162)",
+  "labels": [
+   {
+    "path": "packages/pinia/src/store.ts",
+    "lines": [
+     439
+    ]
+   }
+  ],
+  "files": [
+   "packages/pinia/src/store.ts"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "ts",
+  "repo": "pinia",
+  "head": "f48737e9aaffcb63c70c0f4f2c977e91be657fcb",
+  "commit": "4b324ccb68debec2f67dcb4986a48267545c0b68",
+  "fix": null,
+  "fix_subject": "refactor(devtools): modernize MouseEvent initialization (#2930)",
+  "labels": [],
+  "files": [
+   "packages/pinia/src/devtools/file-saver.ts"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "ts",
+  "repo": "express",
+  "head": "a419aa7350389a275ab45fde2e849ed1f02449ef",
+  "commit": "18e5985b8a9d5e8423db0a9121f22bdaecd5b120",
+  "fix": "9a34acf03cb818ff3f8bc40e44176e277a25cbb9",
+  "fix_subject": "fix(res.send): preserve ETag generation with Transfer-Encoding (#7459)",
+  "labels": [
+   {
+    "path": "lib/response.js",
+    "lines": [
+     165,
+     166,
+     168
+    ]
+   }
+  ],
+  "files": [
+   "lib/response.js"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "ts",
+  "repo": "express",
+  "head": "a419aa7350389a275ab45fde2e849ed1f02449ef",
+  "commit": "89f198c6a50ab0cb65b741767791dd1b647e3b2c",
+  "fix": null,
+  "fix_subject": "lib: use req.socket over deprecated req.connection (#6705)",
+  "labels": [],
+  "files": [
+   "lib/request.js"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "python",
+  "repo": "flask",
+  "head": "d086db856be187255b8ec61ef409357393020f32",
+  "commit": "e1aedecdc689cc9a79131851dbdabf6c3bc49c9e",
+  "fix": "de8429ffda8cfb54db175529e2bae72a24e1fa7e",
+  "fix_subject": "Fix IPv6 session transactions",
+  "labels": [
+   {
+    "path": "src/flask/testing.py",
+    "lines": [
+     166
+    ]
+   }
+  ],
+  "files": [
+   "src/flask/testing.py"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "python",
+  "repo": "flask",
+  "head": "d086db856be187255b8ec61ef409357393020f32",
+  "commit": "e13373f838ab34027c5a80e16a6cb8262d41eab7",
+  "fix": "fb54159861708558b5f5658ebdc14709d984361c",
+  "fix_subject": "secret key rotation: fix key list ordering",
+  "labels": [
+   {
+    "path": "src/flask/sessions.py",
+    "lines": [
+     319
+    ]
+   }
+  ],
+  "files": [
+   "src/flask/app.py",
+   "src/flask/sessions.py"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "python",
+  "repo": "flask",
+  "head": "d086db856be187255b8ec61ef409357393020f32",
+  "commit": "d22bfcd4cfe3b93daddfce8521f77447ca8d6b84",
+  "fix": null,
+  "fix_subject": "remove previously deprecated code",
+  "labels": [],
+  "files": [
+   "src/flask/__init__.py"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "python",
+  "repo": "requests",
+  "head": "611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60",
+  "commit": "74ea7cf7a6a27a4eeb2ae24e162bcc942a6706d5",
+  "fix": "6e5b15d542a4e85945fd72066bb6cecbc3a82191",
+  "fix_subject": "Fix linting issues",
+  "labels": [
+   {
+    "path": "requests/sessions.py",
+    "lines": [
+     329
+    ]
+   }
+  ],
+  "files": [
+   "requests/sessions.py"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "python",
+  "repo": "requests",
+  "head": "611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60",
+  "commit": "596ca83f0c66460deb82af07b13ce724b9f46474",
+  "fix": "79c4a017fe341fb989d3a7876cf4e44b87601b58",
+  "fix_subject": "Fix environment CA Bundle resolution",
+  "labels": [
+   {
+    "path": "requests/sessions.py",
+    "lines": [
+     604,
+     605,
+     607,
+     608
+    ]
+   }
+  ],
+  "files": [
+   "requests/sessions.py"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "python",
+  "repo": "requests",
+  "head": "611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60",
+  "commit": "96ba401c1296ab1dda74a2365ef36d88f7d144ef",
+  "fix": null,
+  "fix_subject": "Only use hostname to do netrc lookup instead of netloc",
+  "labels": [],
+  "files": [
+   "src/requests/utils.py"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "go",
+  "repo": "gin",
+  "head": "0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646",
+  "commit": "3b08cd7235bd5ad2f055aa9e38135f111f6c5926",
+  "fix": "ea9fab99e01d55a5e4f8daacc0d11ccffaee0a15",
+  "fix_subject": "fix(tree): grow skippedNodes when pooled capacity is stale (#4852)",
+  "labels": [
+   {
+    "path": "tree.go",
+    "lines": [
+     423,
+     424,
+     425,
+     426
+    ]
+   }
+  ],
+  "files": [
+   "tree.go"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "go",
+  "repo": "gin",
+  "head": "0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646",
+  "commit": "739d2d9c80e0298dafb5df1c30bae35d63935d6c",
+  "fix": "1bd0ecf2d3e08da37efa270bb7be20c1eddb0d68",
+  "fix_subject": "fix(context): load Keys under the mutex in Copy (#4854)",
+  "labels": [
+   {
+    "path": "context.go",
+    "lines": [
+     124
+    ]
+   }
+  ],
+  "files": [
+   "context.go"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "go",
+  "repo": "gin",
+  "head": "0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646",
+  "commit": "4dec17afdff48e8018c83618fbbe69fceeb2b41d",
+  "fix": null,
+  "fix_subject": "feat(logger): color latency (#4146)",
+  "labels": [],
+  "files": [
+   "logger.go"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "go",
+  "repo": "cobra",
+  "head": "adbc8813901bba65827259daa8e22ff94ec1f30e",
+  "commit": "f4b3401f9eb0cb4ae2e6c41c01a0b9c3c73d9f7e",
+  "fix": "eb3b6397b1b5d1b0a2cd66a9afe0520f480c0a87",
+  "fix_subject": "Bash completion variable leak fixes (#1352)",
+  "labels": [
+   {
+    "path": "bash_completions.go",
+    "lines": [
+     176
+    ]
+   }
+  ],
+  "files": [
+   "bash_completions.go"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "go",
+  "repo": "cobra",
+  "head": "adbc8813901bba65827259daa8e22ff94ec1f30e",
+  "commit": "2244c3923a93b045f65a3a56172ce48100baa50e",
+  "fix": "7df62f7668c7fbeafd6dbb45ad0294f4ea08c0ec",
+  "fix_subject": "fix typos (#1274)",
+  "labels": [
+   {
+    "path": "command.go",
+    "lines": [
+     647
+    ]
+   }
+  ],
+  "files": [
+   "command.go"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "go",
+  "repo": "cobra",
+  "head": "adbc8813901bba65827259daa8e22ff94ec1f30e",
+  "commit": "6dec1ae26659a130bdb4c985768d1853b0e1bc06",
+  "fix": null,
+  "fix_subject": "The default ShellCompDirective can be customized for a command and its subcommands (#2238)",
+  "labels": [],
+  "files": [
+   "completions.go"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "php",
+  "repo": "guzzle",
+  "head": "93939470950a9b11e2e84204166ef5e048c55fe4",
+  "commit": "62dc970b4f8463e67855af09419c649b577cb065",
+  "fix": "03a63de439dbf5409aea433604681b8511c292d2",
+  "fix_subject": "Fix client validation exception surfaces (#3792)",
+  "labels": [
+   {
+    "path": "src/Client.php",
+    "lines": [
+     320,
+     321
+    ]
+   }
+  ],
+  "files": [
+   "src/Client.php"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "php",
+  "repo": "guzzle",
+  "head": "93939470950a9b11e2e84204166ef5e048c55fe4",
+  "commit": "a2b8dd1ad7e733d50e9c7b80cb375e0883a7088d",
+  "fix": "399c0eaf9bd9b9992bf008b53c758a1f986080b4",
+  "fix_subject": "Throw `InvalidArgumentException` when an incorrect `headers` array is provided (#2942)",
+  "labels": [
+   {
+    "path": "src/Client.php",
+    "lines": [
+     8,
+     349
+    ]
+   }
+  ],
+  "files": [
+   "src/Client.php"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "php",
+  "repo": "guzzle",
+  "head": "93939470950a9b11e2e84204166ef5e048c55fe4",
+  "commit": "3838e054e67b0512de384109a52354e6224060f1",
+  "fix": null,
+  "fix_subject": "Improve `Accept-Encoding` documentation (#3215)",
+  "labels": [],
+  "files": [
+   "src/Handler/CurlFactory.php"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "php",
+  "repo": "Slim",
+  "head": "3675bf6baac66b07032575b7bef4200b60b7974b",
+  "commit": "9b866724d5f2a3724784fbd3a2bc711b8b481ba1",
+  "fix": "402fcbc2eed5a998bd1cf5d52dfc5572ba95a477",
+  "fix_subject": "Fix static analysis suppression in RouteCollector::removeNamedRoute() (#3445)",
+  "labels": [
+   {
+    "path": "Slim/Routing/RouteCollector.php",
+    "lines": [
+     184
+    ]
+   }
+  ],
+  "files": [
+   "Slim/CallableResolver.php",
+   "Slim/MiddlewareDispatcher.php",
+   "Slim/Routing/RouteCollector.php"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "php",
+  "repo": "Slim",
+  "head": "3675bf6baac66b07032575b7bef4200b60b7974b",
+  "commit": "6e9596570db20c902047babd5f690b9f572fff25",
+  "fix": "47ab47349473c98deb115d3fdee521e1178f94f5",
+  "fix_subject": "fix line length",
+  "labels": [
+   {
+    "path": "Slim/Exception/HttpTooManyRequestsException.php",
+    "lines": [
+     26
+    ]
+   }
+  ],
+  "files": [
+   "Slim/Exception/HttpTooManyRequestsException.php"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "php",
+  "repo": "Slim",
+  "head": "3675bf6baac66b07032575b7bef4200b60b7974b",
+  "commit": "ed5a022ff5c3bba2d304c6390613eb92492533c6",
+  "fix": null,
+  "fix_subject": "revert possibly unnecessary change",
+  "labels": [],
+  "files": [
+   "Slim/CallableResolver.php",
+   "Slim/MiddlewareDispatcher.php"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "kotlin",
+  "repo": "okio",
+  "head": "a6ae13ee0e7522674ae6382aaf8e6d6e9ef4bb9e",
+  "commit": "0d6a49ebea0d421d2f97f357580cdbc7d2d2372a",
+  "fix": "a4e6a91e841bc3146b725a70f2ab6bf34e6770ac",
+  "fix_subject": "NioFS: fix relative paths when listing a dir",
+  "labels": [
+   {
+    "path": "okio/src/jvmMain/kotlin/okio/NioFileSystemWrappingFileSystem.kt",
+    "lines": [
+     82
+    ]
+   }
+  ],
+  "files": [
+   "okio/src/jvmMain/kotlin/okio/NioFileSystemWrappingFileSystem.kt"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "kotlin",
+  "repo": "okio",
+  "head": "a6ae13ee0e7522674ae6382aaf8e6d6e9ef4bb9e",
+  "commit": "f2080ee19bc444ad38232091d70f33011449342c",
+  "fix": "9d4dceb12d0c25d280bcf1be619f3d588589764f",
+  "fix_subject": "Fix ABA race in JVM SegmentPool (#1147)",
+  "labels": [
+   {
+    "path": "okio/src/jvmMain/kotlin/okio/SegmentPool.kt",
+    "lines": [
+     31,
+     116,
+     117,
+     118,
+     119
+    ]
+   }
+  ],
+  "files": [
+   "okio/src/jvmMain/kotlin/okio/SegmentPool.kt"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "kotlin",
+  "repo": "okio",
+  "head": "a6ae13ee0e7522674ae6382aaf8e6d6e9ef4bb9e",
+  "commit": "9e25e039e3585e2417897681783b10670c6acf45",
+  "fix": null,
+  "fix_subject": "Get Socket.inputStream and outputStream eagerly (#1669)",
+  "labels": [],
+  "files": [
+   "okio/src/jvmMain/kotlin/okio/internal/DefaultSocket.kt"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "kotlin",
+  "repo": "kotlinpoet",
+  "head": "2e530dba268b655a9579c79fdc1ccf4b8dead98c",
+  "commit": "8564b85dbe003f6d88c8f75d1714e1ba661af149",
+  "fix": "527e8511faa17a02ed0afa9e3c136c518672791b",
+  "fix_subject": "Fix exception tying to generate empty fun interface which inherit another interface  (#2075)",
+  "labels": [
+   {
+    "path": "kotlinpoet/src/main/java/com/squareup/kotlinpoet/TypeSpec.kt",
+    "lines": [
+     752,
+     753
+    ]
+   }
+  ],
+  "files": [
+   "kotlinpoet/src/main/java/com/squareup/kotlinpoet/KModifier.kt",
+   "kotlinpoet/src/main/java/com/squareup/kotlinpoet/TypeSpec.kt"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "kotlin",
+  "repo": "kotlinpoet",
+  "head": "2e530dba268b655a9579c79fdc1ccf4b8dead98c",
+  "commit": "3f5e797553a4ca5cc59dfe5bfd7b039897d3f6d4",
+  "fix": "a162882a4888c417bce0ebf434214ce4a445d04c",
+  "fix_subject": "Fix #1919 Small double values are set to zero in %L translation (#1927)",
+  "labels": [
+   {
+    "path": "kotlinpoet/src/main/java/com/squareup/kotlinpoet/CodeBlock.kt",
+    "lines": [
+     376
+    ]
+   }
+  ],
+  "files": [
+   "kotlinpoet/src/main/java/com/squareup/kotlinpoet/CodeBlock.kt"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "kotlin",
+  "repo": "kotlinpoet",
+  "head": "2e530dba268b655a9579c79fdc1ccf4b8dead98c",
+  "commit": "d86c22495694e53e162f4b9be7ab6c6c62b78b24",
+  "fix": null,
+  "fix_subject": "Switch to -jvm-default flag (#2226)",
+  "labels": [],
+  "files": [
+   "kotlinpoet/src/jvmMain/kotlin/com/squareup/kotlinpoet/jvm/JvmAnnotations.kt"
+  ]
+ },
+ {
+  "source": "szz",
+  "lang": "ts",
+  "repo": "ui",
+  "head": "993fe483ca2b4a06e9b8723dbb2bc53c6577807a",
+  "commit": "65b47ce7b491238755fc7ab9e403822646da89fd",
+  "fix": "1f46ce11fa0ead45de6c4d3bf2a3761c9d7188e9",
+  "fix_subject": "fix(components): prevent empty trailing slot when loading (#7027)",
+  "labels": [
+   {
+    "path": "src/runtime/composables/useComponentIcons.ts",
+    "lines": [
+     44
+    ]
+   }
+  ],
+  "files": [
+   "src/runtime/composables/useComponentIcons.ts"
+  ]
+ },
+ {
+  "source": "real-clean",
+  "lang": "ts",
+  "repo": "ui",
+  "head": "993fe483ca2b4a06e9b8723dbb2bc53c6577807a",
+  "commit": "0f558fc0d014d51549222accfc50286d1770d1aa",
+  "fix": null,
+  "fix_subject": "feat(extendLocale): new composable",
+  "labels": [],
+  "files": [
+   "src/runtime/composables/defineLocale.ts",
+   "src/runtime/types/utils.ts"
+  ]
+ }
+]

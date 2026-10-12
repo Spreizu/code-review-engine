@@ -1,0 +1,313 @@
+# HAND-EDITED rule file: pack vue, topic vapor. Edit here directly; keep rules sorted by id.
+# (Generated rules for this pack live in *.gen.yaml next to this file; never edit those.)
+# Vue Vapor Mode (Vue 3.6, pre-release as of 2026-10: 3.6.0-rc.10). Rules follow the official
+# "Feature Compatibility" / "Important Usage Considerations" sections of the vuejs/core 3.6
+# release notes. Because the docs are pre-release, every rule ships in shadow (quarantine): it is
+# counted, not reported, until Vue 3.6 is stable and the rules are validated on a corpus.
+# A component is Vapor when its SFC has <script setup vapor> or <template vapor>.
+pack: vue
+pack_version: 2026.10.0
+rules:
+- id: VUE-VAPOR-DEFINE-OPTIONS
+  title: Options API passed to defineVaporComponent
+  language: javascript
+  kind: removal
+  category: compatibility
+  severity: critical
+  precision: high
+  status: shadow
+  status_reason: Vue 3.6 Vapor Mode docs are pre-release (3.6.0-rc); validate after the stable release
+  applies_to:
+    vue: '>=3.6'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((call_expression function: (identifier) @f arguments: (arguments (object) @o)) @match
+        (#eq? @f "defineVaporComponent") (#match? @o "\\b(data|methods|computed|watch|mounted|created)\\s*[:(]"))
+  message: Vapor components do not support the Options API (data, methods, computed, watch, lifecycle options); use setup() with the Composition API.
+  source:
+    url: https://github.com/vuejs/core/releases/tag/v3.6.0-rc.1
+    doc: Vue 3.6 release notes - Vapor Mode Feature Compatibility (Options API unsupported)
+    doc_version: Vue 3.6.0-rc
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      import { defineVaporComponent } from 'vue'
+      export default defineVaporComponent({ data: () => ({ n: 0 }) })
+    good: |
+      import { defineVaporComponent, ref } from 'vue'
+      export default defineVaporComponent({ setup() { const n = ref(0); return { n } } })
+- id: VUE-VAPOR-GET-CURRENT-INSTANCE
+  title: getCurrentInstance() in a Vapor component returns null
+  language: javascript
+  kind: removal
+  category: compatibility
+  severity: major
+  precision: high
+  status: shadow
+  status_reason: Vue 3.6 Vapor Mode docs are pre-release (3.6.0-rc); validate after the stable release
+  applies_to:
+    vue: '>=3.6'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - '**/*.vue'
+    query: |
+      ((call_expression function: (identifier) @f) @match (#eq? @f "getCurrentInstance"))
+    filters:
+    - sfc.has_re:<(?:script|template)\b[^>]*\bvapor\b
+  message: getCurrentInstance() returns null in Vapor components; use the public composables (useAttrs, useSlots, useTemplateRef, provide/inject) instead.
+  source:
+    url: https://github.com/vuejs/core/releases/tag/v3.6.0-rc.1
+    doc: Vue 3.6 release notes - Vapor Mode Feature Compatibility (getCurrentInstance returns null)
+    doc_version: Vue 3.6.0-rc
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      <script setup vapor>
+      import { getCurrentInstance } from 'vue'
+      const app = getCurrentInstance().appContext
+      </script>
+      <template><p /></template>
+    good: |
+      <script setup>
+      import { getCurrentInstance } from 'vue'
+      const app = getCurrentInstance().appContext
+      </script>
+      <template><p /></template>
+- id: VUE-VAPOR-GLOBAL-PROPERTIES
+  title: app.config.globalProperties on a Vapor app
+  language: javascript
+  kind: removal
+  category: compatibility
+  severity: major
+  precision: high
+  status: shadow
+  status_reason: Vue 3.6 Vapor Mode docs are pre-release (3.6.0-rc); validate after the stable release
+  applies_to:
+    vue: '>=3.6'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((member_expression object: (member_expression property: (property_identifier) @c) property: (property_identifier) @g) @match
+        (#eq? @c "config") (#eq? @g "globalProperties"))
+    filters:
+    - file.has_re:\bcreateVaporApp\s*\(
+    - file.lacks_re:\bcreateApp\s*\(
+  message: app.config.globalProperties is not supported in Vapor Mode; expose shared values with provide/inject or a composable.
+  source:
+    url: https://github.com/vuejs/core/releases/tag/v3.6.0-rc.1
+    doc: Vue 3.6 release notes - Vapor Mode Feature Compatibility (app.config.globalProperties)
+    doc_version: Vue 3.6.0-rc
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      import { createVaporApp } from 'vue'
+      const app = createVaporApp(App)
+      app.config.globalProperties.$http = http
+    good: |
+      import { createVaporApp } from 'vue'
+      const app = createVaporApp(App)
+      app.provide('http', http)
+- id: VUE-VAPOR-INTEROP-MISSING
+  title: Vapor component mounted in a VDOM app without vaporInteropPlugin
+  language: javascript
+  kind: removal
+  category: correctness
+  severity: major
+  precision: medium
+  status: shadow
+  status_reason: Vue 3.6 Vapor Mode docs are pre-release (3.6.0-rc); validate after the stable release
+  applies_to:
+    vue: '>=3.6'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((call_expression function: (identifier) @f) @match (#eq? @f "createApp"))
+    filters:
+    - file.has_re:\bdefineVaporComponent\s*\(|from\s+['"][^'"]+\.vapor\.vue['"]
+    - file.lacks_re:\bvaporInteropPlugin\b
+  message: A VDOM app created with createApp() can only render Vapor components after app.use(vaporInteropPlugin); otherwise use createVaporApp for an all-Vapor app.
+  ai_question: Does this createApp() app render a Vapor component (defineVaporComponent / <script setup vapor>) without installing vaporInteropPlugin?
+  source:
+    url: https://github.com/vuejs/core/releases/tag/v3.6.0-rc.1
+    doc: 'Vue 3.6 release notes - Vapor Mode: using Vapor components in a VDOM app requires vaporInteropPlugin'
+    doc_version: Vue 3.6.0-rc
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      import { createApp, defineVaporComponent } from 'vue'
+      const Hello = defineVaporComponent({ setup: () => () => 'hi' })
+      createApp(Hello).mount('#app')
+    good: |
+      import { createApp, defineVaporComponent, vaporInteropPlugin } from 'vue'
+      const Hello = defineVaporComponent({ setup: () => () => 'hi' })
+      createApp(Hello).use(vaporInteropPlugin).mount('#app')
+- id: VUE-VAPOR-OBJECT-DIRECTIVE
+  title: Object-style custom directive used in a Vapor component
+  language: javascript
+  kind: removal
+  category: compatibility
+  severity: major
+  precision: medium
+  status: shadow
+  status_reason: Vue 3.6 Vapor Mode docs are pre-release (3.6.0-rc); validate after the stable release
+  applies_to:
+    vue: '>=3.6'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    files:
+    - '**/*.vue'
+    query: |
+      ((variable_declarator name: (identifier) @n value: (object) @o) @match
+        (#match? @n "^v[A-Z]") (#match? @o "\\b(mounted|updated|beforeMount|beforeUpdate|unmounted|beforeUnmount|created)\\s*[:(]"))
+    filters:
+    - sfc.has_re:<(?:script|template)\b[^>]*\bvapor\b
+  message: Vapor custom directives are functions (node, valueGetter, arg, modifiers) => cleanup?, not objects with lifecycle hooks; rewrite with watchEffect on the value getter.
+  ai_question: Is this object a custom directive with VDOM lifecycle hooks used in this Vapor component's template?
+  source:
+    url: https://github.com/vuejs/core/releases/tag/v3.6.0-rc.10
+    doc: Vue 3.6 release notes - Custom Directives Use a Different Interface
+    doc_version: Vue 3.6.0-rc
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      <script setup vapor>
+      const vFocus = { mounted: (el) => el.focus() }
+      </script>
+      <template><input v-focus /></template>
+    good: |
+      <script setup vapor>
+      const vFocus = (el) => { el.focus() }
+      </script>
+      <template><input v-focus /></template>
+- id: VUE-VAPOR-OPTIONS-API
+  title: Options API in a Vapor component
+  language: javascript
+  kind: removal
+  category: compatibility
+  severity: critical
+  precision: high
+  status: shadow
+  status_reason: Vue 3.6 Vapor Mode docs are pre-release (3.6.0-rc); validate after the stable release
+  applies_to:
+    vue: '>=3.6'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - '**/*.vue'
+    query: |
+      ((export_statement value: [(object) (call_expression function: (identifier) @dc)] @v) @match)
+    filters:
+    - sfc.has_re:<(?:script|template)\b[^>]*\bvapor\b
+    - node.has_re:\b(data|methods|computed|watch|mounted|created|props)\s*[:(]
+  message: Vapor Mode does not support the Options API; move the logic into <script setup vapor>.
+  source:
+    url: https://github.com/vuejs/core/releases/tag/v3.6.0-rc.1
+    doc: Vue 3.6 release notes - Vapor Mode Feature Compatibility (Options API unsupported)
+    doc_version: Vue 3.6.0-rc
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      <script vapor>
+      export default { data() { return { n: 0 } }, methods: { inc() { this.n++ } } }
+      </script>
+      <template vapor><button @click="inc">{{ n }}</button></template>
+    good: |
+      <script setup vapor>
+      import { ref } from 'vue'
+      const n = ref(0)
+      </script>
+      <template><button @click="n++">{{ n }}</button></template>
+    regressions:
+    - note: Options API in a normal (VDOM) component is fine
+      path: Counter.vue
+      code: |
+        <script>
+        export default { data() { return { n: 0 } } }
+        </script>
+        <template><button>{{ n }}</button></template>
+- id: VUE-VAPOR-SLOT-DRY-RUN
+  title: Calling a slot function in script to inspect it (Vapor)
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  precision: medium
+  status: shadow
+  status_reason: Vue 3.6 Vapor Mode docs are pre-release (3.6.0-rc); validate after the stable release
+  applies_to:
+    vue: '>=3.6'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    files:
+    - '**/*.vue'
+    query: |
+      ((call_expression function: (member_expression object: (identifier) @s property: (property_identifier) @p)) @match (#match? @s "^\\$?slots$"))
+    filters:
+    - sfc.has_re:<(?:script|template)\b[^>]*\bvapor\b
+  message: In Vapor, calling a slot renders it (creates DOM, effects, claims SSR nodes); it is not a side-effect-free check. Leave slot rendering to the template.
+  ai_question: Is the slot function called in script code (not in the template / render) to inspect its content?
+  source:
+    url: https://github.com/vuejs/core/releases/tag/v3.6.0-rc.10
+    doc: Vue 3.6 release notes - slots.default() Is Not a Safe Dry Run
+    doc_version: Vue 3.6.0-rc
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      <script setup vapor>
+      import { useSlots } from 'vue'
+      const slots = useSlots()
+      const empty = !slots.default()
+      </script>
+      <template><slot /></template>
+    good: |
+      <script setup vapor>
+      import { useSlots } from 'vue'
+      const slots = useSlots()
+      const has = !!slots.default
+      </script>
+      <template><slot /></template>
+- id: VUE-VAPOR-V-MEMO
+  title: v-memo / @vue:xxx lifecycle events in a Vapor template
+  language: vue
+  kind: removal
+  category: compatibility
+  severity: major
+  precision: high
+  status: shadow
+  status_reason: Vue 3.6 Vapor Mode docs are pre-release (3.6.0-rc); validate after the stable release
+  applies_to:
+    vue: '>=3.6'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    target: template
+    query: |
+      ((directive_attribute (directive_name) @d) @match (#match? @d "^(v-memo|@vue:)"))
+    filters:
+    - sfc.has_re:<(?:script|template)\b[^>]*\bvapor\b
+  message: v-memo and per-element @vue:xxx lifecycle events are not supported in Vapor Mode (rendering is already fine-grained); remove them.
+  source:
+    url: https://github.com/vuejs/core/releases/tag/v3.6.0-rc.1
+    doc: Vue 3.6 release notes - Vapor Mode Feature Compatibility (v-memo, @vue:xxx)
+    doc_version: Vue 3.6.0-rc
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      <script setup vapor>
+      const items = []
+      </script>
+      <template><div v-for="i in items" :key="i.id" v-memo="[i.sel]">{{ i.name }}</div></template>
+    good: |
+      <script setup vapor>
+      const items = []
+      </script>
+      <template><div v-for="i in items" :key="i.id">{{ i.name }}</div></template>
