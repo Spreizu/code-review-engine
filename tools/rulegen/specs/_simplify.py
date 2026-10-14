@@ -74,6 +74,6 @@ def helper(P, id, title, url, needle, names, api, bad, good, *, applies=None, us
       engine="index", check="helper-replacement", config=cfg, requires_dependency=dep, tags=["simplify", "index", "stdlib" if not dep else "dependency"], fp=fp)
 
 
-def loop(P, id, title, url, needle, query, bad, good, msg, *, applies=None, mode="deterministic", ai=None, filters=None, doc=None, kind="modernization"):
+def loop(P, id, title, url, needle, query, bad, good, msg, *, applies=None, mode="deterministic", ai=None, filters=None, doc=None, kind="modernization", fp=None):
     P("LOOP-" + id, title, url, needle, query, bad, good, msg, fix=SIMPLE_NOTE, sev="minor", kind=kind, cat="simplification",
-      applies=applies, mode=mode, ai=ai, filters=filters, doc=doc, tags=["simplify", "collapsible-loop"])
+      applies=applies, mode=mode, ai=ai, filters=filters, doc=doc, tags=["simplify", "collapsible-loop"], **({"fp": fp} if fp else {}))

@@ -173,11 +173,11 @@ rules:
       ((catch_clause (catch_formal_parameter (catch_type (type_identifier) @t)) body: (block) @b) @match (#eq? @t "InterruptedException") (#not-match? @b "interrupt\\(|throw"))
   message: Catching InterruptedException without re-interrupting (Thread.currentThread().interrupt()) or rethrowing loses the cancellation request.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/concurrency/interrupt.html
-    doc: 'The Java Tutorials: Interrupts'
-    doc_version: Java Tutorials
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html#interrupt()
+    doc: 'Javadoc: Thread.interrupt'
+    doc_version: JDK 25 API
     retrieved: '2026-10-09'
-    quote: An interrupt is an indication to a thread that it should stop what it is doing and do something else.
+    quote: then its interrupt status will be cleared and it will receive an InterruptedException
   examples:
     bad: |
       class Example {
@@ -420,6 +420,48 @@ rules:
   - concurrency
   status: active
   rule_version: 1
+- id: JAVA-QUAL-COR-ABSTRACT-PUBLIC-CTOR-001
+  title: Public constructor on an abstract class
+  language: java
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((class_declaration (modifiers) @mod body: (class_body (constructor_declaration (modifiers) @cm) @match)) (#match? @mod "\\babstract\\b") (#eq? @cm "public"))
+  message: 'An abstract class cannot be instantiated, so a public constructor only invites mistaken new Base() at call sites that are not subclasses: make it protected (or package-private).'
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+    doc: JLS §8.1.1.1 abstract Classes
+    doc_version: JLS Java SE 25
+    retrieved: '2026-10-09'
+    quote: It is a compile-time error if an attempt is made to create an instance of an abstract class
+  examples:
+    bad: |
+      abstract class Base {
+        public Base() {}
+      }
+    good: |
+      abstract class Base {
+        protected Base() {}
+      }
+    regressions:
+    - code: |
+        abstract class Base {
+          protected Base() {}
+        }
+    - code: |
+        class Base {
+          public Base() {}
+        }
+  xref:
+  - sonar:java:S2440
+  status: active
+  rule_version: 1
 - id: JAVA-QUAL-COR-ARRAYS-ASLIST-PRIM-001
   title: Arrays.asList on a primitive array creates a List of one array
   language: java
@@ -560,6 +602,44 @@ rules:
       }
   status: active
   rule_version: 1
+- id: JAVA-QUAL-COR-CALENDAR-GETTIME-MUTATE-001
+  title: Date returned by Calendar.getTime() is mutated
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: minor
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((method_invocation object: (method_invocation name: (identifier) @g) name: (identifier) @s) @match (#eq? @g "getTime") (#match? @s "^set[A-Z]"))
+  message: 'Calendar.getTime() returns a copy; mutating that Date does not change the Calendar (and Date setters are deprecated): call Calendar.set on the calendar itself, or use java.time.'
+  ai_question: Is getTime() Calendar.getTime() (a Date copy) rather than some other getTime that already returns a mutable Date you own?
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Calendar.html
+    doc: 'Javadoc: Calendar.getTime'
+    doc_version: JDK 25 API
+    retrieved: '2026-10-09'
+    quote: Returns a Date object representing this Calendar's time value
+  examples:
+    bad: |
+      class Example {
+        void run() throws Exception {
+          Calendar.getInstance().getTime().setHours(0);
+        }
+      }
+    good: |
+      class Example {
+        void run() throws Exception {
+          cal.set(Calendar.HOUR_OF_DAY, 0);
+        }
+      }
+  xref:
+  - sonar:java:S3064
+  status: active
+  rule_version: 1
 - id: JAVA-QUAL-COR-COLLECTIONS-EMPTY-001
   title: Prefer List.of()/Collections.emptyList() over raw EMPTY_LIST constants
   language: java
@@ -646,6 +726,12 @@ rules:
       ((class_declaration body: (class_body (method_declaration name: (identifier) @n parameters: (formal_parameters . (formal_parameter type: (type_identifier) @t) .)))) @match (#eq? @n "equals") (#eq? @t "Object"))
     filters:
     - node.lacks_descendant_text:hashCode()
+    - node.lacks_re:@SuppressWarnings\([^)]*\x22(EqualsHashCode|overrides)\x22
+    - node.lacks_re:\babstract\s+boolean\s+equals\s*\(
+    files:
+    - '!**/src/test/**'
+    - '!**/*Test.java'
+    - '!**/*Tests.java'
   message: 'Overriding equals without hashCode breaks HashMap/HashSet: equal objects must have equal hash codes.'
   source:
     url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
@@ -663,6 +749,16 @@ rules:
         @Override public boolean equals(Object o) { return o instanceof P; }
         @Override public int hashCode() { return 1; }
       }
+    regressions:
+    - code: |
+        abstract class Node {
+          @Override public abstract boolean equals(Object o);
+        }
+    - code: |
+        @SuppressWarnings({"overrides", "EqualsHashCode"})
+        class P {
+          @Override public boolean equals(Object o) { return o instanceof P; }
+        }
   status: active
   rule_version: 1
 - id: JAVA-QUAL-COR-GETBYTES-CHARSET-001
@@ -701,6 +797,46 @@ rules:
       }
   status: active
   rule_version: 1
+- id: JAVA-QUAL-COR-HARDCODED-URI-001
+  title: Hard-coded http(s) URL
+  language: java
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((string_literal) @match (#match? @match "^\"https?://[A-Za-z0-9]"))
+    filters:
+    - node.lacks_re:(?i)example\\.com|localhost|127\\.0\\.0\\.1|schema\\.org|w3\\.org|openjdk\\.org
+  message: 'A hard-coded host is painful to change per environment: take the origin from configuration.'
+  ai_question: Is this a deployment-specific origin (API, asset host) rather than a stable public identifier or a test fixture?
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html
+    doc: 'Javadoc: java.net.URI'
+    doc_version: JDK 25 API
+    retrieved: '2026-10-09'
+    quote: Represents a Uniform Resource Identifier (URI) reference.
+  examples:
+    bad: |
+      class Example {
+        void run() throws Exception {
+          String url = "https://api.example.com/v1";
+        }
+      }
+    good: |
+      class Example {
+        void run() throws Exception {
+          String url = System.getenv("API_BASE") + "/v1";
+        }
+      }
+  xref:
+  - sonar:java:S1075
+  status: active
+  rule_version: 1
 - id: JAVA-QUAL-COR-LIST-OF-NULL-001
   title: List.of / Set.of / Map.of reject null elements
   language: java
@@ -734,6 +870,48 @@ rules:
           var l = Arrays.asList("a", null);
         }
       }
+  status: active
+  rule_version: 1
+- id: JAVA-QUAL-COR-MAIN-SIGNATURE-001
+  title: Method named main is not a program entry point
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: minor
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_declaration name: (identifier) @n) @match (#eq? @n "main") (#match? @match "public") (#not-match? @match "public\\s+static\\s+void\\s+main\\s*\\("))
+  message: 'A method named main that is not public static void (String[] or String...) is not the JVM entry point: fix the signature or rename it.'
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+    doc: JLS §12.1.4 Invoke Test.main
+    doc_version: JLS Java SE 25
+    retrieved: '2026-10-09'
+    quote: The method main must be declared public, static, and void
+  examples:
+    bad: |
+      class App {
+        public void main(String[] args) {}
+      }
+    good: |
+      class App {
+        public static void main(String[] args) {}
+      }
+    regressions:
+    - code: |
+        class App {
+          public static void main(String[] args) {}
+        }
+    - code: |
+        void main() {
+          IO.println("hi");
+        }
+  xref:
+  - sonar:java:S3051
   status: active
   rule_version: 1
 - id: JAVA-QUAL-COR-NAN-EQ-001
@@ -945,6 +1123,40 @@ rules:
       record Packet(List<Byte> payload) {}
   status: active
   rule_version: 1
+- id: JAVA-QUAL-COR-RETURN-CONSTANT-001
+  title: Method body is only a constant return
+  language: java
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((method_declaration body: (block . (return_statement [(decimal_integer_literal) (decimal_floating_point_literal) (string_literal) (character_literal) (true) (false) (null_literal)]) .)) @match)
+  message: 'A method that always returns the same literal can be a constant field (or inlined): keeping it as a method hides that nothing varies.'
+  ai_question: Is this a real constant (never varies, not an override/stub/generated default) that should be a field?
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html
+    doc: JLS §8.4 Method Declarations
+    doc_version: JLS Java SE 25
+    retrieved: '2026-10-09'
+    quote: A method declaration can declare a method that returns a value
+  examples:
+    bad: |
+      class Example {
+        int version() { return 1; }
+      }
+    good: |
+      class Example {
+        static final int VERSION = 1;
+      }
+  xref:
+  - sonar:java:S3400
+  status: active
+  rule_version: 1
 - id: JAVA-QUAL-COR-STRING-EQ-001
   title: String compared with == / != against a literal
   language: java
@@ -996,11 +1208,11 @@ rules:
   message: Polling a flag with sleep wastes CPU and adds latency; wait on a condition (CountDownLatch, CompletableFuture, BlockingQueue, wait/notify).
   ai_question: Is the loop polling a condition another thread sets (rather than a deliberate rate-limited retry/backoff)?
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
-    doc: 'The Java Tutorials: Guarded Blocks'
-    doc_version: Java Tutorials
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait()
+    doc: 'Javadoc: Object.wait'
+    doc_version: JDK 25 API
     retrieved: '2026-10-09'
-    quote: A more efficient guard invokes Object.wait to suspend the current thread.
+    quote: Causes the current thread to wait until it is awakened, typically by being notified or interrupted
   examples:
     bad: |
       class Example {
@@ -1050,6 +1262,84 @@ rules:
           if (header.toLowerCase(Locale.ROOT).equals("content-type")) handle();
         }
       }
+  status: active
+  rule_version: 1
+- id: JAVA-QUAL-COR-UNUSED-LABEL-001
+  title: Label never referenced by break or continue
+  language: java
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((labeled_statement (identifier) @lab) @match)
+    filters:
+    - node.lacks_re:\b(break|continue)\s+{cap:lab}\b
+  message: 'This label is never the target of break or continue, so it does nothing: remove it.'
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+    doc: JLS §14.7 Labeled Statements
+    doc_version: JLS Java SE 25
+    retrieved: '2026-10-09'
+    quote: A labeled statement is executed by executing the immediately contained Statement
+  examples:
+    bad: |
+      class Example {
+        void run() {
+          unused:
+          for (int i = 0; i < 10; i++) {
+            break;
+          }
+        }
+      }
+    good: |
+      class Example {
+        void run() {
+          outer:
+          for (int i = 0; i < 10; i++) {
+            break outer;
+          }
+        }
+      }
+  xref:
+  - sonar:java:S2654
+  status: active
+  rule_version: 1
+- id: JAVA-QUAL-COR-WRITEOBJECT-SYNC-001
+  title: writeObject declared synchronized
+  language: java
+  kind: anti-pattern
+  category: concurrency
+  severity: minor
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_declaration name: (identifier) @n) @match (#eq? @n "writeObject") (#match? @match "synchronized"))
+  message: ObjectOutputStream already serializes one object at a time; synchronizing writeObject does not make serialization thread-safe and can deadlock.
+  source:
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/ObjectOutputStream.html
+    doc: 'Javadoc: ObjectOutputStream'
+    doc_version: JDK 25 API
+    retrieved: '2026-10-09'
+    quote: The default serialization mechanism for an object can be overridden
+  examples:
+    bad: |
+      class Box implements Serializable {
+        private synchronized void writeObject(ObjectOutputStream out) throws IOException { out.defaultWriteObject(); }
+      }
+    good: |
+      class Box implements Serializable {
+        private void writeObject(ObjectOutputStream out) throws IOException { out.defaultWriteObject(); }
+      }
+  xref:
+  - sonar:java:S3042
   status: active
   rule_version: 1
 - id: JAVA-QUAL-MOD-STACK-001
@@ -1209,14 +1499,16 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
+    - node.lacks_re:\bnew\s+\w+\(\s*(new\s+)?(StringWriter|ByteArrayOutputStream|CharArrayWriter|OutputStreamWriter\(\s*(baos|System\.(out|err)))|\(\s*(sw|stringWriter|writer|baos|System\.(out|err|in))\b
   message: BufferedReader holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this BufferedReader closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1250,14 +1542,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: FileInputStream holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this FileInputStream closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1291,14 +1584,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: FileOutputStream holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this FileOutputStream closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1332,14 +1626,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: FileReader holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this FileReader closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1496,11 +1791,11 @@ rules:
   message: Files.newBufferedReader() keeps a file/directory handle open until it is closed; use try-with-resources.
   ai_question: Is the object returned by Files.newBufferedReader() closed on every path?
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: A resource is an object that must be closed after the program is finished with it.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1537,11 +1832,11 @@ rules:
   message: Files.newBufferedWriter() keeps a file/directory handle open until it is closed; use try-with-resources.
   ai_question: Is the object returned by Files.newBufferedWriter() closed on every path?
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: A resource is an object that must be closed after the program is finished with it.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1619,11 +1914,11 @@ rules:
   message: Files.newInputStream() keeps a file/directory handle open until it is closed; use try-with-resources.
   ai_question: Is the object returned by Files.newInputStream() closed on every path?
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: A resource is an object that must be closed after the program is finished with it.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1660,11 +1955,11 @@ rules:
   message: Files.newOutputStream() keeps a file/directory handle open until it is closed; use try-with-resources.
   ai_question: Is the object returned by Files.newOutputStream() closed on every path?
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: A resource is an object that must be closed after the program is finished with it.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1738,14 +2033,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: FileWriter holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this FileWriter closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1820,14 +2116,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: JarFile holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this JarFile closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1864,11 +2161,11 @@ rules:
   message: JDBC connections, statements and result sets must be closed; leaked connections exhaust the pool.
   ai_question: Is the JDBC resource closed on all paths (or managed by a framework such as JdbcTemplate)?
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: A resource is an object that must be closed after the program is finished with it.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1902,14 +2199,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: ObjectOutputStream holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this ObjectOutputStream closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1943,14 +2241,16 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
+    - node.lacks_re:\bnew\s+\w+\(\s*(new\s+)?(StringWriter|ByteArrayOutputStream|CharArrayWriter|OutputStreamWriter\(\s*(baos|System\.(out|err)))|\(\s*(sw|stringWriter|writer|baos|System\.(out|err|in))\b
   message: PrintWriter holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this PrintWriter closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -1964,6 +2264,13 @@ rules:
           try (var r = new PrintWriter(arg)) { use(r); }
         }
       }
+    regressions:
+    - code: |
+        class Example {
+          void run() throws Exception {
+            StringWriter sw = new StringWriter(); e.printStackTrace(new PrintWriter(sw, true));
+          }
+        }
   tags:
   - resource-leak
   status: active
@@ -1984,14 +2291,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: RandomAccessFile holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this RandomAccessFile closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -2025,14 +2333,16 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
+    - node.lacks_re:\bnew\s+\w+\(\s*(new\s+)?(StringWriter|ByteArrayOutputStream|CharArrayWriter|OutputStreamWriter\(\s*(baos|System\.(out|err)))|\(\s*(sw|stringWriter|writer|baos|System\.(out|err|in))\b
   message: Scanner holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this Scanner closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -2066,14 +2376,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: ServerSocket holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this ServerSocket closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -2107,14 +2418,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: Socket holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this Socket closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {
@@ -2148,14 +2460,15 @@ rules:
     filters:
     - node.not_in_try_with_resources
     - node.lacks_ancestor:object_creation_expression|return_statement|field_declaration
+    - ancestor.lacks_re:assignment_expression:^this\.\w+\s*=
   message: ZipFile holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.
   ai_question: Is this ZipFile closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html
-    doc: 'The Java Tutorials: The try-with-resources Statement'
-    doc_version: Java Tutorials (JDK 7+ language feature)
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+    doc: JLS SE 25 14.20.3 try-with-resources
+    doc_version: JLS Java SE 25
     retrieved: '2026-10-09'
-    quote: The try -with-resources statement ensures that each resource is closed at the end of the statement.
+    quote: initialized before execution of the try block and closed automatically
   examples:
     bad: |
       class Example {

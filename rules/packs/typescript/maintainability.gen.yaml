@@ -3,6 +3,44 @@
 pack: typescript
 pack_version: 2026.10.0
 rules:
+- id: TS-MAINT-ASYNC-WITHOUT-AWAIT
+  title: async function that never awaits
+  language: typescript
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (program (function_declaration body: (statement_block) @b) @match)
+    filters:
+    - node.has_re:^async\s+function
+    - cap.lacks_re:b:\bawait\b
+  message: 'Nothing in this async function awaits, so async only wraps the result in a promise and forces callers to await: drop async or await the real asynchronous work.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+    doc: 'MDN: async function'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: The behavior of async / await is similar to combining generators and promises. Async functions always return a promise.
+  examples:
+    bad: |
+      async function total(items: number[]) {
+        return items.reduce((a, b) => a + b, 0);
+      }
+    good: |
+      function total(items: number[]) {
+        return items.reduce((a, b) => a + b, 0);
+      }
+  xref:
+  - sonar:typescript:S7503
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: TS-MAINT-ENUM-MIXED-INITIALIZERS
   title: Enum mixes initialized and implicit members
   language: typescript
@@ -112,6 +150,46 @@ rules:
       }
   xref:
   - sonar:typescript:S1444
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: TS-MAINT-VOID-RESULT-USED
+  title: Result of a void function is used
+  language: typescript
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (variable_declarator value: (call_expression) @c) @match
+    filters:
+    - type.is:c:void
+  message: 'The function is declared to return nothing, so this variable is always undefined: call it as a statement.'
+  source:
+    url: https://www.typescriptlang.org/docs/handbook/2/functions.html
+    doc: 'TypeScript handbook: Functions'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: void represents the return value of functions which don't return a value
+  examples:
+    bad: |
+      function log(msg: string): void {
+        console.log(msg);
+      }
+      const r = log("x");
+    good: |
+      function log(msg: string): void {
+        console.log(msg);
+      }
+      log("x");
+  xref:
+  - sonar:javascript:S3699
+  - sonar:typescript:S3699
   status: active
   rule_version: 1
   tags:

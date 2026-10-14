@@ -263,6 +263,7 @@ rules:
       (anchor (anchor_name) @match)
     filters:
     - file.count_ge:2:&{text}(\s|$)
+    - ancestor.has_re:document:(?s)&{cap:match}\s.*&{cap:match}(\s|$)
   message: A reused anchor name silently rebinds later aliases.
   source:
     url: https://yamllint.readthedocs.io/en/stable/rules.html

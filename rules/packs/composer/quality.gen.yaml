@@ -296,6 +296,8 @@ rules:
     - '**/composer.json'
     query: |
       (document (object (pair key: (string (string_content) @s (#match? @s "^require(-dev)?$")) value: (object (pair key: (string (string_content) @pkg) value: (string (string_content) @match (#match? @match "^\\*$")))))))
+    filters:
+    - cap.lacks_re:pkg:^(php|php-64bit|php-ipv6|php-zts|php-debug|hhvm|composer|composer-plugin-api|composer-runtime-api)$|^(ext|lib)-
   message: '`*` accepts every future major release.'
   source:
     url: https://getcomposer.org/doc/articles/versions.md
@@ -323,6 +325,8 @@ rules:
     - '**/composer.json'
     query: |
       (document (object (pair key: (string (string_content) @s (#match? @s "^require(-dev)?$")) value: (object (pair key: (string (string_content) @pkg) value: (string (string_content) @match (#match? @match "^>=?\\s*[0-9][^,| <]*$")))))))
+    filters:
+    - cap.lacks_re:pkg:^(php|php-64bit|php-ipv6|php-zts|php-debug|hhvm|composer|composer-plugin-api|composer-runtime-api)$|^(ext|lib)-
   message: Use the caret operator (^7.0) so a future major cannot be installed.
   source:
     url: https://getcomposer.org/doc/articles/versions.md

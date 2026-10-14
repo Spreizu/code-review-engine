@@ -220,9 +220,10 @@ def metric(id, title, metric_name, default, docs, msg, bad_body, good_body, *, k
     for lang in langs:
         q = (query or FUNC)[lang]
         fl = [f"metric.gt:{metric_name}:${{max}}"] + list((filters or {}).get(lang, []))
+        dflt = default.get(lang, default["*"]) if isinstance(default, dict) else default
         add(lang, id, title, docs[lang], q, fn(lang, bad_body, params), fn(lang, good_body, params[:5]), msg,
             keys=(keys or {}).get(lang, ()), eq=(eq or {}).get(lang, ()), optin=optin, sev=sev, filters=fl,
-            params={"max": {"default": default, "from": (frm or {}).get(lang, [])}}, match_kind="metric", cat=cat,
+            params={"max": {"default": dflt, "from": (frm or {}).get(lang, [])}}, match_kind="metric", cat=cat,
             fp=(fp or {}).get(lang))
 
 
@@ -282,7 +283,8 @@ metric("TOO-MANY-PARAMS", "Function takes too many parameters", "params", 7, {
         "kotlin": [r"node.lacks_re:^[^{=]*(\boverride\b|@Composable\b|@Inject\b)"],
     })
 
-metric("DEEP-NESTING", "Control flow nested too deeply", "nesting", 4, {
+# python: the ruff PLR1702 / pylint default (5); elsewhere eslint max-depth's 4
+metric("DEEP-NESTING", "Control flow nested too deeply", "nesting", {"*": 4, "python": 5}, {
     "java": cs("coding/nestedifdepth", "Restricts nested if-else blocks to a specified depth", "NestedIfDepth"),
     "javascript": es("max-depth"),
     "python": rf("too-many-nested-blocks", "Checks for functions or methods with too many nested blocks", "PLR1702"),
@@ -290,7 +292,7 @@ metric("DEEP-NESTING", "Control flow nested too deeply", "nesting", 4, {
     "kotlin": dk("complexity", "This rule reports excessive nesting depth in functions", "NestedBlockDepth"),
     "php": (PHPM + "control-structures.if.php", "allows for conditional execution of code fragments", "PHP manual: if"),
 }, "Blocks are nested ${value} levels deep (limit ${max}); invert conditions into early returns or extract the inner part.",
-    nested(5), FLAT,
+    nested(6), FLAT,
     keys={l: ["S134"] for l in ALL},
     eq={"javascript": ["eslint:max-depth"], "python": ["ruff:PLR1702", "pylint:too-many-nested-blocks"], "kotlin": ["detekt:NestedBlockDepth"]},
     frm={"javascript": ["eslint:max-depth.max", "eslint:max-depth.value"], "python": ["ruff:PLR1702.max", "pylint:too-many-nested-blocks.max"],
@@ -353,7 +355,7 @@ def multi(id, title, msg, spec, *, keys=(), cat="maintainability", kind="best-pr
     """spec: {lang: dict(doc=, query=, bad=, good=, filters=, fp=, eq=, keys=, files=)}; keys apply to all languages."""
     for lang, s in spec.items():
         add(lang, id, title, s["doc"], s["query"], s["bad"], s["good"], s.get("msg", msg), keys=s.get("keys", keys), eq=s.get("eq", ()),
-            filters=(s.get("filters") or []) + ([NO_SIDE_EFFECT] if s.get("filters_extra") else []) or None, fp=s.get("fp"), cat=s.get("cat", cat), kind=kind, sev=s.get("sev", sev), optin=optin,
+            filters=(s.get("filters") or []) + ([NO_SIDE_EFFECT, NOT_LITERAL] if s.get("filters_extra") else []) or None, fp=s.get("fp"), cat=s.get("cat", cat), kind=kind, sev=s.get("sev", sev), optin=optin,
             mode=s.get("mode", mode), ai=s.get("ai", ai), files=s.get("files"))
 
 
@@ -490,6 +492,8 @@ multi("NESTED-TERNARY", "Conditional expression nested inside another",
                          good="def f(n):\n    if n < 0:\n        return \"neg\"\n    return \"zero\" if n == 0 else \"pos\"\n"),
           "php": dict(doc=(PHPM + "language.operators.comparison.php", "It is recommended to avoid", "PHP manual: Ternary Operator"),
                       query="(conditional_expression [(conditional_expression) (parenthesized_expression (conditional_expression))]) @match",
+                      # PHP manual: "Chaining of short-ternaries (?:), however, is stable and behaves reasonably"
+                      filters=[r"node.lacks_re:^[^?]*(\?:[^?]*)+$"], fp=["<?php\n$home = getenv('HOME') ?: getenv('USERPROFILE') ?: '/tmp';\n"],
                       bad="<?php\nfunction f($n) {\n    return $n < 0 ? 'neg' : ($n == 0 ? 'zero' : 'pos');\n}\n",
                       good="<?php\nfunction f($n) {\n    if ($n < 0) {\n        return 'neg';\n    }\n    return $n == 0 ? 'zero' : 'pos';\n}\n"),
       }, keys=["S3358"])
@@ -507,12 +511,17 @@ multi("EMPTY-BLOCK", "Empty block with no explanation",
                        fp=["class A {\n    void spin() {\n        while (!ready()) {\n        }\n    }\n}\n"]),
           "python": dict(doc=(PYSIMPLE, "pass is a null operation", "Python reference: The pass statement"),
                          query="(block . (pass_statement) .) @match",
-                         filters=["parentkind.has_re:if_statement|elif_clause|else_clause|for_statement|while_statement|with_statement|finally_clause:.",
-                                  "parentkind.lacks_re:if_statement|elif_clause|else_clause|for_statement|while_statement|with_statement|finally_clause:#"],
+                         # `for _ in it: pass` drains an iterator, `with open(p): pass` touches a file, and
+                         # `if a: pass / else: ...` is a deliberate no-op branch: none of these is an empty block.
+                         filters=["parentkind.has_re:if_statement|elif_clause|else_clause|while_statement|finally_clause:.",
+                                  "parentkind.lacks_re:if_statement|elif_clause|else_clause|while_statement|finally_clause:#",
+                                  r"ancestor.lacks_re:if_statement:(?m)^\s*(elif\b|else\s*:)"],
                          bad="def f(n):\n    if n > 0:\n        pass\n    run()\n",
                          good="def f(n):\n    if n > 0:\n        run()\n",
                          fp=["def f(n):\n    if n > 0:\n        # already handled by the caller\n        pass\n    run()\n",
-                             "class Skip(Exception):\n    pass\n"]),
+                             "class Skip(Exception):\n    pass\n",
+                             "def consume(it):\n    for _ in it:\n        pass\n",
+                             "def f(a):\n    if a == 1:\n        pass\n    elif a == 2:\n        g()\n    else:\n        h()\n"]),
           "go": dict(doc=rv("Empty blocks make code less readable", "empty-block"), eq=["revive:empty-block", "staticcheck:SA9003"],
                      query=f"((block) @match (#match? @match {EMPTY}))", filters=["parentkind.has_re:if_statement:."],
                      bad="package p\n\nfunc f(err error) {\n\tif err != nil {\n\t}\n\trun()\n}\n",
@@ -624,13 +633,23 @@ CODE_LIKE = {
     "python": r"^#\s*(print\(.*\)|import\s+\w[\w.]*|from\s+[\w.]+\s+import\s+\w.*|return\b.*|[a-z_][\w.]*\s*=\s*[\w\[{(\"'].*|[a-z_][\w.]*\(.*\))\s*$",
     "kotlin": r"^//\s*((val|var)\s+\w+\s*=.*|fun\s+\w+\(.*|return\b.*|import\s+[\w.]+|[\w.]+\(.*\))\s*$",
     "php": r"^(//|#)\s*(\$\w+\s*(->\w+)*\s*=[^=].*;|[\w$>-]+\(.*\);|return\b.*;|(if|foreach|while)\s*\(.*\)\s*\{)\s*$",
-    "go": r"^//\s*([\w.]+\s*(:=|=)\s*.+|[\w.]+\(.*\)|return\b.*|if\s.+\{|for\s.*\{)\s*$",
+    # gofmt puts spaces around = and :=, so `level=info msg=x` (logfmt output) is not an assignment
+    "go": r"^//\s?([\w.]+(,\s*[\w.]+)*\s(:=|=)\s.+|[\w.]+\(.*\)|return\b.*|if\s.+\{|for\s.*\{)\s*$",
 }
+# Go doc comments: a tab/multi-space indented line is a godoc code block (go.dev/doc/comment "Code blocks"),
+# and `return the ...` style sentences are prose.
+CC_SKIP_GO = [r"node.lacks_re:^//(\t|\s{2,})", r"node.lacks_re:^//\s*return\s+[a-z]+\s+[a-z]+\s+[a-z]+"]
+# Kotlin has no statement terminator, so prose that starts with a keyword ("return -1, then ...") looks like code:
+# skip sentence punctuation, a bare comma clause after return, and keyword + three words
+# corpus m8: "// return -1 which may trigger ..." is prose; U+2212/U+00D7 math signs mark a derivation, not code
+CC_SKIP_KT = [r"node.lacks_re:\w[.!?]\s*$|^//\s*return\s+[^(\n]*,\s+[a-z]|^//\s*return\s+([a-z']+\s+){2}[a-z']+|^//\s*return\s+\S+\s+(which|that|if|when|because|so|and|to|so)\s|[\x{2212}\x{00D7}\x{00F7}]",
+              # the rest of a worked derivation whose earlier lines use math signs (okio ZipFiles filetime)
+              r"file.lacks_re://[^\n]*[\x{2212}\x{00D7}\x{00F7}][^\n]*\n(?:[ \t]*//[^\n]*\n){0,3}[ \t]*{cap:match}"]
 CC_SKIP = r"(?i)^(#|//)\s*(type:|noqa|pragma|nolint|go:|\+build|lint:|eslint|phpcs|@|-\*-|fmt:|isort:|pylint:|mypy:|e\.g\.|example)"
 multi("COMMENTED-OUT-CODE", "Commented-out code",
       "This comment is code that was switched off: delete it (version control keeps the history) or restore it.",
       {lang: dict(doc=doc, query=f"{COMMENT[lang]} @match",
-                  filters=["node.has_re:" + CODE_LIKE[lang], "node.lacks_re:" + CC_SKIP], eq=eq,
+                  filters=["node.has_re:" + CODE_LIKE[lang], "node.lacks_re:" + CC_SKIP] + (CC_SKIP_GO if lang == "go" else CC_SKIP_KT if lang == "kotlin" else []), eq=eq,
                   bad=bad, good=good, fp=fp)
        for lang, doc, eq, bad, good, fp in [
            ("java", ("https://docs.oracle.com/javase/specs/jls/se21/html/jls-3.html", "There are two kinds of comments", "JLS 3.7 Comments"), (),
@@ -641,13 +660,17 @@ multi("COMMENTED-OUT-CODE", "Commented-out code",
             ["def f():\n    # type: () -> int\n    return run()\n"]),
            ("kotlin", ("https://kotlinlang.org/docs/basic-syntax.html", "Kotlin supports single-line (or end-of-line) and multi-line (block) comments", "Kotlin docs: Comments"), (),
             "fun f() {\n    // val cached = load()\n    run()\n}\n", "fun f() {\n    // loading happens lazily in run()\n    run()\n}\n",
-            ["fun f() {\n    // see load() for details\n    run()\n}\n"]),
+            ["fun f() {\n    // see load() for details\n    run()\n}\n",
+             "fun f() {\n    // return -1, then our data finished prematurely!\n    // return is a 'spurious wakeup' because notify() was not called.\n    // return 200, there is a get handler\n    run()\n}\n"]),
            ("php", (PHPM + "language.basic-syntax.comments.php", "PHP supports", "PHP manual: Comments"), (),
             "<?php\nfunction f() {\n    // $cache->clear();\n    run();\n}\n", "<?php\nfunction f() {\n    // the scheduler clears the cache\n    run();\n}\n",
             ["<?php\nfunction f() {\n    // @var Foo $x\n    run();\n}\n"]),
            ("go", (GOSPEC, "Comments serve as program documentation", "Go spec: Comments"), (),
             "package p\n\nfunc f() {\n\t// cache.Clear()\n\trun()\n}\n", "package p\n\nfunc f() {\n\t// the scheduler clears the cache\n\trun()\n}\n",
-            ["package p\n\n//go:generate stringer -type=Kind\nfunc f() {}\n"]),
+            ["package p\n\n//go:generate stringer -type=Kind\nfunc f() {}\n",
+             "package p\n\n// New returns a router.\n//\n//\tr := mux.NewRouter()\nfunc New() {}\n",
+             "package p\n\n// return true on the first found command\nfunc f() {}\n",
+             "package p\n\n// Output:\n// level=info msg=\"first log\"\nfunc f() {}\n"]),
        ]}, keys=["S125"], mode="ai-confirm", ai="Is this comment disabled code (not prose, a doc example or a directive)?")
 
 
@@ -664,6 +687,10 @@ multi("BOOLEAN-LITERAL-COMPARISON", "Comparison with a boolean literal",
                        mode="ai-confirm", ai="Is the compared value a primitive boolean (a Boolean wrapper may be null, where == true is a null-safe check)?"),
           "go": dict(doc=sc("Omit comparison with boolean constant", "S1002"), eq=["gosimple:S1002", "revive:bool-literal-in-expr"],
                      query="(binary_expression operator: [\"==\" \"!=\"] [left: [(true) (false)] right: [(true) (false)]]) @match",
+                     # S1002 needs a bool operand: map lookups and Get/Value/Load accessors usually yield interface{}
+                     filters=[r"node.lacks_re:\]\s*[!=]=|\b(Get\w*|Value|Load|Interface|Lookup)\([^()]*\)\s*[!=]=|^\s*(true|false)\s*[!=]=\s*\w+\["],
+                     fp=["package p\n\nfunc f(m map[string]any) bool {\n\treturn m[\"x\"] == true\n}\n",
+                         "package p\n\nfunc f(ctx C) bool {\n\treturn GetVar(ctx, k) == true\n}\n"],
                      bad="package p\n\nfunc f(done bool) {\n\tif done == true {\n\t\tstop()\n\t}\n}\n",
                      good="package p\n\nfunc f(done bool) {\n\tif done {\n\t\tstop()\n\t}\n}\n"),
           "php": dict(doc=(PHPM + "language.operators.comparison.php", "Comparison operators, as their name implies", "PHP manual: Comparison operators"),
@@ -719,23 +746,27 @@ multi("SELF-ASSIGNMENT", "Variable assigned to itself",
                       good="<?php\nclass A {\n    private $size;\n    function setSize($size) {\n        $this->size = $size;\n    }\n}\n"),
       }, keys=["S1656"], cat="correctness", kind="anti-pattern", sev="major")
 
+NOT_LITERAL = r"cap.lacks_re:l:^(true|false|True|False|null|nil|None|-?\d[\w.]*|'[^']*'|\x22[^\x22]*\x22)$"
 IDOPS = '["<" ">" "<=" ">=" "&&" "||" "-" "/" "%" "^" "&" "|"]'
+GO_IDOPS = IDOPS.replace(' "^"', '')
+PHP_IDOPS = IDOPS.replace("]", ' "and" "or"]')
 multi("IDENTICAL-OPERANDS", "Same expression on both sides of an operator",
       "Both operands are the same expression, so the result is constant (or the second operand was meant to be something else).",
       {
-          "java": dict(bad="class A {\n    boolean inRange(int lo, int hi, int x) {\n        return x >= lo && x >= lo;\n    }\n}\n", good="class A {\n    boolean inRange(int lo, int hi, int x) {\n        return x >= lo && x <= hi;\n    }\n}\n", fp=["class A {\n    int f() {\n        return next() - next();\n    }\n}\n"], filters_extra=1, doc=("https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html", "The conditional-and operator && is like &", "JLS 15.23 Conditional-And Operator"),
+          "java": dict(bad="class A {\n    boolean inRange(int lo, int hi, int x) {\n        return x >= lo && x >= lo;\n    }\n}\n", good="class A {\n    boolean inRange(int lo, int hi, int x) {\n        return x >= lo && x <= hi;\n    }\n}\n", fp=["class A {\n    int f() {\n        return next() - next();\n    }\n}\n", "class A {\n    boolean[] t = {true ^ true, false ^ false};\n}\n"], filters_extra=1, doc=("https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html", "The conditional-and operator && is like &", "JLS 15.23 Conditional-And Operator"),
                        query=f"(binary_expression left: (_) @l operator: {IDOPS} right: (_) @r (#eq? @l @r)) @match"),
           "javascript": dict(bad="function inRange(lo, hi, x) {\n  return x >= lo && x >= lo;\n}\n", good="function inRange(lo, hi, x) {\n  return x >= lo && x <= hi;\n}\n", fp=["function f(it) {\n  return it.next() - it.next();\n}\n"], filters_extra=1, doc=es("no-self-compare"), eq=["eslint:no-self-compare"],
                              query=f"(binary_expression left: (_) @l operator: {IDOPS} right: (_) @r (#eq? @l @r)) @match"),
-          "python": dict(bad="def in_range(lo, hi, x):\n    return x >= lo and x >= lo\n", good="def in_range(lo, hi, x):\n    return x >= lo and x <= hi\n", fp=["def f(it):\n    return next(it) - next(it)\n"], filters_extra=1, doc=rf("comparison-with-itself", "Checks for operations that compare a name to itself", "PLR0124"), eq=["ruff:PLR0124"],
+          "python": dict(bad="def in_range(lo, hi, x):\n    return x >= lo and x >= lo\n", good="def in_range(lo, hi, x):\n    return x >= lo and x <= hi\n", fp=["def f(it):\n    return next(it) - next(it)\n"], filters_extra=1, doc=rf("comparison-with-itself", "Checks for operations that compare a name to itself", "PLR0124"), eq=["ruff:PLR0124", "pylint:comparison-with-itself"],
+                         filters=[r"cap.lacks_re:l:(^|\.)[A-Z][a-z]\w*$"],
                          query="[(comparison_operator (_) @l [\"<\" \">\" \"<=\" \">=\" \"is\"] (_) @r (#eq? @l @r)) (boolean_operator left: (_) @l right: (_) @r (#eq? @l @r)) (binary_operator left: (_) @l operator: [\"-\" \"/\" \"%\" \"^\" \"&\" \"|\" \"//\"] right: (_) @r (#eq? @l @r))] @match"),
           "go": dict(bad="package p\n\nfunc inRange(lo, hi, x int) bool {\n\treturn x >= lo && x >= lo\n}\n", good="package p\n\nfunc inRange(lo, hi, x int) bool {\n\treturn x >= lo && x <= hi\n}\n", fp=["package p\n\nfunc f() int {\n\treturn next() - next()\n}\n"], filters_extra=1, doc=sc("Binary operator has identical expressions on both sides", "SA4000"), eq=["staticcheck:SA4000"],
-                     query=f"(binary_expression left: (_) @l operator: {IDOPS.replace(' \"^\"', '')} right: (_) @r (#eq? @l @r)) @match"),
+                     query=f"(binary_expression left: (_) @l operator: {GO_IDOPS} right: (_) @r (#eq? @l @r)) @match"),
           "kotlin": dict(bad="fun inRange(lo: Int, hi: Int, x: Int): Boolean {\n    return x >= lo && x >= lo\n}\n", good="fun inRange(lo: Int, hi: Int, x: Int): Boolean {\n    return x >= lo && x <= hi\n}\n", fp=["fun f(): Int {\n    return next() - next()\n}\n"], filters_extra=1, doc=("https://kotlinlang.org/docs/operator-overloading.html", "Kotlin allows you to provide custom implementations", "Kotlin docs: Operator overloading"),
                          query="(binary_expression left: (_) @l right: (_) @r (#eq? @l @r)) @match",
                          filters=[r"node.has_re:^{cap:l}\s*(<|>|<=|>=|&&|\|\||-|/|%)\s*{cap:r}$"]),
           "php": dict(bad="<?php\nfunction inRange($lo, $hi, $x) {\n    return $x >= $lo && $x >= $lo;\n}\n", good="<?php\nfunction inRange($lo, $hi, $x) {\n    return $x >= $lo && $x <= $hi;\n}\n", fp=["<?php\nfunction f() {\n    return next() - next();\n}\n"], filters_extra=1, doc=(PHPM + "language.operators.logical.php", "Logical Operators", "PHP manual: Logical operators"),
-                      query=f"(binary_expression left: (_) @l operator: {IDOPS.replace(']', ' \"and\" \"or\"]')} right: (_) @r (#eq? @l @r)) @match"),
+                      query=f"(binary_expression left: (_) @l operator: {PHP_IDOPS} right: (_) @r (#eq? @l @r)) @match"),
       }, keys=["S1764"], cat="correctness", kind="anti-pattern", sev="major")
 
 
@@ -746,9 +777,10 @@ multi("UNREACHABLE-CODE", "Statement after return/throw can never run",
       {
           "python": dict(doc=(PYSIMPLE, "return leaves the current function call", "Python reference: The return statement"),
                          query="(block [(return_statement) (raise_statement) (break_statement) (continue_statement)] . (_) @match)",
-                         filters=["node.lacks_re:^#"],
+                         # `return` + bare `yield` is the documented idiom for an empty generator, not dead code
+                         filters=["node.lacks_re:^#", "node.lacks_re:^yield\\b"], eq=["pylint:unreachable"],
                          bad="def f(x):\n    return x * 2\n    print(x)\n", good="def f(x):\n    print(x)\n    return x * 2\n",
-                         fp=["def f(x):\n    return x * 2\n    # trailing note\n"]),
+                         fp=["def f(x):\n    return x * 2\n    # trailing note\n", "def empty():\n    return\n    yield  # keeps this a generator\n"]),
           "kotlin": dict(doc=dk("potential-bugs", "Reports unreachable code", "UnreachableCode"), eq=["detekt:UnreachableCode"],
                          query="(block [(return_expression) (throw_expression)] . (_) @match)",
                          filters=["node.lacks_re:^(//|/\\*)"],
@@ -876,7 +908,7 @@ multi("UNUSED-LOCAL", "Local variable is never used",
           "java": dict(doc=cs("coding/unusedlocalvariable", "Checks that a local variable is declared and/or assigned, but not used", "UnusedLocalVariable"),
                        eq=["checkstyle:UnusedLocalVariable"],
                        query="(local_variable_declaration declarator: (variable_declarator name: (identifier) @name) (#not-match? @name \"^(_|ignored?|unused)\")) @match",
-                       filters=["func.count_lt:2:\\b{cap:name}\\b"],
+                       filters=["func.count_lt:2:\\b{cap:name}\\b", "node.lacks_re:@SuppressWarnings\\(\\s*\\{?\\s*\"unused\""],
                        bad="class A {\n    int f(int a) {\n        int unusedSum = a + 1;\n        return a * 2;\n    }\n}\n".replace("unusedSum", "sum"),
                        good="class A {\n    int f(int a) {\n        int sum = a + 1;\n        return sum * 2;\n    }\n}\n"),
           "javascript": dict(doc=es("no-unused-vars"), eq=["eslint:no-unused-vars"],
@@ -887,14 +919,26 @@ multi("UNUSED-LOCAL", "Local variable is never used",
                              fp=["const top = 1;\nexport { top };\n"]),
           "python": dict(doc=rf("unused-variable", "Checks for the presence of unused variables in function scopes", "F841"), eq=["ruff:F841"],
                          query="(expression_statement (assignment left: (identifier) @name) @match (#not-match? @name \"^_\"))",
-                         filters=["node.has_ancestor:function_definition", "func.count_lt:2:\\b{cap:name}\\b",
+                         # class bodies (a class declared inside a function) hold attributes, not locals; Python
+                         # identifiers may be non-ASCII, so word boundaries are Unicode-aware; `x: int` alone binds nothing
+                         filters=["node.has_ancestor:function_definition", r"ancestor.has_re:function_definition|class_definition:^(async\s+)?def\b",
+                                  "node.has_re:=", "func.count_lt:2:(^|[^\\p{L}\\p{N}_]){cap:name}($|[^\\p{L}\\p{N}_])",
                                   "func.lacks_re:\\b(locals|vars|eval|exec)\\(|\\b(global|nonlocal)\\b"],
+                         fp=["def t():\n    class Meta:\n        model = User\n    return Meta\n",
+                             "def f(v):\n    \u00d8 = set()\n    return g(v, parens=\u00d8)\n",
+                             "TOTAL = 1\n", "def f(a):\n    total = a + 1\n    return locals()\n"],
                          bad="def f(a):\n    total = a + 1\n    return a * 2\n", good="def f(a):\n    total = a + 1\n    return total * 2\n",
-                         fp=["TOTAL = 1\n", "def f(a):\n    total = a + 1\n    return locals()\n"]),
+                         ),
           "kotlin": dict(doc=dk("style", "An unused variable can be removed to simplify the source file", "UnusedVariable"), eq=["detekt:UnusedVariable"],
                          query="(property_declaration (variable_declaration (identifier) @name) (#not-match? @name \"^_\")) @match",
                          filters=["node.has_ancestor:function_declaration|anonymous_function|lambda_literal", "func.count_lt:2:\\b{cap:name}\\b",
-                                  "node.lacks_re:\\bby\\b"],
+                                  "node.lacks_re:\\bby\\b",
+                                  # members of local/anonymous classes are properties, not locals; `backticked` names defeat \\b
+                                  "parentkind.lacks_re:class_body:.", "cap.lacks_re:name:^\x60",
+                                  # modifiers locals cannot carry (guards against class members misparsed around ERROR nodes)
+                                  r"node.lacks_re:^\s*(@(get|set|field|property|param|delegate)\s*:|(override|private|protected|public|internal|const|open|abstract)\b)"],
+                         fp=[{"note": "anonymous object members and backticked names",
+                              "code": "fun f() {\n    val t = object : Transformation {\n        override val cacheKey = \"k\"\n    }\n    use(t)\n    val `in` = open()\n    `in`.close()\n}\n"}],
                          bad="fun f(a: Int): Int {\n    val sum = a + 1\n    return a * 2\n}\n", good="fun f(a: Int): Int {\n    val sum = a + 1\n    return sum * 2\n}\n"),
           "php": dict(doc=md("unusedcode", "Detects when a local variable is declared and/or assigned, but not used", "UnusedLocalVariable"),
                       eq=["phpmd:UnusedLocalVariable"],
@@ -939,8 +983,8 @@ multi("UNUSED-PARAMETER", "Parameter of a private function is never used",
       {
           "java": dict(doc=("https://pmd.github.io/pmd/pmd_rules_java_bestpractices.html", "Reports parameters of methods and constructors that are not referenced them in the method body", "PMD UnusedFormalParameter"),
                        eq=["pmd:UnusedFormalParameter"],
-                       query="(method_declaration (modifiers \"private\") parameters: (formal_parameters (formal_parameter name: (identifier) @name) @match) body: (block))",
-                       filters=["func.count_lt:2:\\b{cap:name}\\b", "ancestor.lacks_re:method_declaration:^[^{(]*@\\w+|\\b(writeObject|readObject)\\s*\\("],
+                       query="(method_declaration (modifiers \"private\") name: (identifier) @mname parameters: (formal_parameters (formal_parameter name: (identifier) @name) @match) body: (block))",
+                       filters=["func.count_lt:2:\\b{cap:name}\\b", "file.count_lt:1:::\\s*{cap:mname}\\b", "ancestor.lacks_re:method_declaration:^[^{(]*@\\w+|\\b(writeObject|readObject)\\s*\\("],
                        bad="class A {\n    private int scale(int value, int factor) {\n        return value * 2;\n    }\n}\n",
                        good="class A {\n    private int scale(int value, int factor) {\n        return value * factor;\n    }\n}\n"),
           "kotlin": dict(doc=dk("style", "An unused parameter can be removed to simplify the signature of the function", "UnusedParameter"), eq=["detekt:UnusedParameter"],
@@ -964,15 +1008,19 @@ multi("UNUSED-IMPORT", "Import is never used",
       {
           "java": dict(doc=cs("imports/unusedimports", "Checks for unused import statements", "UnusedImports"), eq=["checkstyle:UnusedImports"],
                        query="(import_declaration (scoped_identifier name: (identifier) @name)) @match",
-                       filters=["node.lacks_re:^import\\s+static\\b", "file.count_lt:2:\\b{cap:name}\\b"],
+                       filters=["node.lacks_re:^import\\s+static\\b", "file.count_lt:2:\\b{cap:name}\\b", "node.lacks_re:\\*\\s*;"],
                        bad="import java.util.List;\nimport java.util.Map;\n\nclass A {\n    List<String> xs;\n}\n",
                        good="import java.util.List;\n\nclass A {\n    List<String> xs;\n}\n",
-                       fp=["import java.util.Map;\n\n/** Builds a {@link Map}. */\nclass A {\n}\n"]),
+                       fp=["import java.util.Map;\n\n/** Builds a {@link Map}. */\nclass A {\n}\n", "import java.sql.*;\n\nclass A {\n    Connection c;\n}\n"]),
           "kotlin": dict(doc=dk("style", "This rule reports unused imports", "UnusedImport"), eq=["detekt:UnusedImport"],
                          query="(import (qualified_identifier (identifier) @name .) . ) @match",
-                         filters=["file.count_lt:2:\\b{cap:name}\\b", f"cap.lacks_re:name:^({KT_OPERATOR_NAMES})$"],
+                         # star imports and `backticked` names (word boundaries do not apply) are skipped;
+                         # Gradle's assignment plugin uses the imported `assign` operator implicitly for =
+                         filters=["file.count_lt:2:\\b{cap:name}\\b", f"cap.lacks_re:name:^({KT_OPERATOR_NAMES}|assign)$",
+                                  "cap.lacks_re:name:^\x60", "node.lacks_re:\\*\\s*$"],
                          bad="import a.b.Foo\nimport a.b.Bar\n\nval x = Foo()\n", good="import a.b.Foo\n\nval x = Foo()\n",
-                         fp=["import a.b.getValue\n\nval x by lazy { 1 }\n"]),
+                         fp=["import a.b.getValue\n\nval x by lazy { 1 }\n",
+                             {"note": "star, backtick and Gradle assign imports", "code": "import io.ktor.server.application.*\nimport org.mockito.Mockito.`when`\nimport org.gradle.kotlin.dsl.assign\n\nfun f() { `when`(x) }\n"}]),
           "javascript": dict(doc=es("no-unused-vars"), eq=["eslint:no-unused-vars", "typescript-eslint:no-unused-vars"],
                              query="[(import_specifier alias: (identifier) @name) (import_specifier name: (identifier) @name !alias) (import_clause (identifier) @name) (namespace_import (identifier) @name)] @match",
                              filters=["file.count_lt:2:(^|[^\\w$.]){cap:name}($|[^\\w$])", "cap.lacks_re:name:^(React|h|_)$"],
@@ -1015,10 +1063,15 @@ multi("GENERIC-EXCEPTION-THROWN", "Generic exception type thrown",
                          bad="def load(p):\n    if not p:\n        raise Exception(\"no path\")\n", good="def load(p):\n    if not p:\n        raise ValueError(\"no path\")\n",
                          files=["!**/tests/**", "!**/test_*.py", "!**/*_test.py"]),
           "php": dict(doc=(PHPM + "class.exception.php", "is the base class for all user exceptions", "PHP manual: Exception"),
-                      query="(throw_expression (object_creation_expression [(name) (qualified_name)] @t (#match? @t \"^\\\\\\\\?(Exception|Error)$\"))) @match",
+                      # an unqualified name resolves in the current namespace (PHPMailer\\PHPMailer\\Exception): only the global
+                      # class is generic, so a bare name needs `use Exception;` (or no namespace declaration at all)
+                      query="(throw_expression (object_creation_expression (qualified_name) @q (#match? @q \"^\\\\\\\\(Exception|Error)$\"))) @match\n"
+                            "(throw_expression (object_creation_expression (name) @u (#match? @u \"^(Exception|Error)$\"))) @match",
+                      filters=[r"file.has_re:(?m)^use\s+\\?{cap:u}\s*;|{cap:q}|\A(?s:[^n]|n[^a]|na[^m]|nam[^e])*\z"],
+                      fp=["<?php\nnamespace PHPMailer\\PHPMailer;\n\nfunction f() {\n    throw new Exception('smtp failed');\n}\n"],
                       bad="<?php\nfunction load($p) {\n    if (!$p) {\n        throw new \\Exception('no path');\n    }\n}\n",
                       good="<?php\nfunction load($p) {\n    if (!$p) {\n        throw new \\InvalidArgumentException('no path');\n    }\n}\n",
-                      files=["!**/tests/**", "!**/*Test.php"]),
+                      files=["!**/tests/**", "!**/Tests/**", "!**/*Test.php"]),
       }, keys=["S112"])
 
 multi("CATCH-THROWABLE", "Catching Throwable or Error",
@@ -1110,14 +1163,25 @@ multi("IMMEDIATELY-RETURNED-VARIABLE", "Local variable is returned right after i
                          bad="def f(a):\n    doubled = a * 2\n    return doubled\n", good="def f(a):\n    return a * 2\n"),
           "php": dict(doc=(PHPM + "function.return.php", "returns program control to the calling module", "PHP manual: return"),
                       query="(compound_statement (expression_statement (assignment_expression left: (variable_name) @v)) @match . (return_statement (variable_name) @r) (#eq? @v @r))",
+                      # an @var docblock narrows the type for static analysers; return-by-reference (function &f) needs a variable
+                      filters=[r"func.lacks_re:@var\s+\S+\s+{cap:v}\b", r"func.lacks_re:^[^{(]*\bfunction\s*&"],
+                      fp=["<?php\nfunction f($p) {\n    /** @var resource $r */\n    $r = open($p);\n    return $r;\n}\n",
+                          "<?php\nclass A {\n    public function &offsetGet($o) {\n        $copy = $this->level;\n        return $copy;\n    }\n}\n"],
                       bad="<?php\nfunction f($a) {\n    $doubled = $a * 2;\n    return $doubled;\n}\n", good="<?php\nfunction f($a) {\n    return $a * 2;\n}\n"),
       }, keys=["S1488"])
 
 multi("SIZE-INSTEAD-OF-ISEMPTY", "size()/length() compared with zero instead of isEmpty()",
       "Use isEmpty(): it states the intent and is constant-time for every collection.",
       {"java": dict(doc=("https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html", "Returns true if this collection contains no elements", "Java SE 21 API: Collection.isEmpty"),
-                    query="(binary_expression left: (method_invocation name: (identifier) @m arguments: (argument_list) @args) operator: [\"==\" \"!=\" \">\"] right: (decimal_integer_literal) @z (#match? @m \"^(size|length)$\") (#match? @args \"^\\\\(\\\\s*\\\\)$\") (#eq? @z \"0\")) @match",
+                    query="(binary_expression left: (method_invocation object: (_) @recv name: (identifier) @m arguments: (argument_list) @args) operator: [\"==\" \"!=\" \">\"] right: (decimal_integer_literal) @z (#match? @m \"^(size|length)$\") (#match? @args \"^\\\\(\\\\s*\\\\)$\") (#eq? @z \"0\")) @match",
                     bad="class A {\n    boolean f(List<String> xs) {\n        return xs.size() == 0;\n    }\n}\n", good="class A {\n    boolean f(List<String> xs) {\n        return xs.isEmpty();\n    }\n}\n",
+                    filters=[r"type.not_or_unknown:recv:.*(StringBuilder|StringBuffer|CharSequence|Builder|Writer|OutputStream)\b.*", r"cap.lacks_re:recv:(?i)(sb|buf|buffer|builder|out|accum)$",
+                             # corpus: CharSequence.isEmpty() needs Java 15; a cast or a <T extends CharSequence> receiver is not a String
+                             r"cap.lacks_re:recv:\bCharSequence\b", r"func.lacks_re:\bextends\s+CharSequence\b"],
+                    fp=["class A {\n    String f(StringBuilder sb) {\n        return sb.length() > 0 ? sb.toString() : null;\n    }\n}\n",
+                        # corpus (jsoup, jackson): ByteArrayOutputStream has size() but no isEmpty()
+                        "class A {\n    private final ByteArrayOutputStream body = new ByteArrayOutputStream();\n    byte[] f() {\n        ByteArrayOutputStream bytes = new ByteArrayOutputStream();\n        if (bytes.size() == 0 || body.size() > 0) {\n            throw new IllegalStateException();\n        }\n        return bytes.toByteArray();\n    }\n}\n",
+                        "class A {\n    boolean f(Object o) {\n        return ((CharSequence) o).length() == 0;\n    }\n    <T extends CharSequence> T g(T chars) {\n        if (chars.length() == 0) {\n            throw new IllegalArgumentException();\n        }\n        return chars;\n    }\n}\n"],
                     mode="ai-confirm", ai="Does the receiver type have an isEmpty() method (Collection, String, Map...)?")}, keys=["S1155"])
 
 PURE = "^(trim|strip|stripLeading|stripTrailing|toUpperCase|toLowerCase|substring|concat|replace|replaceAll|isBlank|isEmpty|equalsIgnoreCase|startsWith|endsWith|matches|repeat)$"
@@ -1125,15 +1189,18 @@ multi("IGNORED-RESULT", "Result of a side-effect-free call is discarded",
       "This call returns a new value and changes nothing; discarding the result means the statement has no effect: assign or use it.",
       {
           "java": dict(doc=("https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html", "Strings are constant; their values cannot be changed after they are created", "Java SE 21 API: String"),
-                       query=f"(expression_statement (method_invocation object: (_) name: (identifier) @m (#match? @m \"{PURE}\"))) @match",
-                       filters=["file.lacks_re:\\bStringBuilder\\b|\\bStringBuffer\\b"],
+                       query=f"(expression_statement (method_invocation object: (_) @recv name: (identifier) @m (#match? @m \"{PURE}\"))) @match",
+                       filters=["file.lacks_re:\\bStringBuilder\\b|\\bStringBuffer\\b", "type.is:recv:String"],
+                       fp=["class A {\n    void f(List<String> xs) {\n        assertThat(xs).isEmpty();\n    }\n}\n", "class A {\n    void f(ArrayNode array) {\n        array.replace(100, null);\n    }\n}\n"],
                        bad="class A {\n    void f(String s) {\n        s.trim();\n        use(s);\n    }\n}\n", good="class A {\n    void f(String s) {\n        s = s.trim();\n        use(s);\n    }\n}\n"),
           "javascript": dict(doc=(MDN + "Global_Objects/String/trim", "returns a new string", "MDN: String.prototype.trim"),
                              query="(expression_statement (call_expression function: (member_expression property: (property_identifier) @m (#match? @m \"^(trim|trimStart|trimEnd|toUpperCase|toLowerCase|padStart|padEnd|concat|toSorted|toReversed|toSpliced)$\")))) @match",
                              bad="function f(s) {\n  s.trim();\n  use(s);\n}\n", good="function f(s) {\n  const t = s.trim();\n  use(t);\n}\n"),
           "python": dict(doc=("https://docs.python.org/3/library/stdtypes.html", "Return a copy of the string with the leading and trailing characters removed", "Python docs: str.strip"),
-                         query="(expression_statement [(call function: (attribute attribute: (identifier) @m)) (call function: (identifier) @m)] (#match? @m \"^(strip|lstrip|rstrip|upper|lower|casefold|title|capitalize|swapcase|removeprefix|removesuffix|zfill|sorted)$\")) @match",
-                         bad="def f(s):\n    s.strip()\n    use(s)\n", good="def f(s):\n    s = s.strip()\n    use(s)\n"),
+                         query="(expression_statement [(call function: (attribute object: (_) @recv attribute: (identifier) @m)) (call function: (identifier) @m)] (#match? @m \"^(strip|lstrip|rstrip|upper|lower|casefold|title|capitalize|swapcase|removeprefix|removesuffix|zfill|sorted)$\")) @match",
+                         filters=[r"type.is:recv:str|bytes"],
+                         bad="def f(s: str):\n    s.strip()\n    use(s)\n", good="def f(s: str):\n    s = s.strip()\n    use(s)\n",
+                         fp=["from rich.text import Text\n\ndef f():\n    t = Text(\"x \")\n    t.rstrip()\n    return t\n"]),
       }, keys=["S2201"], cat="correctness", kind="anti-pattern", sev="major")
 
 multi("PARAMETER-REASSIGNED", "Parameter is overwritten before it is read",
@@ -1186,7 +1253,8 @@ multi("NEGATED-EQUALITY", "Negated equality check",
 
 multi("REDUNDANT-PARENTHESES", "Doubled parentheses",
       "The extra pair of parentheses adds nothing: remove it.",
-      {l: dict(doc=d, query="(parenthesized_expression . (parenthesized_expression) .) @match", bad=b, good=g)
+      {l: dict(doc=d, query="(parenthesized_expression . (parenthesized_expression) .) @match", bad=b, good=g,
+               filters=["parentkind.lacks_re:parenthesized_expression:."])  # one hit for ((((x)))), on the outermost pair
        for l, d, b, g in [
            ("java", cs("coding/unnecessaryparentheses", "Checks if unnecessary parentheses are used", "UnnecessaryParentheses"),
             "class A {\n    int f(int a) {\n        return ((a + 1)) * 2;\n    }\n}\n", "class A {\n    int f(int a) {\n        return (a + 1) * 2;\n    }\n}\n"),
@@ -1214,16 +1282,19 @@ multi("CONSTANT-CONDITION", "if condition is a boolean literal",
                        bad="class A {\n    void f() {\n        if (false) {\n            debug();\n        }\n    }\n}\n", good="class A {\n    void f() {\n        if (DEBUG) {\n            debug();\n        }\n    }\n}\n"),
           "python": dict(doc=(PYCOMPOUND, "The if statement is used for conditional execution", "Python reference: The if statement"), keys=("S5797",),
                          query="(if_statement condition: [(true) (false) (none) (integer) (string) (list) (dictionary) (tuple)]) @match",
+                         # `if 0: yield` / `if False: yield` is the idiom that makes a function a generator
+                         filters=[r"node.lacks_re:^if\s+(0|False)\s*:\s*yield\s*$"],
+                         fp=["def worker():\n    if 0:\n        yield\n"],
                          bad="def f():\n    if False:\n        debug()\n", good="def f(enabled):\n    if enabled:\n        debug()\n"),
       }, keys=["S1145"])
 
 OVERWRITE = {
-    "java": ("(block (expression_statement (method_invocation object: (_) @o name: (identifier) @n arguments: (argument_list . (_) @k))) @match . (expression_statement (method_invocation object: (_) @o2 name: (identifier) @n2 arguments: (argument_list . (_) @k2))) (#eq? @n \"put\") (#eq? @n2 \"put\") (#eq? @o @o2) (#eq? @k @k2) (#match? @k \"^(\\\"[^\\\"]*\\\"|[0-9]+)$\"))",
+    "java": ("(block (expression_statement (method_invocation object: [(identifier) (field_access)] @o name: (identifier) @n arguments: (argument_list . (_) @k))) @match . (expression_statement (method_invocation object: (_) @o2 name: (identifier) @n2 arguments: (argument_list . (_) @k2))) (#eq? @n \"put\") (#eq? @n2 \"put\") (#eq? @o @o2) (#eq? @k @k2) (#match? @k \"^(\\\"[^\\\"]*\\\"|[0-9]+)$\"))",
              "class A {\n    void f(Map<String, Integer> m) {\n        m.put(\"a\", 1);\n        m.put(\"a\", 2);\n    }\n}\n", "class A {\n    void f(Map<String, Integer> m) {\n        m.put(\"a\", 1);\n        m.put(\"b\", 2);\n    }\n}\n"),
     "javascript": ("(statement_block (expression_statement (assignment_expression left: (subscript_expression) @l)) @match . (expression_statement (assignment_expression left: (subscript_expression) @l2 right: (_) @r)) (#eq? @l @l2) (#match? @l \"\\\\[\\\\s*(['\\\"][^'\\\"]*['\\\"]|[0-9]+)\\\\s*\\\\]$\"))",
                    "function f(a) {\n  a[0] = 1;\n  a[0] = 2;\n}\n", "function f(a) {\n  a[0] = 1;\n  a[1] = 2;\n}\n"),
-    "python": ("(block (expression_statement (assignment left: (subscript) @l)) @match . (expression_statement (assignment left: (subscript) @l2 right: (_) @r)) (#eq? @l @l2) (#match? @l \"\\\\[\\\\s*(['\\\"][^'\\\"]*['\\\"]|[0-9]+)\\\\s*\\\\]$\"))",
-               "def f(d):\n    d[\"a\"] = 1\n    d[\"a\"] = 2\n", "def f(d):\n    d[\"a\"] = 1\n    d[\"b\"] = 2\n"),
+    "python": ("(block (expression_statement (assignment left: (subscript value: (_) @obj) @l)) @match . (expression_statement (assignment left: (subscript) @l2 right: (_) @r)) (#eq? @l @l2) (#match? @l \"\\\\[\\\\s*(['\\\"][^'\\\"]*['\\\"]|[0-9]+)\\\\s*\\\\]$\"))",
+               "def f(d: dict):\n    d[\"a\"] = 1\n    d[\"a\"] = 2\n", "def f(d: dict):\n    d[\"a\"] = 1\n    d[\"b\"] = 2\n"),
     "php": ("(compound_statement (expression_statement (assignment_expression left: (subscript_expression) @l)) @match . (expression_statement (assignment_expression left: (subscript_expression) @l2 right: (_) @r)) (#eq? @l @l2) (#match? @l \"\\\\[\\\\s*(['\\\"][^'\\\"]*['\\\"]|[0-9]+)\\\\s*\\\\]$\"))",
             "<?php\nfunction f($a) {\n    $a['k'] = 1;\n    $a['k'] = 2;\n}\n", "<?php\nfunction f($a) {\n    $a['k'] = 1;\n    $a['j'] = 2;\n}\n"),
 }
@@ -1233,7 +1304,11 @@ multi("OVERWRITTEN-ELEMENT", "Collection element written twice in a row",
                     "javascript": (MDN + "Operators/Property_accessors", "Property accessors provide access to an object's properties", "MDN: Property accessors"),
                     "python": ("https://docs.python.org/3/library/stdtypes.html", "Set d[key] to value", "Python docs: dict"),
                     "php": (PHPM + "language.types.array.php", "An array in PHP is actually an ordered map", "PHP manual: Arrays")}[l],
-               query=v[0], bad=v[1], good=v[2], filters=None if l == "java" else ["cap.lacks_re:r:{cap:l}"])
+               query=v[0], bad=v[1], good=v[2],
+               filters={"java": [r"type.is:o:\w*Map|Properties|Hashtable"],
+                        "python": ["cap.lacks_re:r:{cap:l}", r"type.is:obj:dict|list|OrderedDict|defaultdict|Counter"]}.get(l, ["cap.lacks_re:r:{cap:l}"]),
+               fp={"java": ["class A {\n    void f(Node parent) {\n        parent.put(\"a\", 1);\n        parent.put(\"a\", 2);\n    }\n}\n"],
+                   "python": ["def f(t):\n    t[\"a\"] = 1\n    t[\"a\"] = 2\n"]}.get(l))
        for l, v in OVERWRITE.items()}, keys=["S4143"], cat="correctness", kind="anti-pattern", sev="major")
 
 
@@ -1335,11 +1410,11 @@ def J(id, title, doc, query, bad, good, msg, key, **kw):
 J("FINALIZE-CALLED", "finalize() called explicitly", (JAPI + "lang/Object.html", "Called by the garbage collector on an object when garbage collection determines that there are no more references to the object", "Java SE 21 API: Object.finalize"),
   "(method_invocation name: (identifier) @m arguments: (argument_list) @a (#eq? @m \"finalize\") (#eq? @a \"()\")) @match",
   jm(["res.finalize();"]), jm(["res.close();"]), "finalize() is for the garbage collector; calling it yourself runs cleanup twice or too early. Use close()/a Cleaner.", "S1111",
-  filters=["ancestor.lacks_re:method_declaration:^[^{]*\\bfinalize\\s*\\("], fp=[cls("    protected void finalize() throws Throwable {\n        super.finalize();\n    }\n")])
+  filters=["ancestor.lacks_re:method_declaration:^[^{]*\\bfinalize\\s*\\("], fp=[cls("    protected void finalize() throws Throwable {\n        super.finalize();\n    }\n")], eq=["https://openjdk.org/jeps/421"])
 J("EQUALS-WRONG-PARAMETER", "equals() overload does not take Object", (JAPI + "lang/Object.html", "Indicates whether some other object is \"equal to\" this one", "Java SE 21 API: Object.equals"),
   "(method_declaration type: (boolean_type) name: (identifier) @n parameters: (formal_parameters . (formal_parameter type: (_) @t) .) (#eq? @n \"equals\") (#not-eq? @t \"Object\")) @match",
   cls("    public boolean equals(A other) {\n        return other != null;\n    }\n"), cls("    @Override\n    public boolean equals(Object other) {\n        return other instanceof A;\n    }\n"),
-  "equals(A) overloads instead of overriding equals(Object), so collections never call it: take Object and test the type.", "S1201", filters=["cap.lacks_re:t:^java\\.lang\\.Object$"])
+  "equals(A) overloads instead of overriding equals(Object), so collections never call it: take Object and test the type.", "S1201", filters=[r"ancestor.lacks_re:class_body:\bequals\s*\(\s*(final\s+)?(java\.lang\.)?Object\s+\w+\s*\)", "cap.lacks_re:t:^java\\.lang\\.Object$"])
 J("MISSPELLED-OBJECT-METHOD", "Method name mimics an Object method with different case", (JAPI + "lang/Object.html", "Returns a string representation of the object", "Java SE 21 API: Object"),
   "(method_declaration name: (identifier) @n (#match? @n \"^(tostring|toSTring|hashcode|hashCODE|equal|Equals|ToString|HashCode)$\")) @match",
   cls("    public String tostring() {\n        return \"A\";\n    }\n"), cls("    @Override\n    public String toString() {\n        return \"A\";\n    }\n"),
@@ -1361,13 +1436,16 @@ J("USELESS-POSTFIX-ASSIGN", "Variable assigned its own post-increment", (JLS15, 
   "(assignment_expression left: (identifier) @l operator: \"=\" right: (update_expression (identifier) @r) @u (#eq? @l @r) (#match? @u \"(\\\\+\\\\+|--)$\")) @match",
   jm(["count = count++;"], "void f(int count)"), jm(["count++;"], "void f(int count)"),
   "x = x++ stores the old value back, so the increment is lost: write x++ (or x = x + 1).", "S2123")
-J("RUN-FINALIZERS-ON-EXIT", "runFinalizersOnExit called", (JAPI + "lang/Runtime.html", "Runtime", "Java SE 21 API: Runtime"),
+J("RUN-FINALIZERS-ON-EXIT", "runFinalizersOnExit called", ("https://docs.oracle.com/en/java/javase/11/migrate/index.html", "java.lang.Runtime.runFinalizersOnExit(boolean)", "JDK 11 Migration Guide: APIs removed"),
   "(method_invocation name: (identifier) @m (#eq? @m \"runFinalizersOnExit\")) @match", jm(["System.runFinalizersOnExit(true);"]), jm(["Runtime.getRuntime().addShutdownHook(hook);"]),
-  "This method is inherently unsafe and was removed from the JDK: use a shutdown hook.", "S2151")
+  "This method is inherently unsafe and was removed from the JDK: use a shutdown hook.", "S2151",
+  # Removed in JDK 11 (JDK-8198249): on 11+ the call no longer compiles, so the rule only matters for older targets.
+  applies={"java": "<11"}, eq=["https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#runFinalizersOnExit-boolean-"])
 J("TOSTRING-RETURNS-NULL", "toString() or clone() returns null", (JAPI + "lang/Object.html", "Returns a string representation of the object", "Java SE 21 API: Object.toString"),
   "(method_declaration name: (identifier) @n body: (block (return_statement (null_literal)) @match) (#match? @n \"^(toString|clone)$\"))",
   cls("    @Override\n    public String toString() {\n        return null;\n    }\n"), cls("    @Override\n    public String toString() {\n        return \"A\";\n    }\n"),
-  "Callers (string concatenation, logging, copies) assume a non-null result: return an empty string or a real copy.", "S2225")
+  "Callers (string concatenation, logging, copies) assume a non-null result: return an empty string or a real copy.", "S2225",
+  filters=[r"ancestor.lacks_re:method_declaration:^[^{]*\bstatic\b", r"ancestor.has_re:method_declaration:^[^{]*\(\s*\)"])
 J("FOR-UPDATE-WRONG-DIRECTION", "for-loop counter moves away from its bound", (JLS14, "The basic for statement executes some initialization code", "JLS 14.14.1 The basic for statement"),
   "(for_statement condition: (binary_expression left: (identifier) @c) update: (update_expression (identifier) @u) (#eq? @c @u)) @match",
   jm(["for (int i = 0; i < n; i--) {", "    use(i);", "}"], "void f(int n)"), jm(["for (int i = 0; i < n; i++) {", "    use(i);", "}"], "void f(int n)"),
@@ -1417,8 +1495,9 @@ J("SPLIT-ON-DOT", "Regex \".\" used where a literal dot was meant", (JAPI + "lan
   "\".\" is a regex matching any character, so split returns an empty array: escape it (\"\\\\.\") or use Pattern.quote.", "S9353",
   fp=[jm(["String k = ESCAPED_DOT.matcher(key).replaceAll(\".\");"], "void f(String key)")])
 J("COLLECTION-SELF-ARGUMENT", "Collection passed to its own method", (JAPI + "util/Collection.html", "The behavior of this operation is undefined if the specified collection is modified while the operation is in progress", "Java SE 21 API: Collection.addAll"),
-  "(method_invocation object: (identifier) @o name: (identifier) @m arguments: (argument_list . (identifier) @a .) (#eq? @o @a) (#match? @m \"^(addAll|removeAll|retainAll|containsAll|equals)$\")) @match",
-  jm(["items.addAll(items);"]), jm(["items.addAll(extra);"]), "Passing a collection to its own bulk method is a no-op, undefined, or always true: pass the other collection.", "S2114")
+  "(method_invocation object: (identifier) @o name: (identifier) @m arguments: (argument_list . (identifier) @a .) (#eq? @o @a) (#match? @m \"^(addAll|removeAll|retainAll|containsAll)$\")) @match",
+  jm(["items.addAll(items);"]), jm(["items.addAll(extra);"]), "Passing a collection to its own bulk method is a no-op, undefined, or always true: pass the other collection.", "S2114",
+  fp=[jm(["assertTrue(listener.equals(listener));"])])
 J("BIT-OP-IDENTITY", "Bit operation with no effect or a constant result", (JLS15, "Integer Bitwise Operators", "JLS 15.22.1 Integer Bitwise Operators"),
   "(binary_expression operator: [\"|\" \"^\" \"&\"] right: [(decimal_integer_literal) (unary_expression)] @n) @match",
   jm(["int flags = mask & 0;"], "void f(int mask)"), jm(["int flags = mask & 0x0F;"], "void f(int mask)"), "x & 0 is always 0 and x | 0, x ^ 0 are just x: use the intended mask.", "S9344",
@@ -1464,12 +1543,18 @@ J("TEST-WITHOUT-ASSERTION", "Test method without an assertion", ("https://docs.j
   "import org.junit.jupiter.api.Test;\n\nclass OrderTest {\n    @Test\n    void total() {\n        new Order().total();\n    }\n}\n",
   "import org.junit.jupiter.api.Test;\n\nclass OrderTest {\n    @Test\n    void total() {\n        assertEquals(0, new Order().total());\n    }\n}\n",
   "The test never checks anything, so it passes whatever the code does: add assertions (or assertDoesNotThrow if that is the point).", "S2699",
-  filters=["cap.lacks_re:b:(?i)\\b(assert|verify|expect|fail|then|should|check|validate)\\w*\\s*\\(|assertThat|\\.andExpect\\("], cat="maintainability",
+  # A test that delegates to a local helper which asserts (testValidated(...), _testPOJO(...)) asserts.
+  filters=["cap.lacks_re:b:(?i)\\b(assert|verify|expect|fail|then|should|check|validate)\\w*\\s*\\(|assertThat|\\.andExpect\\(",
+           "cap.lacks_helper_re:b:(?i)\\b(assert|verify|expect|fail|then|should|check|validate)\\w*\\s*\\(|assertThat|\\.andExpect\\("], fp=["import org.junit.jupiter.api.Test;\n\nclass OrderTest {\n    @Test\n    void total() {\n        checkTotal(new Order());\n    }\n\n    private void checkTotal(Order o) {\n        assertEquals(0, o.total());\n    }\n}\n", "import org.junit.jupiter.api.Test;\n\nclass OrderTest {\n    @Test\n    void total() {\n        _testTotal(new Order());\n    }\n\n    private void _testTotal(Order o) {\n        assertEquals(0, o.total());\n    }\n}\n"], cat="maintainability",
   mode="ai-confirm", ai="Does the test lack any check (no helper method that asserts, no expected-exception setup)?")
 J("ASSERT-SAME-ARGUMENT", "Assertion compares a value with itself", ("https://docs.junit.org/current/user-guide/", "Assertions", "JUnit User Guide: Assertions"),
   "(method_invocation name: (identifier) @m arguments: (argument_list . (_) @x . (_) @y .) (#match? @m \"^assert(Equals|Same|NotEquals|NotSame)$\") (#eq? @x @y)) @match",
-  "class OrderTest {\n    void total() {\n        assertEquals(order.total(), order.total());\n    }\n}\n", "class OrderTest {\n    void total() {\n        assertEquals(42, order.total());\n    }\n}\n",
-  "Comparing a value with itself always passes (or always fails): compare against the expected value.", "S5863", cat="maintainability")
+  "class OrderTest {\n    void total() {\n        assertEquals(total, total);\n    }\n}\n", "class OrderTest {\n    void total() {\n        assertEquals(42, order.total());\n    }\n}\n",
+  "Comparing a value with itself always passes (or always fails): compare against the expected value.", "S5863", cat="maintainability",
+  # Two evaluations (new X(), f()) are distinct values; equals/hashCode/caching tests assert reflexivity on purpose.
+  filters=[r"cap.lacks_re:x:\(|\bnew\b", r"ancestor.lacks_re:method_declaration:(?is)^[^{]*\b\w*(equal|hash|reflex|identit|same|cach)\w*\s*\("],
+  fp=["class RangeTest {\n    void testEquals() {\n        assertEquals(range1, range1);\n    }\n}\n",
+      "class NodeTest {\n    void pojo() {\n        assertEquals(new POJONode(null), new POJONode(null));\n    }\n}\n"])
 J("ASSERTJ-INCOMPLETE", "assertThat() without a check", ("https://assertj.github.io/doc/", "AssertJ", "AssertJ documentation"),
   "(expression_statement (method_invocation name: (identifier) @m arguments: (argument_list . (_) .) (#eq? @m \"assertThat\"))) @match",
   "import static org.assertj.core.api.Assertions.assertThat;\n\nclass OrderTest {\n    void total() {\n        assertThat(order.total());\n    }\n}\n", "import static org.assertj.core.api.Assertions.assertThat;\n\nclass OrderTest {\n    void total() {\n        assertThat(order.total()).isEqualTo(42);\n    }\n}\n",
@@ -1554,7 +1639,8 @@ Py("METHOD-WITHOUT-SELF", "Method declared without any parameter", (PYD + "tutor
    "class A:\n    def size():\n        return 1\n",
    "class A:\n    def size(self):\n        return 1\n",
    "An undecorated method always receives the instance, so calling one with no parameters raises TypeError: add self or mark it @staticmethod.", "S5719",
-   filters=[r"cap.has_re:p:^\(\s*\)$"])
+   fp=["from zope.interface import Interface\n\nclass ISpiderLoader(Interface):\n    def list():\n        pass\n"], eq=["pylint:no-method-argument"],
+   filters=[r"cap.has_re:p:^\(\s*\)$", r"ancestor.lacks_re:class_definition:^class\s+\w+\s*\([^)]*\bInterface\b"])
 Py("IDENTITY-WITH-NEW-OBJECT", "Identity test against a freshly built object", (PYD + "reference/expressions.html", "Literals and object identity", "Python reference: Literals and object identity"),
    "(comparison_operator) @match",
    "def empty(x):\n    return x is []\n",
@@ -1640,7 +1726,7 @@ Py("STOPITERATION-IN-GENERATOR", "StopIteration raised inside a generator", (PYD
    "def items(xs):\n    for x in xs:\n        if x is None:\n            raise StopIteration\n        yield x\n",
    "def items(xs):\n    for x in xs:\n        if x is None:\n            return\n        yield x\n",
    "Inside a generator a raised StopIteration becomes RuntimeError: use return to finish.", "S8493", eq=["ruff:PLR1708"],
-   filters=[r"func.has_re:\byield\b"])
+   filters=[r"func.lacks_re:^\s*(async\s+)?def\s+__next__\b", r"func.has_re:\byield\b"])
 Py("MEMBERSHIP-IN-EMPTY", "Membership test against an empty literal", (PYD + "reference/expressions.html", "Membership test operations", "Python reference: Membership test operations"),
    "(comparison_operator) @match",
    "def known(x):\n    return x in []\n",
@@ -1648,11 +1734,14 @@ Py("MEMBERSHIP-IN-EMPTY", "Membership test against an empty literal", (PYD + "re
    "Nothing is in an empty collection, so this is always False (or True for 'not in').", "S8503",
    filters=[r"node.has_re:\bin\s+(\[\s*\]|\(\s*\)|\{\s*\}|\x22\x22|'')\s*$"])
 Py("PROPERTY-WITHOUT-RETURN", "Property getter without return", (PYD + "library/functions.html", "Return a property attribute", "Python docs: property"),
-   "(decorated_definition (decorator (identifier) @d) definition: (function_definition) @match (#eq? @d \"property\"))",
+   "(decorated_definition (decorator (identifier) @d) definition: (function_definition body: (block) @b) @match (#eq? @d \"property\"))",
    "class A:\n    @property\n    def size(self):\n        len(self.items)\n",
    "class A:\n    @property\n    def size(self):\n        return len(self.items)\n",
    "The getter never returns, so the property always reads as None.", "S8504",
-   filters=[r"node.lacks_re:\b(return|raise|yield)\b", r"node.lacks_re:(?m)^\s*(\.\.\.|pass)\s*$"])
+   filters=[r"node.lacks_re:\b(return|raise|yield)\b", r"node.lacks_re:(?m)^\s*(\.\.\.|pass)\s*$",
+            r"cap.lacks_re:b:^\s*(\"\"\"[\s\S]*?\"\"\"|'\'\'[\s\S]*?'\'\'|\"[^\"\n]*\")?\s*(\.\.\.|pass)?\s*(#.*)?$"],
+   fp=["class P(Protocol):\n    @property\n    def name(self) -> str: ...\n",
+       "class P(Protocol):\n    @property\n    def name(self) -> str:\n        \"\"\"The name.\"\"\"\n"])
 Py("FROMKEYS-MUTABLE-VALUE", "dict.fromkeys with a mutable shared value", (PYD + "library/stdtypes.html", "All of the values refer to just a single instance", "Python docs: dict.fromkeys"),
    "(call function: (attribute attribute: (identifier) @a) arguments: (argument_list . (_) . [(list) (dictionary) (set) (call function: (identifier) @c)] @v) (#eq? @a \"fromkeys\")) @match",
    "buckets = dict.fromkeys(names, [])\n",
@@ -1735,11 +1824,14 @@ Py("PYTEST-PARAMETRIZE-EMPTY", "pytest parametrize with an empty parameter list"
    "An empty parameter set means the test is skipped (by default) and never runs.", "S8998", cat="testing",
    filters=[r"cap.has_re:v:^(\[\s*\]|\(\s*\))$"])
 Py("PYTEST-FIXTURE-MULTIPLE-YIELDS", "pytest fixture yields more than once", ("https://docs.pytest.org/en/stable/how-to/fixtures.html", "yield", "pytest docs: yield fixtures"),
-   "(decorated_definition (decorator) @d definition: (function_definition) @match)",
+   "(decorated_definition (decorator) @d definition: (function_definition body: [(block (expression_statement (yield)) (expression_statement (yield))) (block (with_statement body: (block (expression_statement (yield)) (expression_statement (yield)))))]) @match)",
    "@pytest.fixture\ndef db():\n    yield connect()\n    yield connect()\n",
    "@pytest.fixture\ndef db():\n    conn = connect()\n    yield conn\n    conn.close()\n",
    "pytest drives a yield fixture exactly once; a second yield makes teardown fail.", "S8994", cat="testing",
-   filters=[r"cap.has_re:d:fixture", r"node.has_re:\byield\b[\s\S]*\byield\b"])
+   filters=[r"cap.has_re:d:fixture"],
+   fp=["@pytest.fixture\ndef m(request):\n    if request.param:\n        yield 1\n    else:\n        yield 2\n",
+       "@pytest.fixture\ndef f():\n    def inner():\n        yield 1\n        yield 2\n    return inner\n",
+       "@pytest.fixture\ndef files(p):\n    p.write_text(\"\"\"\nyield\nyield\n\"\"\")\n"])
 Py("FLASK-ROUTE-NOT-OUTERMOST", "Route decorator is not the outermost decorator", ("https://flask.palletsprojects.com/en/stable/patterns/viewdecorators/", "outermost", "Flask docs: View Decorators"),
    "(decorated_definition (decorator) (decorator (call function: (attribute attribute: (identifier) @a))) @match (#eq? @a \"route\"))",
    "@login_required\n@app.route(\"/secret\")\ndef secret():\n    return \"s\"\n",
@@ -1919,7 +2011,10 @@ G("BACKGROUND-CONTEXT-WITH-CTX", "New background context where a ctx parameter e
   "(call_expression function: (selector_expression operand: (identifier) @p field: (field_identifier) @f) (#eq? @p \"context\") (#match? @f \"^(Background|TODO)$\")) @match",
   gof(["return load(context.Background(), db)"]), gof(["return load(ctx, db)"]),
   "The function already receives a ctx; starting from Background drops its cancellation and deadline. Pass ctx (or context.WithoutCancel(ctx) for deliberately detached work).",
-  "godre:S8239", mode="ai-confirm", sev="minor", filters=[r"func.has_re:\bctx\s+context\.Context\b"])
+  "godre:S8239", mode="ai-confirm", sev="minor",
+  # the ctx must be a parameter of the innermost enclosing function, not of some closure in its body
+  filters=[r"ancestor.has_re:function_declaration|method_declaration|func_literal:^[^{]*\b\w*[cC]tx\s+context\.Context\b"],
+  fp=[gof(["ctx := context.Background()", "h := func(ctx context.Context) error { return nil }", "return h(ctx)"], sig="func f(db *sql.DB) error")])
 G("TX-WITHOUT-ROLLBACK", "Transaction committed without a rollback path", ("https://go.dev/doc/database/execute-transactions", "Defer a rollback", "Go docs: Executing transactions"),
   "(short_var_declaration left: (expression_list . (identifier) @v) right: (expression_list (call_expression function: (selector_expression field: (field_identifier) @f))) (#match? @f \"^(Begin|BeginTx)$\")) @match",
   gof(["tx, err := db.BeginTx(ctx, nil)", "if err != nil {", "\treturn err", "}", "if _, err := tx.ExecContext(ctx, q); err != nil {", "\treturn err", "}", "return tx.Commit()"]),
@@ -1961,10 +2056,11 @@ K("USELESS-POSTFIX-ASSIGN", "Variable assigned its own post-increment", (KTDOC +
   "(assignment left: (identifier) @l right: (unary_expression argument: (identifier) @r) @u (#eq? @l @r)) @match",
   kf(["var i = n", "i = i++", "use(i)"], "fun f(n: Int)"), kf(["var i = n", "i++", "use(i)"], "fun f(n: Int)"),
   "x = x++ stores the old value back, so the increment is lost.", "S2123", filters=[r"cap.has_re:u:(\+\+|--)$"])
-K("RUN-FINALIZERS-ON-EXIT", "runFinalizersOnExit called", (JAPI + "lang/Runtime.html", "Runtime", "Java SE 21 API: Runtime"),
+K("RUN-FINALIZERS-ON-EXIT", "runFinalizersOnExit called", ("https://docs.oracle.com/en/java/javase/11/migrate/index.html", "java.lang.Runtime.runFinalizersOnExit(boolean)", "JDK 11 Migration Guide: APIs removed"),
   "(call_expression (navigation_expression (_) (identifier) @m) (#eq? @m \"runFinalizersOnExit\")) @match",
   kf(["System.runFinalizersOnExit(true)"]), kf(["Runtime.getRuntime().addShutdownHook(Thread { flush() })"]),
-  "runFinalizersOnExit is inherently unsafe and was removed from the JDK: use a shutdown hook.", "S2151")
+  "runFinalizersOnExit is inherently unsafe and was removed from the JDK: use a shutdown hook.", "S2151",
+  eq=["https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#runFinalizersOnExit-boolean-"])
 K("JDBC-ZERO-INDEX", "JDBC parameter index 0", ("https://docs.oracle.com/en/java/javase/21/docs/api/java.sql/java/sql/PreparedStatement.html", "the first parameter is 1", "Java SE 21 API: PreparedStatement"),
   "(call_expression (navigation_expression (identifier) @r (identifier) @m) (value_arguments . (value_argument (number_literal) @n) . (value_argument)) (#match? @m \"^set(String|Int|Long|Short|Byte|Boolean|Double|Float|BigDecimal|Object|Date|Time|Timestamp|Bytes|Null)$\") (#eq? @n \"0\")) @match",
   kf(["ps.setString(0, name)"], "fun f(ps: PreparedStatement, name: String)"), kf(["ps.setString(1, name)"], "fun f(ps: PreparedStatement, name: String)"),
@@ -2009,7 +2105,12 @@ def phf(body, sig="function f($a, $xs)"):
 Ph("OBJECT-CREATED-AND-DROPPED", "Object created and immediately discarded", (PHPM + "language.oop5.basic.php", "the new keyword must be used", "PHP manual: new"),
    "(expression_statement (object_creation_expression) @match)",
    phf(["if ($a < 0) {", "    new InvalidArgumentException('negative');", "}"]), phf(["if ($a < 0) {", "    throw new InvalidArgumentException('negative');", "}"]),
-   "The new object is never used; for an exception this means it was meant to be thrown. Throw, assign or remove it.", "S1848")
+   "The new object is never used; for an exception this means it was meant to be thrown. Throw, assign or remove it.", "S1848",
+   # a test that expects the constructor to throw creates the object only for that side effect
+   filters=[r"func.lacks_re:expectException|setExpectedException|@expectedException|assertThrows|->toThrow"],
+   # corpus: tests construct objects for constructor side effects (creates a directory, rejects input in try/catch)
+   files=["!**/tests/**", "!**/Tests/**", "!**/test/**", "!**/*Test.php"],
+   fp=["<?php\nclass ATest extends TestCase {\n    public function testRejects(): void {\n        $this->expectException(\\InvalidArgumentException::class);\n        new Adapter('');\n    }\n}\n"])
 Ph("EXCEPTION-NOT-THROWN", "Exception object created and discarded", (PHPM + "language.oop5.basic.php", "the new keyword must be used", "PHP manual: new"),
    "(expression_statement (object_creation_expression [(name) @c (qualified_name (name) @c)]) @match (#match? @c \"(Exception|Error)$\"))",
    phf(["if ($a < 0) {", "    new RuntimeException('negative');", "}"]), phf(["if ($a < 0) {", "    throw new RuntimeException('negative');", "}"]),
@@ -2072,7 +2173,9 @@ Ph("TEST-WITHOUT-ASSERTION", "PHPUnit test method without assertions", (PHPUNIT 
    "<?php\nclass PriceTest extends TestCase\n{\n    public function testTotal(): void\n    {\n        total();\n    }\n}\n",
    "<?php\nclass PriceTest extends TestCase\n{\n    public function testTotal(): void\n    {\n        $this->assertSame(42, total());\n    }\n}\n",
    "Without an assertion or expectation the test passes whatever the code does.", "S2699", cat="testing", mode="ai-confirm", sev="minor",
-   filters=[r"cap.lacks_re:b:(?i)(assert|expect|verify|markTestSkipped|markTestIncomplete|fail\()"])
+   # assertion helpers ($this->checkSolverResult), mock expectations (shouldBeCalled) and #[DoesNotPerformAssertions] count
+   filters=[r"cap.lacks_re:b:(?i)(assert|expect|verify|markTestSkipped|markTestIncomplete|fail\(|should(Be|Have|Receive)|->(check|ensure)\w*\()",
+            r"node.lacks_re:DoesNotPerformAssertions|@doesNotPerformAssertions"])
 Ph("TEST-CLASS-NAME", "PHPUnit test class not named *Test", (PHPUNIT + "writing-tests-for-phpunit.html", "go into a class", "PHPUnit docs: Writing Tests"),
    "(class_declaration name: (name) @n (base_clause [(name) @b (qualified_name (name) @b)]) (#eq? @b \"TestCase\")) @match",
    "<?php\nclass PriceChecks extends TestCase\n{\n}\n", "<?php\nclass PriceTest extends TestCase\n{\n}\n",
@@ -2088,7 +2191,7 @@ J("FINALIZE-WRONG-SIGNATURE", "finalize declared with a non-standard signature",
   "(method_declaration name: (identifier) @n parameters: (formal_parameters) @p (#eq? @n \"finalize\")) @match",
   cls("    protected void finalize(int code) {\n        close();\n    }\n"), cls("    public void close() {\n        release();\n    }\n"),
   "This is an overload, not an override, so the JVM never calls it as a finalizer; rename it (and prefer Cleaner/try-with-resources over finalization).", "S1175",
-  filters=[r"cap.has_re:p:^\(\s*[^\s)]"], fp=[cls("    @Override\n    protected void finalize() throws Throwable {\n        close();\n        super.finalize();\n    }\n")])
+  filters=[r"cap.has_re:p:^\(\s*[^\s)]"], fp=[cls("    @Override\n    protected void finalize() throws Throwable {\n        close();\n        super.finalize();\n    }\n")], eq=["https://openjdk.org/jeps/421"])
 J("LABEL-IN-SWITCH", "Statement label inside a switch", (JLS14, "has no goto statement", "JLS 14.7 Labeled Statements"),
   "(switch_block (switch_block_statement_group (labeled_statement) @match))",
   jm(["switch (k) {", "    case 1:", "        go();", "    other:", "        stop();", "        break;", "}"], "void f(int k)"),
@@ -2138,7 +2241,7 @@ J("NON-SHORT-CIRCUIT-CONDITION", "& or | between boolean comparisons", (JLS15, "
   "(binary_expression left: (binary_expression operator: [\"==\" \"!=\" \"<\" \">\" \"<=\" \">=\"]) operator: [\"&\" \"|\"] right: (binary_expression operator: [\"==\" \"!=\" \"<\" \">\" \"<=\" \">=\"])) @match",
   jm(["if (s != null & s.length() > 0) {", "    use(s);", "}"], "void f(String s)"), jm(["if (s != null && s.length() > 0) {", "    use(s);", "}"], "void f(String s)"),
   "& and | always evaluate both sides, so the guard on the left does not protect the right (here a NullPointerException): use && or ||.", "S2178")
-J("SERVLET-MUTABLE-FIELD", "Servlet with a mutable instance field", ("https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/http/HttpServlet.html", "multithreaded", "Jakarta Servlet 6.0 API: HttpServlet"),
+J("SERVLET-MUTABLE-FIELD", "Servlet with a mutable instance field", ("https://jakarta.ee/specifications/servlet/6.1/apidocs/jakarta.servlet/jakarta/servlet/http/HttpServlet.html", "Servlets typically run on multithreaded servers", "Jakarta Servlet 6.1 API: HttpServlet"),
   "(class_declaration superclass: (superclass (type_identifier) @s) body: (class_body (field_declaration) @f) (#match? @s \"^(HttpServlet|GenericServlet)$\")) @match",
   "public class Hello extends HttpServlet {\n    private String lastUser;\n}\n", "public class Hello extends HttpServlet {\n    private static final String GREETING = \"hi\";\n}\n",
   "One servlet instance serves all requests concurrently, so this field is shared and racy: keep request state in locals.", "S2226",
@@ -2201,7 +2304,7 @@ J("SPRING-CACHE-ON-INTERFACE", "@Cache* annotation on an interface", ("https://d
   "(interface_declaration body: (interface_body) @b) @match",
   "public interface BookRepo {\n    @Cacheable(\"books\")\n    Book find(String isbn);\n}\n", "public class BookService {\n    @Cacheable(\"books\")\n    public Book find(String isbn) {\n        return repo.load(isbn);\n    }\n}\n",
   "With class-based (and AspectJ) proxies, annotations on interfaces are not seen, so caching silently stops: annotate the implementation.", "S7180",
-  cat="maintainability", kind="best-practice", sev="minor", filters=[r"node.has_re:@Cach(eable|ePut|eEvict|ing|eConfig)\b"])
+  cat="maintainability", kind="best-practice", sev="minor", filters=[r"node.lacks_re:\bextends\b[^{]*Repository\b", r"node.has_re:@Cach(eable|ePut|eEvict|ing|eConfig)\b"])
 J("SPRING-DATA-PAGE-WITHOUT-PAGEABLE", "Repository method returns Page/Slice without a Pageable", ("https://docs.spring.io/spring-data/commons/reference/repositories/query-methods-details.html", "Pageable", "Spring Data docs: Query methods"),
   "(interface_declaration body: (interface_body (method_declaration type: (generic_type (type_identifier) @t) parameters: (formal_parameters) @p) @match) (#match? @t \"^(Page|Slice)$\"))",
   "interface UserRepo extends Repository<User, Long> {\n    Page<User> findByActive(boolean active);\n}\n", "interface UserRepo extends Repository<User, Long> {\n    Page<User> findByActive(boolean active, Pageable pageable);\n}\n",
@@ -2356,7 +2459,9 @@ Py("METHOD-FIRST-PARAM-NOT-SELF", "Instance method whose first parameter is not 
    "class A:\n    def size(this):\n        return this.n\n", "class A:\n    def size(self):\n        return self.n\n",
    "Readers and tools rely on self naming the instance; a different first name hides that this is an instance method (or a forgotten @staticmethod).", "S5720",
    cat="maintainability", kind="best-practice", sev="minor",
-   filters=[r"cap.lacks_re:p:^(self|cls|_\w*|mcs|mcls|metacls|klass)$", r"cap.lacks_re:f:^__(new|init_subclass|class_getitem|prepare)__$"])
+   # zope.interface declarations omit self by convention; graphene resolvers take root (suppressed via N805).
+   filters=[r"cap.lacks_re:p:^(self|cls|_\w*|mcs|mcls|metacls|klass|self_\w*)$", r"cap.lacks_re:f:^__(new|init_subclass|class_getitem|prepare)__$", r"ancestor.lacks_re:class_definition:^class\s+\w+\s*\([^)]*\bInterface\b"],
+   fp=["from zope.interface import Interface\n\nclass ISpiderLoader(Interface):\n    def load(spider_name):\n        pass\n"], eq=["ruff:N805", "pylint:no-self-argument"])
 Py("SPECIAL-METHOD-ARITY", "Special method with the wrong number of parameters", (PYD + "reference/datamodel.html", "the first argument", "Python reference: Data model"),
    "(class_definition body: (block (function_definition) @match))",
    "class V:\n    def __eq__(self):\n        return True\n", "class V:\n    def __eq__(self, other):\n        return self.x == other.x\n",
@@ -2375,7 +2480,9 @@ Py("SYSTEMEXIT-SWALLOWED", "SystemExit or BaseException caught without re-raisin
    "(except_clause value: [(identifier) @e (as_pattern (identifier) @e)]) @match",
    "def main():\n    try:\n        run()\n    except SystemExit:\n        log(\"exit\")\n", "def main():\n    try:\n        run()\n    except SystemExit:\n        log(\"exit\")\n        raise\n",
    "Swallowing SystemExit (or BaseException) stops sys.exit() and Ctrl-C from ending the program: re-raise it.", "S5754",
-   filters=[r"cap.has_re:e:^(SystemExit|BaseException)$", r"node.lacks_re:\braise\b|sys\.exit|os\._exit"])
+   filters=[r"cap.has_re:e:^(SystemExit|BaseException)$", r"node.lacks_re:\b(re)?raise\b|sys\.exit|os\._exit|\.code\b|exc_info|ExceptionInfo\("],
+   fp=["try:\n    run()\nexcept BaseException:\n    reraise(*capture())\n",
+       "try:\n    main()\nexcept SystemExit as e:\n    code = e.code\n"])
 Py("IMPLICIT-CONCAT-IN-COLLECTION", "Adjacent string literals inside a collection on one line", (PYD + "reference/lexical_analysis.html", "String literal concatenation", "Python reference: String literal concatenation"),
    "[(list (concatenated_string) @match) (tuple (concatenated_string) @match) (set (concatenated_string) @match) (argument_list (concatenated_string) @match)]",
    "COLORS = [\"red\" \"green\", \"blue\"]\n", "COLORS = [\"red\", \"green\", \"blue\"]\n",
@@ -2419,7 +2526,8 @@ J("TOSTRING-ON-STRING-LITERAL", "toString() called on a string literal", (JSTR, 
 J("NEW-FOR-GETCLASS", "Object created only to call getClass()", (JAPI + "lang/Object.html", "Returns the runtime class of this Object", "Java SE 21 API: Object.getClass"),
   "(method_invocation object: (object_creation_expression) name: (identifier) @m arguments: (argument_list) (#eq? @m \"getClass\")) @match",
   jm(["Class<?> c = new Order().getClass();"]), jm(["Class<?> c = Order.class;"]),
-  "Building an instance just to read its class runs a constructor for nothing: use Type.class.", "S2133", cat="performance", kind="best-practice", sev="minor")
+  "Building an instance just to read its class runs a constructor for nothing: use Type.class.", "S2133", cat="performance", kind="best-practice", sev="minor",
+  filters=[r"node.lacks_re:\}\s*\.\s*getClass\s*\(\s*\)$"], fp=[jm(["Class<?> anon = new Object() {}.getClass();"])])
 J("COMPARETO-MIN-VALUE", "compareTo returns Integer.MIN_VALUE", (JAPI + "lang/Comparable.html", "a negative integer, zero, or a positive integer", "Java SE 21 API: Comparable.compareTo"),
   "(method_declaration name: (identifier) @n body: (block) @b (#match? @n \"^compare(To)?$\")) @match",
   cls("    public int compareTo(A o) {\n        return o == null ? Integer.MIN_VALUE : 1;\n    }\n"), cls("    public int compareTo(A o) {\n        return o == null ? -1 : 1;\n    }\n"),
@@ -2494,9 +2602,18 @@ J("MANUAL-ARRAY-COPY", "Array copied element by element in a loop", (JAPI + "lan
   "A hand-written copy loop is slower and more error-prone than System.arraycopy / Arrays.copyOf.", "S3012", cat="performance", kind="best-practice", sev="minor")
 J("LOG-ARGUMENT-CONCATENATION", "Log message built by concatenation", ("https://www.slf4j.org/faq.html", "Parameterized log messages solve an important problem", "SLF4J FAQ"),
   "(method_invocation object: (identifier) @o name: (identifier) @m arguments: (argument_list . (binary_expression operator: \"+\") @a) (#match? @o \"(?i)^(log|logger|LOG|LOGGER)$\") (#match? @m \"^(trace|debug|info)$\")) @match",
-  jm(["log.debug(\"loaded \" + items.size() + \" items\");"], "void f(List<String> items)"), jm(["log.debug(\"loaded {} items\", items.size());"], "void f(List<String> items)"),
+  jm(["log.debug(\"loaded \" + items.size() + \" items\");"], "void f(List<String> items)", "import org.slf4j.Logger;\n"),
+  jm(["log.debug(\"loaded {} items\", items.size());"], "void f(List<String> items)", "import org.slf4j.Logger;\n"),
   "The message is concatenated even when the level is disabled: use {} placeholders.", "S2629", cat="performance", kind="best-practice", sev="minor",
-  filters=[r"cap.has_re:a:\x22"])
+  filters=[r"cap.has_re:a:\x22", r"cap.has_re:a:[^\x22\s]\s*\+|\+\s*[^\x22\s]",
+           # corpus: only loggers with {} placeholders (SLF4J, Log4j 2, Lombok); commons-logging and MyBatis Log
+           # take a single String. A call guarded by isXxxEnabled() does not build the message when disabled.
+           r"file.has_re:import\s+(org\.slf4j\.|org\.apache\.logging\.log4j\.|lombok\.extern\.(slf4j|log4j)\.)|@(Slf4j|Log4j2|XSlf4j)\b",
+           r"ancestor.lacks_re:if_statement:^if\s*\([^)]*\bis(Trace|Debug|Info)Enabled\(",
+           r"ancestor.lacks_re:if_statement:^if\s*\([^)]*\bisLoggable\("],
+  fp=[jm(["log.debug(\"If the method is POST \"", "    + \"use @FormParam\");"]),
+      "import org.slf4j.Logger;\nclass A {\n  Logger log;\n  void f(int n) {\n    if (log.isDebugEnabled()) {\n      log.debug(\"n=\" + n);\n    }\n  }\n}\n",
+      "import org.apache.commons.logging.Log;\nclass A {\n  Log log;\n  void f(int n) {\n    log.info(\"n=\" + n);\n  }\n}\n"])
 J("INSTANCE-METHOD-WRITES-STATIC", "Instance method assigns a static field", ("https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html", "there exists exactly one incarnation of the field", "JLS 8.3.1.1 static Fields"),
   "(assignment_expression left: (identifier) @f) @match",
   "class Counter {\n    private static int total;\n    void add(int n) {\n        total += n;\n    }\n}\n", "class Counter {\n    private int total;\n    void add(int n) {\n        total += n;\n    }\n}\n",
@@ -2577,7 +2694,8 @@ Js("CLICK-WITHOUT-KEY-HANDLER", "Click handler on a non-interactive element with
    "const C = ({ open }) => <div onClick={open}>Open</div>;\n", "const C = ({ open }) => <div role=\"button\" tabIndex={0} onClick={open} onKeyDown={open}>Open</div>;\n",
    "Keyboard users cannot trigger a mouse-only handler: use a button, or add a key handler, role and tabIndex.", "S1082",
    cat="accessibility", kind="best-practice", sev="minor", rlang="jsx",
-   filters=[r"node.has_re:\bonClick\s*=", r"node.lacks_re:\bonKey(Down|Up|Press)\s*=|\{\s*\.\.\.", r"node.lacks_re:aria-hidden\s*=\s*[\x22'{]?\s*true"])
+   filters=[r"node.has_re:\bonClick\s*=", r"node.lacks_re:\bonKey(Down|Up|Press)\s*=|\{\s*\.\.\.", r"node.lacks_re:aria-hidden\s*=\s*[\x22'{]?\s*true"],
+   eq=["sonar:javascript:S6847", "sonar:typescript:S6847"])
 Js("VIDEO-WITHOUT-CAPTIONS", "video element without a captions track", (ELEMENTS + "video", "track", "MDN: <video>"),
    "(jsx_element open_tag: (jsx_opening_element name: (identifier) @t) (#eq? @t \"video\")) @match",
    "const V = () => (\n  <video src=\"/intro.mp4\" controls>\n    <source src=\"/intro.webm\" />\n  </video>\n);\n",
@@ -2648,10 +2766,12 @@ Py("REVERSED-UNORDERED", "reversed() of a set, dict view or generator", (PYFN, "
    "Sets, generators and set()/frozenset()/iter()/map()/filter() results have no order to reverse, so reversed() raises TypeError.", "S9405",
    filters=[r"cap.has_re:a:^(\{|\(|set\(|frozenset\(|iter\(|map\(|filter\(|zip\()"])
 Py("NONE-RESULT-ASSIGNED", "Result of an in-place list method or print() assigned", (PYD + "library/stdtypes.html", "never return the collection instance itself but None", "Python docs: Sequence types"),
-   "(assignment right: (call function: [(attribute attribute: (identifier) @m) (identifier) @m]) (#match? @m \"^(append|extend|insert|sort|reverse|print)$\")) @match",
-   "items = items.sort()\n", "items.sort()\n",
+   "((assignment right: (call function: (attribute object: (_) @recv attribute: (identifier) @m))) @match (#match? @m \"^(append|extend|insert|sort|reverse)$\"))\n((assignment right: (call function: (identifier) @m)) @match (#eq? @m \"print\"))",
+   "def f(items: list):\n    ordered = items.sort()\n    return ordered\n", "def f(items: list):\n    items.sort()\n    return items\n",
    "These calls work in place (or just write output) and return None, so the variable becomes None: call it as a statement or use sorted()/a copy.", "S3699",
-   filters=[r"node.lacks_re:\b(self|cls)\.\w+\s*=\s*\w+\.(append|extend|insert)\b"])
+   # Only receivers known to be lists: django's reverse(), client.videos.extend(...) return values.
+   filters=[r"node.lacks_re:\b(self|cls)\.\w+\s*=\s*\w+\.(append|extend|insert)\b", "type.is:recv:list(\\[.*\\])?|List(\\[.*\\])?"],
+   fp=["from django.urls import reverse\n\ndef f():\n    url = reverse(\"home\")\n    return url\n", "def f(client):\n    video = client.videos.extend(prompt=\"x\")\n    return video\n"])
 Py("NO-CONTENT-WITH-BODY", "Endpoint declared 204 No Content returns a body", ("https://www.rfc-editor.org/rfc/rfc9110.html", "it cannot contain content or trailers", "RFC 9110: 204 No Content"),
    "(decorated_definition (decorator) @d definition: (function_definition body: (block (return_statement (_) @v) @match))) ",
    "@app.delete('/items/{id}', status_code=204)\ndef delete(id: int):\n    repo.delete(id)\n    return {'deleted': id}\n",
@@ -2665,10 +2785,12 @@ J("MATH-ABS-OF-HASH", "Math.abs of hashCode()/nextInt() can stay negative", (JAP
   jm(["int bucket = Math.abs(key.hashCode()) % buckets;"]), jm(["int bucket = Math.floorMod(key.hashCode(), buckets);"]),
   "Math.abs(Integer.MIN_VALUE) is still negative, and hashCode()/nextInt() can return it, so the index can be negative: use Math.floorMod or mask the sign bit.", "S2676",
   filters=[r"node.has_re:\.(hashCode\(\s*\)|nextInt\(\s*\)|nextLong\(\s*\))\s*\)$|identityHashCode\("])
-J("VARARGS-EXPLICIT-ARRAY", "Array created only to pass it to a varargs method", ("https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html", "the varargs feature automates and hides the process", "Java guide: Varargs"),
+J("VARARGS-EXPLICIT-ARRAY", "Array created only to pass it to a varargs method", ("https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.4.2", "variable arity invocation", "JLS SE 25 15.12.4.2 Evaluate Arguments"),
   "(method_invocation name: (identifier) @n arguments: (argument_list (array_creation_expression value: (array_initializer)) .) (#match? @n \"^(format|formatted|printf|asList)$\")) @match",
   jm(["String s = String.format(\"%s=%d\", new Object[] {key, value});"]), jm(["String s = String.format(\"%s=%d\", key, value);"]),
-  "The method takes varargs, so the explicit array only adds noise: pass the elements directly.", "S3878", cat="maintainability", kind="best-practice", sev="minor")
+  "The method takes varargs, so the explicit array only adds noise: pass the elements directly.", "S3878", cat="maintainability", kind="best-practice", sev="minor",
+  filters=[r"node.lacks_re:\bformat\(\s*new\b", r"node.lacks_re:\basList\(\s*([^n\s]|n[^e]|ne[^w])", r"node.lacks_re:(?s)\basList\(\s*new\b.*\}\s*,"],
+  fp=[jm(["String s = messageFormat.format(new Object[] {\"a\", \"b\"});"]), jm(["List<Object[]> rows = Arrays.asList(new Object[] {1}, new Object[] {2});"])])
 J("HEX-VIA-TOHEXSTRING", "Byte hex string built with Integer.toHexString", (JAPI + "util/HexFormat.html", "HexFormat converts between bytes and chars and hex-encoded strings", "Java SE 21 API: HexFormat"),
   "(method_invocation object: (identifier) @i name: (identifier) @t arguments: (argument_list . (binary_expression) @b .) (#eq? @i \"Integer\") (#eq? @t \"toHexString\")) @match",
   jm(["for (byte b : digest) {", "    sb.append(Integer.toHexString(b & 0xff));", "}"]), jm(["String hex = HexFormat.of().formatHex(digest);"]),
@@ -2716,7 +2838,7 @@ J("OCTAL-ESCAPE-THEN-DIGIT", "Octal escape followed by a digit", ("https://docs.
   jm(["String s = \"\\1234\";"]), jm(["String s = \"\\u00534\";"]),
   "An octal escape takes at most three digits (max \\377), so the next digit becomes a separate character: readers misread the value. Use a \\u escape.", "S9359",
   cat="maintainability", kind="best-practice", sev="minor", filters=[r"node.has_re:(^|[^\\])(\\\\)*\\([0-3][0-7]{2}[0-9]|[0-7]{1,2}[89])"])
-J("IDENTICAL-CATCH-BLOCKS", "Adjacent catch blocks with identical bodies", ("https://docs.oracle.com/javase/8/docs/technotes/guides/language/catch-multiple.html", "a single catch block can handle more than one type of exception", "Java guide: multi-catch"),
+J("IDENTICAL-CATCH-BLOCKS", "Adjacent catch blocks with identical bodies", ("https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20", "A catch clause whose exception parameter is denoted as a union of types is called a multi-catch clause", "JLS SE 25 14.20 The try statement"),
   "(try_statement (catch_clause body: (block) @a) . (catch_clause body: (block) @b) (#eq? @a @b)) @match",
   jm(["try {", "    load();", "} catch (IOException e) {", "    log.warn(\"load failed\", e);", "} catch (SQLException e) {", "    log.warn(\"load failed\", e);", "}"]),
   jm(["try {", "    load();", "} catch (IOException | SQLException e) {", "    log.warn(\"load failed\", e);", "}"]),
@@ -2825,22 +2947,23 @@ Ph("OPTIONAL-BEFORE-REQUIRED-PARAM", "Optional parameter declared before a requi
 TWELVE = ("https://12factor.net/config", "strict separation of config from code", "The Twelve-Factor App: Config")
 IPV4 = r"[\x22\x27](?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)[\x22\x27]"
 IP_SKIP = r"node.lacks_re:^[\x22\x27](127\.|0\.0\.0\.0|255\.255\.255\.255|192\.0\.2\.|198\.51\.100\.|203\.0\.113\.)"
+# corpus: every sampled hit was a test fixture (proxy/remote-address stubs); tests are skipped
 multi("HARDCODED-IP", "Hard-coded IP address",
       "A literal IP address ties the code to one network layout: read it from configuration or resolve a host name.",
       {
-          "java": dict(doc=TWELVE, query="(string_literal) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
+          "java": dict(files=["!**/src/test/**", "!**/test/**", "!**/*Test.java", "!**/*Tests.java"], doc=TWELVE, query="(string_literal) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
                        bad=cls("    String host = \"10.20.30.40\";\n"), good=cls("    String host = System.getenv(\"DB_HOST\");\n"),
                        fp=[cls("    String local = \"127.0.0.1\";\n    String doc = \"192.0.2.10\";\n")]),
-          "javascript": dict(doc=TWELVE, query="(string) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
+          "javascript": dict(files=["!**/*.test.*", "!**/*.spec.*", "!**/__tests__/**", "!**/test/**", "!**/tests/**"], doc=TWELVE, query="(string) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
                              bad="const host = '10.20.30.40';\n", good="const host = process.env.DB_HOST;\n", fp=["const local = '127.0.0.1';\n"]),
-          "python": dict(doc=TWELVE, query="(string) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
+          "python": dict(files=["!**/tests/**", "!**/test/**", "!**/test_*.py", "!**/*_test.py"], doc=TWELVE, query="(string) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
                          bad="HOST = \"10.20.30.40\"\n", good="HOST = os.environ[\"DB_HOST\"]\n", fp=["LOCAL = \"127.0.0.1\"\n"]),
-          "go": dict(doc=TWELVE, query="(interpreted_string_literal) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
+          "go": dict(files=["!**/*_test.go", "!**/testdata/**"], doc=TWELVE, query="(interpreted_string_literal) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
                      bad="package p\n\nvar host = \"10.20.30.40\"\n", good="package p\n\nimport \"os\"\n\nvar host = os.Getenv(\"DB_HOST\")\n",
                      fp=["package p\n\nvar local = \"127.0.0.1\"\n"]),
-          "kotlin": dict(doc=TWELVE, query="(string_literal) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
+          "kotlin": dict(files=["!**/src/test/**", "!**/test/**", "!**/*Test.kt", "!**/*Tests.kt"], doc=TWELVE, query="(string_literal) @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
                          bad="val host = \"10.20.30.40\"\n", good="val host = System.getenv(\"DB_HOST\")\n", fp=["val local = \"127.0.0.1\"\n"]),
-          "php": dict(doc=TWELVE, query="[(string) (encapsed_string)] @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
+          "php": dict(files=["!**/tests/**", "!**/Tests/**", "!**/*Test.php"], doc=TWELVE, query="[(string) (encapsed_string)] @match", filters=["node.has_re:^" + IPV4 + "$", IP_SKIP],
                       bad="<?php\n$host = '10.20.30.40';\n", good="<?php\n$host = getenv('DB_HOST');\n", fp=["<?php\n$local = '127.0.0.1';\n"]),
       }, keys=["S1313"], mode="ai-confirm",
       ai="Is this the address of a real host or network (not a version number, a test fixture or a documentation example)?")
@@ -2897,7 +3020,7 @@ J("MULTIPLE-MAIN", "Several main methods in one class", ("https://docs.oracle.co
   cls("    public static void main(String[] args) {\n        run();\n    }\n"),
   "With several main candidates it is unclear which one the launcher picks: keep a single entry point.", "S8446",
   cat="maintainability", sev="minor")
-J("LOG-AND-RETHROW", "Exception logged and rethrown", ("https://docs.oracle.com/javase/tutorial/essential/exceptions/chained.html", "Chained Exceptions", "The Java Tutorials: Chained Exceptions"),
+J("LOG-AND-RETHROW", "Exception logged and rethrown", ("https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html", "chained exception facility", "Java SE 25 API: Throwable"),
   "(catch_clause (catch_formal_parameter name: (identifier) @e) body: (block (expression_statement (method_invocation object: (identifier) @l arguments: (argument_list (_)* (identifier) @a))) (throw_statement (identifier) @t)) (#match? @l \"(?i)^(log|logger)$\") (#eq? @a @e) (#eq? @t @e)) @match",
   jm(["try {", "    load();", "} catch (IOException e) {", "    log.error(\"load failed\", e);", "    throw e;", "}"], "void f() throws IOException"),
   jm(["try {", "    load();", "} catch (IOException e) {", "    throw new UncheckedIOException(\"load failed\", e);", "}"], "void f()"),
@@ -3022,6 +3145,447 @@ Hm("ROLE-WITHOUT-TABINDEX", "Interactive role on an element that cannot take foc
    page("<main><div role=\"button\" tabindex=\"0\" onclick=\"save()\" onkeydown=\"save()\">Save</div></main>"),
    "An element announced as interactive must be reachable with the keyboard: add tabindex=\"0\" or use the native element.", "Web:S6852",
    filters=[r"node.has_re:\brole\s*=\s*[\x22\x27]?(button|link|checkbox|menuitem|tab|switch|radio|option|slider|textbox|combobox|spinbutton)\b", r"node.lacks_re:\btabindex\s*="])
+Hm("IDENTICAL-LINK-TEXT-DIFFERENT-HREF", "Same link text points at different URLs", ("https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html", "The purpose of each link can be determined from the link text alone", "Understanding SC 2.4.4 Link Purpose (In Context)"),
+   "(start_tag (tag_name) @t (#match? @t \"^(?i)a$\")) @match",
+   page("<p><a href=\"/a\">Details</a> and <a href=\"/b\">Details</a></p>"),
+   page("<p><a href=\"/a\">Order details</a> and <a href=\"/b\">Account details</a></p>"),
+   "Two links share the same text but go to different places, so a links list cannot tell them apart: make the text describe each destination.",
+   "Web:LinksIdenticalTextsDifferentTargetsCheck",
+   filters=["markup.dup_link_text"], cat="accessibility", kind="best-practice", sev="minor",
+   quote="The purpose of each link can be determined from the link text alone.")
+Hm("OBJECT-AND-EMBED", "Flash-style object wrapping embed", ("https://html.spec.whatwg.org/multipage/iframe-embed-object.html", "The embed element provides an integration point for an external application or interactive content", "HTML Living Standard: the embed element"),
+   "(element (start_tag (tag_name) @t) (element (start_tag (tag_name) @e)) (#match? @t \"^(?i)object$\") (#match? @e \"^(?i)embed$\")) @match",
+   page("<object data=\"app.swf\" type=\"application/x-shockwave-flash\"><embed src=\"app.swf\"></object>"),
+   page("<video src=\"app.mp4\" controls></video>"),
+   "Nesting embed inside object was the Flash fallback pattern; both elements are the wrong tool for media or apps now: use video/audio or a documented plugin API.",
+   "Web:FlashUsesBothObjectAndEmbedCheck", cat="maintainability", kind="deprecation", sev="minor",
+   quote="The embed element provides an integration point for an external application or interactive content.")
+Js("ROLE-WITHOUT-TABINDEX", "Interactive role on a non-focusable JSX element", ("https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/button_role", "tabindex", "MDN: ARIA button role"),
+   "([(jsx_self_closing_element name: (identifier) @t) (jsx_opening_element name: (identifier) @t)] @match (#match? @t \"^(div|span|li|p|img|section|td)$\"))",
+   "const C = ({ save }) => <div role=\"button\" onClick={save} onKeyDown={save}>Save</div>;\n",
+   "const C = ({ save }) => <div role=\"button\" tabIndex={0} onClick={save} onKeyDown={save}>Save</div>;\n",
+   "An element announced as interactive must be reachable with the keyboard: add tabIndex={0} or use a native button/link.", "S6852",
+   cat="accessibility", kind="best-practice", sev="minor", rlang="jsx",
+   filters=[r"node.has_re:\brole\s*=\s*[\x22'{]?(button|link|checkbox|menuitem|tab|switch|radio|option|slider|textbox|combobox|spinbutton)\b",
+            r"node.lacks_re:\btabIndex\s*="])
+Js("OBJECT-DEFAULT-PARAM", "Object or array used as a default parameter", (MDN + "Functions/Default_parameters", "Default function parameters allow named parameters to be initialized with default values if no value or undefined is passed", "MDN: Default parameters"),
+   "((formal_parameters) @match (#match? @match \"=\\\\s*[\\\\[\\\\{]\"))",
+   "function load(opts = {}) {\n  return opts.url;\n}\n",
+   "function load(opts) {\n  const url = (opts ?? {}).url;\n  return url;\n}\n",
+   "A default {} or [] is a shared mutable value if something ever writes to it; default to undefined and substitute a fresh object in the body.",
+   "S7737", cat="correctness", sev="minor",
+   quote="Default function parameters allow named parameters to be initialized with default values if no value or undefined is passed.")
+Js("INDEXOF-INCLUDES", "indexOf compared with -1 instead of includes()", (MDN + "Global_Objects/Array/includes", "Whether the array contains the value", "MDN: Array.prototype.includes"),
+   "(binary_expression left: (call_expression function: (member_expression property: (property_identifier) @m)) right: (unary_expression argument: (number) @n) (#eq? @m \"indexOf\") (#eq? @n \"1\")) @match",
+   "if (tags.indexOf('a') !== -1) {\n  hit();\n}\n", "if (tags.includes('a')) {\n  hit();\n}\n",
+   "indexOf(...) !== -1 is a membership test: includes() states that and does not confuse 0 with missing.", "S7776",
+   cat="maintainability", kind="best-practice", sev="info", quote="The includes() method determines whether an array includes a certain value among its entries, returning true or false as appropriate.")
+Js("CONSECUTIVE-PUSH", "Consecutive push() calls on the same array", (MDN + "Global_Objects/Array/push", "The push() method adds the specified elements to the end of an array", "MDN: Array.prototype.push"),
+   "((expression_statement (call_expression function: (member_expression object: (identifier) @a property: (property_identifier) @p))) . (expression_statement (call_expression function: (member_expression object: (identifier) @b property: (property_identifier) @q))) @match (#eq? @a @b) (#eq? @p \"push\") (#eq? @q \"push\"))",
+   "items.push(a);\nitems.push(b);\n", "items.push(a, b);\n",
+   "push accepts any number of arguments: consecutive push calls on the same array can be one call.", "S7778",
+   cat="maintainability", kind="best-practice", sev="info", quote="The push() method of Array instances adds the specified elements to the end of an array and returns the new length of the array.")
+Js("BOOLEAN-SELECTOR-PARAM", "Leading boolean parameter selects behaviour", (MDN + "Functions", "parameters", "MDN: Functions"),
+   "((function_declaration parameters: (formal_parameters) @ps) @match (#match? @ps \"^\\\\(\\\\s*(is|has|should|can|enable|use)[A-Z]\") (#match? @ps \",\"))",
+   "function save(isDraft, body) {\n  if (isDraft) queue(body); else publish(body);\n}\n",
+   "function saveDraft(body) {\n  queue(body);\n}\nfunction publish(body) {\n  send(body);\n}\n",
+   "A boolean flag to pick one of two behaviours hides two functions behind one name: split them, or take an options object.",
+   "S2301", cat="maintainability", kind="best-practice", sev="info", mode="ai-confirm",
+   ai="Does this boolean choose between two different behaviours (rather than a true/false field that is stored or forwarded)?",
+   quote="A JavaScript function can have any number of parameters.")
+Js("PROTOTYPE-POLYFILL", "Built-in prototype patched in application code", (MDN + "Global_Objects/Array/prototype", "Warning: Changing the Array prototype", "MDN: Array.prototype"),
+   "((assignment_expression left: (member_expression object: (member_expression object: (identifier) @o property: (property_identifier) @p))) @match (#match? @o \"^(Array|String|Object|Number|Promise|Map|Set|Symbol)$\") (#eq? @p \"prototype\"))",
+   "Array.prototype.flat = function flat() { return [].concat(...this); };\n",
+   "const flat = (xs) => xs.flat();\n",
+   "Patching a built-in prototype collides with the platform and with other polyfills: use the native method or a local helper.",
+   "S7742", cat="maintainability", kind="best-practice", sev="minor",
+   quote="Warning: Changing one of the built-in object prototypes is considered bad practice.")
+Js("PROCESS-BINDING", "process.binding() used (Node.js internal)", ("https://nodejs.org/api/process.html#processbindingname", "process.binding(name)", "Node.js process.binding"),
+   "((call_expression function: (member_expression object: (identifier) @o property: (property_identifier) @p)) @match (#eq? @o \"process\") (#eq? @p \"binding\"))",
+   "const spawn = process.binding('spawn_sync');\n",
+   "import { spawnSync } from 'node:child_process';\n",
+   "process.binding loads undocumented internals that change between Node releases: use the public node: API.",
+   "S6627", cat="maintainability", kind="deprecation", sev="major",
+   quote="The process.binding() method provides access to the internal binding modules of Node.js. Using process.binding() is not recommended.")
+Js("INNER-FUNCTION-DECLARATION", "Function declaration inside a block", (MDN + "Statements/function", "Block-level function declarations", "MDN: function statement"),
+   "(if_statement consequence: [(function_declaration) (statement_block (function_declaration))] @match)\n(for_statement body: [(function_declaration) (statement_block (function_declaration))] @match)\n(while_statement body: [(function_declaration) (statement_block (function_declaration))] @match)",
+   "if (ready) {\n  function run() { go(); }\n  run();\n}\n",
+   "if (ready) {\n  const run = () => { go(); };\n  run();\n}\n",
+   "A function declaration in a block does not hoist the way a script-level declaration does: use a const function expression.",
+   "S7721", cat="maintainability", kind="best-practice", sev="info",
+   quote="Starting with ECMAScript 2015, nested function declarations are scoped to the block in which they are defined.")
+
+# WCAG 2.x success criteria checked by the accessibility rules above ("bp" = best practice only:
+# no success criterion fails on its own, tagged a11y-best-practice).
+WCAG_OF = {
+    "ACCESSKEY-ATTRIBUTE": "bp", "AUTOFOCUS-ATTRIBUTE": "bp", "ANCHOR-AS-BUTTON": ["4.1.2"], "ARIA-HIDDEN-FOCUSABLE": ["4.1.2"],
+    "ARIA-ROLE-ATTRIBUTE": ["4.1.2"], "AUTOPLAY-MEDIA": ["1.4.2"], "CLICK-WITHOUT-KEYBOARD": ["2.1.1"],
+    "CLICK-WITHOUT-KEY-HANDLER": ["2.1.1"], "EMPTY-ANCHOR": ["2.4.4", "4.1.2"], "ANCHOR-WITHOUT-CONTENT": ["2.4.4", "4.1.2"],
+    "FRAME-WITHOUT-TITLE": ["4.1.2"], "IFRAME-WITHOUT-TITLE": ["4.1.2"], "HANDLER-ON-STATIC-ELEMENT": ["4.1.2"],
+    "IMG-WITHOUT-ALT": ["1.1.1"], "LEGEND-OUTSIDE-FIELDSET": ["1.3.1"], "LI-OUTSIDE-LIST": ["1.3.1"],
+    "META-REFRESH": ["2.2.1", "3.2.5"], "OBJECT-WITHOUT-FALLBACK": ["1.1.1"], "PAGE-WITHOUT-TITLE": ["2.4.2"],
+    "POSITIVE-TABINDEX": ["2.4.3"], "ROLE-WITHOUT-TABINDEX": ["2.1.1"],
+    "IDENTICAL-LINK-TEXT-DIFFERENT-HREF": ["2.4.4"], "OBJECT-AND-EMBED": "bp", "SCOPE-ON-NON-TH": ["1.3.1"],
+    "TH-WITHOUT-SCOPE-OR-ID": ["1.3.1"], "VIEWPORT-BLOCKS-ZOOM": ["1.4.4"], "HTML-WITHOUT-LANG": ["3.1.1"], "WITHOUT-LANG": ["3.1.1"],
+    "VIDEO-WITHOUT-CAPTIONS": ["1.2.2"],
+}
+# ---- type-aware rules (built-in resolver: internal/types; type.* filters) ------------------------
+# Each fires only when the receiver/operand types are resolved from what the file declares
+# (literals, declared locals/params/fields, constructor calls, declared return types); an
+# unresolved type never matches, so these are precise but deliberately incomplete.
+JATOMIC = JAPI + "util/concurrent/atomic/AtomicInteger.html"
+J("ATOMIC-EQUALS", "equals() on an Atomic* value", (JATOMIC, "cannot be used as a replacement for an Integer", "Java SE 21 API: AtomicInteger"),
+  "(method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list (_)) (#eq? @m \"equals\")) @match",
+  jm(["if (hits.equals(limit)) {", "    stop();", "}"], "void f(AtomicInteger hits, AtomicInteger limit)"),
+  jm(["if (hits.get() == limit.get()) {", "    stop();", "}"], "void f(AtomicInteger hits, AtomicInteger limit)"),
+  "Atomic* classes do not override equals(), so this compares identities, not values: compare get() results.", "S2204",
+  filters=[r"type.is:o:Atomic(Integer|Long|Boolean|Reference)"],
+  fp=[jm(["if (hits.equals(limit)) {", "    stop();", "}"], "void f(Counter hits, Counter limit)")])
+J("URL-EQUALS-HASHCODE", "URL.equals()/hashCode() called", (JAPI.replace("java.base/java/", "java.base/java/") + "net/URL.html", "Since hosts comparison requires name resolution, this operation is a blocking operation", "Java SE 21 API: URL"),
+  "(method_invocation object: (_) @o name: (identifier) @m (#match? @m \"^(equals|hashCode)$\")) @match",
+  jm(["return home.equals(other);"], "boolean same(URL home, URL other)").replace("void", "boolean"),
+  jm(["return home.toURI().equals(other.toURI());"], "boolean same(URL home, URL other) throws Exception"),
+  "URL.equals and hashCode resolve host names over the network (slow, blocking, and different results offline): compare URI objects instead.", "S2112",
+  filters=[r"type.is:o:URL"], sev="major", cat="performance",
+  fp=[jm(["return home.equals(other);"], "boolean same(URI home, URI other)")])
+J("SYNC-ON-VALUE-BASED", "synchronized on a boxed or value-based object", (JAPI + "lang/doc-files/ValueBased.html", "synchronization", "Java SE 21 API: Value-based Classes"),
+  "(synchronized_statement (parenthesized_expression (_) @l)) @match",
+  cls("    private final Integer lock = 0;\n    void f() {\n        synchronized (lock) {\n            work();\n        }\n    }\n"),
+  cls("    private final Object lock = new Object();\n    void f() {\n        synchronized (lock) {\n            work();\n        }\n    }\n"),
+  "Boxed numbers, Boolean, Optional and java.time values can be cached and shared, so unrelated code may lock the same instance (deadlocks, contention): lock a private new Object().", ["S1860", "S3436"],
+  filters=[r"type.is:l:Integer|Long|Short|Byte|Character|Boolean|Double|Float|Optional|LocalDate|LocalTime|LocalDateTime|Instant|Duration|ZonedDateTime|OffsetDateTime"])
+J("STRING-EQUALS-BUILDER", "String.equals() given a StringBuilder/StringBuffer", (JAPI + "lang/String.html", "Compares this string to the specified CharSequence", "Java SE 21 API: String.contentEquals"),
+  "(method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list . (_) @a .) (#eq? @m \"equals\")) @match",
+  jm(["return name.equals(buf);"], "boolean same(String name, StringBuilder buf)").replace("void", "boolean"),
+  jm(["return name.contentEquals(buf);"], "boolean same(String name, StringBuilder buf)"),
+  "A String is never equal to a StringBuilder/StringBuffer, so this is always false: use contentEquals() or compare buf.toString().", "S9394",
+  filters=[r"type.is:o:String", r"type.is:a:StringBuilder|StringBuffer|CharBuffer"])
+J("WAIT-ON-CONDITION", "Object.wait()/notify() on a Condition", (JAPI + "util/concurrent/locks/Condition.html", "Condition instances are just normal objects", "Java SE 21 API: Condition"),
+  "(method_invocation object: (_) @o name: (identifier) @m (#match? @m \"^(wait|notify|notifyAll)$\")) @match",
+  jm(["ready.wait();"], "void f(Condition ready) throws InterruptedException"), jm(["ready.await();"], "void f(Condition ready) throws InterruptedException"),
+  "wait()/notify() use the Condition object's own monitor, not the lock it belongs to: call await()/signal() instead.", "S1844",
+  filters=[r"type.is:o:Condition"])
+J("BOXED-TOSTRING", "toString() on a boxed primitive", (JAPI + "lang/String.html", "if the argument is null, then a string equal to \"null\"", "Java SE 21 API: String.valueOf"),
+  "(method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list) @a (#eq? @m \"toString\") (#eq? @a \"()\")) @match",
+  jm(["return n.toString();"], "String id(Integer n)").replace("void", "String"),
+  jm(["return String.valueOf(n);"], "String id(Integer n)").replace("void", "String"),
+  "toString() on a boxed value throws if the wrapper is null: use String.valueOf, which yields \"null\".", "S1158",
+  filters=[r"type.is:o:Integer|Long|Short|Byte|Float|Double|Boolean|Character"],
+  fp=[jm(["return n.toString();"], "String id(Name n)").replace("void", "String")])
+J("BOXED-BOOLEAN-CONDITION", "Boxed Boolean used as a condition", ("https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html", "If r is null, unboxing conversion throws a NullPointerException", "JLS 5.1.8 Unboxing Conversion"),
+  "[(if_statement condition: (parenthesized_expression (_) @c)) (while_statement condition: (parenthesized_expression (_) @c)) (ternary_expression condition: (_) @c)] @match",
+  jm(["if (ready) {", "    run();", "}"], "void f(Boolean ready)"),
+  jm(["if (Boolean.TRUE.equals(ready)) {", "    run();", "}"], "void f(Boolean ready)"),
+  "Unboxing a null Boolean in a condition throws NullPointerException: compare with Boolean.TRUE or handle null.", "S5411",
+  filters=[r"type.is:c:Boolean", r"cap.lacks_re:c:^Boolean\.(TRUE|FALSE)$"],
+  fp=[jm(["if (ready) {", "    run();", "}"], "void f(boolean ready)")])
+J("REDUNDANT-CAST", "Cast to a type the expression already has", ("https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html", "A cast expression converts, at run time, a value of one numeric type", "JLS 15.16 Cast Expressions"),
+  "(cast_expression type: (_) @t value: (_) @v) @match",
+  jm(["String t = (String) name;"], "void f(String name)"),
+  jm(["String t = name;"], "void f(String name)"),
+  "The value is already that type, so the cast does nothing: drop it.", "S1905",
+  filters=["type.eq_text:v:t"],
+  fp=[jm(["String t = (String) name;"], "void f(Object name)")],
+  quote="A cast expression converts, at run time, a value of one numeric type to a similar value of another numeric type")
+J("BOXED-PARSE", "valueOf used where a primitive parse is enough", (JAPI + "lang/Integer.html", "Parses the string argument as a signed decimal integer", "Java SE 21 API: Integer.parseInt"),
+  "(local_variable_declaration type: [(integral_type) (floating_point_type) (boolean_type)] (variable_declarator value: (method_invocation object: (identifier) @c name: (identifier) @m (#eq? @m \"valueOf\") (#match? @c \"^(Integer|Long|Short|Byte|Double|Float|Boolean)$\")))) @match",
+  jm(['int n = Integer.valueOf(s);'], "void f(String s)"),
+  jm(['int n = Integer.parseInt(s);'], "void f(String s)"),
+  "valueOf boxes the result and then unboxes it into the primitive: parseInt/parseLong/parseBoolean skip the wrapper.", "S2130",
+  quote="Parses the string argument as a signed decimal integer")
+
+PYEXPR = PYD + "reference/expressions.html"
+PYEXC = (PYD + "library/exceptions.html", "Raised when an operation or function is applied to an object of inappropriate type", "Python docs: TypeError")
+Py("IDENTITY-DISSIMILAR-TYPES", "is / is not between values of different built-in types", (PYEXPR, "The operators is and is not test for an object's identity", "Python reference: Identity comparisons"),
+   "(comparison_operator . (_) @a . (_) @b .) @match",
+   "def f(code: int):\n    label = \"200\"\n    return code is label\n", "def f(code: int):\n    label = \"200\"\n    return str(code) == label\n",
+   "Two values of different built-in types are never the same object, so this is constant: compare values with ==, converting first.", "S3403",
+   filters=[r"node.has_re:\sis\s", "type.differ:a:b"])
+Py("INCOMPATIBLE-ADDITION", "+ between incompatible built-in types", PYEXC,
+   "(binary_operator left: (_) @a operator: \"+\" right: (_) @b) @match",
+   "def label(count: int):\n    return \"items: \" + count\n", "def label(count: int):\n    return \"items: \" + str(count)\n",
+   "Adding these types raises TypeError at run time (for example str + int): convert one side first.", "S5607",
+   filters=["type.differ:a:b"])
+Py("IN-NON-CONTAINER", "in / not in against a number or bool", (PYEXPR, "For user-defined classes which do not define __contains__()", "Python reference: Membership test operations"),
+   "(comparison_operator . (_) . (_) @r .) @match",
+   "def f(x, limit: int):\n    return x in limit\n", "def f(x, limit: int):\n    return x < limit\n",
+   "Numbers and bools are not containers, so the membership test raises TypeError: test against a collection or use a comparison.", "S5642",
+   filters=[r"node.has_re:\sin\s", r"type.is:r:int|float|bool|complex"])
+Py("CALL-NON-CALLABLE", "Calling a value of a built-in non-callable type", PYEXC,
+   "(call function: (identifier) @f) @match",
+   "def f():\n    total = 0\n    return total()\n", "def f():\n    total = 0\n    return total\n",
+   "This name holds a str/number/collection, so calling it raises TypeError: drop the parentheses or call the intended function.", "S5756",
+   filters=[r"type.is:f:str|int|float|bool|list|dict|tuple|set|bytes|complex|frozenset"])
+Py("ANNOTATION-MISMATCH", "Assigned value does not match the variable's annotation", ("https://typing.python.org/en/latest/spec/annotations.html", "type annotation", "Python typing spec: Annotations"),
+   "(assignment left: (identifier) type: (type) @t right: (_) @v) @match",
+   "retries: int = \"3\"\n", "retries: int = 3\n",
+   "The value's type contradicts the annotation, so readers and type checkers are misled and later arithmetic or calls fail: fix the value or the annotation.", "S5890",
+   filters=["type.vs_text:v:t"])
+Py("RETURN-HINT-MISMATCH", "Returned value does not match the return annotation", ("https://typing.python.org/en/latest/spec/annotations.html", "type annotation", "Python typing spec: Annotations"),
+   "(function_definition return_type: (type) @t body: (block (return_statement (_) @v) @match))",
+   "def port() -> int:\n    return \"8080\"\n", "def port() -> int:\n    return 8080\n",
+   "The returned value's type contradicts the declared return type, so callers relying on the hint break: return the declared type or fix the hint.", "S5886",
+   filters=["type.vs_text:v:t"])
+
+Js("STRICT-EQUALITY-DISSIMILAR-TYPES", "=== / !== between values of different types", (MDN + "Operators/Strict_equality", "If the operands are of different types, return false", "MDN: Strict equality (===)"),
+   "(binary_expression left: (_) @a operator: [\"===\" \"!==\"] right: (_) @b) @match",
+   "function isOk(code) {\n  const expected = 200;\n  const got = String(code);\n  const text = \"200\";\n  return expected === text;\n}\n",
+   "function isOk(code) {\n  const expected = 200;\n  return Number(code) === expected;\n}\n",
+   "The operands have different types, so === is always false (!== always true): convert one side first.", "S3403",
+   filters=["type.differ:a:b"])
+Js("IN-ON-PRIMITIVE", "in operator applied to a primitive", (MDN + "Operators/in", "Thrown if object is not an object", "MDN: in"),
+   "(binary_expression operator: \"in\" right: (_) @r) @match",
+   "function has(key) {\n  const name = \"config\";\n  return key in name;\n}\n", "function has(key) {\n  const config = { a: 1 };\n  return key in config;\n}\n",
+   "in on a string, number or boolean throws TypeError: test a property of an object (or use includes() for strings).", "S3785",
+   filters=[r"type.is:r:string|number|boolean"])
+Js("AWAIT-NON-PROMISE", "await applied to a plain value", (MDN + "Operators/await", "If the value is not a Promise", "MDN: await"),
+   "(await_expression (_) @e) @match",
+   "async function f() {\n  const n = 3;\n  return await n;\n}\n", "async function f() {\n  const n = 3;\n  return n;\n}\n",
+   "The awaited value is not a promise (string/number/boolean), so await only delays the code by a tick: remove it or await the real async call.", "S4123",
+   filters=[r"type.is:e:string|number|boolean"], sev="minor", kind="best-practice", cat="maintainability")
+Js("VOID-RESULT-USED", "Result of a void function is used", ("https://www.typescriptlang.org/docs/handbook/2/functions.html", "void represents the return value of functions which don't return a value", "TypeScript handbook: Functions"),
+   "(variable_declarator value: (call_expression) @c) @match",
+   "function log(msg: string): void {\n  console.log(msg);\n}\nconst r = log(\"x\");\n", "function log(msg: string): void {\n  console.log(msg);\n}\nlog(\"x\");\n",
+   "The function is declared to return nothing, so this variable is always undefined: call it as a statement.", "S3699",
+   filters=[r"type.is:c:void"], rlang="typescript")
+Js("FOR-OF-PRIMITIVE", "for...of over a number or boolean", (MDN + "Statements/for...of", "The for...of statement executes a loop that operates on a sequence of values sourced from an iterable object", "MDN: for...of"),
+   "(for_in_statement operator: \"of\" right: (_) @r) @match",
+   "function f() {\n  const n = 3;\n  for (const x of n) {\n    use(x);\n  }\n}\n", "function f() {\n  const n = [3];\n  for (const x of n) {\n    use(x);\n  }\n}\n",
+   "for...of needs an iterable; a number or boolean throws TypeError: iterate an array, string, or other iterable.", "S4138",
+   filters=[r"type.is:r:number|boolean"],
+   fp=["function f() {\n  const n = \"abc\";\n  for (const x of n) {\n    use(x);\n  }\n}\n"])
+Js("CALL-NON-CALLABLE", "Calling a value of a primitive or array type", (MDN + "Global_Objects/TypeError", "The TypeError object represents an error when an operation could not be performed", "MDN: TypeError"),
+   "(call_expression function: (identifier) @f) @match",
+   "function f() {\n  const total = 0;\n  return total();\n}\n", "function f() {\n  const total = 0;\n  return total;\n}\n",
+   "This name holds a string, number, boolean or array, so calling it throws TypeError: drop the parentheses or call the intended function.", "S7757",
+   filters=[r"type.is:f:string|number|boolean|Array"])
+Py("AWAIT-NON-AWAITABLE", "await applied to a plain value", (PYEXPR, "Suspend the execution of coroutine on an awaitable object", "Python reference: Await expression"),
+   "(await (_) @e) @match",
+   "async def f():\n    n = 3\n    return await n\n", "async def f():\n    n = 3\n    return n\n",
+   "The awaited value is a str/number/collection, not an awaitable, so this raises TypeError: drop await or await a real coroutine.", "S3862",
+   filters=[r"type.is:e:str|int|float|bool|list|dict|tuple|set|bytes"],
+   fp=["async def f():\n    n = fetch()\n    return await n\n"],
+   quote="Suspend the execution of coroutine on an awaitable object.")
+Py("SUBSCRIPT-NON-CONTAINER", "Subscript on a number or bool", (PYEXPR, "__getitem__() or __class_getitem__() special method", "Python reference: Subscriptions"),
+   "(subscript value: (_) @v) @match",
+   "def f(n: int):\n    return n[0]\n", "def f(n: int):\n    return n\n",
+   "Numbers and bools are not subscriptable, so this raises TypeError: index a sequence or mapping.", "S5644",
+   filters=[r"type.is:v:int|float|bool|complex"],
+   fp=["def f(n: list):\n    return n[0]\n", "def f(n: str):\n    return n[0]\n"],
+   quote="__getitem__() or __class_getitem__() special method")
+
+
+# ---- Sonar backlog batch 1 (syntax + built-in types) ----------------------------------------------
+JTUT = "https://docs.oracle.com/javase/tutorial/essential/concurrency/"
+J("DOUBLE-CHECKED-LOCKING", "Double-checked locking on a non-volatile field", (JTUT + "atomic.html", "Using volatile variables reduces the risk of memory consistency errors", "Java tutorial: Atomic Access"),
+  "((if_statement condition: (parenthesized_expression (binary_expression left: (identifier) @f right: (null_literal))) consequence: (block (synchronized_statement body: (block (if_statement condition: (parenthesized_expression (binary_expression left: (identifier) @f2 right: (null_literal)))))))) @match (#eq? @f @f2))",
+  cls("    private static Config cfg;\n    static Config get() {\n        if (cfg == null) {\n            synchronized (A.class) {\n                if (cfg == null) {\n                    cfg = load();\n                }\n            }\n        }\n        return cfg;\n    }\n"),
+  cls("    private static volatile Config cfg;\n    static Config get() {\n        if (cfg == null) {\n            synchronized (A.class) {\n                if (cfg == null) {\n                    cfg = load();\n                }\n            }\n        }\n        return cfg;\n    }\n"),
+  "Without volatile, another thread can see the field set before the object is fully built: make the field volatile or use a holder class / eager init.", "S2168",
+  filters=[r"node.has_re:==\s*null", r"ancestor.has_re:class_body:(?m)^\s*(?:(?:private|protected|public|static|transient)\s+)+[\w<>\[\], .?]+\s+{cap:f}\s*[;=]",
+           r"ancestor.lacks_re:class_body:\bvolatile\b[^;=(]*\b{cap:f}\s*[;=]"])
+J("SYNC-ON-NON-FINAL-FIELD", "synchronized on a non-final field", (JTUT + "locksync.html", "Every object has an intrinsic lock associated with it", "Java tutorial: Intrinsic Locks and Synchronization"),
+  "(synchronized_statement (parenthesized_expression [(identifier) @l (field_access object: (this) field: (identifier) @l)])) @match",
+  cls("    private Object lock = new Object();\n    void f() {\n        synchronized (lock) {\n            work();\n        }\n    }\n"),
+  cls("    private final Object lock = new Object();\n    void f() {\n        synchronized (lock) {\n            work();\n        }\n    }\n"),
+  "If the field is reassigned, threads lock different objects and the block is no longer exclusive: lock a private final field.", "S2445",
+  filters=[r"ancestor.has_re:class_body:(?m)^\s*(?:(?:private|protected|public|static|transient|volatile)\s+)+[\w<>\[\], .?]+\s+{cap:l}\s*[;=]",
+           r"ancestor.lacks_re:class_body:(?m)^\s*(?:\w+\s+)*final\s+(?:\w+\s+)*[\w<>\[\], .?]+\s+{cap:l}\s*[;=]"])
+J("PREPARED-STATEMENT-PARAM-SET-TWICE", "PreparedStatement parameter set twice in a row", (JAPISQL + "PreparedStatement.html", "the first parameter is 1, the second is 2", "Java SE 21 API: PreparedStatement"),
+  "(block (expression_statement (method_invocation object: (identifier) @o name: (identifier) @n arguments: (argument_list . (decimal_integer_literal) @k))) @match . (expression_statement (method_invocation object: (identifier) @o2 name: (identifier) @n2 arguments: (argument_list . (decimal_integer_literal) @k2))) (#eq? @o @o2) (#eq? @k @k2) (#match? @n \"^set[A-Z]\\\\w*$\") (#match? @n2 \"^set[A-Z]\\\\w*$\"))",
+  jm(["ps.setString(1, name);", "ps.setInt(1, age);"], "void f(PreparedStatement ps, String name, int age) throws SQLException"),
+  jm(["ps.setString(1, name);", "ps.setInt(2, age);"], "void f(PreparedStatement ps, String name, int age) throws SQLException"),
+  "The second call overwrites the first value of the same parameter index, so one bind is lost: check the indexes.", "S6909",
+  filters=[r"type.is:o:PreparedStatement|CallableStatement"])
+TZ_OK = (r'^"(GMT|UTC|UT|GMT[+-]\d{1,2}(:?\d{2})?|[A-Z][A-Za-z_]*(/[A-Za-z0-9_+-]+){1,2}|EST|MST|HST|ACT|AET|AGT|ART|AST|BET|BST|CAT|CNT|CST|CTT|EAT|ECT|IET|IST|JST|MIT|NET|NST|PLT|PNT|PRT|PST|SST|VST|'
+         r'EST5EDT|CST6CDT|MST7MDT|PST8PDT|CET|EET|MET|WET|UCT|Zulu|Universal|Greenwich|GB|GB-Eire|NZ|NZ-CHAT|PRC|ROK|ROC|Japan|Cuba|Egypt|Eire|Iran|Israel|Jamaica|Libya|Navajo|Poland|Portugal|Singapore|Turkey|W-SU|Hongkong|Iceland|Kwajalein|GMT0)"$')
+J("TIMEZONE-INVALID-ID", "TimeZone.getTimeZone() with an ID it does not know", (JAPI + "util/TimeZone.html", "or the GMT zone if the given ID cannot be understood", "Java SE 21 API: TimeZone"),
+  "(method_invocation object: (identifier) @c name: (identifier) @m arguments: (argument_list . (string_literal) @s .) (#eq? @c \"TimeZone\") (#eq? @m \"getTimeZone\")) @match",
+  jm(['TimeZone tz = TimeZone.getTimeZone("UTC+3");']), jm(['TimeZone tz = TimeZone.getTimeZone("GMT+3");', 'TimeZone paris = TimeZone.getTimeZone("Europe/Paris");']),
+  "Unknown IDs silently become GMT, so times are off without any error: use a region ID (Europe/Paris), GMT+hh:mm, or ZoneId.of(), which throws.", "S9363",
+  filters=["cap.lacks_re:s:" + TZ_OK])
+JSTREAMS = "InputStream|FileInputStream|BufferedInputStream|DataInputStream|ObjectInputStream|ByteArrayInputStream|PushbackInputStream|SequenceInputStream|Reader|InputStreamReader|BufferedReader|FileReader|StringReader|CharArrayReader|RandomAccessFile"
+J("STREAM-READ-RESULT-IGNORED", "Result of InputStream/Reader read() or skip() ignored", (JAPI + "io/InputStream.html", "the total number of bytes read into the buffer", "Java SE 21 API: InputStream"),
+  "(expression_statement (method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list (_))) (#match? @m \"^(read|skip)$\")) @match",
+  jm(["in.read(buf);", "use(buf);"], "void f(InputStream in, byte[] buf) throws IOException"),
+  jm(["in.readNBytes(buf, 0, buf.length);", "use(buf);"], "void f(InputStream in, byte[] buf) throws IOException"),
+  "read()/skip() may process fewer bytes than asked; ignoring the count leaves part of the buffer stale: loop on the return value or use readNBytes()/readFully().", "S2674",
+  filters=[r"type.is:o:" + JSTREAMS])
+J("WAIT-WITH-SEVERAL-LOCKS", "wait() while holding more than one lock", (JAPI + "lang/Object.html", "remain locked while the thread waits", "Java SE 21 API: Object.wait"),
+  "(synchronized_statement body: (block (synchronized_statement body: (block) @inner))) @match",
+  cls("    void f(Object a, Object b) throws InterruptedException {\n        synchronized (a) {\n            synchronized (b) {\n                b.wait();\n            }\n        }\n    }\n"),
+  cls("    void f(Object b) throws InterruptedException {\n        synchronized (b) {\n            b.wait();\n        }\n    }\n"),
+  "wait() releases only the innermost monitor; the outer lock stays held while waiting, which easily deadlocks: wait with a single lock held.", "S3046",
+  filters=[r"cap.has_re:inner:\.wait\s*\("])
+J("REFLECTION-ON-SOURCE-ANNOTATION", "Reflection looks for an annotation that is not kept at run time", (JAPI + "lang/annotation/RetentionPolicy.html", "Annotations are to be discarded by the compiler", "Java SE 21 API: RetentionPolicy"),
+  "(method_invocation name: (identifier) @m arguments: (argument_list . (class_literal (type_identifier) @a) .) (#match? @m \"^(isAnnotationPresent|getAnnotation|getDeclaredAnnotation|getAnnotationsByType)$\") (#match? @a \"^(Override|SuppressWarnings)$\")) @match",
+  jm(["boolean o = m.isAnnotationPresent(Override.class);"], "void f(Method m)"), jm(["boolean d = m.isAnnotationPresent(Deprecated.class);"], "void f(Method m)"),
+  "@Override and @SuppressWarnings have SOURCE retention, so reflection never sees them and this check is always false.", "S2109")
+
+Js("ARRAY-STRING-INDEX", "Array given a non-numeric string index", (MDN + "Global_Objects/Array", "Array elements are object properties", "MDN: Array"),
+   "(assignment_expression left: (subscript_expression object: (_) @o index: (string) @i)) @match",
+   "function f() {\n  const list = [];\n  list[\"total\"] = 3;\n  return list;\n}\n", "function f() {\n  const totals = {};\n  totals[\"total\"] = 3;\n  return totals;\n}\n",
+   "A string key on an array adds a plain property, not an element: length, iteration and JSON ignore it. Use an object or Map.", "S3579",
+   filters=[r"type.is:o:Array", r"cap.lacks_re:i:^[\x22'`]\d+[\x22'`]$"])
+Js("ASYNC-WITHOUT-AWAIT", "async function that never awaits", (MDN + "Statements/async_function", "Async functions always return a promise", "MDN: async function"),
+   "(program (function_declaration body: (statement_block) @b) @match)",
+   "async function total(items: number[]) {\n  return items.reduce((a, b) => a + b, 0);\n}\n", "function total(items: number[]) {\n  return items.reduce((a, b) => a + b, 0);\n}\n",
+   "Nothing in this async function awaits, so async only wraps the result in a promise and forces callers to await: drop async or await the real asynchronous work.", "typescript:S7503",
+   filters=[r"node.has_re:^async\s+function", r"cap.lacks_re:b:\bawait\b"], rlang="typescript", sev="minor", kind="best-practice", cat="maintainability")
+Py("ASYNC-WITHOUT-AWAIT", "async def that never awaits", (PYD + "reference/compound_stmts.html", "Coroutine function definition", "Python reference: Coroutine function definition"),
+   "(module (function_definition body: (block) @b) @match)",
+   "async def total(items):\n    return sum(items)\n", "def total(items):\n    return sum(items)\n",
+   "Nothing in this coroutine awaits, so callers must await a function that never yields to the event loop: make it a plain def or await the real async work.", "S7503",
+   filters=[r"node.has_re:^async\s+def", r"cap.lacks_re:b:\bawait\b|\basync\s+(for|with)\b|\byield\b",
+            r"cap.lacks_re:b:^\s*((\x22\x22\x22[\s\S]*?\x22\x22\x22|\x27\x27\x27[\s\S]*?\x27\x27\x27)\s*)?(pass|\.\.\.|raise\s+NotImplementedError\b[^\n]*)\s*$"],
+   sev="minor", kind="best-practice", cat="maintainability")
+Py("DICT-UNPACK-NON-MAPPING", "** unpacking of a value that is not a mapping", (PYEXPR, "denoted with a double asterisk", "Python reference: Expressions"),
+   "(dictionary_splat (_) @v) @match",
+   "def f(g):\n    opts = [\"a\", \"b\"]\n    return g(**opts)\n", "def f(g):\n    opts = {\"a\": 1}\n    return g(**opts)\n",
+   "** needs a mapping; a list/str/number raises TypeError at run time: unpack a dict (or use * for sequences).", "S5633",
+   filters=[r"type.is:v:list|tuple|str|int|float|bool|set|bytes|frozenset"])
+Py("TEMPLATE-STRING-CONCAT", "t-string concatenated with a plain string", (PYD + "library/string.templatelib.html", "Template", "Python docs: string.templatelib"),
+   "(binary_operator left: (string) operator: \"+\" right: (string)) @match",
+   "page = t\"<p>{name}</p>\" + \"<hr>\"\n", "page = t\"<p>{name}</p><hr>\"\n",
+   "Template (t-string) objects cannot be concatenated with str (TypeError): put the text inside the t-string or process the template first.", "S7943",
+   filters=[r"node.has_re:(^|\+\s*)[rR]?[tT][rR]?[\x22']", r"node.has_re:(^|\+\s*)[rRbBfFuU]{0,2}[\x22']"])
+K("INDEXED-ACCESS-OPERATOR", "get() call where indexed access reads better", (KTDOC + "operator-overloading.html", "Indexed access operator", "Kotlin docs: Operator overloading"),
+  "(call_expression (navigation_expression (_) @o (identifier) @m) (value_arguments . (value_argument) .) (#eq? @m \"get\")) @match",
+  "fun f(names: List<String>): String {\n    return names.get(0)\n}\n", "fun f(names: List<String>): String {\n    return names[0]\n}\n",
+  "Lists, arrays and maps support the indexing operator: write names[0] / map[key] instead of get().", "S6518",
+  filters=[r"type.is:o:List|MutableList|ArrayList|Map|MutableMap|HashMap|LinkedHashMap|Array|IntArray|LongArray"], sev="minor", kind="modernization", cat="maintainability")
+add("php", "VOID-RESULT-USED", "Result of a void function is used", (PHPM + "language.types.void.php", "does not return a value", "PHP manual: void"),
+    "(assignment_expression right: (function_call_expression) @c) @match",
+    "<?php\nfunction logLine(string $m): void {\n    echo $m;\n}\n$r = logLine('x');\n", "<?php\nfunction logLine(string $m): void {\n    echo $m;\n}\nlogLine('x');\n",
+    "The function is declared void, so the variable is always null: call it as a statement.", keys=["S3699"],
+    filters=[r"type.is:c:void"], cat="correctness", kind="anti-pattern", sev="major")
+
+
+# ---- Sonar backlog batch 2 -----------------------------------------------------------------------
+J("REPEATABLE-ANNOTATION-WRAPPED", "Repeated annotations wrapped in their container", ("https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html", "Repeating Annotations", "Java tutorial: Repeating Annotations"),
+  "((annotation name: (identifier) @n arguments: (annotation_argument_list (element_value_array_initializer (annotation name: (identifier) @i)))) @match)",
+  "class A {\n    @Schedules({@Schedule(hour = 1), @Schedule(hour = 2)})\n    void run() {}\n}\n", "class A {\n    @Schedule(hour = 1)\n    @Schedule(hour = 2)\n    void run() {}\n}\n",
+  "Since Java 8 a @Repeatable annotation can simply be written several times; the container wrapper only adds noise.", "S1710",
+  filters=[r"cap.has_re:n:^{cap:i}s$"], cat="maintainability", kind="modernization", sev="minor")
+J("BYTE-SIGN-EXTENSION-IN-SHIFT", "byte combined with shifted bits without masking", ("https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html", "The byte data type is an 8-bit signed two's complement integer", "Java tutorial: Primitive Data Types"),
+  "[(binary_expression left: (parenthesized_expression (binary_expression operator: \"<<\")) operator: \"|\" right: (identifier) @b) (binary_expression left: (parenthesized_expression (binary_expression left: (identifier) @b operator: \"<<\")) operator: \"|\")] @match",
+  "class A {\n    int word(byte hi, byte lo) {\n        return (hi << 8) | lo;\n    }\n}\n", "class A {\n    int word(byte hi, byte lo) {\n        return ((hi & 0xff) << 8) | (lo & 0xff);\n    }\n}\n",
+  "A byte is sign-extended when widened, so negative values set all the high bits and corrupt the result: mask with & 0xff first.", "S3034",
+  filters=[r"type.is:b:byte"])
+Py("UNREAD-PRIVATE-ATTRIBUTE", "Private attribute is assigned but never read", (PYD + "tutorial/classes.html", "name mangling", "Python tutorial: Private Variables"),
+   "((assignment left: (attribute object: (identifier) @s attribute: (identifier) @a)) @match (#eq? @s \"self\") (#match? @a \"^__[A-Za-z0-9]\") (#not-match? @a \"__$\"))",
+   "class Job:\n    def __init__(self, name):\n        self.name = name\n        self.__retries = 3\n", "class Job:\n    def __init__(self, name):\n        self.__retries = 3\n\n    def retry(self):\n        self.__retries -= 1\n        return self.__retries\n",
+   "A double-underscore attribute can only be read inside this class, and nothing here reads it: remove it or use it.", "S4487",
+   filters=[r"ancestor.lacks_re:class_definition:self\.{cap:a}\b(\s*[^=\s]|\s*==)"], cat="maintainability", kind="best-practice", sev="minor")
+add("php", "INCONSISTENT-RETURN", "Function mixes return with and without a value", (PHPM + "functions.returning-values.php", "If the return is omitted the value null will be returned", "PHP manual: Returning values"),
+    "[(function_definition body: (compound_statement) @b) (method_declaration body: (compound_statement) @b)] @match",
+    "<?php\nfunction find(array $xs, int $k) {\n    if (!isset($xs[$k])) {\n        return;\n    }\n    return $xs[$k];\n}\n",
+    "<?php\nfunction find(array $xs, int $k) {\n    if (!isset($xs[$k])) {\n        return null;\n    }\n    return $xs[$k];\n}\n",
+    "Some paths return a value and others return nothing (null), which hides whether null is intended: return a value on every path.", keys=["S3801"],
+    filters=[r"cap.has_re:b:\breturn\s*;", r"cap.has_re:b:\breturn\s+[^;\s]", r"cap.lacks_re:b:\bfunction\s*\(|\bfn\s*\(|\byield\b"],
+    cat="maintainability", kind="best-practice", sev="minor")
+
+
+# ---- Sonar backlog batch 3 (java) ----------------------------------------------------------------
+J("EMPTY-STATEMENT", "Stray empty statement", (JLS14, "An empty statement does nothing", "JLS 14.6 The Empty Statement"),
+  "(block \";\" @match)",
+  cls("    void run() {\n        start();;\n    }\n"), cls("    void run() {\n        start();\n    }\n"),
+  "A lone ';' does nothing; it is usually a typo and can hide a misplaced loop or if body.", "S1116",
+  cat="maintainability", kind="best-practice", sev="info")
+J("COMPARETO-OVERLOAD", "compareTo overloaded with a type other than the Comparable argument", (JAPI + "lang/Comparable.html", "imposes a total ordering", "Java SE 21 API: Comparable"),
+  "((class_declaration interfaces: (super_interfaces (type_list (generic_type (type_identifier) @c (type_arguments . (type_identifier) @t .)))) body: (class_body (method_declaration name: (identifier) @n parameters: (formal_parameters . (formal_parameter type: (_) @pt) .)) @match)) (#eq? @c \"Comparable\") (#eq? @n \"compareTo\"))",
+  "class Version implements Comparable<Version> {\n    public int compareTo(Version o) { return 0; }\n    public int compareTo(String s) { return 0; }\n}\n",
+  "class Version implements Comparable<Version> {\n    public int compareTo(Version o) { return 0; }\n    public int compareToText(String s) { return 0; }\n}\n",
+  "Sorting and collections only call compareTo(T) from Comparable<T>; an overload with another type is never used by them and confuses callers.", "S4351",
+  filters=[r"cap.lacks_re:pt:^{cap:t}$"])
+J("DATE-FIELD-OUT-OF-RANGE", "java.time factory called with an out-of-range month or day", (JAPI + "time/LocalDate.html", "from 1 (January) to 12 (December)", "Java SE 21 API: LocalDate.of"),
+  "((method_invocation object: (identifier) @o name: (identifier) @n arguments: (argument_list . (_) . (decimal_integer_literal) @v)) @match (#match? @o \"^(LocalDate|LocalDateTime|YearMonth)$\") (#eq? @n \"of\") (#match? @v \"^(0+|1[3-9]|[2-9][0-9]|[0-9]{3,})$\"))\n((method_invocation object: (identifier) @o name: (identifier) @n arguments: (argument_list . (_) . (_) . (decimal_integer_literal) @v)) @match (#match? @o \"^(LocalDate|LocalDateTime)$\") (#eq? @n \"of\") (#match? @v \"^(0+|3[2-9]|[4-9][0-9]|[0-9]{3,})$\"))",
+  cls("    LocalDate end() {\n        return LocalDate.of(2026, 12, 31);\n    }\n    LocalDate next() {\n        return LocalDate.of(2027, 13, 1);\n    }\n"),
+  cls("    LocalDate next() {\n        return LocalDate.of(2027, 1, 1);\n    }\n"),
+  "Months run 1-12 and days 1-31: this call always throws DateTimeException.", "S2110",
+  filters=[r"cap.lacks_re:v:^0[0-9]"])
+J("RECORD-ACCESSOR-IN-COMPACT-CONSTRUCTOR", "Record accessor called inside the compact constructor", (JLS8, "all component fields of the record class are implicitly initialized", "JLS 8.10.4.2 Compact Canonical Constructors"),
+  "[((method_invocation !object name: (identifier) @m arguments: (argument_list) @a) @match (#match? @a \"^\\\\(\\\\s*\\\\)$\")) ((method_invocation object: (this) name: (identifier) @m arguments: (argument_list) @a) @match (#match? @a \"^\\\\(\\\\s*\\\\)$\"))]",
+  "record Range(int lo, int hi) {\n    Range {\n        if (lo() > hi()) {\n            throw new IllegalArgumentException();\n        }\n    }\n}\n",
+  "record Range(int lo, int hi) {\n    Range {\n        if (lo > hi) {\n            throw new IllegalArgumentException();\n        }\n    }\n}\n",
+  "Fields are only assigned after the compact constructor body: the accessor still returns 0/null here. Use the parameter instead.", "S3037",
+  filters=["ancestor.has_re:compact_constructor_declaration:.", r"ancestor.has_re:record_declaration:^[^{]*?\brecord\s+\w+\s*(<[^>]*>)?\s*\([^)]*\b{cap:m}\s*[,)]",
+           r"ancestor.lacks_re:class_body#2:\b{cap:m}\s*\(\s*\)\s*\{"])
+J("UNSYNCHRONIZED-GETTER", "Getter not synchronized while its setter is", (JTUT + "syncmeth.html", "not possible for two invocations of synchronized methods on the same object to interleave", "Java tutorial: Synchronized Methods"),
+  "((method_declaration name: (identifier) @n body: (block)) @match (#match? @n \"^(get|is)[A-Z]\"))",
+  cls("    private int size;\n    public synchronized void setSize(int s) { size = s; }\n    public int getSize() { return size; }\n"),
+  cls("    private int size;\n    public synchronized void setSize(int s) { size = s; }\n    public synchronized int getSize() { return size; }\n"),
+  "Only the setter holds the lock, so a reader can see a stale value: synchronize the getter too (or make the field volatile).", "S2886",
+  filters=[r"node.lacks_re:^[^{]*\bsynchronized\b", r"node.lacks_re:synchronized\s*\(", r"ancestor.has_re:class_body:\bsynchronized\b[^;{()]*\bset{cap:n~prop}\s*\(",
+           r"ancestor.lacks_re:class_body:\b(volatile|Atomic\w+)\b"], cat="correctness", sev="major")
+J("LOOP-LIST-REPLACE-ALL", "Index loop rewriting every list element", (JAPI + "util/List.html", "Replaces each element of this list with the result of applying the operator to that element", "Java SE 21 API: List.replaceAll"),
+  "((for_statement body: [(block . (expression_statement (method_invocation object: (identifier) @l name: (identifier) @s arguments: (argument_list . (identifier) @i . (_) @v .))) .) (expression_statement (method_invocation object: (identifier) @l name: (identifier) @s arguments: (argument_list . (identifier) @i . (_) @v .)))]) @match (#eq? @s \"set\"))",
+  cls("    void trim(List<String> names) {\n        for (int i = 0; i < names.size(); i++) {\n            names.set(i, names.get(i).trim());\n        }\n    }\n"),
+  cls("    void trim(List<String> names) {\n        names.replaceAll(String::trim);\n    }\n"),
+  "This loop maps every element in place; List.replaceAll(op) says it directly.", "S9411",
+  filters=[r"cap.has_re:v:\b{cap:l}\.get\(\s*{cap:i}\s*\)", r"node.has_re:^for\s*\(\s*int\s+{cap:i}\s*=\s*0\s*;\s*{cap:i}\s*<\s*{cap:l}\.size\(\)\s*;\s*({cap:i}\+\+|\+\+{cap:i})\s*\)"],
+  cat="maintainability", kind="modernization", sev="minor")
+
+# ---- Sonar backlog batch 4 (java) ----------------------------------------------------------------
+J("LOOP-MULTIPLE-JUMPS", "Loop body with several break/continue statements", (JLS14, "A break statement transfers control out of an enclosing statement", "JLS 14.15 The break Statement"),
+  "[(for_statement body: (block) @b) (enhanced_for_statement body: (block) @b) (while_statement body: (block) @b) (do_statement body: (block) @b)] @match",
+  cls("    void scan(int[] xs) {\n        for (int x : xs) {\n            if (x < 0) continue;\n            if (x == 0) break;\n            use(x);\n        }\n    }\n"),
+  cls("    void scan(int[] xs) {\n        for (int x : xs) {\n            if (x == 0) break;\n            if (x > 0) use(x);\n        }\n    }\n"),
+  "Each extra break or continue adds another exit to follow when reading the loop: fold the conditions or extract the body.", "S135",
+  filters=[r"cap.has_re:b:(?s)\b(break|continue)(\s+\w+)?\s*;.*\b(break|continue)(\s+\w+)?\s*;",
+           r"cap.lacks_re:b:\b(for|while|do|switch)\s*[({]|->|\bnew\s+\w+(<[^>]*>)?\s*\([^)]*\)\s*\{"],
+  cat="maintainability", kind="best-practice", sev="info")
+J("SWITCH-TOO-FEW-CASES", "switch statement with fewer than three cases", (JLS14, "The switch statement transfers control to one of several statements", "JLS 14.11 The switch Statement"),
+  "(block (switch_expression body: (switch_block . (switch_block_statement_group) . (switch_block_statement_group)? .) @b) @match)",
+  cls("    void apply(int mode) {\n        switch (mode) {\n            case 1:\n                start();\n                break;\n            default:\n                stop();\n        }\n    }\n"),
+  cls("    void apply(int mode) {\n        if (mode == 1) {\n            start();\n        } else {\n            stop();\n        }\n    }\n"),
+  "A switch with one or two branches reads more plainly as an if/else.", "S1301",
+  filters=[r"cap.lacks_re:b:(?s)(\bcase\b.*){3}"],
+  cat="maintainability", kind="best-practice", sev="info")
+
+add("php", "SWITCH-TOO-FEW-CASES", "switch statement with fewer than three cases", (PHPM + "control-structures.switch.php", "The switch statement is similar to a series of if statements on the same expression", "PHP manual: switch"),
+    "(switch_statement body: (switch_block . (_) . (_)? .) @b) @match",
+    "<?php\nfunction apply(int $mode) {\n    switch ($mode) {\n        case 1:\n            start();\n            break;\n        default:\n            stop();\n    }\n}\n",
+    "<?php\nfunction apply(int $mode) {\n    if ($mode === 1) {\n        start();\n    } else {\n        stop();\n    }\n}\n",
+    "A switch with one or two branches reads more plainly as an if/else (and avoids switch's loose == comparison).", keys=["S1301"],
+    filters=[r"cap.lacks_re:b:(?s)(\bcase\b.*){3}"], cat="maintainability", kind="best-practice", sev="info")
+
+# Angular ([x], [attr.x], bind-x) and Vue (:x) bindings provide the attribute the text regexes
+# looked for: markup.lacks_attr understands every binding syntax (former Angular-template FPs).
+BINDING_SAFE = {
+    "HTML-MAINT-FRAME-WITHOUT-TITLE": "markup.lacks_attr:title|aria-label|aria-labelledby|aria-hidden",
+    "HTML-MAINT-TH-WITHOUT-SCOPE-OR-ID": "markup.lacks_attr:scope|id|headers",
+    "HTML-MAINT-ROLE-WITHOUT-TABINDEX": "markup.lacks_attr:tabindex",
+    "HTML-MAINT-HANDLER-ON-STATIC-ELEMENT": "markup.lacks_attr:role",
+    "HTML-MAINT-HTML-WITHOUT-LANG": "markup.lacks_attr:lang",
+    "HTML-MAINT-EMPTY-ANCHOR": "markup.lacks_attr:aria-label|aria-labelledby|title|innerhtml|innertext|textcontent",
+    "HTML-MAINT-IMG-WITHOUT-ALT": "markup.lacks_attr:alt|aria-label|aria-labelledby",
+}
+BINDING_FP = {
+    "HTML-MAINT-FRAME-WITHOUT-TITLE": '<iframe [src]="url" [title]="label"></iframe>',
+    "HTML-MAINT-TH-WITHOUT-SCOPE-OR-ID": '<table><tr><th [attr.scope]="dir">Item</th></tr></table>',
+    "HTML-MAINT-ROLE-WITHOUT-TABINDEX": '<div role="button" [attr.tabindex]="0" (click)="save()" (keydown.enter)="save()">Save</div>',
+    "HTML-MAINT-EMPTY-ANCHOR": '<a href="/cart" [attr.aria-label]="cartLabel"><i class="icon-cart"></i></a>',
+    "HTML-MAINT-IMG-WITHOUT-ALT": '<img [src]="u" bind-alt="label">',
+}
+for _r in P["html"].R:
+    if _r["id"] in BINDING_SAFE:
+        _r["detection"]["filters"] = list(_r["detection"].get("filters") or []) + [BINDING_SAFE[_r["id"]]]
+        if _r["id"] in BINDING_FP:
+            _r["examples"]["regressions"] = list(_r["examples"].get("regressions") or []) + [
+                {"code": page(BINDING_FP[_r["id"]]), "note": "Angular template binding supplies the attribute"}]
+        _r["rule_version"] = 2
+
+for _p in P.values():
+    for _r in _p.R:
+        if _r.get("category") != "accessibility":
+            continue
+        _w = WCAG_OF.get(_r["id"].split("-", 2)[-1]) or WCAG_OF.get(_r["id"].split("-", 1)[-1])
+        if _w == "bp":
+            _r["tags"] = list(_r.get("tags") or []) + ["a11y-best-practice"]
+        elif _w:
+            _r["wcag"] = _w
 
 # keep last: every rule above is registered
 RULES = [r for p in P.values() for r in p.R]
+

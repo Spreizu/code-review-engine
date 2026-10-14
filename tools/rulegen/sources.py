@@ -1,7 +1,7 @@
 """Regenerate sources.yaml: keep curated entries (seed list from sources.md), add every URL cited by a rule pack,
 and recompute cited_by for all entries.
 
-    /tmp/venv/bin/python tools/rulegen/sources.py   # rewrite sources.yaml + the generated index in sources.md
+    python3 tools/rulegen/sources.py   # rewrite sources.yaml + the generated index in sources.md
 """
 import glob
 import os

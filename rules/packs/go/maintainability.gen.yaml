@@ -52,7 +52,7 @@ rules:
     query: |
       (call_expression function: (selector_expression operand: (identifier) @p field: (field_identifier) @f) (#eq? @p "context") (#match? @f "^(Background|TODO)$")) @match
     filters:
-    - func.has_re:\bctx\s+context\.Context\b
+    - ancestor.has_re:function_declaration|method_declaration|func_literal:^[^{]*\b\w*[cC]tx\s+context\.Context\b
   message: The function already receives a ctx; starting from Background drops its cancellation and deadline. Pass ctx (or context.WithoutCancel(ctx) for deliberately detached work).
   ai_question: 'Is this really a case of: New background context where a ctx parameter exists? Answer from the code shown.'
   source:
@@ -64,6 +64,8 @@ rules:
   examples:
     bad: "package p\n\nfunc f(ctx context.Context, db *sql.DB) error {\n\treturn load(context.Background(), db)\n}\n"
     good: "package p\n\nfunc f(ctx context.Context, db *sql.DB) error {\n\treturn load(ctx, db)\n}\n"
+    regressions:
+    - code: "package p\n\nfunc f(db *sql.DB) error {\n\tctx := context.Background()\n\th := func(ctx context.Context) error { return nil }\n\treturn h(ctx)\n}\n"
   xref:
   - sonar:godre:S8239
   status: active
@@ -83,6 +85,8 @@ rules:
     engine: tree-sitter
     query: |
       (binary_expression operator: ["==" "!="] [left: [(true) (false)] right: [(true) (false)]]) @match
+    filters:
+    - node.lacks_re:\]\s*[!=]=|\b(Get\w*|Value|Load|Interface|Lookup)\([^()]*\)\s*[!=]=|^\s*(true|false)\s*[!=]=\s*\w+\[
   message: 'Comparing with true/false adds nothing: use the expression itself, or negate it.'
   source:
     url: https://staticcheck.dev/docs/checks/
@@ -93,6 +97,9 @@ rules:
   examples:
     bad: "package p\n\nfunc f(done bool) {\n\tif done == true {\n\t\tstop()\n\t}\n}\n"
     good: "package p\n\nfunc f(done bool) {\n\tif done {\n\t\tstop()\n\t}\n}\n"
+    regressions:
+    - code: "package p\n\nfunc f(m map[string]any) bool {\n\treturn m[\"x\"] == true\n}\n"
+    - code: "package p\n\nfunc f(ctx C) bool {\n\treturn GetVar(ctx, k) == true\n}\n"
   xref:
   - gosimple:S1002
   - revive:bool-literal-in-expr
@@ -215,8 +222,10 @@ rules:
     query: |
       (comment) @match
     filters:
-    - node.has_re:^//\s*([\w.]+\s*(:=|=)\s*.+|[\w.]+\(.*\)|return\b.*|if\s.+\{|for\s.*\{)\s*$
+    - node.has_re:^//\s?([\w.]+(,\s*[\w.]+)*\s(:=|=)\s.+|[\w.]+\(.*\)|return\b.*|if\s.+\{|for\s.*\{)\s*$
     - node.lacks_re:(?i)^(#|//)\s*(type:|noqa|pragma|nolint|go:|\+build|lint:|eslint|phpcs|@|-\*-|fmt:|isort:|pylint:|mypy:|e\.g\.|example)
+    - node.lacks_re:^//(\t|\s{2,})
+    - node.lacks_re:^//\s*return\s+[a-z]+\s+[a-z]+\s+[a-z]+
   message: 'This comment is code that was switched off: delete it (version control keeps the history) or restore it.'
   ai_question: Is this comment disabled code (not prose, a doc example or a directive)?
   source:
@@ -233,6 +242,18 @@ rules:
         package p
 
         //go:generate stringer -type=Kind
+        func f() {}
+    - code: "package p\n\n// New returns a router.\n//\n//\tr := mux.NewRouter()\nfunc New() {}\n"
+    - code: |
+        package p
+
+        // return true on the first found command
+        func f() {}
+    - code: |
+        package p
+
+        // Output:
+        // level=info msg="first log"
         func f() {}
   xref:
   - sonar:go:S125
@@ -340,7 +361,7 @@ rules:
     retrieved: '2026-10-09'
     quote: '_: 1.0. _Revive version_: [v1.3.7](https://github.com/revive-lint/revive/releases/tag/v1.3.7). _Description_: Warns if nesting level of control structures (`if-then-else`, `for`, `switch`) exceeds a given maximum.'
   examples:
-    bad: "package p\n\nfunc f(a, b, c, d, e bool) int {\n\tif a {\n\t\tif b {\n\t\t\tif c {\n\t\t\t\tif d {\n\t\t\t\t\tif e {\n\t\t\t\t\t\tg()\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\treturn 0\n}\n"
+    bad: "package p\n\nfunc f(a, b, c, d, e bool) int {\n\tif a {\n\t\tif b {\n\t\t\tif c {\n\t\t\t\tif d {\n\t\t\t\t\tif e {\n\t\t\t\t\t\tif f {\n\t\t\t\t\t\t\tg()\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n\treturn 0\n}\n"
     good: "package p\n\nfunc f(a, b, c, d, e bool) int {\n\tif a {\n\t\tg()\n\t}\n\tif b {\n\t\th()\n\t}\n\tif c && d {\n\t\tk()\n\t}\n\treturn 0\n}\n"
   xref:
   - sonar:go:S134
@@ -586,6 +607,9 @@ rules:
   detection:
     mode: ai-confirm
     engine: tree-sitter
+    files:
+    - '!**/*_test.go'
+    - '!**/testdata/**'
     query: |
       (interpreted_string_literal) @match
     filters:
@@ -636,6 +660,7 @@ rules:
       (binary_expression left: (_) @l operator: ["<" ">" "<=" ">=" "&&" "||" "-" "/" "%" "&" "|"] right: (_) @r (#eq? @l @r)) @match
     filters:
     - cap.lacks_re:l:[(]|\+\+|--|\bawait\b|^[\d.]+$
+    - cap.lacks_re:l:^(true|false|True|False|null|nil|None|-?\d[\w.]*|'[^']*'|\x22[^\x22]*\x22)$
   message: Both operands are the same expression, so the result is constant (or the second operand was meant to be something else).
   source:
     url: https://staticcheck.dev/docs/checks/
@@ -736,6 +761,8 @@ rules:
     engine: tree-sitter
     query: |
       (parenthesized_expression . (parenthesized_expression) .) @match
+    filters:
+    - parentkind.lacks_re:parenthesized_expression:.
   message: 'The extra pair of parentheses adds nothing: remove it.'
   source:
     url: https://go.dev/ref/spec

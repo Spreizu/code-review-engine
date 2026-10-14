@@ -601,6 +601,8 @@ rules:
     - '**/*.tf'
     query: |
       ((template_literal) @match (#match? @match "-----BEGIN ([A-Z]+ )?PRIVATE KEY-----"))
+    filters:
+    - node.has_re:PRIVATE KEY-----([\s|"+]|\\[nr])*[A-Za-z0-9+/]{16}
   message: 'Private key material committed to the repository: revoke it and mount it from a secret store.'
   source:
     url: https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
@@ -611,12 +613,17 @@ rules:
   examples:
     bad: |
       locals {
-        key = "-----BEGIN RSA PRIVATE KEY-----"
+        key = "-----BEGIN RSA PRIVATE KEY-----MIIEpAIBAAKCAQEAu1SU1L7VLPHCgcBIjt"
       }
     good: |
       locals {
         key_file = "/run/secrets/tls.key"
       }
+    regressions:
+    - code: |
+        locals {
+          pem_header = "-----BEGIN PRIVATE KEY-----"
+        }
   status: active
   rule_version: 1
 - id: TF-SEC-REMOTE-STATE-DATA

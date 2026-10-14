@@ -573,6 +573,8 @@ rules:
     engine: tree-sitter
     query: |
       (enhanced_for_statement body: (block . (if_statement condition: (parenthesized_expression) @c consequence: [(block . (return_statement (true)) .) (return_statement (true))] !alternative) .) (#not-match? @c "^\\(\\s*\\w+\\.equals\\(")) @match
+    filters:
+    - node.lacks_re:^for\s*\(\s*(final\s+)?(char|boolean|byte|short|float)\s
   message: Use stream().anyMatch / allMatch / noneMatch.
   fix: Prefer the simplest code that works. When a shortcut is deliberate, add a `limit:` comment saying how far it holds (e.g. input size, request rate) and what to switch to beyond that.
   source:

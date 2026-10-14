@@ -368,6 +368,8 @@ rules:
     engine: tree-sitter
     query: |
       ((simple_parameter type: [(named_type) (primitive_type)] @match default_value: (null)))
+    filters:
+    - node.lacks_re:(?i)^\\?(mixed|null)$
   message: T $x = null is deprecated in 8.4; declare ?T (or T|null) explicitly.
   source:
     url: https://www.php.net/manual/en/migration84.deprecated.php
@@ -382,6 +384,10 @@ rules:
     good: |
       <?php
       function f(?int $a = null) {}
+    regressions:
+    - code: |
+        <?php
+        function f(mixed $default = null) {}
   status: active
   rule_version: 1
 - id: PHP-MIG-LCG-VALUE
@@ -599,9 +605,10 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((member_call_expression name: (name) @match) (#match? @match "^(getClass|isArray|isCallable)$"))
+      ((member_call_expression object: (_) @o name: (name) @match) (#match? @match "^(getClass|isArray|isCallable)$"))
     filters:
-    - file.has_re:Reflection
+    - file.has_re:ReflectionParameter|getParameters\(
+    - type.is:o:ReflectionParameter
   message: Deprecated in 8.0; use getType().
   source:
     url: https://www.php.net/manual/en/migration80.deprecated.php
@@ -618,8 +625,19 @@ rules:
       <?php
       $param = new ReflectionParameter('f', 0);
       $t = $param->getType();
+    regressions:
+    - code: |
+        <?php
+        $r = new ReflectionClass($c);
+        $isArr = $option->isArray();
+        $cls = $definition->getClass();
+    - code: |
+        <?php
+        class InputOption { function isArray() { return true; } }
+        $option = new InputOption();
+        $option->isArray();
   status: active
-  rule_version: 1
+  rule_version: 2
 - id: PHP-MIG-REMOVED-ASSERT-STRING
   title: assert() with a string argument
   language: php

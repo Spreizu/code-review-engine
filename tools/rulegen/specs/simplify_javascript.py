@@ -38,6 +38,9 @@ helper(P, "DEEPCLONE", "Hand-written deep clone helper", "https://developer.mozi
        "creates a deep clone of a value using the structured clone algorithm", ["deepClone", "cloneDeep", "deepCopy", "clone"], "structuredClone",
        "function deepClone(o) {\n  return JSON.parse(JSON.stringify(o))\n}\n", "function snapshot(o) {\n  return structuredClone(o)\n}\n",
        uses=["structuredClone"], loop=False, max_lines=30)
+# structuredClone throws DataCloneError on Vue reactive/ref proxies, Pinia state and MobX observables
+P.R[-1]["ai_question"] += (" In particular, does no caller pass a Vue reactive/ref proxy, Pinia store state or MobX observable"
+                           " (structuredClone throws DataCloneError on proxies; they need toRaw first)?")
 helper(P, "DEBOUNCE", "Hand-written debounce while lodash is installed", "https://lodash.com/docs/4.17.15",
        "Creates a debounced function that delays invoking func", ["debounce", "throttle"], "lodash debounce/throttle",
        "function debounce(fn, ms) {\n  let t\n  return (...a) => {\n    clearTimeout(t)\n    t = setTimeout(() => fn(...a), ms)\n  }\n}\n",

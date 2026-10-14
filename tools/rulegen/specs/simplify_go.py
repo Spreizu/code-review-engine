@@ -19,11 +19,12 @@ loop(P, "REVERSE", "Swap loop that is slices.Reverse", SL, "Reverse reverses the
      "func rev(s []int) {\n\tfor i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {\n\t\ts[i], s[j] = s[j], s[i]\n\t}\n}\n",
      "func rev(s []int) {\n\tslices.Reverse(s)\n}\n", "Use slices.Reverse (Go 1.21).", applies=G121)
 loop(P, "MAPKEYS", "Loop collecting map keys", MP, "Keys returns an iterator over keys in m",
-     '(for_statement (range_clause left: (expression_list . (identifier) @k .) right: (identifier)) body: (block (statement_list . (assignment_statement right: (expression_list (call_expression function: (identifier) @ap arguments: (argument_list (identifier) (identifier) @k2 .)))) .)) (#eq? @ap "append") (#eq? @k @k2)) @match',
+     '(for_statement (range_clause left: (expression_list . (identifier) @k .) right: (identifier) @m) body: (block (statement_list . (assignment_statement right: (expression_list (call_expression function: (identifier) @ap arguments: (argument_list (identifier) (identifier) @k2 .)))) .)) (#eq? @ap "append") (#eq? @k @k2)) @match',
      "func names(m map[string]int) []string {\n\tvar keys []string\n\tfor k := range m {\n\t\tkeys = append(keys, k)\n\t}\n\treturn keys\n}\n",
      "func names(m map[string]int) []string {\n\treturn slices.Collect(maps.Keys(m))\n}\n",
-     "Use slices.Collect(maps.Keys(m)) or slices.Sorted(maps.Keys(m)) (Go 1.23).", applies=G123, mode="ai-confirm",
-     ai="Is the ranged value a map (not a slice, where k would be the index)?")
+     "Use slices.Collect(maps.Keys(m)) or slices.Sorted(maps.Keys(m)) (Go 1.23).", applies=G123,
+     filters=[r"type.is:m:map\[.*"],  # a slice yields indices, an iter.Seq values
+     fp=["func f(s []string) []int {\n\tvar idx []int\n\tfor i := range s {\n\t\tidx = append(idx, i)\n\t}\n\treturn idx\n}\n"])
 
 helper(P, "CONTAINS", "Hand-written contains helper", SL, "Contains reports whether v is present in s",
        ["contains", "containsString", "stringInSlice", "inSlice", "sliceContains", "containsInt", "includes", "hasItem"], "slices.Contains",

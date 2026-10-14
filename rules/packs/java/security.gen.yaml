@@ -481,6 +481,60 @@ rules:
   rule_version: 1
   tags:
   - appsec
+- id: JAVA-SEC-IDOR-FIND-BY-ID
+  title: '@PathVariable id passed to findById without an authorization annotation'
+  language: java
+  kind: security
+  category: security
+  severity: major
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    files:
+    - '**/*.java'
+    query: |
+      ((method_declaration (modifiers (annotation name: (identifier) @ann)) parameters: (formal_parameters (formal_parameter (modifiers (marker_annotation name: (identifier) @pv)) name: (identifier) @id)) body: (block (return_statement [(method_invocation name: (identifier) @m arguments: (argument_list (identifier) @id2)) (method_invocation object: (method_invocation name: (identifier) @m arguments: (argument_list (identifier) @id2)))]))) @match (#match? @ann "^(Get|Put|Patch|Delete|Post)Mapping$") (#eq? @pv "PathVariable") (#eq? @m "findById") (#eq? @id @id2))
+    filters:
+    - node.lacks_re:@PreAuthorize|@PostAuthorize|hasPermission
+    exclude_tests: true
+  message: The object is loaded by a client-supplied id with no owner/tenant check in this handler, so any authenticated user who can guess or enumerate ids can read or change someone else's record (BOLA/IDOR). Look the object up by id and owner together, or deny when it is not the caller's.
+  ai_question: Does this load, update or delete a record identified by a client-supplied id without checking that the authenticated caller may access that object?
+  source:
+    url: https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/
+    doc: '@PathVariable id passed to findById without an authorization annotation'
+    doc_version: OWASP API Security Top 10 2023
+    retrieved: '2026-10-09'
+    quote: Attackers can exploit API endpoints that are vulnerable to broken object-level authorization by manipulating the ID of an object that is sent within the request.
+  examples:
+    bad: |
+      @RestController
+      class Orders {
+        @GetMapping("/orders/{id}")
+        Order get(@PathVariable Long id) {
+          return orders.findById(id).orElseThrow();
+        }
+      }
+    good: |
+      @RestController
+      class Orders {
+        @PreAuthorize("@auth.ownsOrder(#id)")
+        @GetMapping("/orders/{id}")
+        Order get(@PathVariable Long id) {
+          return orders.findById(id).orElseThrow();
+        }
+      }
+  cwe:
+  - CWE-639
+  owasp:
+  - API1:2023
+  asvs:
+  - V8.2.2
+  status: active
+  rule_version: 1
+  tags:
+  - appsec
 - id: JAVA-SEC-JAXP-FSP-001
   title: Enable FEATURE_SECURE_PROCESSING on JAXP factories handling untrusted XML
   language: java

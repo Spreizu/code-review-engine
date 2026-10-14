@@ -92,8 +92,13 @@ rules:
   detection:
     mode: deterministic
     engine: tree-sitter
+    # tests poke __proto__ on purpose (prototype-pollution assertions, fixture prototypes)
+    files: ['!**/*.test.*', '!**/*.spec.*', '!**/test/**', '!**/tests/**', '!**/__tests__/**']
     query: |
       (member_expression property: (property_identifier) @match (#eq? @match "__proto__"))
+    filters:
+    # deleting an own "__proto__" data key is prototype-pollution sanitising, not accessor use
+    - 'ancestor.lacks_re:unary_expression:^delete\b'
   message: The __proto__ accessor is deprecated; prefer Object.getPrototypeOf()/Object.setPrototypeOf() (or Reflect equivalents).
   source:
     url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/proto
@@ -105,6 +110,10 @@ rules:
       const p = obj.__proto__
     good: |
       const p = Object.getPrototypeOf(obj)
+    regressions:
+    - code: |
+        if (Object.prototype.hasOwnProperty.call(o, "__proto__")) delete o.__proto__;
+      note: zod/nest strip-proto-keys sanitiser
 - id: JS-MIG-SUBSTR-001
   title: String.prototype.substr is deprecated
   language: javascript

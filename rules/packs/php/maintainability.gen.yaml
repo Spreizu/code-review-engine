@@ -676,7 +676,9 @@ rules:
                   if ($c) {
                       if ($d) {
                           if ($e) {
-                              $g();
+                              if ($f) {
+                                  $g();
+                              }
                           }
                       }
                   }
@@ -1312,9 +1314,13 @@ rules:
     engine: tree-sitter
     files:
     - '!**/tests/**'
+    - '!**/Tests/**'
     - '!**/*Test.php'
     query: |
-      (throw_expression (object_creation_expression [(name) (qualified_name)] @t (#match? @t "^\\\\?(Exception|Error)$"))) @match
+      (throw_expression (object_creation_expression (qualified_name) @q (#match? @q "^\\\\(Exception|Error)$"))) @match
+      (throw_expression (object_creation_expression (name) @u (#match? @u "^(Exception|Error)$"))) @match
+    filters:
+    - file.has_re:(?m)^use\s+\\?{cap:u}\s*;|{cap:q}|\A(?s:[^n]|n[^a]|na[^m]|nam[^e])*\z
   message: Throwing the most generic exception type forces callers to catch everything; throw a specific (or custom) exception type.
   source:
     url: https://www.php.net/manual/en/class.exception.php
@@ -1337,6 +1343,14 @@ rules:
               throw new \InvalidArgumentException('no path');
           }
       }
+    regressions:
+    - code: |
+        <?php
+        namespace PHPMailer\PHPMailer;
+
+        function f() {
+            throw new Exception('smtp failed');
+        }
   xref:
   - sonar:php:S112
   status: active
@@ -1354,6 +1368,10 @@ rules:
   detection:
     mode: ai-confirm
     engine: tree-sitter
+    files:
+    - '!**/tests/**'
+    - '!**/Tests/**'
+    - '!**/*Test.php'
     query: |
       [(string) (encapsed_string)] @match
     filters:
@@ -1399,6 +1417,7 @@ rules:
       (binary_expression left: (_) @l operator: ["<" ">" "<=" ">=" "&&" "||" "-" "/" "%" "^" "&" "|" "and" "or"] right: (_) @r (#eq? @l @r)) @match
     filters:
     - cap.lacks_re:l:[(]|\+\+|--|\bawait\b|^[\d.]+$
+    - cap.lacks_re:l:^(true|false|True|False|null|nil|None|-?\d[\w.]*|'[^']*'|\x22[^\x22]*\x22)$
   message: Both operands are the same expression, so the result is constant (or the second operand was meant to be something else).
   source:
     url: https://www.php.net/manual/en/language.operators.logical.php
@@ -1483,6 +1502,9 @@ rules:
     engine: tree-sitter
     query: |
       (compound_statement (expression_statement (assignment_expression left: (variable_name) @v)) @match . (return_statement (variable_name) @r) (#eq? @v @r))
+    filters:
+    - func.lacks_re:@var\s+\S+\s+{cap:v}\b
+    - func.lacks_re:^[^{(]*\bfunction\s*&
   message: 'The variable only carries the value to the next line''s return: return the expression directly.'
   source:
     url: https://www.php.net/manual/en/function.return.php
@@ -1502,8 +1524,71 @@ rules:
       function f($a) {
           return $a * 2;
       }
+    regressions:
+    - code: |
+        <?php
+        function f($p) {
+            /** @var resource $r */
+            $r = open($p);
+            return $r;
+        }
+    - code: |
+        <?php
+        class A {
+            public function &offsetGet($o) {
+                $copy = $this->level;
+                return $copy;
+            }
+        }
   xref:
   - sonar:php:S1488
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PHP-MAINT-INCONSISTENT-RETURN
+  title: Function mixes return with and without a value
+  language: php
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    php: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      [(function_definition body: (compound_statement) @b) (method_declaration body: (compound_statement) @b)] @match
+    filters:
+    - cap.has_re:b:\breturn\s*;
+    - cap.has_re:b:\breturn\s+[^;\s]
+    - cap.lacks_re:b:\bfunction\s*\(|\bfn\s*\(|\byield\b
+  message: 'Some paths return a value and others return nothing (null), which hides whether null is intended: return a value on every path.'
+  source:
+    url: https://www.php.net/manual/en/functions.returning-values.php
+    doc: 'PHP manual: Returning values'
+    doc_version: PHP 8.4
+    retrieved: '2026-10-09'
+    quote: 'Note : If the return is omitted the value null will be returned.'
+  examples:
+    bad: |
+      <?php
+      function find(array $xs, int $k) {
+          if (!isset($xs[$k])) {
+              return;
+          }
+          return $xs[$k];
+      }
+    good: |
+      <?php
+      function find(array $xs, int $k) {
+          if (!isset($xs[$k])) {
+              return null;
+          }
+          return $xs[$k];
+      }
+  xref:
+  - sonar:php:S3801
   status: active
   rule_version: 1
   tags:
@@ -1788,6 +1873,8 @@ rules:
     engine: tree-sitter
     query: |
       (conditional_expression [(conditional_expression) (parenthesized_expression (conditional_expression))]) @match
+    filters:
+    - node.lacks_re:^[^?]*(\?:[^?]*)+$
   message: 'A conditional expression inside another one is hard to read: use if/else statements or a named helper.'
   source:
     url: https://www.php.net/manual/en/language.operators.comparison.php
@@ -1809,6 +1896,10 @@ rules:
           }
           return $n == 0 ? 'zero' : 'pos';
       }
+    regressions:
+    - code: |
+        <?php
+        $home = getenv('HOME') ?: getenv('USERPROFILE') ?: '/tmp';
   xref:
   - sonar:php:S3358
   status: active
@@ -1826,8 +1917,15 @@ rules:
   detection:
     mode: deterministic
     engine: tree-sitter
+    files:
+    - '!**/tests/**'
+    - '!**/Tests/**'
+    - '!**/test/**'
+    - '!**/*Test.php'
     query: |
       (expression_statement (object_creation_expression) @match)
+    filters:
+    - func.lacks_re:expectException|setExpectedException|@expectedException|assertThrows|->toThrow
   message: The new object is never used; for an exception this means it was meant to be thrown. Throw, assign or remove it.
   source:
     url: https://www.php.net/manual/en/language.oop5.basic.php
@@ -1852,6 +1950,15 @@ rules:
               throw new InvalidArgumentException('negative');
           }
       }
+    regressions:
+    - code: |
+        <?php
+        class ATest extends TestCase {
+            public function testRejects(): void {
+                $this->expectException(\InvalidArgumentException::class);
+                new Adapter('');
+            }
+        }
   xref:
   - sonar:php:S1848
   status: active
@@ -2001,6 +2108,8 @@ rules:
     engine: tree-sitter
     query: |
       (parenthesized_expression . (parenthesized_expression) .) @match
+    filters:
+    - parentkind.lacks_re:parenthesized_expression:.
   message: 'The extra pair of parentheses adds nothing: remove it.'
   source:
     url: https://www.php.net/manual/en/language.operators.precedence.php
@@ -2454,6 +2563,55 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: PHP-MAINT-SWITCH-TOO-FEW-CASES
+  title: switch statement with fewer than three cases
+  language: php
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    php: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (switch_statement body: (switch_block . (_) . (_)? .) @b) @match
+    filters:
+    - cap.lacks_re:b:(?s)(\bcase\b.*){3}
+  message: A switch with one or two branches reads more plainly as an if/else (and avoids switch's loose == comparison).
+  source:
+    url: https://www.php.net/manual/en/control-structures.switch.php
+    doc: 'PHP manual: switch'
+    doc_version: PHP 8.4
+    retrieved: '2026-10-09'
+    quote: Brazilian Portuguese Russian Turkish Ukrainian Chinese (Simplified) Other switch (PHP 4, PHP 5, PHP 7, PHP 8) The switch statement is similar to a series of if statements on the same expression.
+  examples:
+    bad: |
+      <?php
+      function apply(int $mode) {
+          switch ($mode) {
+              case 1:
+                  start();
+                  break;
+              default:
+                  stop();
+          }
+      }
+    good: |
+      <?php
+      function apply(int $mode) {
+          if ($mode === 1) {
+              start();
+          } else {
+              stop();
+          }
+      }
+  xref:
+  - sonar:php:S1301
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: PHP-MAINT-SWITCH-WITHOUT-DEFAULT
   title: switch statement has no default clause
   language: php
@@ -2554,7 +2712,8 @@ rules:
     query: |
       (method_declaration name: (name) @n body: (compound_statement) @b (#match? @n "^test")) @match
     filters:
-    - cap.lacks_re:b:(?i)(assert|expect|verify|markTestSkipped|markTestIncomplete|fail\()
+    - cap.lacks_re:b:(?i)(assert|expect|verify|markTestSkipped|markTestIncomplete|fail\(|should(Be|Have|Receive)|->(check|ensure)\w*\()
+    - node.lacks_re:DoesNotPerformAssertions|@doesNotPerformAssertions
   message: Without an assertion or expectation the test passes whatever the code does.
   ai_question: 'Is this really a case of: PHPUnit test method without assertions? Answer from the code shown.'
   source:
@@ -3142,6 +3301,47 @@ rules:
         }
   xref:
   - sonar:php:S1599
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PHP-MAINT-VOID-RESULT-USED
+  title: Result of a void function is used
+  language: php
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    php: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (assignment_expression right: (function_call_expression) @c) @match
+    filters:
+    - type.is:c:void
+  message: 'The function is declared void, so the variable is always null: call it as a statement.'
+  source:
+    url: https://www.php.net/manual/en/language.types.void.php
+    doc: 'PHP manual: void'
+    doc_version: PHP 8.4
+    retrieved: '2026-10-09'
+    quote: kish Ukrainian Chinese (Simplified) Other Void void is a return-only type declaration indicating the function does not return a value, but the function may still terminate.
+  examples:
+    bad: |
+      <?php
+      function logLine(string $m): void {
+          echo $m;
+      }
+      $r = logLine('x');
+    good: |
+      <?php
+      function logLine(string $m): void {
+          echo $m;
+      }
+      logLine('x');
+  xref:
+  - sonar:php:S3699
   status: active
   rule_version: 1
   tags:

@@ -533,13 +533,14 @@ rules:
   applies_to:
     go: '>=1.23'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: tree-sitter
     query: |
-      (for_statement (range_clause left: (expression_list . (identifier) @k .) right: (identifier)) body: (block (statement_list . (assignment_statement right: (expression_list (call_expression function: (identifier) @ap arguments: (argument_list (identifier) (identifier) @k2 .)))) .)) (#eq? @ap "append") (#eq? @k @k2)) @match
+      (for_statement (range_clause left: (expression_list . (identifier) @k .) right: (identifier) @m) body: (block (statement_list . (assignment_statement right: (expression_list (call_expression function: (identifier) @ap arguments: (argument_list (identifier) (identifier) @k2 .)))) .)) (#eq? @ap "append") (#eq? @k @k2)) @match
+    filters:
+    - type.is:m:map\[.*
   message: Use slices.Collect(maps.Keys(m)) or slices.Sorted(maps.Keys(m)) (Go 1.23).
   fix: Prefer the simplest code that works. When a shortcut is deliberate, add a `limit:` comment saying how far it holds (e.g. input size, request rate) and what to switch to beyond that.
-  ai_question: Is the ranged value a map (not a slice, where k would be the index)?
   source:
     url: https://pkg.go.dev/maps
     doc: Loop collecting map keys
@@ -549,6 +550,8 @@ rules:
   examples:
     bad: "func names(m map[string]int) []string {\n\tvar keys []string\n\tfor k := range m {\n\t\tkeys = append(keys, k)\n\t}\n\treturn keys\n}\n"
     good: "func names(m map[string]int) []string {\n\treturn slices.Collect(maps.Keys(m))\n}\n"
+    regressions:
+    - code: "func f(s []string) []int {\n\tvar idx []int\n\tfor i := range s {\n\t\tidx = append(idx, i)\n\t}\n\treturn idx\n}\n"
   tags:
   - simplify
   - collapsible-loop

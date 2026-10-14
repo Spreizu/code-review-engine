@@ -181,7 +181,20 @@ both("TASKS-CREATE-EAGER", "Eager task creation/lookup (create/getByName/all)", 
      '((method_invocation object: (identifier) @t name: (identifier) @match) (#eq? @t "tasks") (#match? @match "^(create|getByName|getAt|all|whenTaskAdded)$"))',
      '((navigation_expression . (identifier) @t . (identifier) @match) (#eq? @t "tasks") (#match? @match "^(create|getByName|getAt|all|whenTaskAdded)$"))',
      "tasks.create('docs') {\n    doLast { }\n}\n", "tasks.register('docs') {\n    doLast { }\n}\n", 'tasks.create("docs") {\n    doLast { }\n}\n',
-     'tasks.register("docs") {\n    doLast { }\n}\n', "Eager APIs configure tasks even when they never run; use register/named/configureEach.", **B)
+     'tasks.register("docs") {\n    doLast { }\n}\n', "Eager APIs configure tasks even when they never run; use register/named/configureEach.",
+     xref=["sonar:kotlin:S6623", "sonar:kotlin:S6634"], **B)
+both("TASK-GROUP-DESCRIPTION", "Task registered without group and description", "more_about_tasks.html",
+     "You can assign a group and description to a task",
+     '((method_invocation object: (identifier) @t name: (identifier) @m) @match (#eq? @t "tasks") (#match? @m "^(register|create)$"))',
+     '((call_expression (call_expression (navigation_expression . (identifier) @t . (identifier) @m)) (annotated_lambda)) @match (#eq? @t "tasks") (#match? @m "^(register|create)$"))',
+     "tasks.register('docs') {\n    doLast { }\n}\n",
+     "tasks.register('docs') {\n    group = 'documentation'\n    description = 'Build the docs'\n    doLast { }\n}\n",
+     'tasks.register("docs") {\n    doLast { }\n}\n',
+     'tasks.register("docs") {\n    group = "documentation"\n    description = "Build the docs"\n    doLast { }\n}\n',
+     "A task without group and description is hard to find in `gradle tasks`: set both when you register it.",
+     xref=["sonar:kotlin:S6626"], filters=[r"node.lacks_re:group\s*=", r"node.lacks_re:description\s*="],
+     mode="ai-confirm", ai="Is this a user-facing task (not an internal wiring task) that should show up in `gradle tasks`?",
+     quote="You can also assign a group and description to a task.", **B)
 both("TASK-KEYWORD", "task name { } (eager task declaration)", "task_configuration_avoidance.html", "Instead of returning a task instance, the register(…​) method returns a TaskProvider",
      '((juxt_function_call name: (identifier) @match) (#eq? @match "task"))', None, "task hello {\n    doLast { println 'hi' }\n}\n",
      "tasks.register('hello') {\n    doLast { println 'hi' }\n}\n", None, None, "The task keyword creates the task eagerly; use tasks.register.", **B)
@@ -239,20 +252,22 @@ both("PROVIDER-GET-AT-CONFIG", "Provider.get() outside a task action", "best_pra
 
 # ------------------------------------------------------------------ security / reproducibility
 S = dict(kind="security", cat="security")
+S_HTTP = dict(kind="security", cat="security", cwe=["CWE-494", "CWE-829"], owasp=["M2:2024", "MASVS-CODE-3", "A08:2021", "A08:2025"])
+S_PIN = dict(kind="security", cat="supply-chain", cwe=["CWE-1104", "CWE-494"], owasp=["M2:2024", "MASVS-CODE-3", "A06:2021", "A03:2025"])
 both("INSECURE-REPO-URL", "http:// repository URL", DSL + "org.gradle.api.artifacts.repositories.UrlArtifactRepository.html",
      "Specifies whether it is acceptable to communicate with a repository over an insecure HTTP connection.",
      '((method_invocation name: (identifier) @m body: (closure [(assignment_expression left: (identifier) @u right: [(character_literal) (string_literal)] @match) (juxt_function_call name: (identifier) @u args: (argument_list [(character_literal) (string_literal)] @match))])) (#match? @m "^(maven|ivy)$") (#eq? @u "url") (#match? @match "^.http://"))',
      '((call_expression . (identifier) @m (annotated_lambda (lambda_literal (assignment left: (identifier) @u right: (_) @match)))) (#match? @m "^(maven|ivy)$") (#eq? @u "url") (#match? @match "http://"))',
      "repositories {\n    maven { url = 'http://repo.example.com/m2' }\n}\n", "repositories {\n    maven { url = 'https://repo.example.com/m2' }\n}\n",
      'repositories {\n    maven { url = uri("http://repo.example.com/m2") }\n}\n', 'repositories {\n    maven { url = uri("https://repo.example.com/m2") }\n}\n',
-     "Dependencies fetched over HTTP can be tampered with in transit (Gradle 7+ rejects them unless allowInsecureProtocol).", sev="critical", **S)
+     "Dependencies fetched over HTTP can be tampered with in transit (Gradle 7+ rejects them unless allowInsecureProtocol).", sev="critical", **S_HTTP)
 both("ALLOW-INSECURE-PROTOCOL", "allowInsecureProtocol = true", DSL + "org.gradle.api.artifacts.repositories.UrlArtifactRepository.html",
      "Specifies whether it is acceptable to communicate with a repository over an insecure HTTP connection.",
      '((assignment_expression left: (identifier) @match right: (true)) (#eq? @match "allowInsecureProtocol"))\n((juxt_function_call name: (identifier) @match args: (argument_list (true))) (#eq? @match "allowInsecureProtocol"))',
      '((assignment left: (identifier) @match right: (_) @v) (#match? @match "^(isAllowInsecureProtocol|allowInsecureProtocol)$") (#eq? @v "true"))',
      "maven {\n    url = 'https://r'\n    allowInsecureProtocol = true\n}\n", "maven {\n    url = 'https://r'\n}\n",
      'maven {\n    url = uri("https://r")\n    isAllowInsecureProtocol = true\n}\n', 'maven {\n    url = uri("https://r")\n}\n', "Disables Gradle's HTTP protection for this repository.",
-     sev="major", **S)
+     sev="major", **S_HTTP)
 both("HARDCODED-REPO-CREDENTIALS", "Hard-coded repository credentials", "https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html",
      "Many organizations have them hardcoded within the source code in plaintext",
      '((assignment_expression left: (identifier) @k right: [(character_literal) (string_literal)] @match) (#match? @k "^(password|username|token|apiKey|secret)$") (#not-match? @match "' + PLACEHOLDER_RE.replace("^(", "^.(") + '"))',
@@ -265,16 +280,16 @@ both("DYNAMIC-VERSION", "Dynamic / latest.* dependency version", "dependency_ver
      '((string_content) @match (#match? @match "^[\\\\w.\\\\-]+:[\\\\w.\\\\-]+:([0-9.]*\\\\+|latest\\\\.(release|integration))"))',
      "dependencies {\n    implementation 'com.google.guava:guava:33.+'\n}\n", "dependencies {\n    implementation 'com.google.guava:guava:33.5.0-jre'\n}\n",
      'dependencies {\n    implementation("com.google.guava:guava:latest.release")\n}\n', 'dependencies {\n    implementation("com.google.guava:guava:33.5.0-jre")\n}\n',
-     "Dynamic versions make builds non-reproducible and can pull a malicious/broken release; pin versions (and use dependency locking).", sev="major", kind="security", cat="supply-chain")
+     "Dynamic versions make builds non-reproducible and can pull a malicious/broken release; pin versions (and use dependency locking).", sev="major", **S_PIN)
 both("MAVEN-LOCAL", "mavenLocal() repository", "supported_repository_types.html", "Gradle manages its own cache and doesn’t need to declare the local Maven repository",
      gcall("mavenLocal"), kcall("mavenLocal"), "repositories {\n    mavenLocal()\n    mavenCentral()\n}\n", "repositories {\n    mavenCentral()\n}\n",
      "repositories {\n    mavenLocal()\n    mavenCentral()\n}\n", "repositories {\n    mavenCentral()\n}\n",
-     "~/.m2 content is unverified and machine-specific; builds become non-reproducible.", sev="minor", kind="security", cat="supply-chain")
+     "~/.m2 content is unverified and machine-specific; builds become non-reproducible.", sev="minor", **S_PIN)
 both("SNAPSHOT-DEPENDENCY", "SNAPSHOT dependency", "dependency_versions.html", "Declaring changing versions",
      '([(character_literal) (string_literal)] @match (#match? @match "^.[\\\\w.\\\\-]+:[\\\\w.\\\\-]+:[^:\'\\"]*-SNAPSHOT"))', '((string_content) @match (#match? @match "^[\\\\w.\\\\-]+:[\\\\w.\\\\-]+:[^:]*-SNAPSHOT"))',
      "dependencies {\n    implementation 'com.acme:lib:1.2-SNAPSHOT'\n}\n", "dependencies {\n    implementation 'com.acme:lib:1.2.0'\n}\n",
      'dependencies {\n    implementation("com.acme:lib:1.2-SNAPSHOT")\n}\n', 'dependencies {\n    implementation("com.acme:lib:1.2.0")\n}\n',
-     "Changing versions are re-resolved and non-reproducible.", sev="minor", kind="security", cat="supply-chain", mode="ai-confirm",
+     "Changing versions are re-resolved and non-reproducible.", sev="minor", **S_PIN, mode="ai-confirm",
      ai="Is this a release/main build (not an intentional local integration of an in-development module)?")
 both("FILE-DEPENDENCY", "Local jar file dependency", "supported_repository_types.html", "discouraged, as they do not support metadata formats like Ivy XML or Maven POM files.",
      '((juxt_function_call args: (argument_list (method_invocation name: (identifier) @match))) (#match? @match "^(files|fileTree)$"))\n((juxt_function_call name: (identifier) @c args: (argument_list (identifier) @match)) (#match? @c "^(implementation|api|compileOnly|runtimeOnly|testImplementation)$") (#match? @match "^(files|fileTree)$"))',

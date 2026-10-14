@@ -30,6 +30,9 @@ rules:
     good: |
       def f():
           raise AssertionError("unreachable")
+  xref:
+  - ruff:B011
+  - flake8:B011
   status: active
   rule_version: 1
 - id: PY-QUAL-ASSERT-TUPLE
@@ -57,6 +60,9 @@ rules:
       assert (x > 0, "positive")
     good: |
       assert x > 0, "positive"
+  xref:
+  - ruff:F631
+  - flake8:F631
   status: active
   rule_version: 1
 - id: PY-QUAL-BARE-EXCEPT
@@ -90,6 +96,10 @@ rules:
           f()
       except Exception:
           log()
+  xref:
+  - ruff:E722
+  - flake8:E722
+  - pylint:bare-except
   status: active
   rule_version: 1
 - id: PY-QUAL-BOOL-COMPARISON
@@ -119,6 +129,10 @@ rules:
     good: |
       if flag:
           pass
+  xref:
+  - ruff:E712
+  - flake8:E712
+  - pylint:singleton-comparison
   status: active
   rule_version: 1
 - id: PY-QUAL-CACHED-METHOD
@@ -151,6 +165,9 @@ rules:
       class A:
           def get(self, k):
               return k
+  xref:
+  - ruff:B019
+  - flake8:B019
   status: active
   rule_version: 1
 - id: PY-QUAL-CALLABLE-HASATTR
@@ -180,6 +197,9 @@ rules:
     good: |
       if callable(f):
           pass
+  xref:
+  - ruff:B004
+  - flake8:B004
   status: active
   rule_version: 1
 - id: PY-QUAL-DATETIME-NOW-NAIVE
@@ -209,6 +229,9 @@ rules:
       ts = datetime.now()
     good: |
       ts = datetime.now(timezone.utc)
+  xref:
+  - ruff:DTZ005
+  - flake8:DTZ005
   status: active
   rule_version: 1
 - id: PY-QUAL-DEBUGGER-LEFT
@@ -273,6 +296,9 @@ rules:
           f()
       except OSError:
           pass
+  xref:
+  - ruff:B029
+  - flake8:B029
   status: active
   rule_version: 1
 - id: PY-QUAL-FINALLY-JUMP
@@ -323,6 +349,8 @@ rules:
     engine: tree-sitter
     query: |
       ((string (string_start) @s) @match (#match? @s "^[rRbB]?[fF]") (#not-match? @match "\\{[^{]"))
+    filters:
+    - parentkind.lacks_re:concatenated_string:\{[^{]
   message: The f prefix is unnecessary — or a placeholder was forgotten.
   source:
     url: https://docs.astral.sh/ruff/rules/f-string-missing-placeholders/
@@ -335,6 +363,13 @@ rules:
       msg = f"done"
     good: |
       msg = "done"
+    regressions:
+    - code: |
+        msg = (f"Timed out after "
+               f"{secs}s")
+  xref:
+  - ruff:F541
+  - flake8:F541
   status: active
   rule_version: 1
 - id: PY-QUAL-GETATTR-CONSTANT
@@ -349,7 +384,10 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call function: (identifier) @f arguments: (argument_list . (_) . (string (string_content) @n) .)) @match (#match? @f "^getattr$") (#match? @n "^[A-Za-z_][A-Za-z0-9_]*$"))
+      ((call function: (identifier) @f arguments: (argument_list . (_) . (string (string_content) @n) @s .)) @match (#match? @f "^getattr$") (#match? @n "^[A-Za-z_][A-Za-z0-9_]*$"))
+    filters:
+    - cap.lacks_re:s:^[rRbBuU]*[fF]|\{
+    - cap.lacks_re:n:^_[A-Za-z0-9]+__[A-Za-z0-9_]
   message: Use plain attribute access.
   source:
     url: https://docs.astral.sh/ruff/rules/get-attr-with-constant/
@@ -362,6 +400,16 @@ rules:
       v = getattr(obj, "name")
     good: |
       v = obj.name
+    regressions:
+    - code: |
+        f = getattr(self, f"parse_{kind}")
+    - code: |
+        class T:
+            def t(self, x):
+                return getattr(x, "_Thread__stopped")
+  xref:
+  - ruff:B009
+  - flake8:B009
   status: active
   rule_version: 1
 - id: PY-QUAL-IMPORT-STAR
@@ -389,6 +437,9 @@ rules:
       from os.path import *
     good: |
       from os.path import join, exists
+  xref:
+  - ruff:F403
+  - flake8:F403
   status: active
   rule_version: 1
 - id: PY-QUAL-IN-DICT-KEYS
@@ -404,6 +455,8 @@ rules:
     engine: tree-sitter
     query: |
       ((comparison_operator (_) operators: ["in" "not in"] (call function: (attribute attribute: (identifier) @k) arguments: (argument_list) @args) @match) (#eq? @k "keys") (#eq? @args "()"))
+    filters:
+    - ancestor.lacks_re:function_definition:^(async\s+)?def\s+__contains__\b
   message: Test membership on the dict directly.
   source:
     url: https://docs.astral.sh/ruff/rules/in-dict-keys/
@@ -418,6 +471,42 @@ rules:
     good: |
       if k in d:
           pass
+  xref:
+  - ruff:SIM118
+  - flake8:SIM118
+  status: active
+  rule_version: 1
+- id: PY-QUAL-INDEX-RETURNS-NON-INT
+  title: __index__ returns a non-integer
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (function_definition name: (identifier) @n body: (block (return_statement [(string) (float) (true) (false) (none) (list) (dictionary) (set)] @match)) (#eq? @n "__index__"))
+  message: __index__ must return an int (or a subclass of int); any other type raises TypeError when the object is used as a sequence index.
+  source:
+    url: https://docs.python.org/3/library/stdtypes.html
+    doc: __index__ returns a non-integer
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: Called to implement operator.index() and whenever Python needs to losslessly convert the numeric object to an integer object (such as in slicing, or in the built-in bin(), hex() and oct() functions).
+  examples:
+    bad: |
+      class N:
+          def __index__(self):
+              return '1'
+    good: |
+      class N:
+          def __index__(self):
+              return 1
+  xref:
+  - sonar:python:S6663
   status: active
   rule_version: 1
 - id: PY-QUAL-IS-LITERAL
@@ -447,6 +536,9 @@ rules:
     good: |
       if x == "a":
           pass
+  xref:
+  - ruff:F632
+  - flake8:F632
   status: active
   rule_version: 1
 - id: PY-QUAL-LOGGING-FSTRING
@@ -474,6 +566,10 @@ rules:
       logger.info(f"user {uid} logged in")
     good: |
       logger.info("user %s logged in", uid)
+  xref:
+  - ruff:G004
+  - flake8:G004
+  - pylint:logging-fstring-interpolation
   status: active
   rule_version: 1
 - id: PY-QUAL-LOOP-VAR-CLOSURE
@@ -506,6 +602,9 @@ rules:
       fs = []
       for i in range(3):
           fs.append(lambda i=i: i)
+  xref:
+  - ruff:B023
+  - flake8:B023
   status: active
   rule_version: 1
 - id: PY-QUAL-MUTABLE-DEFAULT
@@ -521,6 +620,8 @@ rules:
     engine: tree-sitter
     query: |
       ([(default_parameter value: [(list) (dictionary) (set)] @match) (typed_default_parameter value: [(list) (dictionary) (set)] @match)])
+    filters:
+    - ancestor.lacks_re:typed_default_parameter:\b(Query|Header|Cookie|Form|Body|Path|File)\(
   message: Defaults are evaluated once and shared between calls.
   source:
     url: https://docs.astral.sh/ruff/rules/mutable-argument-default/
@@ -538,6 +639,13 @@ rules:
           acc = [] if acc is None else acc
           acc.append(x)
           return acc
+    regressions:
+    - code: |
+        async def read_items(q: Annotated[list[str], Query()] = ["foo"]):
+            return q
+  xref:
+  - ruff:B006
+  - flake8:B006
   status: active
   rule_version: 1
 - id: PY-QUAL-NONE-COMPARISON
@@ -567,6 +675,10 @@ rules:
     good: |
       if x is None:
           pass
+  xref:
+  - ruff:E711
+  - flake8:E711
+  - pylint:singleton-comparison
   status: active
   rule_version: 1
 - id: PY-QUAL-OPEN-NO-ENCODING
@@ -576,7 +688,7 @@ rules:
   category: correctness
   severity: minor
   applies_to:
-    python: '*'
+    python: <3.15
   detection:
     mode: deterministic
     engine: tree-sitter
@@ -611,6 +723,46 @@ rules:
       code: |
         def load(path, mode):
             return open(path, mode=mode)
+  xref:
+  - ruff:PLW1514
+  - flake8:PLW1514
+  - pylint:unspecified-encoding
+  status: active
+  rule_version: 1
+- id: PY-QUAL-ORDERING-WITHOUT-EQ
+  title: __lt__ defined without __eq__
+  language: python
+  kind: best-practice
+  category: correctness
+  severity: minor
+  applies_to:
+    python: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((class_definition body: (block (function_definition name: (identifier) @n))) @match (#eq? @n "__lt__") (#not-match? @match "__eq__"))
+  message: 'Ordering without equality is incomplete: objects can be less-than each other and still not compare equal to anything. Define __eq__ (and functools.total_ordering, or the rest of the rich comparisons).'
+  ai_question: Does this class participate in sorting or comparisons where equality should be consistent with ordering?
+  source:
+    url: https://docs.python.org/3/library/functools.html
+    doc: __lt__ defined without __eq__
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: The class must define one of __lt__(), __le__(), __gt__(), or __ge__(). In addition, the class should supply an __eq__() method.
+  examples:
+    bad: |
+      class V:
+          def __lt__(self, other):
+              return self.n < other.n
+    good: |
+      class V:
+          def __eq__(self, other):
+              return self.n == other.n
+          def __lt__(self, other):
+              return self.n < other.n
+  xref:
+  - sonar:python:S8500
   status: active
   rule_version: 1
 - id: PY-QUAL-RAISE-NOTIMPLEMENTED
@@ -640,6 +792,9 @@ rules:
     good: |
       def f():
           raise NotImplementedError
+  xref:
+  - ruff:F901
+  - flake8:F901
   status: active
   rule_version: 1
 - id: PY-QUAL-RAISE-WITHOUT-FROM
@@ -674,6 +829,10 @@ rules:
           f()
       except KeyError as e:
           raise ValueError('missing') from e
+  xref:
+  - ruff:B904
+  - flake8:B904
+  - pylint:raise-missing-from
   status: active
   rule_version: 1
 - id: PY-QUAL-REQUESTS-NO-TIMEOUT
@@ -728,6 +887,9 @@ rules:
       name = fn.rstrip(".txt")
     good: |
       name = fn.removesuffix(".txt")
+  xref:
+  - ruff:B005
+  - flake8:B005
   status: active
   rule_version: 1
 - id: PY-QUAL-TRY-EXCEPT-PASS
@@ -743,6 +905,8 @@ rules:
     engine: tree-sitter
     query: |
       (except_clause (block . (pass_statement) .) @match)
+    filters:
+    - 'parentkind.has_re:except_clause:^except\s*(\(?\s*(builtins\.)?(Exception|BaseException)\s*\)?\s*(as\s+\w+\s*)?)?:'
   message: Silently ignoring errors hides bugs; log or use contextlib.suppress explicitly.
   source:
     url: https://docs.astral.sh/ruff/rules/try-except-pass/
@@ -754,13 +918,22 @@ rules:
     bad: |
       try:
           f()
-      except ValueError:
+      except Exception:
           pass
     good: |
       try:
           f()
-      except ValueError:
+      except Exception:
           log.debug('ignored', exc_info=True)
+    regressions:
+    - code: |
+        try:
+            import ujson
+        except ImportError:
+            pass
+  xref:
+  - ruff:S110
+  - flake8:S110
   status: active
   rule_version: 1
 - id: PY-QUAL-TYPE-COMPARISON
@@ -790,6 +963,9 @@ rules:
     good: |
       if isinstance(x, int):
           pass
+  xref:
+  - ruff:E721
+  - flake8:E721
   status: active
   rule_version: 1
 - id: PY-QUAL-USELESS-COMPARISON
@@ -819,6 +995,9 @@ rules:
     good: |
       def f(x):
           assert x == 1
+  xref:
+  - ruff:B015
+  - flake8:B015
   status: active
   rule_version: 1
 - id: PY-QUAL-ZIP-WITHOUT-STRICT
@@ -849,5 +1028,8 @@ rules:
     good: |
       for a, b in zip(xs, ys, strict=True):
           pass
+  xref:
+  - ruff:B905
+  - flake8:B905
   status: active
   rule_version: 1

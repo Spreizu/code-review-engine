@@ -103,15 +103,24 @@ conv("ELVIS", "if (x != null) x else y", "idioms.html", "If-not-null-else shorth
      '((if_expression condition: (binary_expression left: (identifier) @a right: (_) @n) . (identifier) @b) @match (#eq? @a @b) (#eq? @n "null") (#match? @match "!="))',
      'val y = if (x != null) x else "d"\n', 'val y = x ?: "d"\n', "Use the Elvis operator.", sev="info", cat="style")
 conv("EMPTY-CATCH", "Empty catch block", "exceptions.html", "Catching exceptions: handle the unexpected exception manually", '(catch_block (block) @match (#match? @match "^\\\\{\\\\s*\\\\}$"))',
-     "try { g() } catch (e: Exception) { }\n", "try { g() } catch (e: IOException) { log.warn(\"g failed\", e) }\n", "Swallowing exceptions hides failures.", cat="correctness")
+     "try { g() } catch (e: Exception) { }\n", "try { g() } catch (e: IOException) { log.warn(\"g failed\", e) }\n", "Swallowing exceptions hides failures.", cat="correctness",
+     # detekt EmptyCatchBlock allowedExceptionNameRegex default: `_|(ignore|expected).*` marks a deliberate swallow
+     filters=[r"parent.lacks_re:^catch\s*\(\s*(_|ignore\w*|expected\w*)\s*:"],
+     fp=["try { g() } catch (_: Exception) {}\ntry { g() } catch (ignored: IOException) { }\n"])
 conv("STRING-CONCAT", "String concatenation with +", "idioms.html", "String interpolation println(\"Name $name\")",
-     '((binary_expression left: (binary_expression left: (string_literal) right: (_)) right: (string_literal)) @match)', 'val s = "Hello, " + name + "!"\n',
-     'val s = "Hello, $name!"\n', "Use string templates.", sev="info", cat="style")
+     # the middle operand must be an expression: "a " + "b " + "c" only wraps a long literal over lines
+     '((binary_expression left: (binary_expression left: (string_literal) right: (_) @mid) right: (string_literal)) @match (#not-match? @mid "^\\""))', 'val s = "Hello, " + name + "!"\n',
+     'val s = "Hello, $name!"\n', "Use string templates.", sev="info", cat="style",
+     fp=['val m = "first part of a long message " +\n    "second part " +\n    "third part"\n'])
 conv("TEMPLATE-BRACES", "${x} for a simple variable in a template", "coding-conventions.html", "Don't use curly braces when inserting a simple variable into a string template.",
-     '((interpolation (identifier)) @match (#match? @match "^\\\\$\\\\{"))', 'println("${x}")\n', 'println("$x")\n', "Drop redundant braces.", sev="info", cat="style")
+     '((interpolation (identifier) @x) @match (#match? @match "^\\\\$\\\\{"))', 'println("${x}")\n', 'println("$x")\n', "Drop redundant braces.", sev="info", cat="style",
+     # braces are required when a letter, digit or _ follows ("${ms}ms", "${name}_v2")
+     filters=[r"parent.lacks_re:\$\{{cap:x}\}\w"], fp=['println("took ${ms}ms in ${name}_v2")\n'])
 conv("UNIT-RETURN", "Explicit : Unit return type", "coding-conventions.html", "If a function returns Unit, the return type should be omitted",
      '((function_declaration (function_value_parameters) . (user_type (identifier) @match)) (#eq? @match "Unit"))', "fun log(m: String): Unit {\n    println(m)\n}\n",
-     "fun log(m: String) {\n    println(m)\n}\n", "Omit Unit return types.", sev="info", cat="style")
+     "fun log(m: String) {\n    println(m)\n}\n", "Omit Unit return types.", sev="info", cat="style",
+     # with an expression body, ": Unit" pins the signature (otherwise inferred from the expression, e.g. Nothing or the lock result)
+     filters=[r"ancestor.lacks_re:function_declaration:\)\s*:\s*Unit\s*="], fp=["override fun close(): Unit = synchronized(lock) { release() }\n"])
 conv("BOXED-ARRAY", "Array<Int>/Array<Long>... of primitives", "arrays.html", "primitive-type arrays",
      '((user_type (identifier) @a (type_arguments (type_projection (user_type (identifier) @match)))) (#eq? @a "Array") (#match? @match "^(Int|Long|Short|Byte|Double|Float|Boolean|Char)$"))',
      "val a: Array<Int> = arrayOf(1, 2)\n", "val a: IntArray = intArrayOf(1, 2)\n", "Primitive arrays avoid boxing.", sev="info", cat="performance")
@@ -139,7 +148,9 @@ conv("WHEN-SUBJECT-ELSE", "when used as statement on a sealed/enum value without
      filters=["node.lacks_re:\\belse\\b"])
 conv("PRINTLN-LOGGING", "printStackTrace in production code", "exceptions.html", "Catching exceptions: handle the unexpected exception manually",
      '((call_expression (navigation_expression (_) (identifier) @match)) (#eq? @match "printStackTrace"))', "try { g() } catch (e: Exception) { e.printStackTrace() }\n",
-     "try { g() } catch (e: IOException) { log.error(\"failed\", e) }\n", "printStackTrace goes to stderr unstructured; use a logger.", cat="maintainability")
+     "try { g() } catch (e: IOException) { log.error(\"failed\", e) }\n", "printStackTrace goes to stderr unstructured; use a logger.", cat="maintainability",
+     # printStackTrace(writer) renders into a caller-supplied sink (log formatters), not stderr
+     filters=[r"ancestor.lacks_re:call_expression:printStackTrace\s*\(\s*([^S\s)]|S[^y])"], fp=["fun format(t: Throwable, pw: PrintWriter) { t.printStackTrace(pw) }\n"])
 conv("LATEINIT-CHECK-ABUSE", "lateinit isInitialized checks", "properties.html", "isInitialized property on the reference to that property",
      '((navigation_expression (callable_reference) (identifier) @match) (#eq? @match "isInitialized"))', "if (::db.isInitialized) db.close()\n", "db?.close()\n",
      "Frequent isInitialized checks suggest the property should be nullable or lazy.", sev="info", cat="design", mode="ai-confirm",
@@ -159,7 +170,10 @@ def co(id, title, url, needle, query, bad, good, msg, sev="major", cat="concurre
 co("GLOBALSCOPE", "GlobalScope usage", CO + "-global-scope/", "delicate API",
    '((navigation_expression . (identifier) @match . (identifier) @l) (#eq? @match "GlobalScope") (#match? @l "^(launch|async|produce|actor)$"))',
    "fun start() {\n    GlobalScope.launch { work() }\n}\n", "fun CoroutineScope.start() {\n    launch { work() }\n}\n",
-   "GlobalScope coroutines are not bound to any lifecycle and leak; use structured concurrency (a scoped CoroutineScope).")
+   "GlobalScope coroutines are not bound to any lifecycle and leak; use structured concurrency (a scoped CoroutineScope).",
+   # GlobalScope is a delicate API: an explicit DelicateCoroutinesApi opt-in records that the use is deliberate
+   filters=["file.lacks_re:DelicateCoroutinesApi"],
+   fp=["@OptIn(DelicateCoroutinesApi::class)\nfun start() {\n    GlobalScope.launch { work() }\n}\n"])
 co("RUNBLOCKING-IN-SUSPEND", "runBlocking inside a suspend function / coroutine", CO + "run-blocking.html", "designed to bridge regular blocking code to libraries that are written in suspending style",
    '((function_declaration (modifiers (function_modifier) @s) (function_body (block (call_expression . (identifier) @match)))) (#eq? @s "suspend") (#eq? @match "runBlocking"))',
    "suspend fun load() {\n    runBlocking { fetch() }\n}\n", "suspend fun load() {\n    fetch()\n}\n", "runBlocking blocks the thread and can deadlock the dispatcher.")
@@ -197,12 +211,17 @@ sec("RUNTIME-EXEC-TEMPLATE", "Runtime.exec / ProcessBuilder with an interpolated
 sec("SQL-TEMPLATE", "SQL built with string templates", "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html", "Parameterized Queries",
     '((call_expression (navigation_expression (_) (identifier) @m) (value_arguments . (value_argument (string_literal) @match))) (#match? @match "\\\\$[A-Za-z_{]") (#match? @m "^(executeQuery|executeUpdate|execute|prepareStatement|rawQuery|execSQL|createQuery|createNativeQuery|query|update)$"))',
     'stmt.executeQuery("SELECT * FROM u WHERE id = $id")\n', 'conn.prepareStatement("SELECT * FROM u WHERE id = ?").apply { setLong(1, id) }\n',
-    "Use bind parameters.", docv="OWASP cheat sheet (2026)")
+    "Use bind parameters.", docv="OWASP cheat sheet (2026)",
+    # execute()/query()/update() are generic names (okhttp TaskQueue.execute("$name ping")): the template must read as SQL
+    filters=["taint.clean:sqli", r"node.has_re:(?i)\b(select\s.+\sfrom|insert\s+into|update\s+\S+\s+set|delete\s+from|(create|drop|alter|truncate)\s+table|\swhere\s)"],
+    fp=['writerQueue.execute("$connectionName[$streamId] writeSynReset") { run() }\n'])
 sec("TRUST-ALL", "TrustManager that accepts every certificate", JDK + "java.base/javax/net/ssl/X509TrustManager.html", "Given the partial or complete certificate chain provided by the peer, build a certificate path to a trus",
     '((function_declaration name: (identifier) @match (function_body (block) @b)) (#match? @match "^(checkServerTrusted|checkClientTrusted)$") (#match? @b "^\\\\{\\\\s*\\\\}$"))',
     "override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {}\n",
     "override fun checkServerTrusted(chain: Array<X509Certificate>, authType: String) {\n    delegate.checkServerTrusted(chain, authType)\n}\n",
-    "An empty checkServerTrusted disables TLS verification (MITM).")
+    "An empty checkServerTrusted disables TLS verification (MITM).",
+    # test fixtures trusting a local self-signed server are not shipped code
+    files=SRC + ["!**/src/test/**", "!**/src/*Test/**", "!**/test/**", "!**/*Test.kt", "!**/*Tests.kt", "!**/*TestClass.kt"])
 sec("HOSTNAME-VERIFIER-ALL", "HostnameVerifier returning true", JDK + "java.base/javax/net/ssl/HostnameVerifier.html", "This class is the base interface for hostname verification.",
     '((call_expression . (identifier) @h (annotated_lambda (lambda_literal) @l)) @match (#eq? @h "HostnameVerifier") (#match? @l "true\\\\s*\\\\}$"))',
     "val v = HostnameVerifier { _, _ -> true }\n", "val v = HttpsURLConnection.getDefaultHostnameVerifier()\n", "Accepting every hostname disables TLS identity checks.")
@@ -297,14 +316,33 @@ conv("CLASS-NAMING", "Class or object name not in UpperCamelCase", "coding-conve
 conv("FUNCTION-NAMING", "Function name starts with an uppercase letter", "coding-conventions.html", "Names of functions, properties, and local variables start with a lowercase letter",
      '((function_declaration name: (identifier) @n) @match (#match? @n "^[A-Z]") (#not-match? @match "@Composable|@Test"))',
      "fun LoadUser(id: Long) {}\n", "fun loadUser(id: Long) {}\n", "Use lowerCamelCase (factory functions named after the type are the exception).", sev="info", cat="style",
+     # factory functions: declared return type or expression body names the same type; explicit @Suppress
+     filters=[r"node.lacks_re:\)\s*:\s*([\w.]+\.)?\w*{cap:n}\b|=\s*{cap:n}\s*[(<{.]|@Suppress\([^)]*FunctionNaming",
+              # corpus (coil, exposed): factory functions whose expression body is a constructor call, e.g.
+              # fun OkHttpNetworkFetcherFactory(...) = NetworkFetcher.Factory(...)
+              r"node.lacks_re:\bfun\s+(<[^>]*>\s*)?([\w.<>]+\.)?{cap:n}\s*\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\)\s*(:[^={]+)?=\s*([\w.]+\.)?[A-Z]\w*\s*[(<{]"],
+     fp=["fun Size(width: Int, height: Int) = Size(Dimension(width), Dimension(height))\nfun MainViewModel(r: Resources): MainViewModel {\n    return RealVm(r)\n}\n",
+         "actual fun ConnectivityChecker(context: PlatformContext) = ConnectivityChecker.ONLINE\n",
+         "fun <T> When(cond: Expression<*>, result: Expression<T>): CaseWhen<T> {\n    return CaseWhen<T>().When(cond, result)\n}\n",
+         "fun OkHttpFetcherFactory(\n    callFactory: () -> Call.Factory = ::OkHttpClient,\n    cache: () -> Strategy = { Strategy() },\n) = NetworkFetcher.Factory(\n    client = { callFactory() },\n)\n"],
      mode="ai-confirm", ai="Is this a regular function (not a factory function named after the type it returns, and not a Compose/DSL builder)?")
 conv("VAR-NEVER-REASSIGNED", "Local var that could be val", "coding-conventions.html", "Always declare local variables and properties as val rather than var if they are not modified after initialization.",
-     '((function_body (block (property_declaration) @match)) (#match? @match "^var\\\\b"))',
+     '((function_body (block (property_declaration (variable_declaration (identifier) @name)) @match)) (#match? @match "^var\\\\b"))',
      "fun f(): Int {\n    var x = compute()\n    return x\n}\n", "fun f(): Int {\n    val x = compute()\n    return x\n}\n", "Prefer immutable locals.", sev="info", cat="style",
+     # initialised in the declaration, not delegated (by remember { mutableStateOf() } needs var), and no other
+     # assignment/compound assignment/increment of the name anywhere in the function
+     filters=[r"node.has_re:^var\s+\w+\s*(:[^=]+)?=", r"node.lacks_re:\bby\b",
+              r"func.count_lt:2:\b{cap:name}\s*(:[^=\n]+)?([-+*/%]?=[^=]|\+\+|--)|(\+\+|--)\s*{cap:name}\b"],
+     fp=["fun f(): Int {\n    var idx: Map<String, Int>? = null\n    if (idx == null) idx = load()\n    var n = 0\n    repeat(3) { n++ }\n    var s = 1\n    s += 2\n    var on by remember { mutableStateOf(false) }\n    return n + s\n}\n",
+         # tree-sitter-kotlin cuts this function at `suspend { }` + KDoc + `.call(`: the later write must still count
+         "class T {\n    @Test\n    fun testSuspendMain() {\n        Assumptions.assumeTrue(dialect == TestDB.POSTGRESQL)\n\n        val latch = CountDownLatch(1)\n        var exception: Throwable? = null\n\n        suspend {\n            val db = TestDB.POSTGRESQL.connect()\n\n            suspendTransaction(db) {\n                SchemaUtils.create(UsersTable)\n            }\n        }\n            /**\n             * The main reason for such a coroutine starting is to get\n             * [EmptyCoroutineContext] as coroutine context. It will guarantee\n             * that coroutine dispatcher will be `null` what could lead\n             * to wrong transaction switching\n             */\n            .startCoroutine(object : Continuation<Unit> {\n                override val context = EmptyCoroutineContext\n\n                override fun resumeWith(result: Result<Unit>) {\n                    result.onFailure { exception = it }\n                    latch.countDown()\n                }\n            })\n\n        // Wait for completion with timeout\n        if (!latch.await(10, TimeUnit.SECONDS)) {\n            throw AssertionError(\"Test did not complete within 10 seconds\")\n        }\n\n        assertNull(exception)\n    }\n}\n"],
      mode="ai-confirm", ai="Is this var never reassigned after initialization within the function?")
 conv("MUTABLE-COLLECTION-API", "Mutable collection type exposed", "coding-conventions.html", "Always use immutable collection interfaces (Collection, List, Set, Map) to declare collections which are not mutated.",
-     '((function_declaration (user_type (identifier) @match)) (#match? @match "^(MutableList|MutableSet|MutableMap|MutableCollection|ArrayList|HashMap|HashSet)$"))',
+     '((function_declaration (function_value_parameters) . (user_type (identifier) @match)) (#match? @match "^(MutableList|MutableSet|MutableMap|MutableCollection|ArrayList|HashMap|HashSet)$"))',
      "fun names(): MutableList<String> = mutableListOf()\n", "fun names(): List<String> = listOf()\n", "Expose read-only interfaces.", sev="info", cat="maintainability",
+     # return types only; non-public, override and actual declarations are not a free API choice
+     filters=[r"ancestor.lacks_re:function_declaration:^[^{=]*?\b(private|internal|protected|override|actual)\s+(\w+\s+)*fun\b"],
+     fp=["private fun getMap(): MutableMap<Any, E> = m\nfun MutableSet<String>.newNonce() = 1\nfun merge(ranges: MutableList<R>): List<R> = ranges\n"],
      mode="ai-confirm", ai="Do callers not need to mutate the returned collection?")
 conv("TRY-FINALLY-CLOSE", "try/finally close() instead of use {}", "idioms.html", "Java 7's try-with-resources",
      '((try_expression (finally_block) @f) @match (#match? @f "\\\\.close\\\\(\\\\)"))',
@@ -371,5 +409,24 @@ sec("BROADCAST-NO-PERMISSION", "Broadcast sent without a receiver permission", A
     "Any installed app can register for this implicit broadcast and read its extras. Pass a receiver permission, set an explicit package, or use a local mechanism.",
     sev="major", mode="ai-confirm", ai="Is the intent implicit (no setPackage/explicit component) and does it carry data other apps should not see?",
     docv="Android developer guide", xref=["sonar:kotlin:S5320"])
+
+# ------------------------------------------------------------------ coding conventions (kotlinlang.org; Sonar kotlin keys as xref only)
+P("LIFT-RETURN", "return repeated on both branches of if/when", K + "coding-conventions.html", "Prefer using if for a ternary operator",
+  "(if_expression (return_expression) (return_expression) @match)",
+  "fun f(x: Boolean): Int {\n    if (x) return 1 else return 2\n}\n",
+  "fun f(x: Boolean): Int {\n    return if (x) 1 else 2\n}\n",
+  "Both branches return: lift return in front of if so the if is the expression.",
+  sev="info", kind="best-practice", cat="maintainability", files=SRC,
+  quote="In Kotlin, if is an expression, i.e. it returns a value. Therefore there is no ternary operator (condition ? then : else), because ordinary if works fine in this role.",
+  xref=["sonar:kotlin:S6510"])
+P("GETTER-SETTER-PROPERTY", "Java-style getX/setX instead of a property", K + "coding-conventions.html", "Prefer using a property rather than a Java-style getter",
+  '((function_declaration name: (identifier) @n (function_value_parameters) @p) @match (#match? @n "^get[A-Z]") (#eq? @p "()"))',
+  "class User {\n    private var name: String = \"\"\n    fun getName(): String = name\n}\n",
+  "class User {\n    var name: String = \"\"\n}\n",
+  "A no-arg getX() is a Java getter: expose a Kotlin property instead (the compiler still generates getX for Java callers).",
+  sev="info", kind="best-practice", cat="maintainability", files=SRC, mode="ai-confirm",
+  ai="Is this a Java-style getter for a backing field (not an expensive computation, factory, or Java override that must stay a function)?",
+  quote="In some cases functions with no arguments might be interchangeable with read-only properties.",
+  xref=["sonar:kotlin:S6512"])
 
 RULES = P.R

@@ -529,7 +529,9 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (for_statement (block . (assignment) @a .) (#match? @a "^\\w+\\s*\\+=")) @match
+      (for_statement (block . (assignment left: (identifier) @acc) @a .) (#match? @a "^\\w+\\s*\\+=")) @match
+    filters:
+    - func.has_re:\bvar\s+{cap:acc}\s*(:\s*(Int|Long|Double|Float|Short|Byte|UInt|ULong)\s*)?=\s*[-+]?(\d|0x)
   message: Use sumOf { } (or sum()).
   fix: Prefer the simplest code that works. When a shortcut is deliberate, add a `limit:` comment saying how far it holds (e.g. input size, request rate) and what to switch to beyond that.
   source:
@@ -547,6 +549,13 @@ rules:
       }
     good: |
       fun total(items: List<Item>): Int = items.sumOf { it.price }
+    regressions:
+    - code: |
+        fun all(xs: List<P>): List<R> {
+            val result = mutableListOf<R>()
+            for (p in xs) { result += load(p) }
+            return result
+        }
   tags:
   - simplify
   - collapsible-loop

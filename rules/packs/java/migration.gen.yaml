@@ -274,14 +274,13 @@ rules:
   applies_to:
     java: '>=8'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: tree-sitter
     query: |
-      ((method_invocation name: (identifier) @m arguments: (argument_list) @args) @match (#eq? @m "toURL") (#eq? @args "()"))
+      ((method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list) @args) @match (#eq? @m "toURL") (#eq? @args "()"))
     filters:
-    - node.lacks_descendant_text:toURI()
+    - type.is:o:File
   message: File.toURL() does not escape illegal URL characters and is deprecated; use file.toURI().toURL(). (URI.toURL() itself is fine.)
-  ai_question: Is the receiver of toURL() a java.io.File (deprecated) rather than a java.net.URI (fine)?
   source:
     url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html
     doc: 'Javadoc: File'
@@ -301,10 +300,17 @@ rules:
           URL u = new File(path).toURI().toURL();
         }
       }
+    regressions:
+    - code: |
+        class Example {
+          void run() throws Exception {
+            URL u = new URI(s).toURL();
+          }
+        }
   tags:
   - jdk-deprecated
   status: active
-  rule_version: 1
+  rule_version: 2
 - id: JAVA-MIG-DEP-INFLATER-TOTAL-001
   title: Inflater/Deflater.getTotalIn/getTotalOut are deprecated (JDK 23)
   language: java
@@ -719,14 +725,13 @@ rules:
   applies_to:
     java: '>=16'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: tree-sitter
     query: |
-      ((method_invocation name: (identifier) @m arguments: (argument_list) @args) @match (#match? @m "^(destroy|isDestroyed)$") (#eq? @args "()"))
+      ((method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list) @args) @match (#match? @m "^(destroy|isDestroyed)$") (#eq? @args "()"))
     filters:
-    - file.has_text:ThreadGroup
+    - type.is:o:ThreadGroup
   message: ThreadGroup.destroy/isDestroyed (and daemon status) are deprecated for removal since JDK 16; thread groups can no longer be destroyed.
-  ai_question: Is destroy()/isDestroyed() invoked on a java.lang.ThreadGroup?
   source:
     url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ThreadGroup.html
     doc: 'Javadoc: ThreadGroup'
@@ -746,11 +751,20 @@ rules:
           ThreadGroup g = new ThreadGroup("w");
         }
       }
+    regressions:
+    - code: |
+        class Example {
+          void run() throws Exception {
+            ThreadGroup g = new ThreadGroup("w");
+            Process p = new ProcessBuilder("true").start();
+            p.destroy();
+          }
+        }
   tags:
   - jdk-deprecated
   - for-removal
   status: active
-  rule_version: 1
+  rule_version: 2
 - id: JAVA-MIG-DEP-URLDECODER-001
   title: URLDecoder.decode(String) uses the default charset (deprecated)
   language: java

@@ -7,7 +7,8 @@ FN, IT, COL, ST = ("https://docs.python.org/3/library/functions.html", "https://
                    "https://docs.python.org/3/library/collections.html", "https://docs.python.org/3/library/stdtypes.html")
 
 loop(P, "ANY", "Loop that is any()/all()", FN, "Return True if any element of the iterable is true",
-     '(for_statement body: (block . (if_statement consequence: (block . (return_statement (true)) .) !alternative) .)) @match',
+     # Ruff SIM110: only when the loop is followed directly by `return False` (otherwise it is not a plain any()).
+     '(block (for_statement !alternative body: (block . (if_statement consequence: (block . (return_statement (true)) .) !alternative) .)) @match . (return_statement (false)))',
      "def has_admin(users):\n    for u in users:\n        if u.is_admin:\n            return True\n    return False\n",
      "def has_admin(users):\n    return any(u.is_admin for u in users)\n", "Use any(...) / all(...) with a generator expression.")
 loop(P, "SUM", "Accumulator loop that is sum()", FN, "Sums start and the items of an iterable",

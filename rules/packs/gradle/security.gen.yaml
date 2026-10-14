@@ -36,6 +36,14 @@ rules:
       maven {
           url = 'https://r'
       }
+  cwe:
+  - CWE-494
+  - CWE-829
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A08:2021
+  - A08:2025
   status: active
   rule_version: 1
 - id: GRADLE-SEC-ALLOW-INSECURE-PROTOCOL-KTS
@@ -70,6 +78,14 @@ rules:
       maven {
           url = uri("https://r")
       }
+  cwe:
+  - CWE-494
+  - CWE-829
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A08:2021
+  - A08:2025
   status: active
   rule_version: 1
 - id: GRADLE-SEC-DYNAMIC-VERSION-GROOVY
@@ -103,6 +119,14 @@ rules:
       dependencies {
           implementation 'com.google.guava:guava:33.5.0-jre'
       }
+  cwe:
+  - CWE-1104
+  - CWE-494
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A06:2021
+  - A03:2025
   status: active
   rule_version: 1
 - id: GRADLE-SEC-DYNAMIC-VERSION-KTS
@@ -136,6 +160,14 @@ rules:
       dependencies {
           implementation("com.google.guava:guava:33.5.0-jre")
       }
+  cwe:
+  - CWE-1104
+  - CWE-494
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A06:2021
+  - A03:2025
   status: active
   rule_version: 1
 - id: GRADLE-SEC-HARDCODED-REPO-CREDENTIALS-GROOVY
@@ -233,6 +265,14 @@ rules:
       repositories {
           maven { url = 'https://repo.example.com/m2' }
       }
+  cwe:
+  - CWE-494
+  - CWE-829
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A08:2021
+  - A08:2025
   status: active
   rule_version: 1
 - id: GRADLE-SEC-INSECURE-REPO-URL-KTS
@@ -266,6 +306,14 @@ rules:
       repositories {
           maven { url = uri("https://repo.example.com/m2") }
       }
+  cwe:
+  - CWE-494
+  - CWE-829
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A08:2021
+  - A08:2025
   status: active
   rule_version: 1
 - id: GRADLE-SEC-MAVEN-LOCAL-GROOVY
@@ -300,6 +348,14 @@ rules:
       repositories {
           mavenCentral()
       }
+  cwe:
+  - CWE-1104
+  - CWE-494
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A06:2021
+  - A03:2025
   status: active
   rule_version: 1
 - id: GRADLE-SEC-MAVEN-LOCAL-KTS
@@ -334,6 +390,14 @@ rules:
       repositories {
           mavenCentral()
       }
+  cwe:
+  - CWE-1104
+  - CWE-494
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A06:2021
+  - A03:2025
   status: active
   rule_version: 1
 - id: GRADLE-SEC-SNAPSHOT-DEPENDENCY-GROOVY
@@ -368,6 +432,14 @@ rules:
       dependencies {
           implementation 'com.acme:lib:1.2.0'
       }
+  cwe:
+  - CWE-1104
+  - CWE-494
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A06:2021
+  - A03:2025
   status: active
   rule_version: 1
 - id: GRADLE-SEC-SNAPSHOT-DEPENDENCY-KTS
@@ -402,5 +474,13 @@ rules:
       dependencies {
           implementation("com.acme:lib:1.2.0")
       }
+  cwe:
+  - CWE-1104
+  - CWE-494
+  owasp:
+  - M2:2024
+  - MASVS-CODE-3
+  - A06:2021
+  - A03:2025
   status: active
   rule_version: 1

@@ -38,10 +38,12 @@ P("MIN-STABILITY-DEV", "minimum-stability dev without prefer-stable", SCH, "When
   '{"minimum-stability": "dev", "prefer-stable": true}', "Without prefer-stable every dependency may resolve to dev/alpha releases.",
   sev="major", kind="anti-pattern", cat="dependencies", filters=[r'file.lacks_re:"prefer-stable"\s*:\s*true'])
 P("REQ-STAR", "Dependency constraint * (any version)", VER, "Be careful when using unbounded ranges", REQ('(#match? @match "^\\\\*$")'),
-  '{"require": {"monolog/monolog": "*"}}', '{"require": {"monolog/monolog": "^3.9"}}', "`*` accepts every future major release.", sev="major", cat="dependencies")
+  '{"require": {"monolog/monolog": "*"}}', '{"require": {"monolog/monolog": "^3.9"}}', "`*` accepts every future major release.", sev="major", cat="dependencies",
+  filters=[r"cap.lacks_re:pkg:^(php|php-64bit|php-ipv6|php-zts|php-debug|hhvm|composer|composer-plugin-api|composer-runtime-api)$|^(ext|lib)-"])  # platform packages (php, ext-*, lib-*): "*" only asks for the extension to be present
 P("REQ-UNBOUNDED", "Unbounded >= constraint", VER, "Be careful when using unbounded ranges as you might end up unexpectedly installing versions that break backwards compatibility.",
   REQ('(#match? @match "^>=?\\\\s*[0-9][^,| <]*$")'), '{"require": {"guzzlehttp/guzzle": ">=7.0"}}', '{"require": {"guzzlehttp/guzzle": "^7.0"}}',
-  "Use the caret operator (^7.0) so a future major cannot be installed.", sev="minor", cat="dependencies")
+  "Use the caret operator (^7.0) so a future major cannot be installed.", sev="minor", cat="dependencies",
+  filters=[r"cap.lacks_re:pkg:^(php|php-64bit|php-ipv6|php-zts|php-debug|hhvm|composer|composer-plugin-api|composer-runtime-api)$|^(ext|lib)-"])
 P("REQ-DEV-BRANCH", "Requires a dev-* branch", VER, "you need to point it to the branch using the special dev-* prefix",
   REQ('(#match? @match "^dev-|[.]x-dev$")', '"^require$"'), '{"require": {"acme/lib": "dev-main"}}', '{"require": {"acme/lib": "^2.1"}}',
   "A moving branch is not reproducible and silently pulls unreleased code.", sev="major", cat="dependencies")

@@ -181,7 +181,7 @@ rules:
   applies_to:
     typescript: '>=2.0'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: config
     files:
     - '**/tsconfig*.json'
@@ -189,8 +189,8 @@ rules:
     config:
       key: compilerOptions.exactOptionalPropertyTypes
       op: absent
+      unless_key: extends
   message: Distinguish 'missing' from 'present but undefined' for optional properties.
-  ai_question: Considering the whole extends chain of this tsconfig, is exactOptionalPropertyTypes left disabled?
   source:
     url: https://www.typescriptlang.org/tsconfig/exactOptionalPropertyTypes.html
     doc: TSConfig exactOptionalPropertyTypes
@@ -241,7 +241,7 @@ rules:
   applies_to:
     typescript: '>=2.0'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: config
     files:
     - '**/tsconfig*.json'
@@ -249,8 +249,8 @@ rules:
     config:
       key: compilerOptions.noFallthroughCasesInSwitch
       op: absent
+      unless_key: extends
   message: Report switch fall-through at compile time.
-  ai_question: Considering the whole extends chain of this tsconfig, is noFallthroughCasesInSwitch left disabled?
   source:
     url: https://www.typescriptlang.org/tsconfig/noFallthroughCasesInSwitch.html
     doc: TSConfig noFallthroughCasesInSwitch
@@ -301,7 +301,7 @@ rules:
   applies_to:
     typescript: '>=2.0'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: config
     files:
     - '**/tsconfig*.json'
@@ -309,8 +309,8 @@ rules:
     config:
       key: compilerOptions.noImplicitOverride
       op: absent
+      unless_key: extends
   message: Require the override keyword so renamed base methods do not leave silent non-overrides.
-  ai_question: Considering the whole extends chain of this tsconfig, is noImplicitOverride left disabled?
   source:
     url: https://www.typescriptlang.org/tsconfig/noImplicitOverride.html
     doc: TSConfig noImplicitOverride
@@ -331,7 +331,7 @@ rules:
   applies_to:
     typescript: '>=2.0'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: config
     files:
     - '**/tsconfig*.json'
@@ -339,8 +339,8 @@ rules:
     config:
       key: compilerOptions.noImplicitReturns
       op: absent
+      unless_key: extends
   message: Functions with a missing return path return undefined silently.
-  ai_question: Considering the whole extends chain of this tsconfig, is noImplicitReturns left disabled?
   source:
     url: https://www.typescriptlang.org/tsconfig/noImplicitReturns.html
     doc: TSConfig noImplicitReturns
@@ -391,7 +391,7 @@ rules:
   applies_to:
     typescript: '>=2.0'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: config
     files:
     - '**/tsconfig*.json'
@@ -399,8 +399,8 @@ rules:
     config:
       key: compilerOptions.noUncheckedIndexedAccess
       op: absent
+      unless_key: extends
   message: Index access (arr[i], record[key]) is typed as always present; enable noUncheckedIndexedAccess to surface missing-key bugs.
-  ai_question: Considering the whole extends chain of this tsconfig, is noUncheckedIndexedAccess left disabled?
   source:
     url: https://www.typescriptlang.org/tsconfig/noUncheckedIndexedAccess.html
     doc: TSConfig noUncheckedIndexedAccess
@@ -697,7 +697,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (formal_parameters [(required_parameter value: (_)) (optional_parameter)] @match . (required_parameter !value))
+      (formal_parameters [(required_parameter value: (_)) (optional_parameter)] @match . (required_parameter !value pattern: [(identifier) (object_pattern) (array_pattern)]))
   message: A defaulted/optional parameter before a required one cannot be omitted.
   source:
     url: https://typescript-eslint.io/rules/default-param-last/
@@ -710,6 +710,11 @@ rules:
       function f(a = 1, b: number) {}
     good: |
       function f(b: number, a = 1) {}
+    regressions:
+    - note: a rest parameter is not required
+      code: |
+        function f(delay = 0, ...args: unknown[]) {}
+        type Cb = (err?: unknown, ...rest: unknown[]) => void
   tags:
   - typescript-eslint:default-param-last
   status: active
@@ -789,6 +794,8 @@ rules:
     engine: tree-sitter
     query: |
       (interface_body (method_signature) @match)
+    filters:
+    - node.lacks_re:^\s*(get|set)\s+[\w'\x22\[]
   message: Property-style signatures are checked contravariantly under strictFunctionTypes; method shorthand is bivariant.
   source:
     url: https://typescript-eslint.io/rules/method-signature-style/
@@ -818,12 +825,13 @@ rules:
   applies_to:
     typescript: '>=3.0'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: tree-sitter
     query: |
-      (unary_expression operator: "delete" argument: (subscript_expression index: [(number) (identifier)])) @match
+      (unary_expression operator: "delete" argument: (subscript_expression object: (_) @o index: [(number) (identifier)])) @match
+    filters:
+    - type.is:o:array|(Readonly)?Array
   message: delete on an array leaves a hole instead of removing the element.
-  ai_question: Is the object an array (not a Record/dictionary)?
   source:
     url: https://typescript-eslint.io/rules/no-array-delete/
     doc: typescript-eslint rule @typescript-eslint/no-array-delete
@@ -832,9 +840,16 @@ rules:
     quote: Disallow using the delete operator on array values
   examples:
     bad: |
+      const items: string[] = load()
       delete items[i]
     good: |
+      const items: string[] = load()
       items.splice(i, 1)
+    regressions:
+    - note: record
+      code: |
+        const clients: Record<string, C> = {}
+        delete clients[id]
   tags:
   - typescript-eslint:no-array-delete
   status: active
@@ -1097,7 +1112,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((import_statement (import_clause (named_imports) @n)) @match (#match? @n "^\\{\\s*type\\s+\\w+(\\s*,\\s*type\\s+\\w+)*\\s*,?\\s*\\}$") (#not-match? @match "^import\\s+type"))
+      ((import_statement (import_clause (named_imports) @n)) @match (#match? @n "^\\{\\s*type\\s+\\w+(\\s*,\\s*type\\s+\\w+)*\\s*,?\\s*\\}$") (#not-match? @match "^import\\s+type") (#not-match? @match "^import\\s+[\\w$]+\\s*,"))
   message: With verbatimModuleSyntax an import with only inline type specifiers is kept as a side-effect import; use import type.
   source:
     url: https://typescript-eslint.io/rules/no-import-type-side-effects/
@@ -1110,6 +1125,10 @@ rules:
       import { type A, type B } from './types'
     good: |
       import type { A, B } from './types'
+    regressions:
+    - note: a default value import keeps the statement needed
+      code: |
+        import NextAuth, { type DefaultSession } from 'next-auth'
   tags:
   - typescript-eslint:no-import-type-side-effects
   status: active
@@ -1156,6 +1175,12 @@ rules:
     engine: tree-sitter
     query: |
       ((union_type (predefined_type) @v) @match (#eq? @v "void"))
+      ((union_type (union_type (predefined_type) @v1)) @match (#eq? @v1 "void"))
+      ((union_type (union_type (union_type (predefined_type) @v2))) @match (#eq? @v2 "void"))
+      ((union_type (union_type (union_type (union_type (predefined_type) @v3)))) @match (#eq? @v3 "void"))
+    filters:
+    - parentkind.lacks_re:union_type:.
+    - node.lacks_re:^\s*\|?\s*(void|never|[\w.$]+\s*<[^|<>]*\bvoid\b[^|<>]*>)(\s*\|\s*(void|never|[\w.$]+\s*<[^|<>]*\bvoid\b[^|<>]*>))*\s*$
   message: void is only meaningful as a return type or generic argument; use undefined in unions.
   source:
     url: https://typescript-eslint.io/rules/no-invalid-void-type/
@@ -1168,6 +1193,11 @@ rules:
       type R = string | void
     good: |
       type R = string | undefined
+    regressions:
+    - note: void | Promise<void> is allowed
+      code: |
+        type H = (ctx: C) => Promise<void> | void
+        type G = () => void | never
   tags:
   - typescript-eslint:no-invalid-void-type
   status: active
@@ -1934,6 +1964,8 @@ rules:
     engine: tree-sitter
     query: |
       ((call_expression function: (member_expression property: (property_identifier) @p) arguments: (arguments . (regex) @r .)) @match (#eq? @p "match") (#not-match? @r "/[a-z]*g[a-z]*$"))
+    filters:
+    - node.lacks_re:^\s*expect\s*\(|\.(to|be|been|is|that|which|and|not|deep|also|should)\s*\.\s*match\s*\(
   message: RegExp#exec is equivalent and faster for non-global regexes.
   source:
     url: https://typescript-eslint.io/rules/prefer-regexp-exec/
@@ -1946,6 +1978,11 @@ rules:
       const m = line.match(/(\d+)/)
     good: |
       const m = /(\d+)/.exec(line)
+    regressions:
+    - note: chai assertion
+      code: |
+        expect(res.text).to.match(/engine\.io/)
+        res.text.should.match(/ok/)
   tags:
   - typescript-eslint:prefer-regexp-exec
   status: active

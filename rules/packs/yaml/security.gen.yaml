@@ -217,6 +217,8 @@ rules:
     - '!**/*.jinja*'
     query: |
       ([(string_scalar) (double_quote_scalar) (single_quote_scalar) (block_scalar)] @match (#match? @match "-----BEGIN ([A-Z]+ )?PRIVATE KEY-----"))
+    filters:
+    - node.has_re:PRIVATE KEY-----([\s|"+]|\\[nr])*[A-Za-z0-9+/]{16}
   message: 'Private key material committed to the repository: revoke it and mount it from a secret store.'
   source:
     url: https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html
@@ -226,9 +228,12 @@ rules:
     quote: se credentials, Identity and Access Management (IAM) permissions, Secure Shell (SSH) keys, certificates, etc. Many organizations have them hardcoded within the source code in plaintext, littered throughout configuration files and configuration management tools.
   examples:
     bad: |
-      key: -----BEGIN RSA PRIVATE KEY-----
+      key: -----BEGIN RSA PRIVATE KEY-----MIIEpAIBAAKCAQEAu1SU1L7VLPHCgcBIjt
     good: |
       key_file: /run/secrets/tls.key
+    regressions:
+    - code: |
+        pem_header: -----BEGIN PRIVATE KEY-----
   status: active
   rule_version: 1
 - id: YAML-SEC-SECRET-FIELD

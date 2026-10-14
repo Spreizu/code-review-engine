@@ -15,9 +15,12 @@ loop(P, "MAX", "Loop that is maxOrNull()/minOrNull()", DOC + "collection-aggrega
      "fun top(xs: List<Int>): Int {\n    var m = xs[0]\n    for (x in xs) { if (x > m) m = x }\n    return m\n}\n",
      "fun top(xs: List<Int>): Int = xs.max()\n", "Use max()/min(), maxOrNull()/minOrNull() or maxBy { }.")
 loop(P, "SUMOF", "Accumulator loop that is sumOf { }", DOC + "collection-aggregate.html", "sumOf()",
-     '(for_statement (block . (assignment) @a .) (#match? @a "^\\\\w+\\\\s*\\\\+=")) @match',
+     '(for_statement (block . (assignment left: (identifier) @acc) @a .) (#match? @a "^\\\\w+\\\\s*\\\\+=")) @match',
      "fun total(items: List<Item>): Int {\n    var t = 0\n    for (i in items) { t += i.price }\n    return t\n}\n",
-     "fun total(items: List<Item>): Int = items.sumOf { it.price }\n", "Use sumOf { } (or sum()).")
+     "fun total(items: List<Item>): Int = items.sumOf { it.price }\n", "Use sumOf { } (or sum()).",
+     # += on a list/set adds elements: the accumulator must be a numeric local
+     filters=[r"func.has_re:\bvar\s+{cap:acc}\s*(:\s*(Int|Long|Double|Float|Short|Byte|UInt|ULong)\s*)?=\s*[-+]?(\d|0x)"],
+     fp=["fun all(xs: List<P>): List<R> {\n    val result = mutableListOf<R>()\n    for (p in xs) { result += load(p) }\n    return result\n}\n"])
 
 helper(P, "DISTINCT", "Hand-written distinct helper", "https://kotlinlang.org/api/core/kotlin-stdlib/kotlin.collections/distinct.html",
        "Returns a list containing only distinct elements from the given collection", ["unique", "uniq", "dedupe", "removeDuplicates", "distinctItems"], "distinct()",

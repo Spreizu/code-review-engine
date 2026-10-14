@@ -78,7 +78,7 @@ rules:
       max_lines: 30
   message: This hand-written helper re-implements structuredClone from the standard library. Use it directly and delete the helper.
   fix: Prefer the simplest code that works. When a shortcut is deliberate, add a `limit:` comment saying how far it holds (e.g. input size, request rate) and what to switch to beyond that.
-  ai_question: Does this function behave the same as structuredClone for every input its callers pass (same result, ordering and edge cases), so it can be replaced by structuredClone?
+  ai_question: Does this function behave the same as structuredClone for every input its callers pass (same result, ordering and edge cases), so it can be replaced by structuredClone? In particular, does no caller pass a Vue reactive/ref proxy, Pinia store state or MobX observable (structuredClone throws DataCloneError on proxies; they need toRaw first)?
   source:
     url: https://developer.mozilla.org/en-US/docs/Web/API/Window/structuredClone
     doc: structuredClone

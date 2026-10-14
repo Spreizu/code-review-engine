@@ -14,7 +14,9 @@ loop(P, "ANYMATCH", "Loop that is Stream.anyMatch", API + "util/stream/Stream.ht
      '(enhanced_for_statement body: (block . (if_statement condition: (parenthesized_expression) @c consequence: ' + RET_TRUE + ' !alternative) .) (#not-match? @c "^\\\\(\\\\s*\\\\w+\\\\.equals\\\\(")) @match',
      "class A {\n  boolean anyAdmin(List<User> users) {\n    for (User u : users) {\n      if (u.isAdmin() && u.isActive()) return true;\n    }\n    return false;\n  }\n}\n",
      "class A {\n  boolean anyAdmin(List<User> users) {\n    return users.stream().anyMatch(u -> u.isAdmin() && u.isActive());\n  }\n}\n",
-     "Use stream().anyMatch / allMatch / noneMatch.")
+     "Use stream().anyMatch / allMatch / noneMatch.",
+     # char[]/boolean[]/byte[]/short[]/float[] have no Arrays.stream overload
+     filters=[r"node.lacks_re:^for\s*\(\s*(final\s+)?(char|boolean|byte|short|float)\s"])
 loop(P, "MAX", "Loop that is Collections.max / min", API + "util/Collections.html", "Returns the maximum element of the given collection",
      '(enhanced_for_statement name: (identifier) @x body: (block . (if_statement condition: (parenthesized_expression (binary_expression left: (identifier) @a operator: [">" "<"])) consequence: [(block . (expression_statement (assignment_expression right: (identifier) @v)) .) (expression_statement (assignment_expression right: (identifier) @v))] !alternative) .) (#eq? @x @v) (#eq? @a @x)) @match',
      "class A {\n  int top(List<Integer> xs) {\n    int m = xs.get(0);\n    for (int x : xs) {\n      if (x > m) m = x;\n    }\n    return m;\n  }\n}\n",

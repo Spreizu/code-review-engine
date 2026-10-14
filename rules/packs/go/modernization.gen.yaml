@@ -43,6 +43,8 @@ rules:
     engine: tree-sitter
     query: |
       (call_expression function: (selector_expression operand: (identifier) @p (#eq? @p "atomic") field: (field_identifier) @f (#match? @f "^((Add|Load|Store|Swap|CompareAndSwap)(Int32|Int64|Uint32|Uint64|Uintptr|Pointer))$")) arguments: (argument_list)) @match
+    filters:
+    - node.lacks_re:\(\s*\(\*|&(\w+\.)*[A-Z]\w*\s*[,)]
   message: atomic.Int64 etc. prevent non-atomic access and fix 32-bit alignment.
   source:
     url: https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/modernize
@@ -53,6 +55,9 @@ rules:
   examples:
     bad: "func f() {\n\tatomic.AddInt64(&n, 1)\n}\n"
     good: "func f() {\n\tn.Add(1)\n}\n"
+    regressions:
+    - code: "func (l *Logger) SetLevel(v Level) {\n\tatomic.StoreUint32((*uint32)(&l.level), uint32(v))\n}\n"
+    - code: "func f(s *Stats) {\n\tatomic.AddInt64(&s.Count, 1)\n}\n"
   status: active
   rule_version: 1
 - id: GO-MOD-BLOOP
@@ -94,7 +99,10 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (call_expression function: (selector_expression operand: (identifier) @p (#eq? @p "errors") field: (field_identifier) @f (#eq? @f "As")) arguments: (argument_list (_) (unary_expression))) @match
+      ((call_expression function: (selector_expression operand: (identifier) @p (#eq? @p "errors") field: (field_identifier) @f (#eq? @f "As")) arguments: (argument_list (_) (unary_expression operand: (identifier) @t))) @match)
+    filters:
+    - parentkind.has_re:if_statement:.
+    - func.has_re:\bvar\s+{cap:t}\s+[^=\n]+\n
   message: Use errors.AsType[T] (Go 1.26).
   source:
     url: https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/modernize
@@ -105,6 +113,10 @@ rules:
   examples:
     bad: "func f(err error) {\n\tvar pe *fs.PathError\n\tif errors.As(err, &pe) {\n\t\tuse(pe)\n\t}\n}\n"
     good: "func f(err error) {\n\tif pe, ok := errors.AsType[*fs.PathError](err); ok {\n\t\tuse(pe)\n\t}\n}\n"
+    regressions:
+    - code: "func f(err error) bool {\n\treturn errors.As(err, &MyErr{})\n}\n"
+    - code: "func f(err error) {\n\tvar pe *fs.PathError\n\tif !errors.As(err, &pe) {\n\t\treturn\n\t}\n\tuse(pe)\n}\n"
+    - code: "func f(err error, pe **fs.PathError) {\n\tif errors.As(err, pe) {\n\t}\n}\n"
   status: active
   rule_version: 1
 - id: GO-MOD-FMTAPPENDF
@@ -633,11 +645,11 @@ rules:
     - node.lacks_re:return \w+\[\w+\] < \w+\[\w+\] \}
   message: slices.SortFunc/SortStableFunc (Go 1.21) are type-safe and faster than reflection-based sort.Slice.
   source:
-    url: https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/modernize
-    doc: gopls/go fix modernize
+    url: https://pkg.go.dev/sort#Slice
+    doc: sort.Slice with a custom comparator
     doc_version: Go 1.27
     retrieved: '2026-10-09'
-    quote: 'Analyzer slicessort ¶ slicessort: replace sort.Slice with slices.Sort for basic types The slicessort analyzer simplifies sorting slices of basic ordered types.'
+    quote: 'Note: in many situations, the newer slices.SortFunc function is more ergonomic and runs faster.'
   examples:
     bad: "func f() {\n\tsort.Slice(users, func(i, j int) bool { return users[i].Age < users[j].Age })\n}\n"
     good: "func f() {\n\tslices.SortFunc(users, func(a, b User) int { return cmp.Compare(a.Age, b.Age) })\n}\n"
@@ -680,7 +692,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (if_statement condition: (call_expression function: (selector_expression operand: (identifier) @p (#match? @p "^(strings|bytes)$") field: (field_identifier) @f (#match? @f "^Has(Prefix|Suffix)$")) arguments: (argument_list) @args) consequence: (block) @b) @match
+      (if_statement !initializer condition: (call_expression function: (selector_expression operand: (identifier) @p (#match? @p "^(strings|bytes)$") field: (field_identifier) @f (#match? @f "^Has(Prefix|Suffix)$")) arguments: (argument_list) @args) consequence: (block) @b) @match
     filters:
     - cap.has_re:b:\b(strings|bytes)\.Trim(Prefix|Suffix){cap:args}
   message: Use strings.CutPrefix/CutSuffix (Go 1.20).
@@ -723,7 +735,7 @@ rules:
   status: active
   rule_version: 1
 - id: GO-MOD-TESTINGCONTEXT
-  title: context.Background in a test
+  title: context.WithCancel + defer cancel in a test
   language: go
   kind: modernization
   category: modernization
@@ -736,17 +748,24 @@ rules:
     files:
     - '**/*_test.go'
     query: |
-      (call_expression function: (selector_expression operand: (identifier) @p (#eq? @p "context") field: (field_identifier) @f (#match? @f "^(Background|TODO)$"))) @match
+      (statement_list (short_var_declaration left: (expression_list . (identifier) . (identifier) @c .) right: (expression_list . (call_expression function: (selector_expression operand: (identifier) @p (#eq? @p "context") field: (field_identifier) @f (#eq? @f "WithCancel")) arguments: (argument_list . (call_expression function: (selector_expression operand: (identifier) @p2 (#eq? @p2 "context") field: (field_identifier) @f2 (#match? @f2 "^(Background|TODO)$"))) .)) .)) @match . (defer_statement (call_expression function: (identifier) @d arguments: (argument_list) .)) (#eq? @c @d))
+    filters:
+    - ancestor.has_re:function_declaration|method_declaration|func_literal:^[^{]*\*testing\.[TBF]\b
+    - func.count_lt:3:(^|[^\w.]){cap:c}\b
   message: 'Use t.Context() (Go 1.24): cancelled when the test ends.'
   source:
     url: https://pkg.go.dev/golang.org/x/tools/go/analysis/passes/modernize
     doc: gopls/go fix modernize
     doc_version: Go 1.27
     retrieved: '2026-10-09'
-    quote: diterators Analyzer stringscut Analyzer stringscutprefix Analyzer stringsseq Analyzer stringsbuilder Analyzer testingcontext Analyzer unsafefuncs Analyzer waitgroupgo Package modernize provides a suite of analyzers that suggest simpli
+    quote: ontext.WithCancel with t.Context in tests The testingcontext analyzer simplifies context management in tests. It replaces the manual creation of a cancellable context, ctx, cancel := context.WithCancel(context.Background()) defer cancel() with a single call to t.Context(), wh
   examples:
-    bad: "func TestX(t *testing.T) {\n\tctx := context.Background()\n\trun(ctx)\n}\n"
+    bad: "func TestX(t *testing.T) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tdefer cancel()\n\trun(ctx)\n}\n"
     good: "func TestX(t *testing.T) {\n\tctx := t.Context()\n\trun(ctx)\n}\n"
+    regressions:
+    - code: "func TestX(t *testing.T) {\n\tctx := context.Background()\n\trun(ctx)\n}\n"
+    - code: "func TestMain(m *testing.M) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tdefer cancel()\n\trun(ctx)\n}\n"
+    - code: "func TestX(t *testing.T) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tdefer cancel()\n\tgo stop(cancel)\n\trun(ctx)\n}\n"
   status: active
   rule_version: 1
 - id: GO-MOD-WAITGROUPGO

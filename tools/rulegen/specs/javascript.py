@@ -19,10 +19,13 @@ MEMBER_CALL = '((call_expression function: (member_expression object: (_) @o pro
 
 # ---------------------------------------------------------------- possible problems
 E("array-callback-return", "major", "correctness",
-  r'''((call_expression function: (member_expression property: (property_identifier) @p) arguments: (arguments . (arrow_function body: (statement_block) @b))) @match (#match? @p "^(map|filter|find|findIndex|findLast|findLastIndex|every|some|reduce|reduceRight|flatMap|sort|toSorted)$") (#not-match? @b "return|throw"))
-((call_expression function: (member_expression property: (property_identifier) @p) arguments: (arguments . (function_expression body: (statement_block) @b))) @match (#match? @p "^(map|filter|find|findIndex|findLast|findLastIndex|every|some|reduce|reduceRight|flatMap|sort|toSorted)$") (#not-match? @b "return|throw"))''',
+  r'''((call_expression function: (member_expression property: (property_identifier) @p) arguments: (arguments . (arrow_function body: (statement_block) @b) @cb)) @match (#match? @p "^(map|filter|find|findIndex|findLast|findLastIndex|every|some|reduce|reduceRight|flatMap|sort|toSorted)$") (#not-match? @b "return|throw"))
+((call_expression function: (member_expression property: (property_identifier) @p) arguments: (arguments . (function_expression body: (statement_block) @b) @cb)) @match (#match? @p "^(map|filter|find|findIndex|findLast|findLastIndex|every|some|reduce|reduceRight|flatMap|sort|toSorted)$") (#not-match? @b "return|throw"))''',
   "const doubled = items.map((x) => { x * 2 })\n", "const doubled = items.map((x) => x * 2)\n",
-  "The callback of this array method never returns a value, so the result is an array of undefined / an always-false predicate.")
+  "The callback of this array method never returns a value, so the result is an array of undefined / an always-false predicate.",
+  # map(async x => { await ... }) builds the Promise[] for Promise.all: the promises are the result
+  filters=[r"cap.lacks_re:cb:^async\b"],
+  fp=[{"note": "async mapper for Promise.all", "code": "await Promise.all(items.map(async (it) => {\n  await save(it)\n}))\n"}])
 # Fixture triage (ESLint suite): compare the counter itself, on either side of the comparison,
 # with the variable the update changes (a different variable or `10 > i` is not wrong).
 _FD = '((for_statement condition: (binary_expression {cond}) increment: (update_expression argument: (identifier) @u operator: "{upd}")) @match (#eq? @c @u))'
@@ -92,8 +95,10 @@ E("no-ex-assign", "major", "correctness",
 E("no-fallthrough", "major", "correctness",
   r'''((switch_body (switch_case [(expression_statement) (if_statement) (lexical_declaration) (variable_declaration) (for_statement)] @last .) @match . [(switch_case) (switch_default)]))''',
   "switch (x) {\n  case 1:\n    a()\n  case 2:\n    b()\n    break\n}\n", "switch (x) {\n  case 1:\n    a()\n    break\n  case 2:\n    b()\n    break\n}\n",
-  "This case falls through into the next one; add break/return or a // falls through comment.", mode="ai-confirm",
-  ai="Is the fall-through into the next case unintended (no deliberate shared handling)?")
+  "This case falls through into the next one; add break/return or a // falls through comment.",
+  # an if/else whose branches all end in return/throw/break/continue cannot fall through
+  filters=[r"cap.lacks_re:last:(?s)^if\s*\(.*\b(return|throw|break|continue)\b[^{};]*;?\s*\}\s*else\s*\{.*\b(return|throw|break|continue)\b[^{};]*;?\s*\}$"],
+  fp=[{"note": "socket.io decodePacket: every branch returns", "code": "switch (t) {\n  case 'a':\n    if (x) {\n      return 1\n    } else if (y) {\n      return 2\n    } else {\n      return 3\n    }\n  default:\n    return 0\n}\n"}])
 E("no-func-assign", "major", "correctness",
   r'''((program (function_declaration name: (identifier) @a) (expression_statement (assignment_expression left: (identifier) @b) @match)) (#eq? @a @b))''',
   "function load() {}\nload = null\n", "function load() {}\nconst loader = null\n", "Reassigning a function declaration is almost always a mistake.")
@@ -106,6 +111,19 @@ E("no-loss-of-precision", "major", "correctness",
 E("no-new-native-nonconstructor", "critical", "correctness",
   r'''((new_expression constructor: (identifier) @c) @match (#match? @c "^(Symbol|BigInt)$"))''',
   "const s = new Symbol('id')\n", "const s = Symbol('id')\n", "Symbol and BigInt are not constructors; new throws a TypeError.")
+E("constructor-super", "critical", "correctness",
+  r'''((class_declaration (class_heritage) body: (class_body (method_definition name: (property_identifier) @n body: (statement_block) @b))) @match (#eq? @n "constructor") (#not-match? @b "super\\s*\\("))''',
+  "class Child extends Parent {\n  constructor() {\n    this.x = 1\n  }\n}\n",
+  "class Child extends Parent {\n  constructor() {\n    super()\n    this.x = 1\n  }\n}\n",
+  "A subclass constructor must call super() before using this; omitting it throws a ReferenceError.",
+  xref=["sonar:javascript:S3854", "sonar:typescript:S3854"],
+  fp=[{"note": "derived constructor calls super", "code": "class Child extends Parent {\n  constructor(x) {\n    super(x)\n  }\n}\n"}])
+E("no-this-before-super", "critical", "correctness",
+  r'''((class_declaration (class_heritage) body: (class_body (method_definition name: (property_identifier) @n body: (statement_block . (expression_statement [(assignment_expression left: (member_expression object: (this))) (call_expression function: (member_expression object: (this))) (update_expression argument: (member_expression object: (this)))]))))) @match (#eq? @n "constructor"))''',
+  "class Child extends Parent {\n  constructor() {\n    this.x = 1\n    super()\n  }\n}\n",
+  "class Child extends Parent {\n  constructor() {\n    super()\n    this.x = 1\n  }\n}\n",
+  "this is used before super() in a subclass constructor, which throws a ReferenceError.",
+  xref=["sonar:javascript:S3854", "sonar:typescript:S3854"])
 E("no-obj-calls", "critical", "correctness",
   r'''((call_expression function: (identifier) @f) @match (#match? @f "^(Math|JSON|Reflect|Atomics)$"))
 ((new_expression constructor: (identifier) @f) @match (#match? @f "^(Math|JSON|Reflect|Atomics|Intl)$"))''',
@@ -123,13 +141,16 @@ E("no-self-assign", "major", "correctness",
   "count = count\n", "count = next\n", "Self-assignment has no effect.")
 E("no-self-compare", "major", "correctness",
   r'''((binary_expression left: (_) @a operator: ["==" "===" "!=" "!==" "<" ">" "<=" ">="] right: (_) @b) @match (#eq? @a @b))''',
-  "if (x === x) {}\n", "if (!Number.isNaN(x)) {}\n", "Comparing a value with itself is either a bug or an obscure NaN test (use Number.isNaN).")
+  "if (x === x) {}\n", "if (!Number.isNaN(x)) {}\n", "Comparing a value with itself is either a bug or an obscure NaN test (use Number.isNaN).",
+  filters=[r"file.lacks_re:<%[=\-_]?\s"])  # EJS/lodash templates are not JavaScript
 E("no-setter-return", "minor", "correctness",
   r'''(method_definition "set" body: (statement_block (return_statement (_)) @match))''',
   "class A {\n  set v(x) { return this._v = x }\n}\n", "class A {\n  set v(x) { this._v = x }\n}\n", "Return values from setters are ignored.")
 E("no-sparse-arrays", "minor", "correctness",
   r'''((array) @match (#match? @match "^\\[\\s*,|,\\s*,"))''',
-  "const a = [1, , 3]\n", "const a = [1, undefined, 3]\n", "Holes in array literals are easy to misread and behave differently from undefined in iteration methods.")
+  "const a = [1, , 3]\n", "const a = [1, undefined, 3]\n", "Holes in array literals are easy to misread and behave differently from undefined in iteration methods.",
+  filters=["node.has_hole"],  # the regex also sees commas inside string elements
+  fp=[{"note": "got/nest: commas inside strings", "code": "const cases = ['', ',', ', ,', '1, ,2']\n"}])
 E("no-template-curly-in-string", "major", "correctness",
   r'''((string) @match (#match? @match "\\$\\{[^}]+\\}"))''',
   "const msg = 'Hello ${name}'\n", "const msg = `Hello ${name}`\n", "Template placeholder syntax inside a regular string is printed literally; use a template literal.")
@@ -190,7 +211,9 @@ E("class-methods-use-this", "info", "style",
   ai="Is this method part of a polymorphic interface (overridden/implemented) where it must stay an instance method?")
 E("curly", "info", "style",
   r'''(if_statement consequence: [(expression_statement) (return_statement) (throw_statement)] @match)''',
-  "if (ok) run()\n", "if (ok) {\n  run()\n}\n", "Omitting braces invites bugs when a second statement is added.")
+  "if (ok) run()\n", "if (ok) {\n  run()\n}\n", "Omitting braces invites bugs when a second statement is added.",
+  # curly "multi", "multi-line", "multi-or-nest" allow brace-less single statements: only the default "all" reports these
+  params={"mode": {"default": "all", "from": ["eslint:curly.value"]}}, filters=["param.match:${mode}:all"])
 E("default-case", "minor", "correctness",
   r'''((switch_statement body: (switch_body) @b) @match (#not-match? @b "default|(?i)no default"))''',
   "switch (kind) {\n  case 'a': a(); break\n}\n", "switch (kind) {\n  case 'a': a(); break\n  default: unknown(kind)\n}\n",
@@ -279,7 +302,9 @@ E("no-labels", "info", "style", r'''(labeled_statement) @match''',
   "Labels make control flow hard to follow.")
 E("no-lonely-if", "info", "style",
   r'''(else_clause (statement_block . (if_statement) @match .))''',
-  "if (a) { x() } else {\n  if (b) { y() }\n}\n", "if (a) { x() } else if (b) { y() }\n", "A lone if inside else can be else if.")
+  "if (a) { x() } else {\n  if (b) { y() }\n}\n", "if (a) { x() } else if (b) { y() }\n", "A lone if inside else can be else if.",
+  # if (a) if (b) {} else { if (c) {} } else {}: dropping the braces would re-pair the outer else
+  filters=[r"ancestor.lacks_re:if_statement#2:^if\s*\([^{]*?\)\s*if\b"])
 E("no-loop-func", "minor", "correctness",
   r'''(for_statement initializer: (variable_declaration) body: (statement_block (expression_statement (call_expression arguments: (arguments [(arrow_function) (function_expression)] @match)))))''',
   "for (var i = 0; i < 3; i++) {\n  handlers.push(() => i)\n}\n", "for (let i = 0; i < 3; i++) {\n  const n = i\n  handlers.push(() => n)\n}\n",
@@ -439,9 +464,19 @@ E("symbol-description", "info", "style",
 E("yoda", "info", "style",
   r'''(binary_expression left: [(string) (number)] operator: ["===" "==" "!==" "!="] right: (identifier)) @match''',
   "if ('red' === color) {}\n", "if (color === 'red') {}\n", "Put the literal on the right side of the comparison.")
+# one hit per repeated import (2nd+), grouped per file by node.dup_import: type-only, namespace and
+# side-effect imports cannot merge with value imports; separate Vue <script>/<script setup> blocks stay apart
 E("no-duplicate-imports", "minor", "correctness",
-  r'''((program (import_statement source: (string) @a) (import_statement source: (string) @b) @match) (#eq? @a @b) (#not-match? @match "^import\\s+type"))''',
-  "import { a } from 'lib'\nimport { b } from 'lib'\n", "import { a, b } from 'lib'\n", "Merge imports from the same module.")
+  r'''(program (import_statement source: (string)) @match)''',
+  "import { a } from 'lib'\nimport { b } from 'lib'\n", "import { a, b } from 'lib'\n", "Merge imports from the same module.",
+  filters=["node.dup_import"])
+R[-1]["examples"]["regressions"] = [
+      {"code": "import { a } from 'lib'\nimport type { B } from 'lib'\n", "note": "type-only import"},
+      {"code": "import { a } from 'lib'\nimport { type B, type C } from 'lib'\n", "note": "inline type specifiers only"},
+      {"code": "import * as ns from 'lib'\nimport { a } from 'lib'\n", "note": "namespace import cannot merge"},
+      {"code": "import 'lib'\nimport { a } from 'lib'\n", "note": "side-effect import"},
+      {"code": "const m = import('lib')\nimport { a } from 'lib'\n", "note": "dynamic import"}
+]
 E("no-lone-blocks", "info", "style",
   r'''((program (statement_block) @match) (#not-match? @match "\\b(let|const|class|function)\\b"))''',
   "{\n  run()\n}\n", "run()\n", "A standalone block without block-scoped declarations is redundant.")
@@ -503,8 +538,11 @@ N("CREATECIPHER-001", "crypto.createCipher/createDecipher were removed (weak key
   "const c = crypto.createCipher('aes-256-cbc', password)\n", "const c = crypto.createCipheriv('aes-256-gcm', key, iv)\n",
   "createCipher/createDecipher derive keys with MD5 and no salt and are removed in current Node.js; use createCipheriv with a proper KDF.", sev="critical", kind="removal", cat="security")
 N("URL-PARSE-001", "url.parse() is insecure; use the WHATWG URL API", "DEP0169: Insecure url.parse()", mcall("url", "parse"),
-  "const u = url.parse(req.url)\n", "const u = new URL(req.url, base)\n",
-  "url.parse() uses a non-standard algorithm prone to hostname spoofing; use new URL().", sev="major", kind="security", cat="security")
+  "const url = require('node:url')\nconst u = url.parse(req.url)\n", "const u = new URL(req.url, base)\n",
+  "url.parse() uses a non-standard algorithm prone to hostname spoofing; use new URL().", sev="major", kind="security", cat="security",
+  # `url` must be Node's url module (zod tests call a z.url() schema's .parse)
+  filters=[r"file.has_re:(require\(\s*|from\s+)['\"](node:)?url['\"]"],
+  fp=[{"note": "zod: z.url() schema", "code": "const url = z.url()\nurl.parse('http://google.com')\n"}])
 N("UTIL-IS-001", "util.is*() type checks were removed", "DEP0044: util.isArray()", mcall("util", "is(Array|Boolean|Buffer|Date|Error|Function|Null|NullOrUndefined|Number|Object|Primitive|RegExp|String|Symbol|Undefined)"),
   "if (util.isArray(x)) {}\n", "if (Array.isArray(x)) {}\n", "util.is*() helpers are deprecated/removed; use Array.isArray, typeof, instanceof.", sev="major", kind="removal")
 N("PROCESS-BINDING-001", "process.binding() is deprecated", "DEP0111: process.binding()", mcall("process", "binding"),
@@ -547,10 +585,14 @@ N("PBKDF2-DIGEST-001", "crypto.pbkdf2Sync without digest", "DEP0009: crypto.pbkd
   "pbkdf2 without an explicit digest is no longer supported; pass a digest such as 'sha512'.", sev="major", kind="removal", cat="security")
 N("CHILD-EXEC-INJECTION-001", "Shell command built from interpolated input (child_process.exec)", "Never pass unsanitized user input to this function.",
   r'''((call_expression function: [(identifier) @f (member_expression property: (property_identifier) @f)] arguments: (arguments . [(template_string (template_substitution)) (binary_expression)])) @match (#match? @f "^(exec|execSync)$"))''',
-  "exec(`git log ${branch}`, cb)\n", "execFile('git', ['log', branch], cb)\n",
+  "const { exec } = require('node:child_process')\nexec(`git log ${branch}`, cb)\n", "const { execFile } = require('node:child_process')\nexecFile('git', ['log', branch], cb)\n",
   "exec() runs the string through a shell; interpolated input enables command injection. Use execFile/spawn with an argument array.",
   sev="critical", kind="security", cat="security", url="https://nodejs.org/api/child_process.html", mode="ai-confirm",
-  ai="Can any interpolated value be influenced by a user or external input?")
+  ai="Can any interpolated value be influenced by a user or external input?",
+  # RegExp#exec and db.exec share the name: require child_process in the file and a non-regex/db receiver
+  filters=[r"file.has_re:['\"](node:)?child_process['\"]", r"node.lacks_re:^(/|\w*([Dd]b|[Ss]ql|[Dd]atabase|[Ss]tmt|[Rr]e|[Rr]egex|[Pp]attern)\b\.)"],
+  fp=[{"note": "got/nest: RegExp#exec on a template", "code": "const m = /^(?<p>[^:]+):/v.exec(`${url.pathname}${url.search}`)\n"},
+      {"note": "nuxt-content: SQLite db.exec", "code": "import { exec as run } from 'node:child_process'\ndb.exec(`DROP TABLE IF EXISTS ${t}`)\n"}])
 
 # ---------------------------------------------------------------- MDN web platform security / deprecations
 MDN = "https://developer.mozilla.org/en-US/docs/"
@@ -569,9 +611,14 @@ W("POSTMESSAGE-STAR-001", "postMessage with targetOrigin '*'", "Web/API/Window/p
   "'*' sends the message to whatever origin the window currently has, leaking data to a navigated/hostile frame.", sev="major", kind="security", cat="security")
 W("MESSAGE-ORIGIN-001", "message event handler does not check event.origin", "Web/API/Window/postMessage",
   "Always verify the sender's identity using the origin and possibly source properties.",
-  r'''((call_expression function: (member_expression property: (property_identifier) @p) arguments: (arguments (string (string_fragment) @e) [(arrow_function body: (_) @b) (function_expression body: (_) @b)])) @match (#eq? @p "addEventListener") (#eq? @e "message") (#not-match? @b "origin"))''',
+  r'''((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p) arguments: (arguments (string (string_fragment) @e) [(arrow_function body: (_) @b) (function_expression body: (_) @b)])) @match (#eq? @p "addEventListener") (#eq? @e "message") (#not-match? @b "origin"))''',
   "window.addEventListener('message', (e) => { apply(e.data) })\n", "window.addEventListener('message', (e) => {\n  if (e.origin !== TRUSTED) return\n  apply(e.data)\n})\n",
-  "Cross-window messages must be authenticated by origin before their data is used.", sev="major", kind="security", cat="security")
+  "Cross-window messages must be authenticated by origin before their data is used.", sev="major", kind="security", cat="security",
+  # only window message events (postMessage); WebSocket/EventSource/Worker/BroadcastChannel have no cross-origin sender,
+  # and a handler comparing event.source to a known window authenticates the sender
+  filters=[r"cap.has_re:o:^(window|globalThis|_global|global|top|parent)$", r"cap.lacks_re:b:\bsource\s*[!=]==|[!=]==\s*[\w.]*\bsource\b"],
+  fp=[{"note": "WebSocket", "code": "ws.addEventListener('message', (msg) => { resolve(msg.data) })\n"},
+      {"note": "axios setImmediate polyfill checks source", "code": "window.addEventListener('message', ({ source, data }) => { if (source === window && data === token) run() })\n"}])
 W("DOCUMENT-WRITE-001", "document.write() is strongly discouraged", "Web/API/Document/write",
   "Use of the document.write() method is strongly discouraged.",
   mcall("document", "write|writeln"), "document.write('<p>' + msg + '</p>')\n", "el.textContent = msg\n",

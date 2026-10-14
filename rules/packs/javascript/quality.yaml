@@ -94,10 +94,13 @@ rules:
   applies_to:
     ecmascript: '>=2015'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: tree-sitter
     query: |
-      (for_in_statement operator: "in") @match
+      (for_in_statement operator: "in" right: (_) @r) @match
+    filters:
+    # only when the iterated value is known to be an array (most for...in loops walk plain objects)
+    - 'type.is:r:array|(Readonly)?Array'
   message: for...in iterates enumerable string keys (including inherited ones) in no guaranteed array order; use for...of, forEach, or an index loop for arrays.
   ai_question: Is the iterated value an array (or array-like) rather than a plain object?
   source:
@@ -107,9 +110,17 @@ rules:
     retrieved: '2026-10-09'
   examples:
     bad: |
+      const items = [1, 2, 3]
       for (const i in items) { use(items[i]) }
     good: |
+      const items = [1, 2, 3]
       for (const item of items) { use(item) }
+    regressions:
+    - code: |
+        function f(headers) {
+          for (const key in headers) { use(headers[key]) }
+        }
+      note: untyped/object operand (axios headers, express route map)
 - id: JS-QUAL-NEW-WRAPPER-001
   title: Do not use new String/Number/Boolean
   language: javascript

@@ -157,7 +157,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "^BrowserModule$") (#match? @p "^(withServerTransition)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^(BrowserModule)$") (#match? @p "^(withServerTransition)$"))
   message: Provide APP_ID instead. Removed in v19 — migrate before upgrading.
   source:
     url: https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md
@@ -185,7 +185,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "^BrowserModule$") (#match? @p "^(withServerTransition)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^(BrowserModule)$") (#match? @p "^(withServerTransition)$"))
   message: Provide APP_ID instead.
   source:
     url: https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md
@@ -242,7 +242,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "(cdr|changeDetector|changeDetectorRef|ref|cd)$") (#match? @p "^(checkNoChanges)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^((cdr|changeDetector|changeDetectorRef|ref|cd))$") (#match? @p "^(checkNoChanges)$"))
   message: Use fixture.detectChanges() in tests. Removed in v22 — migrate before upgrading.
   source:
     url: https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md
@@ -270,7 +270,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "(cdr|changeDetector|changeDetectorRef|ref|cd)$") (#match? @p "^(checkNoChanges)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^((cdr|changeDetector|changeDetectorRef|ref|cd))$") (#match? @p "^(checkNoChanges)$"))
   message: Use fixture.detectChanges() in tests.
   source:
     url: https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md
@@ -586,7 +586,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "^TestBed$") (#match? @p "^(flushEffects)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^(TestBed)$") (#match? @p "^(flushEffects)$"))
   message: Use TestBed.tick().
   source:
     url: https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md
@@ -676,7 +676,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "router$") (#match? @p "^(getCurrentNavigation)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^(router)$") (#match? @p "^(getCurrentNavigation)$"))
   message: Read the currentNavigation signal.
   source:
     url: https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md
@@ -998,7 +998,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "http$") (#match? @p "^(jsonp)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^(http)$") (#match? @p "^(jsonp)$"))
       ((import_statement (import_clause (named_imports (import_specifier name: (identifier) @n))) source: (string (string_fragment) @s)) @match (#match? @s "^(@angular/common/http)$") (#match? @n "^(withJsonpSupport|JsonpClientBackend|JsonpInterceptor)$"))
   message: JSONP is an XSS risk; use CORS with normal requests.
   source:
@@ -1012,8 +1012,11 @@ rules:
       this.http.jsonp(url, 'callback');
     good: |
       this.http.get(url);
+    regressions:
+    - code: |
+        this.client.jsonp(url, 'callback');
   status: active
-  rule_version: 1
+  rule_version: 2
 - id: NG-MIG-LOCALE-DATA-FUNCTIONS
   title: getLocale* data functions (deprecated since v18)
   language: typescript
@@ -1545,7 +1548,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "njector$") (#match? @p "^(runInContext)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^(injector)$") (#match? @p "^(runInContext)$"))
   message: Use runInInjectionContext(injector, fn).
   source:
     url: https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md
@@ -1725,7 +1728,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "^TestBed$") (#match? @p "^(get)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^(TestBed)$") (#match? @p "^(get)$"))
   message: Use TestBed.inject (typed). Removed in v20 — migrate before upgrading.
   source:
     url: https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md
@@ -1753,7 +1756,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match (#match? @o "^TestBed$") (#match? @p "^(get)$"))
+      ((call_expression function: (member_expression object: [(identifier) @o (member_expression property: (property_identifier) @o)] property: (property_identifier) @p)) @match (#match? @o "^(TestBed)$") (#match? @p "^(get)$"))
   message: Use TestBed.inject (typed).
   source:
     url: https://raw.githubusercontent.com/angular/angular/main/CHANGELOG.md

@@ -2,11 +2,15 @@
 # These version-gated exact-match rules report directly even when their trust level is unproven.
 rules:
     COMPOSER-MIG-BLOCK-INSECURE-DEPRECATED: exact identifier predicates
+    GO-MIG-DSA: exact identifier predicates
     GO-MIG-ELLIPTIC-LOW-LEVEL: exact identifier predicates
+    GO-MIG-HTTP-CLOSENOTIFIER: exact identifier predicates
     GO-MIG-IOUTIL: exact identifier predicates
+    GO-MIG-OS-SEEK-CONSTANTS: exact identifier predicates
     GO-MIG-RAND-SEED: exact identifier predicates
     GO-MIG-REFLECT-HEADER: exact identifier predicates
     GO-MIG-STRINGS-TITLE: exact identifier predicates
+    GO-MIG-X-NET-CONTEXT: exact identifier predicates
     GRADLE-MIG-ARCHIVE-TASK-PROPERTIES-GROOVY: exact identifier predicates
     GRADLE-MIG-ARCHIVE-TASK-PROPERTIES-KTS: exact identifier predicates
     GRADLE-MIG-ARCHIVES-BASE-NAME-GROOVY: exact identifier predicates
@@ -54,6 +58,7 @@ rules:
     JAVA-MIG-DEP-CLASS-NEWINSTANCE-001: exact identifier predicates
     JAVA-MIG-DEP-DATE-CTOR-001: exact identifier predicates
     JAVA-MIG-DEP-DATE-STATIC-001: exact identifier predicates
+    JAVA-MIG-DEP-FILE-TOURL-001: exact identifier predicates
     JAVA-MIG-DEP-INFLATER-TOTAL-001: exact identifier predicates
     JAVA-MIG-DEP-ISACCESSIBLE-001: exact identifier predicates
     JAVA-MIG-DEP-MULTICAST-TTL-001: exact identifier predicates
@@ -65,6 +70,7 @@ rules:
     JAVA-MIG-DEP-SSL-PEERCHAIN-001: exact identifier predicates
     JAVA-MIG-DEP-SUBJECT-DOAS-001: exact identifier predicates
     JAVA-MIG-DEP-THREAD-GETID-001: exact identifier predicates
+    JAVA-MIG-DEP-THREADGROUP-001: exact identifier predicates
     JAVA-MIG-DEP-URLDECODER-001: exact identifier predicates
     JAVA-MIG-DEP-URLENCODER-001: exact identifier predicates
     JAVA-MIG-DEP-WEAKCAS-001: exact identifier predicates
@@ -73,6 +79,7 @@ rules:
     JAVA-MIG-LOC-001: exact identifier predicates
     JAVA-MIG-REM-SM-PERM-002: exact identifier predicates
     JAVA-MIG-SM-001: exact identifier predicates
+    JAVA-MIG-THR-001: exact identifier predicates
     JAVA-MIG-UNSAFE-001: exact identifier predicates
     JAVA-MIG-URL-001: exact identifier predicates
     JAVA-MIG-VBC-001: exact identifier predicates
@@ -129,6 +136,8 @@ rules:
     NG-MIG-BROWSER-MODULE-WITH-SERVER-TRANSITION-DEPRECATED: exact identifier predicates
     NG-MIG-BROWSER-MODULE-WITH-SERVER-TRANSITION-REMOVED: exact identifier predicates
     NG-MIG-CAN-LOAD: exact identifier predicates
+    NG-MIG-CHECK-NO-CHANGES-DEPRECATED: exact identifier predicates
+    NG-MIG-CHECK-NO-CHANGES-REMOVED: exact identifier predicates
     NG-MIG-CLASS-GUARDS: exact identifier predicates
     NG-MIG-COMMON-STRUCTURAL-IMPORTS: exact identifier predicates
     NG-MIG-COMPONENT-FACTORY-RESOLVER-DEPRECATED: exact identifier predicates
@@ -140,6 +149,7 @@ rules:
     NG-MIG-EXPERIMENTAL-ZONELESS-REMOVED: exact identifier predicates
     NG-MIG-FLUSH-EFFECTS-REMOVED: exact identifier predicates
     NG-MIG-FOR-STRUCTURAL: exact identifier predicates
+    NG-MIG-GET-CURRENT-NAVIGATION: exact identifier predicates
     NG-MIG-HAMMERJS-DEPRECATED: exact identifier predicates
     NG-MIG-HAMMERJS-REMOVED: exact identifier predicates
     NG-MIG-HTTP-CLIENT-MODULE: exact identifier predicates
@@ -149,6 +159,7 @@ rules:
     NG-MIG-INJECT-FLAGS-REMOVED: exact identifier predicates
     NG-MIG-INTERPOLATION-OPTION-DEPRECATED: exact identifier predicates
     NG-MIG-INTERPOLATION-OPTION-REMOVED: exact identifier predicates
+    NG-MIG-JSONP: exact identifier predicates
     NG-MIG-MODULE-FACTORY-REMOVED: exact identifier predicates
     NG-MIG-MODULE-ID-DEPRECATED: exact identifier predicates
     NG-MIG-MODULE-ID-REMOVED: exact identifier predicates
@@ -164,6 +175,7 @@ rules:
     NG-MIG-REPORT-PROGRESS: exact identifier predicates
     NG-MIG-ROUTER-ERROR-HANDLER-REMOVED: exact identifier predicates
     NG-MIG-ROUTER-LINK-WITH-HREF: exact identifier predicates
+    NG-MIG-RUN-IN-CONTEXT: exact identifier predicates
     NG-MIG-SERVER-TRANSFER-STATE-MODULE-REMOVED: exact identifier predicates
     NG-MIG-STATUS-TEXT: exact identifier predicates
     NG-MIG-SWITCH-STRUCTURAL: exact identifier predicates
@@ -721,7 +733,6 @@ rules:
     VUE-MIG-REACTIVITY-TRANSFORM-001: exact identifier predicates
     VUE-MIG-RENDER-H-001: exact identifier predicates
     VUE-MIG-SET-001: exact identifier predicates
-    VUE-MIG-SLOT-001: exact identifier predicates
     VUE-MIG-SYNC-001: exact identifier predicates
     VUE-VAPOR-GET-CURRENT-INSTANCE: exact identifier predicates
     VUE-VAPOR-GLOBAL-PROPERTIES: exact identifier predicates

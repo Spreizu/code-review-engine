@@ -82,6 +82,40 @@ rules:
   - CWE-287
   status: active
   rule_version: 1
+- id: ANDROID-SEC-CLEAR-FLAG-SECURE
+  title: window.clearFlags(FLAG_SECURE)
+  language: kotlin
+  kind: security
+  category: security
+  severity: major
+  applies_to:
+    any: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - '**/*.kt'
+    query: |
+      ((call_expression (navigation_expression (_) (identifier) @m .) (value_arguments (value_argument (navigation_expression (_) (identifier) @f .)))) @match (#eq? @m "clearFlags") (#eq? @f "FLAG_SECURE"))
+  message: clearFlags(FLAG_SECURE) lets the window appear in screenshots, recent-apps thumbnails and on non-secure displays (screen recording, screen sharing). Keep FLAG_SECURE on screens that show secrets or personal data.
+  source:
+    url: https://developer.android.com/reference/android/view/WindowManager.LayoutParams#FLAG_SECURE
+    doc: window.clearFlags(FLAG_SECURE)
+    doc_version: Android API 36
+    retrieved: '2026-10-09'
+    quote: 'when it is composited to the screen. int FLAG_SECURE Window flag: treat the content of the window as secure, preventing it from appearing in screenshots or from being viewed on non-secure displays.'
+  examples:
+    bad: |
+      window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+    good: |
+      window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+  cwe:
+  - CWE-200
+  owasp:
+  - MASVS-PLATFORM-3
+  - M6:2024
+  status: active
+  rule_version: 1
 - id: ANDROID-SEC-CLEARTEXT-TRAFFIC
   title: android:usesCleartextTraffic="true"
   language: xml
@@ -322,6 +356,135 @@ rules:
   - CWE-532
   status: active
   rule_version: 1
+- id: ANDROID-SEC-LOW-MIN-SDK
+  title: uses-sdk minSdkVersion below 24
+  language: xml
+  kind: security
+  category: security
+  severity: minor
+  applies_to:
+    any: '*'
+  detection:
+    mode: deterministic
+    engine: config
+    files:
+    - '**/AndroidManifest.xml'
+    config:
+      key: manifest.uses-sdk.@minSdkVersion
+      op: matches
+      value: ^(1[0-9]|2[0-3])$
+  message: minSdk below 24 (Android 7) keeps the app installable on releases that lack network-security config, the file-URI ban and modern permission defaults. Raise minSdk (or minSdkVersion) to 24 or higher unless you still have a documented need to support those devices.
+  source:
+    url: https://developer.android.com/privacy-and-security/security-config
+    doc: uses-sdk minSdkVersion below 24
+    doc_version: Android network security configuration
+    retrieved: '2026-10-09'
+    quote: Starting with Android 9 (API level 28), cleartext support is disabled by default.
+  examples:
+    bad: |
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+        <uses-sdk android:minSdkVersion="21"/>
+        <application android:label="@string/app_name"/>
+      </manifest>
+    good: |
+      <?xml version="1.0" encoding="utf-8"?>
+      <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+        <uses-sdk android:minSdkVersion="24"/>
+        <application android:label="@string/app_name"/>
+      </manifest>
+  cwe:
+  - CWE-16
+  owasp:
+  - MASVS-CODE-1
+  - M8:2024
+  status: active
+  rule_version: 1
+- id: ANDROID-SEC-LOW-MIN-SDK-GROOVY
+  title: minSdk / minSdkVersion below 24 (Groovy DSL)
+  language: groovy
+  kind: security
+  category: security
+  severity: minor
+  applies_to:
+    any: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - '**/build.gradle'
+    query: |
+      ((juxt_function_call name: (identifier) @n args: (argument_list (decimal_integer_literal) @v)) @match (#match? @n "^(minSdk|minSdkVersion)$") (#match? @v "^(1[0-9]|2[0-3])$"))
+      ((assignment_expression left: (identifier) @n right: (decimal_integer_literal) @v) @match (#match? @n "^(minSdk|minSdkVersion)$") (#match? @v "^(1[0-9]|2[0-3])$"))
+  message: minSdk below 24 (Android 7) keeps the app installable on releases that lack network-security config, the file-URI ban and modern permission defaults. Raise minSdk (or minSdkVersion) to 24 or higher unless you still have a documented need to support those devices.
+  source:
+    url: https://developer.android.com/privacy-and-security/security-config
+    doc: minSdk / minSdkVersion below 24 (Groovy DSL)
+    doc_version: Android network security configuration
+    retrieved: '2026-10-09'
+    quote: Starting with Android 9 (API level 28), cleartext support is disabled by default.
+  examples:
+    bad: |
+      android {
+          defaultConfig {
+              minSdkVersion 21
+          }
+      }
+    good: |
+      android {
+          defaultConfig {
+              minSdkVersion 24
+          }
+      }
+  cwe:
+  - CWE-16
+  owasp:
+  - MASVS-CODE-1
+  - M8:2024
+  status: active
+  rule_version: 1
+- id: ANDROID-SEC-LOW-MIN-SDK-KTS
+  title: minSdk / minSdkVersion below 24 (Kotlin DSL)
+  language: kotlin
+  kind: security
+  category: security
+  severity: minor
+  applies_to:
+    any: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - '**/build.gradle.kts'
+    query: |
+      ((assignment left: (identifier) @n right: (number_literal) @v) @match (#match? @n "^(minSdk|minSdkVersion)$") (#match? @v "^(1[0-9]|2[0-3])$"))
+  message: minSdk below 24 (Android 7) keeps the app installable on releases that lack network-security config, the file-URI ban and modern permission defaults. Raise minSdk (or minSdkVersion) to 24 or higher unless you still have a documented need to support those devices.
+  source:
+    url: https://developer.android.com/privacy-and-security/security-config
+    doc: minSdk / minSdkVersion below 24 (Kotlin DSL)
+    doc_version: Android network security configuration
+    retrieved: '2026-10-09'
+    quote: Starting with Android 9 (API level 28), cleartext support is disabled by default.
+  examples:
+    bad: |
+      android {
+          defaultConfig {
+              minSdk = 21
+          }
+      }
+    good: |
+      android {
+          defaultConfig {
+              minSdk = 24
+          }
+      }
+  cwe:
+  - CWE-16
+  owasp:
+  - MASVS-CODE-1
+  - M8:2024
+  status: active
+  rule_version: 1
 - id: ANDROID-SEC-NSC-CLEARTEXT
   title: Network security config permits cleartext
   language: xml
@@ -408,6 +571,44 @@ rules:
       </network-security-config>
   cwe:
   - CWE-295
+  status: active
+  rule_version: 1
+- id: ANDROID-SEC-PASSWORD-NO-FLAG-SECURE
+  title: Password field without FLAG_SECURE on the window
+  language: kotlin
+  kind: security
+  category: security
+  severity: major
+  applies_to:
+    any: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    files:
+    - '**/*.kt'
+    query: |
+      ((assignment left: (navigation_expression (_) (identifier) @p .) right: (navigation_expression (_) (identifier) @v .)) @match (#eq? @p "inputType") (#match? @v "PASSWORD"))
+    filters:
+    - file.lacks_re:FLAG_SECURE
+  message: A password (or PIN) field is shown without FLAG_SECURE, so the value can appear in screenshots, recents and screen recordings. Call window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) on this Activity.
+  ai_question: Does this screen show a password, PIN or other secret, and is FLAG_SECURE not set on the window (including in a base Activity)?
+  source:
+    url: https://developer.android.com/reference/android/view/WindowManager.LayoutParams#FLAG_SECURE
+    doc: Password field without FLAG_SECURE on the window
+    doc_version: Android API 36
+    retrieved: '2026-10-09'
+    quote: 'when it is composited to the screen. int FLAG_SECURE Window flag: treat the content of the window as secure, preventing it from appearing in screenshots or from being viewed on non-secure displays.'
+  examples:
+    bad: |
+      edit.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+    good: |
+      window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+      edit.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD
+  cwe:
+  - CWE-200
+  owasp:
+  - MASVS-PLATFORM-3
+  - M6:2024
   status: active
   rule_version: 1
 - id: ANDROID-SEC-PREFS-PLAINTEXT-SECRET

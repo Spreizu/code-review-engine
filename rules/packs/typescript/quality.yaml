@@ -30,6 +30,8 @@ rules:
       function parse(x: any) { return x.foo }
     good: |
       function parse(x: unknown) { return typeof x === 'object' && x !== null ? x : null }
+  xref:
+  - typescript-eslint:no-explicit-any
 - id: TS-QUAL-BOXED-001
   title: Never use Number, String, Boolean, Symbol or Object types
   language: typescript
@@ -78,6 +80,8 @@ rules:
       function fn(x: () => any) { x() }
     good: |
       function fn(x: () => void) { x() }
+  xref:
+  - typescript-eslint:no-explicit-any
 - id: TS-QUAL-CATCH-ANY-001
   title: Do not annotate catch variables as any
   language: typescript
@@ -102,6 +106,8 @@ rules:
       try { run() } catch (e: any) { console.log(e.message) }
     good: |
       try { run() } catch (e) { if (e instanceof Error) console.log(e.message) }
+  xref:
+  - typescript-eslint:no-explicit-any
 - id: TS-QUAL-CFG-STRICT-001
   title: Enable strict mode
   language: tsconfig
@@ -119,6 +125,7 @@ rules:
       key: compilerOptions.strict
       op: not_equals
       value: true
+      unless_key: extends  # inherited from the base config; cannot be decided from this file
   message: strict enables the strict family of type-checking options; it becomes the default in TypeScript 6.0/7.0, so enabling it now also eases the upgrade.
   source:
     url: https://www.typescriptlang.org/tsconfig/
@@ -164,8 +171,13 @@ rules:
   detection:
     mode: deterministic
     engine: tree-sitter
+    # typescript-eslint no-namespace defaults: .d.ts files allowed; augmenting a global/module
+    # namespace (declare global { namespace Express }) has no module equivalent
+    files: ['!**/*.d.ts', '!**/*.d.cts', '!**/*.d.mts']
     query: |
       (internal_module) @match
+    filters:
+    - 'ancestor.lacks_re:ambient_declaration|module:^(declare\s+)?(global|module\s+[''"])'
   message: The handbook recommends modules over namespaces in modern code. Namespaces are also not erasable syntax (see --erasableSyntaxOnly).
   source:
     url: https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html
@@ -177,6 +189,12 @@ rules:
       namespace Validation { export const ok = true }
     good: |
       export const ok = true
+    regressions:
+    - code: |
+        declare global {
+          namespace Express { interface User { id: number } }
+        }
+      note: global namespace augmentation has no module form
 - id: TS-QUAL-NONNULL-001
   title: Use non-null assertions sparingly
   language: typescript

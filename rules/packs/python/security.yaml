@@ -19,20 +19,32 @@ rules:
     mode: ai-confirm
     engine: tree-sitter
     query: |
-      ((call function: (attribute attribute: (identifier) @m) arguments: (argument_list) @args) @match
-        (#eq? @m "set_cookie") (#not-match? @args "secure\\s*=\\s*True"))
+      ((call function: (attribute object: (_) @recv attribute: (identifier) @m) arguments: (argument_list) @args) @match
+        (#eq? @m "set_cookie") (#not-match? @args "secure\\s*=|\\*\\*"))
+    # http.cookiejar.CookieJar.set_cookie(cookie) and test clients take a Cookie object or a
+    # (server, key, value) triple, not a response cookie; a computed secure= value is a configured choice.
+    filters:
+    - cap.lacks_re:recv:(?i)(jar|cookies?|client|super\(\))$
+    - cap.lacks_re:args:^\(\s*[A-Za-z_][\w.]*\s*(,\s*\*|\))
   message: Without secure=True the cookie is also sent over plain HTTP; pass secure=True (and httponly=True, samesite) for session or auth cookies.
   ai_question: Does the cookie carry session, authentication or other sensitive data, with Secure not enforced elsewhere (framework settings such as SESSION_COOKIE_SECURE)?
   source:
-    url: https://docs.djangoproject.com/en/5.2/ref/request-response/#django.http.HttpResponse.set_cookie
+    url: https://docs.djangoproject.com/en/6.1/ref/request-response/#django.http.HttpResponse.set_cookie
     doc: Django HttpResponse.set_cookie; Flask Response.set_cookie
-    doc_version: Django 5.2
+    doc_version: Django 6.1
     retrieved: '2026-10-10'
   examples:
     bad: |
       resp.set_cookie("sid", sid)
     good: |
       resp.set_cookie("sid", sid, secure=True, httponly=True, samesite="Lax")
+    fp:
+    - |
+      self.jar.set_cookie(cookie)
+    - |
+      client.set_cookie("localhost", "sid", "x")
+    - |
+      response.set_cookie(name, val, secure=self.get_cookie_secure(app))
   xref:
   - sonar:python:S2092
   cwe:

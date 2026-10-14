@@ -329,19 +329,31 @@ rules:
     mode: deterministic
     engine: tree-sitter
     target: template
+    # slot-scope is Vue-only. `slot` and `scope` are also native HTML attributes (Web Component slotting,
+    # <th scope>), so they count only on <template> or on a direct child of a PascalCase Vue component.
     query: |
-      (attribute (attribute_name) @match (#any-of? @match "slot-scope" "slot" "scope"))
+      ((attribute (attribute_name) @match) (#eq? @match "slot-scope"))
+      ((element (start_tag (tag_name) @t (attribute (attribute_name) @match))) (#eq? @t "template") (#any-of? @match "slot" "scope"))
+      ((element (start_tag (tag_name) @pt) (element (start_tag (tag_name) @ct (attribute (attribute_name) @match)))) (#match? @pt "^[A-Z]") (#not-eq? @ct "template") (#eq? @match "slot"))
   message: Since Vue 2.6 the v-slot directive replaces the slot and slot-scope attributes, which are deprecated.
   source:
     url: https://v2.vuejs.org/v2/guide/components-slots.html
     doc: Vue 2 Guide - Slots (Deprecated Syntax)
     doc_version: Vue 2.6+
     retrieved: '2026-10-09'
+  xref:
+  - https://v3-migration.vuejs.org/breaking-changes/slots-unification.html
+  - https://vuejs.org/guide/components/slots.html
   examples:
     bad: |
       <template><list><template slot="item" slot-scope="{ row }">{{ row }}</template></list></template>
     good: |
       <template><list><template #item="{ row }">{{ row }}</template></list></template>
+    fp:
+    - |
+      <template><my-card><span slot="title">Hi</span></my-card></template>
+    - |
+      <template><table><tr><th scope="col">Name</th></tr></table></template>
 - id: VUE-MIG-SYNC-001
   title: v-bind .sync was replaced by v-model arguments
   language: vue

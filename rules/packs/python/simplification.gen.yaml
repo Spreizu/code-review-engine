@@ -689,7 +689,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (for_statement body: (block . (if_statement consequence: (block . (return_statement (true)) .) !alternative) .)) @match
+      (block (for_statement !alternative body: (block . (if_statement consequence: (block . (return_statement (true)) .) !alternative) .)) @match . (return_statement (false)))
   message: Use any(...) / all(...) with a generator expression.
   fix: Prefer the simplest code that works. When a shortcut is deliberate, add a `limit:` comment saying how far it holds (e.g. input size, request rate) and what to switch to beyond that.
   source:

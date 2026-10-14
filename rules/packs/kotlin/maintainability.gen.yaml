@@ -283,6 +283,8 @@ rules:
     filters:
     - node.has_re:^//\s*((val|var)\s+\w+\s*=.*|fun\s+\w+\(.*|return\b.*|import\s+[\w.]+|[\w.]+\(.*\))\s*$
     - node.lacks_re:(?i)^(#|//)\s*(type:|noqa|pragma|nolint|go:|\+build|lint:|eslint|phpcs|@|-\*-|fmt:|isort:|pylint:|mypy:|e\.g\.|example)
+    - node.lacks_re:\w[.!?]\s*$|^//\s*return\s+[^(\n]*,\s+[a-z]|^//\s*return\s+([a-z']+\s+){2}[a-z']+|^//\s*return\s+\S+\s+(which|that|if|when|because|so|and|to|so)\s|[\x{2212}\x{00D7}\x{00F7}]
+    - file.lacks_re://[^\n]*[\x{2212}\x{00D7}\x{00F7}][^\n]*\n(?:[ \t]*//[^\n]*\n){0,3}[ \t]*{cap:match}
   message: 'This comment is code that was switched off: delete it (version control keeps the history) or restore it.'
   ai_question: Is this comment disabled code (not prose, a doc example or a directive)?
   source:
@@ -307,6 +309,25 @@ rules:
         fun f() {
             // see load() for details
             run()
+        }
+    - code: |
+        fun f() {
+            // return -1, then our data finished prematurely!
+            // return is a 'spurious wakeup' because notify() was not called.
+            // return 200, there is a get handler
+            run()
+        }
+    - code: |
+        fun f(): Int {
+            // return -1 which may trigger it to release its resources.
+            //   val years = 1_970 − 1_601
+            return 0
+        }
+    - code: |
+        fun g(t: Long): Long {
+            //   val years = 1_970 − 1_601
+            //   val days = years * 365
+            return t
         }
   xref:
   - sonar:kotlin:S125
@@ -537,7 +558,9 @@ rules:
                   if (c) {
                       if (d) {
                           if (e) {
-                              g()
+                              if (f) {
+                                  g()
+                              }
                           }
                       }
                   }
@@ -636,6 +659,36 @@ rules:
                 }
                 else -> {
                     log(2)
+                }
+            }
+        }
+    - code: |
+        fun f(range: R) {
+            when (range) {
+                is R.A -> {
+                    w(range.b1)
+                    w(0)
+                }
+                is R.B -> {
+                    w(range.b1)
+                    w(range.b2)
+                }
+                is R.C -> {
+                    w(range.b1)
+                    w(range.b2)
+                }
+            }
+        }
+    - code: |
+        fun Any.f(p: P) {
+            when (this) {
+                is AppExt -> {
+                    defaultConfig.targetSdk = p.sdk
+                    log(p)
+                }
+                is TestExt -> {
+                    defaultConfig.targetSdk = p.sdk
+                    log(p)
                 }
             }
         }
@@ -972,6 +1025,11 @@ rules:
   detection:
     mode: ai-confirm
     engine: tree-sitter
+    files:
+    - '!**/src/test/**'
+    - '!**/test/**'
+    - '!**/*Test.kt'
+    - '!**/*Tests.kt'
     query: |
       (string_literal) @match
     filters:
@@ -1015,6 +1073,7 @@ rules:
     filters:
     - node.has_re:^{cap:l}\s*(<|>|<=|>=|&&|\|\||-|/|%)\s*{cap:r}$
     - cap.lacks_re:l:[(]|\+\+|--|\bawait\b|^[\d.]+$
+    - cap.lacks_re:l:^(true|false|True|False|null|nil|None|-?\d[\w.]*|'[^']*'|\x22[^\x22]*\x22)$
   message: Both operands are the same expression, so the result is constant (or the second operand was meant to be something else).
   source:
     url: https://kotlinlang.org/docs/operator-overloading.html
@@ -1078,6 +1137,43 @@ rules:
       }
   xref:
   - sonar:kotlin:S6611
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: KT-MAINT-INDEXED-ACCESS-OPERATOR
+  title: get() call where indexed access reads better
+  language: kotlin
+  kind: modernization
+  category: maintainability
+  severity: minor
+  applies_to:
+    kotlin: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression (navigation_expression (_) @o (identifier) @m) (value_arguments . (value_argument) .) (#eq? @m "get")) @match
+    filters:
+    - type.is:o:List|MutableList|ArrayList|Map|MutableMap|HashMap|LinkedHashMap|Array|IntArray|LongArray
+  message: 'Lists, arrays and maps support the indexing operator: write names[0] / map[key] instead of get().'
+  source:
+    url: https://kotlinlang.org/docs/operator-overloading.html
+    doc: 'Kotlin docs: Operator overloading'
+    doc_version: Kotlin 2.2
+    retrieved: '2026-10-09'
+    quote: s(a) a !in b !b.contains(a) For in and !in the procedure is the same, but the order of arguments is reversed. Indexed access operator Expression Translated to a[i] a.get(i) a[i, j] a.get(i, j) a[i_1, ..., i_n] a.get(i_1, ..., i_n) a[i] = b a.s
+  examples:
+    bad: |
+      fun f(names: List<String>): String {
+          return names.get(0)
+      }
+    good: |
+      fun f(names: List<String>): String {
+          return names[0]
+      }
+  xref:
+  - sonar:kotlin:S6518
   status: active
   rule_version: 1
   tags:
@@ -1387,6 +1483,8 @@ rules:
     engine: tree-sitter
     query: |
       (parenthesized_expression . (parenthesized_expression) .) @match
+    filters:
+    - parentkind.lacks_re:parenthesized_expression:.
   message: 'The extra pair of parentheses adds nothing: remove it.'
   source:
     url: https://detekt.dev/docs/rules/style
@@ -1466,11 +1564,11 @@ rules:
       (call_expression (navigation_expression (_) (identifier) @m) (#eq? @m "runFinalizersOnExit")) @match
   message: 'runFinalizersOnExit is inherently unsafe and was removed from the JDK: use a shutdown hook.'
   source:
-    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Runtime.html
-    doc: 'Java SE 21 API: Runtime'
+    url: https://docs.oracle.com/en/java/javase/11/migrate/index.html
+    doc: 'JDK 11 Migration Guide: APIs removed'
     doc_version: Kotlin 2.2
     retrieved: '2026-10-09'
-    quote: Runtime (Java SE 21 & JDK 21) JavaScript is disabled on your browser.
+    quote: For information on the possible alternatives, see JDK 11 API Specification . javax.security.auth.Policy java.lang.Runtime.runFinalizersOnExit(boolean) java.lang.SecurityManager.checkAwtEventQueueAccess() java.lang.SecurityManager.checkMemberAccess(java.lang.Cl
   examples:
     bad: |
       fun f() {
@@ -1481,6 +1579,7 @@ rules:
           Runtime.getRuntime().addShutdownHook(Thread { flush() })
       }
   xref:
+  - https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#runFinalizersOnExit-boolean-
   - sonar:kotlin:S2151
   status: active
   rule_version: 1
@@ -1893,7 +1992,9 @@ rules:
       (import (qualified_identifier (identifier) @name .) . ) @match
     filters:
     - file.count_lt:2:\b{cap:name}\b
-    - cap.lacks_re:name:^(getValue|setValue|provideDelegate|invoke|plus|minus|times|div|rem|contains|get|set|iterator|next|hasNext|compareTo|unaryMinus|unaryPlus|not|inc|dec|rangeTo|rangeUntil|component\d+|plusAssign|minusAssign|timesAssign|divAssign|remAssign|equals)$
+    - cap.lacks_re:name:^(getValue|setValue|provideDelegate|invoke|plus|minus|times|div|rem|contains|get|set|iterator|next|hasNext|compareTo|unaryMinus|unaryPlus|not|inc|dec|rangeTo|rangeUntil|component\d+|plusAssign|minusAssign|timesAssign|divAssign|remAssign|equals|assign)$
+    - cap.lacks_re:name:^`
+    - node.lacks_re:\*\s*$
   message: 'Nothing in this file refers to the imported name: remove the import.'
   source:
     url: https://detekt.dev/docs/rules/style
@@ -1916,6 +2017,13 @@ rules:
         import a.b.getValue
 
         val x by lazy { 1 }
+    - note: star, backtick and Gradle assign imports
+      code: |
+        import io.ktor.server.application.*
+        import org.mockito.Mockito.`when`
+        import org.gradle.kotlin.dsl.assign
+
+        fun f() { `when`(x) }
   xref:
   - detekt:UnusedImport
   - sonar:kotlin:S1128
@@ -1940,6 +2048,9 @@ rules:
     - node.has_ancestor:function_declaration|anonymous_function|lambda_literal
     - func.count_lt:2:\b{cap:name}\b
     - node.lacks_re:\bby\b
+    - parentkind.lacks_re:class_body:.
+    - cap.lacks_re:name:^`
+    - node.lacks_re:^\s*(@(get|set|field|property|param|delegate)\s*:|(override|private|protected|public|internal|const|open|abstract)\b)
   message: 'This local variable is assigned but never read: remove it, or use it where it was meant to be used.'
   ai_question: Is the variable really never read (no reflection, template, or dynamic access)?
   source:
@@ -1959,6 +2070,17 @@ rules:
           val sum = a + 1
           return sum * 2
       }
+    regressions:
+    - note: anonymous object members and backticked names
+      code: |
+        fun f() {
+            val t = object : Transformation {
+                override val cacheKey = "k"
+            }
+            use(t)
+            val `in` = open()
+            `in`.close()
+        }
   xref:
   - detekt:UnusedVariable
   - sonar:kotlin:S1481

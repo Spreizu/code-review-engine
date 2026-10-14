@@ -176,14 +176,18 @@ rules:
   applies_to:
     java: '>=20'
   detection:
-    mode: ai-confirm
+    mode: deterministic
     engine: tree-sitter
     query: |
       (method_invocation
+        object: (_) @recv
         name: (identifier) @n (#eq? @n "stop")
         arguments: (argument_list) @a (#eq? @a "()")) @match
+    # Only receivers declared as a Thread: server/app/lifecycle stop() (Jetty, Javalin, Dropwizard) is
+    # not Thread.stop (corpus sample: 20/20 were such). Unknown types do not match.
+    filters:
+    - type.is:recv:(java\.lang\.)?Thread
   message: Thread.stop() throws UnsupportedOperationException on current JDKs; use cooperative cancellation via interrupt().
-  ai_question: Is the receiver of this `stop()` call a java.lang.Thread (or subclass)?
   source:
     url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html
     doc: java.lang.Thread#stop()
@@ -194,6 +198,10 @@ rules:
       class A { void f(Thread t) { t.stop(); } }
     good: |
       class A { void f(Thread t) { t.interrupt(); } }
+    fp:
+    - |
+      class A { void f(Server server) throws Exception { server.stop(); } }
+  rule_version: 2
 - id: JAVA-MIG-UNSAFE-001
   title: sun.misc.Unsafe memory-access methods are deprecated for removal
   language: java

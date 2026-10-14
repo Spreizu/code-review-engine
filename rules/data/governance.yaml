@@ -479,6 +479,7 @@ rules:
       ai_question: "Does the class lack a proper equals(Object) override, so this overload is mistaken for it?"
       corpus: "corpus m3 2026-10-10: typed equals overload next to equals(Object)"
   JAVA-MAINT-EXCEPTION-NOT-THROWN:
+      exclude_tests: true
       mode: ai-confirm
       ai_question: "Is the created exception discarded by mistake (not a test or a factory)?"
       corpus: "corpus m3 2026-10-10: tests constructing exceptions to check their fields"
@@ -511,6 +512,7 @@ rules:
       ai_question: "Is the interface implemented by a class-based (CGLIB) proxy where the annotation is lost?"
       corpus: "corpus m3 2026-10-10: Spring Data repository interfaces with caching annotations work through proxies"
   JAVA-MAINT-STRING-OP-NO-EFFECT:
+      exclude_tests: true
       mode: ai-confirm
       ai_question: "Is the call result unused or the call a no-op outside a test of that method?"
       corpus: "corpus m3 2026-10-10: tests asserting substring(0) behaviour"
@@ -535,6 +537,7 @@ rules:
       ai_question: "Is the reference variable used after the loop without unset (risking writes to the last element)?"
       corpus: "corpus m3 2026-10-10: references in functions that return right after the loop"
   PHP-MAINT-IGNORED-PURE-RESULT:
+      exclude_tests: true
       mode: ai-confirm
       ai_question: "Is the result discarded by mistake (not called for a side effect or expected exception)?"
       corpus: "corpus m3 2026-10-10: tests calling array_map to trigger exceptions"
@@ -559,6 +562,7 @@ rules:
       ai_question: "Is a comma missing between the adjacent string literals?"
       corpus: "corpus m3 2026-10-10: deliberate multi-line regex concatenation"
   PY-MAINT-OVERWRITTEN-ELEMENT:
+      exclude_tests: true
       mode: ai-confirm
       ai_question: "Is the same key written twice with no read in between, outside a test of overwrite behaviour?"
       corpus: "corpus m3 2026-10-10: tests overwriting keys on purpose"
@@ -574,3 +578,18 @@ rules:
       mode: ai-confirm
       ai_question: "Is the raise inside a generator function body (a function containing yield)?"
       corpus: "corpus m3 2026-10-10: raise StopIteration in non-generator helpers or iterator __next__"
+  COMPOSER-QUAL-NO-LICENSE:
+      exclude_tests: true
+      corpus: 'corpus m6 2026-10-10: hits dominated by test-fixture packages under tests/ (never published); exclude_tests'
+  COMPOSER-QUAL-VERSION-FIELD:
+      exclude_tests: true
+      corpus: 'corpus m6 2026-10-10: hits dominated by test-fixture packages under tests/ (never published); exclude_tests'
+  COMPOSER-QUAL-REQ-STAR:
+      exclude_tests: true
+      corpus: 'corpus m6 2026-10-10: hits dominated by test-fixture packages under tests/ (never published); exclude_tests'
+  COMPOSER-MOD-PSR0-AUTOLOAD:
+      exclude_tests: true
+      corpus: 'corpus m6 2026-10-10: hits dominated by test-fixture packages under tests/ (never published); exclude_tests'
+  PKG-QUAL-DEP-STAR:
+      exclude_tests: true
+      corpus: 'corpus m7 2026-10-10: * in create-react-router / react-router-dev fixtures; exclude_tests'

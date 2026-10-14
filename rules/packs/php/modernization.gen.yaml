@@ -487,7 +487,11 @@ rules:
     mode: ai-confirm
     engine: tree-sitter
     query: |
-      (class_declaration body: (declaration_list (property_declaration (visibility_modifier) @v type: (_) (property_element)) @match) (#eq? @v "private") (#not-match? @match "readonly"))
+      (class_declaration body: (declaration_list (property_declaration (visibility_modifier) @v type: (_) (property_element (variable_name (name) @name))) @match) (#eq? @v "private") (#not-match? @match "readonly"))
+    filters:
+    - node.lacks_re:=|\bstatic\b
+    - file.count_lt:2:->{cap:name}\s*(=[^=>]|\[|[-.+*/?%]{1,2}=|\+\+|--)
+    - file.has_re:function\s+__construct\s*\([^{]*\{(?:[^{}]|\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\})*->{cap:name}\s*=\s*[^=>&\s]
   message: Mark write-once properties readonly (8.1+).
   ai_question: Is the property assigned only in the constructor?
   source:
@@ -503,6 +507,22 @@ rules:
     good: |
       <?php
       class P { private readonly int $x; public function __construct(int $x) { $this->x = $x; } }
+    regressions:
+    - code: |
+        <?php
+        class S { private string $pad = ' '; private array $h; public function __construct() { $this->h = []; }
+          public function add($x) { $this->h[] = $x; } }
+    - code: |
+        <?php
+        class N { private Formatter $f;
+          public function getFormatter(): Formatter { return $this->f ??= new Formatter(); } }
+    - code: |
+        <?php
+        class C { private array $s; public function __construct(array &$s) { $this->s = &$s; } }
+    - code: |
+        <?php
+        class A { private mixed $d; public function __construct($d) { $this->setDefault($d); }
+          public function setDefault($d): void { $this->d = $d; } }
   status: active
   rule_version: 1
 - id: PHP-MOD-SHORT-ARRAY
@@ -577,7 +597,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      ((binary_expression left: (function_call_expression function: (name) @f) operator: ["!==" "===" "!=" "=="] right: (boolean)) @match (#match? @f "(?i)^(strpos|stripos|mb_strpos)$"))
+      ((binary_expression left: (function_call_expression function: (name) @f) operator: ["!==" "==="] right: (boolean)) @match (#match? @f "(?i)^(strpos|mb_strpos)$"))
   message: Use str_contains() (8.0+).
   source:
     url: https://www.php.net/manual/en/function.str-contains.php
@@ -592,6 +612,11 @@ rules:
     good: |
       <?php
       if (str_contains($h, 'x')) {}
+    regressions:
+    - code: |
+        <?php
+        if (stripos($ct, 'text/html') !== false) {}
+        if (strpos($s, 'a') == false) {}
   status: active
   rule_version: 1
 - id: PHP-MOD-STR-STARTS-WITH

@@ -96,6 +96,7 @@ sources:
   fetch: jep
   cadence: weekly
   cited_by:
+  - JAVA-CERT-LCK01-SYNC-SHARED-LITERAL
   - JAVA-MIG-VBC-001
 - url: https://openjdk.org/jeps/403
   ecosystem: java
@@ -209,7 +210,8 @@ sources:
   kind: reference
   fetch: html
   cadence: weekly
-  cited_by: []
+  cited_by:
+  - JAVA-MAINT-URL-EQUALS-HASHCODE
 - url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Locale.html
   ecosystem: java
   kind: reference
@@ -1284,7 +1286,8 @@ sources:
   kind: reference
   fetch: html
   cadence: weekly
-  cited_by: []
+  cited_by:
+  - JS-MAINT-AWAIT-NON-PROMISE
 - url: https://github.com/tc39/proposals/blob/main/finished-proposals.md
   ecosystem: javascript
   kind: reference
@@ -1688,6 +1691,7 @@ sources:
   cadence: weekly
   doc_version: JDK 25 API (javadoc, current LTS; unchanged in 26/27)
   cited_by:
+  - JAVA-CERT-ERR09-SYSTEM-EXIT
   - JAVA-MIG-DEP-RUNTIME-EXEC-001
 - url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html
   ecosystem: java
@@ -1843,6 +1847,8 @@ sources:
   cadence: weekly
   doc_version: JDK 25 API (javadoc, current LTS; unchanged in 26/27)
   cited_by:
+  - JAVA-CERT-FIO02-FILE-RESULT-IGNORED
+  - JAVA-CERT-FIO03-TEMP-FILE-NOT-REMOVED
   - JAVA-MIG-DEP-FILE-TOURL-001
 - url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ThreadGroup.html
   ecosystem: java
@@ -2013,6 +2019,8 @@ sources:
   cadence: weekly
   doc_version: JDK 25 API
   cited_by:
+  - JAVA-CERT-LCK02-SYNC-GETCLASS
+  - JAVA-CERT-THI02-NOTIFY
   - JAVA-QUAL-CONC-WAIT-LOOP-001
   - JAVA-QUAL-COR-EQUALS-HASHCODE-001
 - url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/SimpleDateFormat.html
@@ -2069,8 +2077,7 @@ sources:
   fetch: html
   cadence: weekly
   doc_version: Java Tutorials
-  cited_by:
-  - JAVA-QUAL-CONC-INTERRUPTED-001
+  cited_by: []
 - url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ThreadLocal.html
   ecosystem: java
   kind: reference
@@ -2085,25 +2092,7 @@ sources:
   fetch: html
   cadence: weekly
   doc_version: Java Tutorials (JDK 7+ language feature)
-  cited_by:
-  - JAVA-QUAL-RES-BUFFEREDREADER-001
-  - JAVA-QUAL-RES-FILEINPUTSTREAM-001
-  - JAVA-QUAL-RES-FILEOUTPUTSTREAM-001
-  - JAVA-QUAL-RES-FILEREADER-001
-  - JAVA-QUAL-RES-FILES-NEWBUFFEREDREADER-001
-  - JAVA-QUAL-RES-FILES-NEWBUFFEREDWRITER-001
-  - JAVA-QUAL-RES-FILES-NEWINPUTSTREAM-001
-  - JAVA-QUAL-RES-FILES-NEWOUTPUTSTREAM-001
-  - JAVA-QUAL-RES-FILEWRITER-001
-  - JAVA-QUAL-RES-JARFILE-001
-  - JAVA-QUAL-RES-JDBC-001
-  - JAVA-QUAL-RES-OBJECTOUTPUTSTREAM-001
-  - JAVA-QUAL-RES-PRINTWRITER-001
-  - JAVA-QUAL-RES-RANDOMACCESSFILE-001
-  - JAVA-QUAL-RES-SCANNER-001
-  - JAVA-QUAL-RES-SERVERSOCKET-001
-  - JAVA-QUAL-RES-SOCKET-001
-  - JAVA-QUAL-RES-ZIPFILE-001
+  cited_by: []
 - url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html
   ecosystem: java
   kind: reference
@@ -2175,7 +2164,9 @@ sources:
   cadence: weekly
   doc_version: JLS Java SE 25
   cited_by:
+  - JAVA-QUAL-COR-ABSTRACT-PUBLIC-CTOR-001
   - JAVA-QUAL-COR-RECORD-ARRAY-001
+  - JAVA-QUAL-COR-RETURN-CONSTANT-001
 - url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/List.html
   ecosystem: java
   kind: reference
@@ -2198,8 +2189,7 @@ sources:
   fetch: html
   cadence: weekly
   doc_version: Java Tutorials
-  cited_by:
-  - JAVA-QUAL-COR-THREAD-SLEEP-LOOP-001
+  cited_by: []
 - url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Enum.html
   ecosystem: java
   kind: reference
@@ -5644,8 +5634,10 @@ sources:
   cadence: weekly
   doc_version: Dockerfile frontend 1.28 / Docker docs 2026-10
   cited_by:
+  - DOCKER-QUAL-ENV-EQUALS-SPACING
   - DOCKER-QUAL-HEALTHCHECK-MISSING
   - DOCKER-QUAL-LATEST-TAG
+  - DOCKER-QUAL-MALFORMED-EXEC-JSON
   - DOCKER-SEC-ADD-REMOTE-NO-CHECKSUM
 - url: https://docs.docker.com/build/building/best-practices/
   ecosystem: docker
@@ -5658,7 +5650,9 @@ sources:
   - DOCKER-QUAL-APT-LISTS-NOT-REMOVED
   - DOCKER-QUAL-APT-NO-INSTALL-RECOMMENDS
   - DOCKER-QUAL-APT-UPDATE-ALONE
+  - DOCKER-QUAL-CONSECUTIVE-RUN
   - DOCKER-QUAL-NO-DIGEST
+  - DOCKER-QUAL-PACKAGE-NONINTERACTIVE
   - DOCKER-QUAL-PIPE-WITHOUT-PIPEFAIL
   - DOCKER-QUAL-RUN-CD
   - DOCKER-QUAL-SUDO
@@ -5989,7 +5983,6 @@ sources:
   - GO-MOD-SLICESCLIP
   - GO-MOD-SLICESCONTAINS
   - GO-MOD-SLICESSORT
-  - GO-MOD-SORTSLICE-FUNC
   - GO-MOD-STRINGSBUILDER
   - GO-MOD-STRINGSCUTPREFIX
   - GO-MOD-STRINGSSEQ
@@ -7468,6 +7461,8 @@ sources:
   - KT-QUAL-CLASS-NAMING
   - KT-QUAL-CONST-NAMING
   - KT-QUAL-FUNCTION-NAMING
+  - KT-QUAL-GETTER-SETTER-PROPERTY
+  - KT-QUAL-LIFT-RETURN
   - KT-QUAL-MUTABLE-COLLECTION-API
   - KT-QUAL-TEMPLATE-BRACES
   - KT-QUAL-UNIT-RETURN
@@ -7728,6 +7723,7 @@ sources:
   - JAVA-MAINT-NEW-FOR-GETCLASS
   - JAVA-MAINT-TOSTRING-RETURNS-NULL
   - JAVA-MAINT-WAIT-NOTIFY-UNSYNCHRONIZED
+  - JAVA-MAINT-WAIT-WITH-SEVERAL-LOCKS
   - KT-MAINT-ARRAY-TOSTRING-HASHCODE
   - KT-QUAL-EQUALS-WITHOUT-HASHCODE
 - url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/text/SimpleDateFormat.html
@@ -10106,10 +10102,12 @@ sources:
   cadence: weekly
   doc_version: Java SE 21
   cited_by:
+  - JAVA-MAINT-BOXED-TOSTRING
   - JAVA-MAINT-CASE-CONVERT-TO-COMPARE
   - JAVA-MAINT-IGNORED-RESULT
   - JAVA-MAINT-INDEXOF-POSITIVE-CHECK
   - JAVA-MAINT-SPLIT-ON-DOT
+  - JAVA-MAINT-STRING-EQUALS-BUILDER
   - JAVA-MAINT-STRING-OP-NO-EFFECT
   - JAVA-MAINT-STRING-VALUEOF-CONCAT
   - JAVA-MAINT-TOSTRING-ON-STRING-LITERAL
@@ -10164,6 +10162,7 @@ sources:
   cadence: weekly
   doc_version: MDN (2026)
   cited_by:
+  - JS-MAINT-INDEXOF-INCLUDES
   - JS-SIMP-LOOP-INCLUDES
 - url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
   ecosystem: simplify-javascript
@@ -10392,6 +10391,7 @@ sources:
   - PY-MAINT-NONE-RESULT-ASSIGNED
   - PY-MAINT-OVERWRITTEN-ELEMENT
   - PY-MAINT-SET-OF-SORTED
+  - PY-QUAL-INDEX-RETURNS-NON-INT
   - PY-SIMP-HELPER-DEDUPE
   - PY-SIMP-IDX-LIMIT-NOTE-INCOMPLETE
   - PY-SIMP-IDX-NESTED-LOOP-NO-LIMIT-NOTE
@@ -10405,6 +10405,7 @@ sources:
   - PY-MAINT-CLASS-FIELD-REDEFINED
   - PY-MAINT-METHOD-FIRST-PARAM-NOT-SELF
   - PY-MAINT-METHOD-WITHOUT-SELF
+  - PY-MAINT-UNREAD-PRIVATE-ATTRIBUTE
   - PY-MAINT-UNUSED-PRIVATE-METHOD
   - PY-SIMP-IDX-UNUSED-EXPORT
 - url: https://docs.python.org/3/library/argparse.html
@@ -10451,6 +10452,7 @@ sources:
   doc_version: OWASP Cheat Sheet Series 2026
   cited_by:
   - JAVA-SEC-WEAK-HASH-001
+  - JAVA-SEC-WEAK-HASH-SECURITY-CONTEXT
 - url: https://csrc.nist.gov/pubs/sp/800/131/a/r2/final
   ecosystem: java-security
   kind: reference
@@ -10559,8 +10561,7 @@ sources:
   fetch: html
   cadence: weekly
   doc_version: Django 5.2
-  cited_by:
-  - PY-SEC-COOKIE-INSECURE
+  cited_by: []
 - url: https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html
   ecosystem: python-security
   kind: reference
@@ -11021,6 +11022,9 @@ sources:
   cadence: weekly
   doc_version: Android network security configuration
   cited_by:
+  - ANDROID-SEC-LOW-MIN-SDK
+  - ANDROID-SEC-LOW-MIN-SDK-GROOVY
+  - ANDROID-SEC-LOW-MIN-SDK-KTS
   - ANDROID-SEC-NSC-CLEARTEXT
   - ANDROID-SEC-NSC-USER-CA
 - url: https://developer.android.com/privacy-and-security/risks/insecure-webview-native-bridges
@@ -11719,64 +11723,56 @@ sources:
   fetch: html
   cadence: weekly
   doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
-  cited_by:
-  - JAVA-CERT-FIO02-FILE-RESULT-IGNORED
+  cited_by: []
 - url: https://wiki.sei.cmu.edu/confluence/display/java/LCK02-J.+Do+not+synchronize+on+the+class+object+returned+by+getClass%28%29
   ecosystem: cert-java
   kind: reference
   fetch: html
   cadence: weekly
   doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
-  cited_by:
-  - JAVA-CERT-LCK02-SYNC-GETCLASS
+  cited_by: []
 - url: https://wiki.sei.cmu.edu/confluence/display/java/LCK01-J.+Do+not+synchronize+on+objects+that+may+be+reused
   ecosystem: cert-java
   kind: reference
   fetch: html
   cadence: weekly
   doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
-  cited_by:
-  - JAVA-CERT-LCK01-SYNC-SHARED-LITERAL
+  cited_by: []
 - url: https://wiki.sei.cmu.edu/confluence/display/java/THI02-J.+Notify+all+waiting+threads+rather+than+a+single+thread
   ecosystem: cert-java
   kind: reference
   fetch: html
   cadence: weekly
   doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
-  cited_by:
-  - JAVA-CERT-THI02-NOTIFY
+  cited_by: []
 - url: https://wiki.sei.cmu.edu/confluence/display/java/OBJ09-J.+Compare+classes+and+not+class+names
   ecosystem: cert-java
   kind: reference
   fetch: html
   cadence: weekly
   doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
-  cited_by:
-  - JAVA-CERT-OBJ09-CLASS-NAME-COMPARE
+  cited_by: []
 - url: https://wiki.sei.cmu.edu/confluence/display/java/ERR09-J.+Do+not+allow+untrusted+code+to+terminate+the+JVM
   ecosystem: cert-java
   kind: reference
   fetch: html
   cadence: weekly
   doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
-  cited_by:
-  - JAVA-CERT-ERR09-SYSTEM-EXIT
+  cited_by: []
 - url: https://wiki.sei.cmu.edu/confluence/display/java/NUM09-J.+Do+not+use+floating-point+variables+as+loop+counters
   ecosystem: cert-java
   kind: reference
   fetch: html
   cadence: weekly
   doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
-  cited_by:
-  - JAVA-CERT-NUM09-FLOAT-LOOP-COUNTER
+  cited_by: []
 - url: https://wiki.sei.cmu.edu/confluence/display/java/FIO03-J.+Remove+temporary+files+before+termination
   ecosystem: cert-java
   kind: reference
   fetch: html
   cadence: weekly
   doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
-  cited_by:
-  - JAVA-CERT-FIO03-TEMP-FILE-NOT-REMOVED
+  cited_by: []
 - url: https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
   ecosystem: appsec
   kind: reference
@@ -11860,16 +11856,19 @@ sources:
   - JAVA-MAINT-DANGLING-ELSE
   - JAVA-MAINT-DUPLICATE-BRANCH
   - JAVA-MAINT-DUPLICATE-CONDITION
+  - JAVA-MAINT-EMPTY-STATEMENT
   - JAVA-MAINT-FOR-UPDATE-OTHER-VARIABLE
   - JAVA-MAINT-FOR-UPDATE-WRONG-DIRECTION
   - JAVA-MAINT-IMMEDIATELY-RETURNED-VARIABLE
   - JAVA-MAINT-INFINITE-LOOP
   - JAVA-MAINT-JUMP-IN-FINALLY
   - JAVA-MAINT-LABEL-IN-SWITCH
+  - JAVA-MAINT-LOOP-MULTIPLE-JUMPS
   - JAVA-MAINT-LOOP-NEVER-RUNS
   - JAVA-MAINT-LOOP-RUNS-ONCE
   - JAVA-MAINT-RETURNS-SAME-VALUE
   - JAVA-MAINT-SWITCH-FALLTHROUGH
+  - JAVA-MAINT-SWITCH-TOO-FEW-CASES
   - JAVA-MAINT-THROW-IN-FINALLY
 - url: https://pmd.github.io/pmd/pmd_rules_java_design.html
   ecosystem: java
@@ -11967,6 +11966,7 @@ sources:
   - JAVA-MAINT-IDENTICAL-OPERANDS
   - JAVA-MAINT-NESTED-TERNARY
   - JAVA-MAINT-NON-SHORT-CIRCUIT-CONDITION
+  - JAVA-MAINT-REDUNDANT-CAST
   - JAVA-MAINT-REPEATED-UNARY
   - JAVA-MAINT-REVERSED-COMPOUND-OPERATOR
   - JAVA-MAINT-SELF-ASSIGNMENT
@@ -12092,6 +12092,7 @@ sources:
   - PHP-MAINT-DEFAULT-NOT-LAST
   - PHP-MAINT-DUPLICATE-BRANCH
   - PHP-MAINT-SWITCH-FALLTHROUGH
+  - PHP-MAINT-SWITCH-TOO-FEW-CASES
   - PHP-MAINT-SWITCH-WITHOUT-DEFAULT
 - url: https://phpmd.org/rules/codesize.html
   ecosystem: php
@@ -12228,6 +12229,7 @@ sources:
   cadence: weekly
   doc_version: Python 3.14
   cited_by:
+  - PY-MAINT-ASYNC-WITHOUT-AWAIT
   - PY-MAINT-CONSTANT-CONDITION
   - PY-MAINT-DUPLICATE-CONDITION
   - PY-MAINT-EXCEPT-BOOLEAN-EXPRESSION
@@ -12262,12 +12264,17 @@ sources:
   cadence: weekly
   doc_version: Python 3.14
   cited_by:
+  - PY-MAINT-AWAIT-NON-AWAITABLE
+  - PY-MAINT-DICT-UNPACK-NON-MAPPING
   - PY-MAINT-DOUBLE-NOT
+  - PY-MAINT-IDENTITY-DISSIMILAR-TYPES
   - PY-MAINT-IDENTITY-WITH-NEW-OBJECT
+  - PY-MAINT-IN-NON-CONTAINER
   - PY-MAINT-MEMBERSHIP-IN-EMPTY
   - PY-MAINT-NESTED-TERNARY
   - PY-MAINT-NONE-COMPARISON-CONSTANT
   - PY-MAINT-PREFIX-INCREMENT
+  - PY-MAINT-SUBSCRIPT-NON-CONTAINER
 - url: https://docs.astral.sh/ruff/rules/line-contains-todo/
   ecosystem: python
   kind: reference
@@ -12377,6 +12384,7 @@ sources:
   doc_version: Kotlin 2.2
   cited_by:
   - KT-MAINT-IDENTICAL-OPERANDS
+  - KT-MAINT-INDEXED-ACCESS-OPERATOR
   - KT-MAINT-REVERSED-COMPOUND-OPERATOR
   - KT-MAINT-USELESS-POSTFIX-ASSIGN
 - url: https://detekt.dev/docs/rules/exceptions
@@ -12725,6 +12733,7 @@ sources:
   cadence: weekly
   doc_version: Java 21
   cited_by:
+  - JAVA-MAINT-BOXED-PARSE
   - JAVA-MAINT-COMPARETO-SUBTRACTION
 - url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Throwable.html
   ecosystem: java
@@ -12771,15 +12780,14 @@ sources:
   - JAVA-MAINT-INPUTSTREAM-READ-SIGNED-BYTE
   - JAVA-MAINT-READ-CAST-BEFORE-EOF-CHECK
   - JAVA-MAINT-READ-RESULT-IGNORED
+  - JAVA-MAINT-STREAM-READ-RESULT-IGNORED
 - url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Runtime.html
   ecosystem: java
   kind: reference
   fetch: html
   cadence: weekly
   doc_version: Java 21
-  cited_by:
-  - JAVA-MAINT-RUN-FINALIZERS-ON-EXIT
-  - KT-MAINT-RUN-FINALIZERS-ON-EXIT
+  cited_by: []
 - url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ScheduledThreadPoolExecutor.html
   ecosystem: java
   kind: reference
@@ -12904,6 +12912,7 @@ sources:
   doc_version: Java 21
   cited_by:
   - JAVA-MAINT-INSTANCE-METHOD-WRITES-STATIC
+  - JAVA-MAINT-RECORD-ACCESSOR-IN-COMPACT-CONSTRUCTOR
   - JAVA-MAINT-VOLATILE-COMPOUND-UPDATE
 - url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/format/DateTimeFormatter.html
   ecosystem: java
@@ -13066,6 +13075,8 @@ sources:
   cadence: weekly
   doc_version: Python 3.14
   cited_by:
+  - PY-MAINT-CALL-NON-CALLABLE
+  - PY-MAINT-INCOMPATIBLE-ADDITION
   - PY-MAINT-STOPITERATION-IN-GENERATOR
   - PY-MAINT-SYSTEMEXIT-SWALLOWED
 - url: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/accesskey
@@ -13248,9 +13259,12 @@ sources:
   cadence: weekly
   doc_version: ECMAScript 2025
   cited_by:
+  - HTML-A11Y-TH-INVALID-SCOPE
   - HTML-MAINT-SCOPE-ON-NON-TH
   - HTML-MAINT-TH-WITHOUT-SCOPE-OR-ID
+  - JS-A11Y-TH-INVALID-SCOPE
   - JS-MAINT-SCOPE-ON-NON-TH
+  - VUE-A11Y-TH-INVALID-SCOPE
 - url: https://react.dev/reference/react/useState
   ecosystem: javascript
   kind: reference
@@ -13307,6 +13321,7 @@ sources:
   doc_version: Kotlin 2.2
   cited_by:
   - JAVA-MAINT-JDBC-ZERO-INDEX
+  - JAVA-MAINT-PREPARED-STATEMENT-PARAM-SET-TWICE
   - KT-MAINT-JDBC-ZERO-INDEX
 - url: https://kotlinlang.org/docs/sequences.html
   ecosystem: kotlin
@@ -13486,8 +13501,7 @@ sources:
   fetch: html
   cadence: weekly
   doc_version: Java 21
-  cited_by:
-  - JAVA-MAINT-SERVLET-MUTABLE-FIELD
+  cited_by: []
 - url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html
   ecosystem: java
   kind: reference
@@ -13527,7 +13541,10 @@ sources:
   cadence: weekly
   doc_version: HTML Living Standard
   cited_by:
+  - HTML-A11Y-ARIA-INVALID-ROLE
   - HTML-MAINT-ARIA-ROLE-ATTRIBUTE
+  - JS-A11Y-ARIA-INVALID-ROLE
+  - VUE-A11Y-ARIA-INVALID-ROLE
 - url: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/legend
   ecosystem: html
   kind: reference
@@ -13608,6 +13625,7 @@ sources:
   doc_version: Java 21
   cited_by:
   - JAVA-MAINT-COMPARETO-MIN-VALUE
+  - JAVA-MAINT-COMPARETO-OVERLOAD
   - JAVA-MAINT-COMPARETO-SPECIFIC-VALUE
 - url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/System.html
   ecosystem: java
@@ -13627,6 +13645,7 @@ sources:
   doc_version: Java 21
   cited_by:
   - JAVA-MAINT-LIST-REMOVE-IN-ASCENDING-LOOP
+  - JAVA-MAINT-LOOP-LIST-REPLACE-ALL
   - JAVA-MAINT-REVERSE-INDEX-LOOP
 - url: https://www.slf4j.org/faq.html
   ecosystem: java
@@ -13713,9 +13732,12 @@ sources:
   cadence: weekly
   doc_version: ECMAScript 2025
   cited_by:
+  - HTML-A11Y-IMG-REDUNDANT-ALT
   - HTML-MAINT-IMG-WITHOUT-ALT
   - HTML-MAINT-SRCSET-WITHOUT-DESCRIPTOR
+  - JS-A11Y-IMG-REDUNDANT-ALT
   - JS-MAINT-IMG-WITHOUT-ALT
+  - VUE-A11Y-IMG-REDUNDANT-ALT
 - url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
   ecosystem: javascript
   kind: reference
@@ -13910,8 +13932,7 @@ sources:
   fetch: html
   cadence: weekly
   doc_version: Java 21
-  cited_by:
-  - JAVA-MAINT-IDENTICAL-CATCH-BLOCKS
+  cited_by: []
 - url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/LocalDate.html
   ecosystem: java
   kind: reference
@@ -13919,6 +13940,7 @@ sources:
   cadence: weekly
   doc_version: Java 21
   cited_by:
+  - JAVA-MAINT-DATE-FIELD-OUT-OF-RANGE
   - JAVA-MAINT-NOW-WITHOUT-CLOCK
 - url: https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html
   ecosystem: java
@@ -13942,8 +13964,7 @@ sources:
   fetch: html
   cadence: weekly
   doc_version: Java 21
-  cited_by:
-  - JAVA-MAINT-VARARGS-EXPLICIT-ARRAY
+  cited_by: []
 - url: https://www.w3.org/WAI/WCAG22/Understanding/keyboard.html
   ecosystem: html
   kind: reference
@@ -13952,6 +13973,7 @@ sources:
   doc_version: HTML Living Standard
   cited_by:
   - HTML-MAINT-CLICK-WITHOUT-KEYBOARD
+  - VUE-A11Y-CLICK-WITHOUT-KEYBOARD
 - url: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/li
   ecosystem: html
   kind: reference
@@ -14016,6 +14038,7 @@ sources:
   doc_version: ECMAScript 2025
   cited_by:
   - JS-MAINT-IN-ON-ARRAY-LITERAL
+  - JS-MAINT-IN-ON-PRIMITIVE
 - url: https://12factor.net/config
   ecosystem: go
   kind: reference
@@ -14046,6 +14069,7 @@ sources:
   cited_by:
   - HTML-MAINT-HANDLER-ON-STATIC-ELEMENT
   - HTML-MAINT-ROLE-WITHOUT-TABINDEX
+  - JS-MAINT-ROLE-WITHOUT-TABINDEX
 - url: https://docs.junit.org/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html
   ecosystem: java
   kind: reference
@@ -14068,8 +14092,7 @@ sources:
   fetch: html
   cadence: weekly
   doc_version: Java 21
-  cited_by:
-  - JAVA-MAINT-LOG-AND-RETHROW
+  cited_by: []
 - url: https://docs.oracle.com/javase/specs/jls/se21/html/jls-12.html
   ecosystem: java
   kind: reference
@@ -14134,6 +14157,7 @@ sources:
   doc_version: PHP 8.4
   cited_by:
   - PHP-MAINT-CATCH-AFTER-THROWABLE
+  - PHP-QUAL-CATCH-THROWABLE
 - url: https://www.php.net/manual/en/language.basic-syntax.instruction-separation.php
   ecosystem: php
   kind: reference
@@ -14182,3 +14206,974 @@ sources:
   doc_version: ECMAScript 2025
   cited_by:
   - TS-MAINT-PUBLIC-STATIC-MUTABLE
+- url: https://developer.android.com/reference/android/view/WindowManager.LayoutParams#FLAG_SECURE
+  ecosystem: android
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Android API 36
+  cited_by:
+  - ANDROID-SEC-CLEAR-FLAG-SECURE
+  - ANDROID-SEC-PASSWORD-NO-FLAG-SECURE
+- url: https://www.w3.org/WAI/WCAG22/Techniques/failures/F78
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-FOCUS-OUTLINE-REMOVED
+  - CSS-A11Y-FOCUS-VISIBLE-OUTLINE-REMOVED
+  - CSS-A11Y-OUTLINE-REMOVED-ON-CONTROLS
+- url: https://www.w3.org/WAI/WCAG22/Techniques/failures/F94
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-FONT-SIZE-VIEWPORT-ONLY
+- url: https://www.w3.org/WAI/WCAG22/Techniques/failures/F87
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-GENERATED-CONTENT-TEXT
+- url: https://www.w3.org/WAI/WCAG22/Understanding/visual-presentation.html
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-LINE-HEIGHT-BELOW-1-5
+  - CSS-A11Y-TEXT-JUSTIFIED
+- url: https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-LOW-CONTRAST
+- url: https://www.w3.org/WAI/WCAG22/Understanding/contrast-enhanced.html
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-LOW-CONTRAST-ENHANCED
+- url: https://www.w3.org/WAI/WCAG22/Understanding/orientation.html
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-ORIENTATION-LOCK
+- url: https://www.w3.org/WAI/WCAG22/Techniques/css/C39
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-REDUCED-MOTION-MISSING
+- url: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/font-size
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-ROOT-FONT-SIZE-PX
+- url: https://www.w3.org/WAI/WCAG22/Understanding/target-size-minimum.html
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-SMALL-TARGET
+- url: https://www.w3.org/WAI/WCAG22/Techniques/failures/F104
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-TEXT-CLIPPED-FIXED-HEIGHT
+- url: https://www.w3.org/WAI/WCAG22/Techniques/failures/F4
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - CSS-A11Y-TEXT-DECORATION-BLINK
+- url: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/calc
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-CALC-UNSPACED-OPERATOR
+- url: https://www.w3.org/TR/CSS22/syndata.html
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-DOUBLE-SLASH-COMMENT
+  - CSS-QUAL-EMPTY-RULE
+  - CSS-QUAL-UNKNOWN-AT-RULE
+  - CSS-QUAL-UNKNOWN-PROPERTY
+- url: https://www.w3.org/TR/css-cascade-4/
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-DUPLICATE-DECLARATION
+  - CSS-QUAL-DUPLICATE-SELECTOR
+  - CSS-QUAL-OVERRIDDEN-DECLARATION
+- url: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/font-family
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-DUPLICATE-FONT-FAMILY
+  - CSS-QUAL-FONT-FAMILY-WITHOUT-GENERIC
+- url: https://www.w3.org/TR/css-animations-1/
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-DUPLICATE-KEYFRAME-SELECTOR
+  - CSS-QUAL-IMPORTANT-IN-KEYFRAMES
+- url: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/gradient/linear-gradient
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-GRADIENT-LEGACY-DIRECTION
+- url: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Values/important
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-IMPORTANT
+- url: https://www.w3.org/TR/css-color-4/
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-INVALID-HEX-COLOR
+- url: https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Cascade/Shorthand_properties
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-SHORTHAND-OVERRIDES-LONGHAND
+- url: https://www.w3.org/TR/css-nesting-1/#nest-selector
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-TOP-LEVEL-NESTING-SELECTOR
+- url: https://www.w3.org/TR/mediaqueries-4/
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-UNKNOWN-MEDIA-FEATURE
+- url: https://www.w3.org/TR/selectors-4/
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-UNKNOWN-PSEUDO
+  - CSS-QUAL-UNKNOWN-TYPE-SELECTOR
+- url: https://www.w3.org/TR/css-values-4/
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-UNKNOWN-UNIT
+- url: https://www.w3.org/TR/selectors-4/#the-nth-child-pseudo
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-UNMATCHABLE-NTH
+- url: https://developer.mozilla.org/en-US/docs/Glossary/Vendor_Prefix
+  ecosystem: css
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: CSS (W3C TR, 2026)
+  cited_by:
+  - CSS-QUAL-UNNEEDED-VENDOR-PREFIX
+- url: https://pkg.go.dev/sort#Slice
+  ecosystem: go
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Go 1.27
+  cited_by:
+  - GO-MOD-SORTSLICE-FUNC
+- url: https://docs.gradle.org/current/userguide/more_about_tasks.html
+  ecosystem: gradle
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Gradle 9.8
+  cited_by: []
+- url: https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-link-only.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-AMBIGUOUS-LINK-TEXT
+  - JS-A11Y-AMBIGUOUS-LINK-TEXT
+  - VUE-A11Y-AMBIGUOUS-LINK-TEXT
+- url: https://www.w3.org/TR/wai-aria-1.2/
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-ARIA-INVALID-ATTRIBUTE
+  - HTML-A11Y-ARIA-LABEL-ON-GENERIC
+  - HTML-A11Y-ARIA-REQUIRED-ATTRIBUTE
+  - JS-A11Y-ARIA-INVALID-ATTRIBUTE
+  - JS-A11Y-ARIA-LABEL-ON-GENERIC
+  - JS-A11Y-ARIA-REQUIRED-ATTRIBUTE
+  - VUE-A11Y-ARIA-INVALID-ATTRIBUTE
+  - VUE-A11Y-ARIA-LABEL-ON-GENERIC
+  - VUE-A11Y-ARIA-REQUIRED-ATTRIBUTE
+- url: https://www.w3.org/WAI/WCAG22/Understanding/identify-input-purpose.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-AUTOCOMPLETE-INVALID
+  - JS-A11Y-AUTOCOMPLETE-INVALID
+  - VUE-A11Y-AUTOCOMPLETE-INVALID
+- url: https://www.w3.org/WAI/WCAG22/Understanding/name-role-value.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-BUTTON-WITHOUT-NAME
+  - JS-A11Y-BUTTON-WITHOUT-NAME
+  - VUE-A11Y-BUTTON-WITHOUT-NAME
+  - VUE-A11Y-IFRAME-WITHOUT-TITLE
+  - VUE-A11Y-NUXTUI-UBUTTON-ICON-WITHOUT-LABEL
+- url: https://www.w3.org/WAI/WCAG22/Understanding/labels-or-instructions.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-CONTROL-WITHOUT-LABEL
+  - JS-A11Y-CONTROL-WITHOUT-LABEL
+  - VUE-A11Y-CONTROL-WITHOUT-LABEL
+- url: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/id
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-DUPLICATE-ID
+  - JS-A11Y-DUPLICATE-ID
+  - VUE-A11Y-DUPLICATE-ID
+- url: https://www.w3.org/WAI/WCAG22/Understanding/headings-and-labels.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-EMPTY-HEADING
+  - JS-A11Y-EMPTY-HEADING
+  - VUE-A11Y-EMPTY-HEADING
+- url: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/Heading_Elements
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-HEADING-SKIPPED-LEVEL
+  - JS-A11Y-HEADING-SKIPPED-LEVEL
+  - VUE-A11Y-HEADING-SKIPPED-LEVEL
+- url: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/input/image
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-INPUT-IMAGE-WITHOUT-ALT
+  - JS-A11Y-INPUT-IMAGE-WITHOUT-ALT
+  - VUE-A11Y-INPUT-IMAGE-WITHOUT-ALT
+- url: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/lang
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-LANG-INVALID
+  - JS-A11Y-LANG-INVALID
+  - VUE-A11Y-LANG-INVALID
+- url: https://www.w3.org/WAI/WCAG22/Techniques/aria/ARIA11
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-MAIN-LANDMARK-MISSING
+- url: https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-MARQUEE-OR-BLINK
+  - VUE-A11Y-MARQUEE-OR-BLINK
+- url: https://www.w3.org/WAI/WCAG22/Techniques/failures/F54
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-MOUSE-WITHOUT-KEYBOARD
+  - JS-A11Y-MOUSE-WITHOUT-KEYBOARD
+  - VUE-A11Y-MOUSE-WITHOUT-KEYBOARD
+- url: https://html.spec.whatwg.org/multipage/text-level-semantics.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-NESTED-INTERACTIVE
+  - JS-A11Y-NESTED-INTERACTIVE
+  - VUE-A11Y-NESTED-INTERACTIVE
+- url: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/img_role
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-ROLE-IMG-WITHOUT-NAME
+  - JS-A11Y-ROLE-IMG-WITHOUT-NAME
+  - VUE-A11Y-ROLE-IMG-WITHOUT-NAME
+- url: https://www.w3.org/WAI/WCAG22/Understanding/info-and-relationships.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-TABLE-WITHOUT-HEADERS
+  - JS-A11Y-TABLE-WITHOUT-HEADERS
+  - VUE-A11Y-TABLE-WITHOUT-HEADERS
+- url: https://www.w3.org/WAI/WCAG22/Understanding/captions-prerecorded.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - HTML-A11Y-VIDEO-WITHOUT-CAPTIONS
+  - VUE-A11Y-VIDEO-WITHOUT-CAPTIONS
+- url: https://www.w3.org/WAI/WCAG22/Understanding/link-purpose-in-context.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: HTML Living Standard
+  cited_by:
+  - HTML-MAINT-IDENTICAL-LINK-TEXT-DIFFERENT-HREF
+  - VUE-A11Y-LINK-WITHOUT-NAME
+  - VUE-A11Y-NUXTUI-LINK-COMPONENT-WITHOUT-NAME
+- url: https://html.spec.whatwg.org/multipage/iframe-embed-object.html
+  ecosystem: html
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: HTML Living Standard
+  cited_by:
+  - HTML-MAINT-OBJECT-AND-EMBED
+- url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
+  cited_by:
+  - JAVA-CERT-NUM09-FLOAT-LOOP-COUNTER
+- url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
+  cited_by:
+  - JAVA-CERT-OBJ09-CLASS-NAME-COMPARE
+- url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicInteger.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-ATOMIC-EQUALS
+- url: https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-BOXED-BOOLEAN-CONDITION
+- url: https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-BYTE-SIGN-EXTENSION-IN-SHIFT
+- url: https://docs.oracle.com/javase/tutorial/essential/concurrency/atomic.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-DOUBLE-CHECKED-LOCKING
+- url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-IDENTICAL-CATCH-BLOCKS
+- url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-LOG-AND-RETHROW
+- url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/RetentionPolicy.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-REFLECTION-ON-SOURCE-ANNOTATION
+- url: https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-REPEATABLE-ANNOTATION-WRAPPED
+- url: https://docs.oracle.com/en/java/javase/11/migrate/index.html
+  ecosystem: java
+  kind: migration
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-RUN-FINALIZERS-ON-EXIT
+  - KT-MAINT-RUN-FINALIZERS-ON-EXIT
+- url: https://jakarta.ee/specifications/servlet/6.1/apidocs/jakarta.servlet/jakarta/servlet/http/HttpServlet.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-SERVLET-MUTABLE-FIELD
+- url: https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-SYNC-ON-NON-FINAL-FIELD
+- url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/doc-files/ValueBased.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-SYNC-ON-VALUE-BASED
+- url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/TimeZone.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-TIMEZONE-INVALID-ID
+- url: https://docs.oracle.com/javase/tutorial/essential/concurrency/syncmeth.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-UNSYNCHRONIZED-GETTER
+- url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.4.2
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-VARARGS-EXPLICIT-ARRAY
+- url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/Condition.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Java 21
+  cited_by:
+  - JAVA-MAINT-WAIT-ON-CONDITION
+- url: https://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/time/DateUtils.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JDK 25 API
+  cited_by:
+  - JAVA-MOD-COR-DATEUTILS-TRUNCATE-001
+- url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html#interrupt()
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JDK 25 API
+  cited_by:
+  - JAVA-QUAL-CONC-INTERRUPTED-001
+- url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Calendar.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JDK 25 API
+  cited_by:
+  - JAVA-QUAL-COR-CALENDAR-GETTIME-MUTATE-001
+- url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JDK 25 API
+  cited_by:
+  - JAVA-QUAL-COR-HARDCODED-URI-001
+- url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JLS Java SE 25
+  cited_by:
+  - JAVA-QUAL-COR-MAIN-SIGNATURE-001
+- url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait()
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JDK 25 API
+  cited_by:
+  - JAVA-QUAL-COR-THREAD-SLEEP-LOOP-001
+- url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JLS Java SE 25
+  cited_by:
+  - JAVA-QUAL-COR-UNUSED-LABEL-001
+- url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/ObjectOutputStream.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JDK 25 API
+  cited_by:
+  - JAVA-QUAL-COR-WRITEOBJECT-SYNC-001
+- url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JLS Java SE 25
+  cited_by:
+  - JAVA-QUAL-RES-BUFFEREDREADER-001
+  - JAVA-QUAL-RES-FILEINPUTSTREAM-001
+  - JAVA-QUAL-RES-FILEOUTPUTSTREAM-001
+  - JAVA-QUAL-RES-FILEREADER-001
+  - JAVA-QUAL-RES-FILES-NEWBUFFEREDREADER-001
+  - JAVA-QUAL-RES-FILES-NEWBUFFEREDWRITER-001
+  - JAVA-QUAL-RES-FILES-NEWINPUTSTREAM-001
+  - JAVA-QUAL-RES-FILES-NEWOUTPUTSTREAM-001
+  - JAVA-QUAL-RES-FILEWRITER-001
+  - JAVA-QUAL-RES-JARFILE-001
+  - JAVA-QUAL-RES-JDBC-001
+  - JAVA-QUAL-RES-OBJECTOUTPUTSTREAM-001
+  - JAVA-QUAL-RES-PRINTWRITER-001
+  - JAVA-QUAL-RES-RANDOMACCESSFILE-001
+  - JAVA-QUAL-RES-SCANNER-001
+  - JAVA-QUAL-RES-SERVERSOCKET-001
+  - JAVA-QUAL-RES-SOCKET-001
+  - JAVA-QUAL-RES-ZIPFILE-001
+- url: https://tomcat.apache.org/tomcat-11.0-doc/config/http.html
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Apache Tomcat 11.0 docs
+  cited_by: []
+- url: https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: OWASP API Security Top 10 2023
+  cited_by:
+  - JAVA-SEC-IDOR-FIND-BY-ID
+  - JS-SEC-IDOR-FIND-BY-ID
+- url: https://docs.oracle.com/en/java/javase/25/docs/api/java.naming/javax/naming/Context.html#SECURITY_AUTHENTICATION
+  ecosystem: java
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: JDK 25 API
+  cited_by: []
+- url: https://www.w3.org/WAI/WCAG22/Understanding/audio-control.html
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - JS-A11Y-AUTOPLAY-WITH-SOUND
+  - VUE-A11Y-AUTOPLAY-WITH-SOUND
+- url: https://www.w3.org/WAI/WCAG22/Techniques/html/H53
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - JS-A11Y-OBJECT-WITHOUT-ALTERNATIVE
+  - VUE-A11Y-OBJECT-WITHOUT-ALTERNATIVE
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-ARRAY-STRING-INDEX
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-BOOLEAN-SELECTOR-PARAM
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-CALL-NON-CALLABLE
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-CONSECUTIVE-PUSH
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-FOR-OF-PRIMITIVE
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-INNER-FUNCTION-DECLARATION
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-OBJECT-DEFAULT-PARAM
+- url: https://nodejs.org/api/process.html#processbindingname
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-PROCESS-BINDING
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/prototype
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-PROTOTYPE-POLYFILL
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - JS-MAINT-STRICT-EQUALITY-DISSIMILAR-TYPES
+- url: https://vuejs.org/api/reactivity-advanced.html
+  ecosystem: javascript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Vue 3.5 docs; MDN (living)
+  cited_by:
+  - JS-MOD-JSON-CLONE-REACTIVE
+- url: https://eslint.org/docs/latest/rules/constructor-super
+  ecosystem: javascript
+  kind: lint-rule-xref
+  fetch: md
+  cadence: weekly
+  doc_version: ESLint v10.12 (docs/latest)
+  cited_by:
+  - JS-QUAL-CONSTRUCTOR-SUPER
+- url: https://eslint.org/docs/latest/rules/no-this-before-super
+  ecosystem: javascript
+  kind: lint-rule-xref
+  fetch: md
+  cadence: weekly
+  doc_version: ESLint v10.12 (docs/latest)
+  cited_by:
+  - JS-QUAL-NO-THIS-BEFORE-SUPER
+- url: https://www.php.net/manual/en/functions.returning-values.php
+  ecosystem: php
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: PHP 8.4
+  cited_by:
+  - PHP-MAINT-INCONSISTENT-RETURN
+- url: https://www.php.net/manual/en/language.types.void.php
+  ecosystem: php
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: PHP 8.4
+  cited_by:
+  - PHP-MAINT-VOID-RESULT-USED
+- url: https://www.php.net/manual/en/language.references.pass.php
+  ecosystem: php
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: PHP 8.5
+  cited_by:
+  - PHP-QUAL-CALL-TIME-PASS-BY-REF
+- url: https://www.php.net/manual/en/language.constants.php
+  ecosystem: php
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: PHP 8.5
+  cited_by:
+  - PHP-QUAL-CONSTANT-AS-CONDITION
+- url: https://www.php.net/manual/en/function.define.php
+  ecosystem: php
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: PHP 8.5
+  cited_by:
+  - PHP-QUAL-CONSTANT-REDEFINED
+- url: https://www.php.net/manual/en/language.types.string.php
+  ecosystem: php
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: PHP 8.5
+  cited_by:
+  - PHP-QUAL-HARDCODED-URI
+- url: https://typing.python.org/en/latest/spec/annotations.html
+  ecosystem: python
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Python 3.14
+  cited_by:
+  - PY-MAINT-ANNOTATION-MISMATCH
+  - PY-MAINT-RETURN-HINT-MISMATCH
+- url: https://docs.python.org/3/library/string.templatelib.html
+  ecosystem: python
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Python 3.14
+  cited_by:
+  - PY-MAINT-TEMPLATE-STRING-CONCAT
+- url: https://docs.python.org/3/library/functools.html
+  ecosystem: python
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Python 3.14
+  cited_by:
+  - PY-QUAL-ORDERING-WITHOUT-EQ
+- url: https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
+  ecosystem: python
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Django 6.1 docs
+  cited_by: []
+- url: https://docs.djangoproject.com/en/6.1/ref/csrf/
+  ecosystem: python
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Django 6.1
+  cited_by: []
+- url: https://docs.djangoproject.com/en/6.1/ref/settings/
+  ecosystem: python
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Django 6.1
+  cited_by: []
+- url: https://docs.djangoproject.com/en/6.1/topics/forms/modelforms/
+  ecosystem: python
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Django 6.1 docs
+  cited_by: []
+- url: https://docs.djangoproject.com/en/6.1/topics/auth/passwords/
+  ecosystem: python
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Django 6.1 docs
+  cited_by: []
+- url: https://docs.djangoproject.com/en/6.1/ref/request-response/#django.http.HttpResponse.set_cookie
+  ecosystem: python
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: Django 6.1
+  cited_by:
+  - PY-SEC-COOKIE-INSECURE
+- url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
+  ecosystem: typescript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - TS-MAINT-ASYNC-WITHOUT-AWAIT
+- url: https://www.typescriptlang.org/docs/handbook/2/functions.html
+  ecosystem: typescript
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: ECMAScript 2025
+  cited_by:
+  - TS-MAINT-VOID-RESULT-USED
+- url: https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html
+  ecosystem: vue
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - VUE-A11Y-IMG-WITHOUT-ALT
+  - VUE-A11Y-NUXTUI-NUXT-IMG-WITHOUT-ALT
+- url: https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html
+  ecosystem: vue
+  kind: reference
+  fetch: html
+  cadence: weekly
+  doc_version: WCAG 2.2
+  cited_by:
+  - VUE-A11Y-POSITIVE-TABINDEX

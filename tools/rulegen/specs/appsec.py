@@ -233,7 +233,7 @@ sec("PY-JWT-CLAIM-CHECK-OFF", "JWT claim validation turned off (aud/exp/iss/nbf)
     "import jwt\nclaims = jwt.decode(token, key, algorithms=['RS256'], audience='api://orders')\n",
     "Turning off this claim check accepts tokens issued for other services (aud), expired tokens (exp) or tokens from other issuers. Pass audience=/issuer= and keep the checks on.",
     lang="python", applies=PYA, files=["**/*.py"], filters=["file.has_re:\\bjwt\\b"], cwe=["CWE-287"], asvs=["V9.2.3"], docv="PyJWT 2.x")
-MFORM = "https://docs.djangoproject.com/en/5.2/topics/forms/modelforms/"
+MFORM = "https://docs.djangoproject.com/en/6.1/topics/forms/modelforms/"
 sec("PY-DJANGO-FIELDS-ALL", "ModelForm/serializer exposes all model fields", MFORM,
     "Failure to do so can easily lead to security problems when a form unexpectedly allows a user to set certain fields",
     r"""((assignment left: (identifier) @f right: (string (string_content) @v)) @match (#eq? @f "fields") (#eq? @v "__all__"))""",
@@ -242,7 +242,7 @@ sec("PY-DJANGO-FIELDS-ALL", "ModelForm/serializer exposes all model fields", MFO
     "Every model field, including ones added later such as is_staff or balance, becomes writable (or readable for serializers). List the allowed fields explicitly.",
     sev="minor", lang="python", applies=PYA, files=["**/*.py"], mode="ai-confirm",
     ai="Does the model have (or could it gain) fields the user must not set or see, such as ownership, role or price fields?",
-    filters=["file.has_re:ModelForm|ModelSerializer|HyperlinkedModelSerializer"], cwe=["CWE-915"], asvs=["V15.3.3", "V8.2.3"], docv="Django 5.2 docs")
+    filters=["file.has_re:ModelForm|ModelSerializer|HyperlinkedModelSerializer"], cwe=["CWE-915"], asvs=["V15.3.3", "V8.2.3"], docv="Django 6.1 docs")
 MASS = CS + "Mass_Assignment_Cheat_Sheet.html"
 sec("JS-MASS-ASSIGN-BODY", "Request body passed whole to a model write", MASS,
     "Software frameworks sometimes allow developers to automatically bind HTTP request parameters into program code variables or objects",
@@ -252,6 +252,24 @@ sec("JS-MASS-ASSIGN-BODY", "Request body passed whole to a model write", MASS,
     "The whole request body is written to the model, so a client can set fields it should not (role, isAdmin, ownerId, price). Pick the allowed fields explicitly or validate against a schema that strips unknown keys.",
     mode="ai-confirm", ai="Does the model have fields the client must not set (role, admin flags, ownership, prices), with no schema validation stripping unknown keys before this call?",
     cwe=["CWE-915"], asvs=["V15.3.3", "V8.2.3"], docv="OWASP Mass Assignment Cheat Sheet")
+IDOR = "https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/"
+IDOR_Q = "Attackers can exploit API endpoints that are vulnerable to broken object-level authorization by manipulating the ID of an object that is sent within the request."
+IDOR_MSG = "The object is loaded by a client-supplied id with no owner/tenant check in this handler, so any authenticated user who can guess or enumerate ids can read or change someone else's record (BOLA/IDOR). Look the object up by id and owner together, or deny when it is not the caller's."
+IDOR_AI = "Does this load, update or delete a record identified by a client-supplied id without checking that the authenticated caller may access that object?"
+sec("JS-IDOR-FIND-BY-ID", "findById with a request path id and no owner check", IDOR, "manipulating the ID of an object that is sent within the request",
+    r"""((call_expression function: (member_expression property: (property_identifier) @m) arguments: (arguments (member_expression object: (member_expression object: (identifier) @r property: (property_identifier) @p) property: (property_identifier)))) @match (#match? @m "^(findById|findByIdAndUpdate|findByIdAndDelete|findByIdAndRemove)$") (#match? @r "^(req|request)$") (#eq? @p "params"))""",
+    "app.get('/orders/:id', async (req, res) => {\n  res.json(await Order.findById(req.params.id))\n})\n",
+    "app.get('/orders/:id', async (req, res) => {\n  res.json(await Order.findOne({ _id: req.params.id, owner: req.user.id }))\n})\n",
+    IDOR_MSG, mode="ai-confirm", ai=IDOR_AI, cwe=["CWE-639"], owasp=["API1:2023"], asvs=["V8.2.2"],
+    docv="OWASP API Security Top 10 2023", quote=IDOR_Q,
+    fp=["app.get('/me', async (req, res) => {\n  res.json(await User.findById(req.user.id))\n})\n"])
+sec("JAVA-IDOR-FIND-BY-ID", "@PathVariable id passed to findById without an authorization annotation", IDOR, "manipulating the ID of an object that is sent within the request",
+    r"""((method_declaration (modifiers (annotation name: (identifier) @ann)) parameters: (formal_parameters (formal_parameter (modifiers (marker_annotation name: (identifier) @pv)) name: (identifier) @id)) body: (block (return_statement [(method_invocation name: (identifier) @m arguments: (argument_list (identifier) @id2)) (method_invocation object: (method_invocation name: (identifier) @m arguments: (argument_list (identifier) @id2)))]))) @match (#match? @ann "^(Get|Put|Patch|Delete|Post)Mapping$") (#eq? @pv "PathVariable") (#eq? @m "findById") (#eq? @id @id2))""",
+    "@RestController\nclass Orders {\n  @GetMapping(\"/orders/{id}\")\n  Order get(@PathVariable Long id) {\n    return orders.findById(id).orElseThrow();\n  }\n}\n",
+    "@RestController\nclass Orders {\n  @PreAuthorize(\"@auth.ownsOrder(#id)\")\n  @GetMapping(\"/orders/{id}\")\n  Order get(@PathVariable Long id) {\n    return orders.findById(id).orElseThrow();\n  }\n}\n",
+    IDOR_MSG, mode="ai-confirm", ai=IDOR_AI, cwe=["CWE-639"], owasp=["API1:2023"], asvs=["V8.2.2"],
+    docv="OWASP API Security Top 10 2023", quote=IDOR_Q, lang="java", applies=JA, files=["**/*.java"],
+    filters=[r"node.lacks_re:@PreAuthorize|@PostAuthorize|hasPermission"])
 GTLS = "https://pkg.go.dev/crypto/tls"
 sec("GO-TLS-INSECURE-CIPHER", "Insecure TLS cipher suite configured", GTLS,
     "InsecureCipherSuites returns a list of cipher suites currently implemented by this package and which have security issues.",
@@ -283,14 +301,14 @@ sec("PY-ACCESS-THEN-OPEN", "os.access() check before using the file (TOCTOU)", P
     "The file can be swapped (e.g. for a symlink) between the access() check and the open, so the check protects nothing. Open the file directly and handle the error.",
     sev="minor", lang="python", applies=PYA, files=["**/*.py"], filters=["node.has_re:\\bopen\\(|os\\.(remove|unlink|rename|chmod|chown)\\("],
     cwe=["CWE-367"], asvs=["V15.4.2"], docv="Python 3 docs")
-PWV = "https://docs.djangoproject.com/en/5.2/topics/auth/passwords/"
+PWV = "https://docs.djangoproject.com/en/6.1/topics/auth/passwords/"
 sec("PY-DJANGO-NO-PASSWORD-VALIDATORS", "Django password validation disabled", PWV,
     "The default for the setting is an empty list, which means no validators are applied.",
     r"""((assignment left: (identifier) @n right: (list) @match) (#eq? @n "AUTH_PASSWORD_VALIDATORS") (#match? @match "^\\[\\s*\\]$"))""",
     "AUTH_PASSWORD_VALIDATORS = []\n",
     "AUTH_PASSWORD_VALIDATORS = [\n    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', 'OPTIONS': {'min_length': 12}},\n]\n",
     "No password rules are enforced, so one-character and common passwords are accepted. Enable at least MinimumLengthValidator and CommonPasswordValidator.",
-    lang="python", applies=PYA, files=["**/*.py"], cwe=["CWE-521"], asvs=["V6.2.1"], docv="Django 5.2 docs")
+    lang="python", applies=PYA, files=["**/*.py"], cwe=["CWE-521"], asvs=["V6.2.1"], docv="Django 6.1 docs")
 COOK = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Set-Cookie"
 sec("JS-COOKIE-SAMESITE-NONE", "Cookie sent cross-site (sameSite none/false)", COOK, "SameSite=None; Secure",
     r"""((pair key: (property_identifier) @k value: [(string (string_fragment) @v) (false) @v]) @match (#eq? @k "sameSite") (#match? @v "^(?i)(none|false)$"))""",
@@ -330,7 +348,10 @@ sec("PY-TIMING-COMPARE", "Secret compared with == instead of hmac.compare_digest
     "def check(sig, body):\n    expected_signature = sign(body)\n    return sig == expected_signature\n",
     "import hmac\n\ndef check(sig, body):\n    expected_signature = sign(body)\n    return hmac.compare_digest(sig, expected_signature)\n",
     TIMING_MSG, sev="minor", lang="python", applies=PYA, files=["**/*.py"], mode="ai-confirm", ai=TIMING_AI,
-    filters=["file.lacks_re:compare_digest|secrets\\.compare"], fp=["if token is None:\n    pass\n", "if token_type == 'bearer':\n    pass\n", "if token.type == tokenize.NAME:\n    pass\n"],
+    # an ALL_CAPS operand is a public constant (sentinel/placeholder/enum member), not a secret
+    filters=["file.lacks_re:compare_digest|secrets\\.compare", "node.lacks_re:(^|[.\\s])[A-Z][A-Z0-9_]{2,}\\s*[!=]=|[!=]=\\s*(\\S*\\.)?[A-Z][A-Z0-9_]{2,}$"],
+    fp=["if token is None:\n    pass\n", "if token_type == 'bearer':\n    pass\n", "if token.type == tokenize.NAME:\n    pass\n",
+        "if self.api_key != API_KEY_SENTINEL:\n    pass\n", "if t.type == Token.Type.REFRESH_TOKEN:\n    pass\n"],
     cwe=["CWE-208"], asvs=["V11.2.4"], docv="Python 3 docs")
 MDE = "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/security/MessageDigest.html"
 sec("JAVA-TIMING-COMPARE", "Secret compared with equals() instead of MessageDigest.isEqual", MDE,
@@ -545,7 +566,12 @@ sec("JS-HARDCODED-SECRET", "Password/API key assigned a string literal", SMCS, S
     "const db = mysql.createConnection({ host: 'db', user: 'app', password: process.env.DB_PASSWORD })\n",
     "A credential is written into the source, so everyone with the code has it and rotating it needs a release. Read it from the environment or a secret manager.",
     sev="critical", mode="ai-confirm", ai="Is this a real credential (not a placeholder, test fixture, form field label or documentation example)?",
-    filters=["node.lacks_re:(?i)^(changeme|password|secret|xxx+|\\*+|<.*>|\\$\\{.*\\}|example.*|your.*|test.*|dummy.*|placeholder.*|\\s*)$"],
+    # DocSearch/Algolia search-only keys are public by design; ... / changeit are placeholders; demo/fixture dirs
+    filters=["node.lacks_re:(?i)^(change_?(me|it)|password|secret|xxx+|\\*+|\\.{3}|<.*>|\\$\\{.*\\}|example.*|your.*|test.*|dummy.*|placeholder.*|\\s*)$",
+             r"file.lacks_re:(?i)\b(docsearch|algolia)\b"],
+    files=["!**/examples/**", "!**/example/**", "!**/samples/**", "!**/sample/**", "!**/playground/**", "!**/integration/**"],
+    fp=["export default { themeConfig: { search: { provider: 'algolia', options: { appId: 'X1', apiKey: '52f578a92b88ad6abde815aae2b0ad7c' } } } }\n",
+        "const cfg = { apiKey: '...' }\n"],
     cwe=["CWE-798"], asvs=["V13.3.1"], docv="OWASP Cheat Sheet Series (current)")
 sec("PHP-HARDCODED-SECRET", "Password/API key assigned a string literal", SMCS, SM_Q,
     r"""[((assignment_expression left: (variable_name (name) @n) right: (string (string_content) @match)) (#match? @n "(?i)^(password|passwd|pwd|secret|client_?secret|api_?key|access_?token|auth_?token|private_?key|secret_?key|db_?pass(word)?)$"))
@@ -575,7 +601,7 @@ sec("KT-STACKTRACE-TO-RESPONSE", "Stack trace sent in the HTTP response (Kotlin)
 
 
 # ------------------------------------------------------------------ framework security guides (Django checklist, Flask, Express)
-DJCK = "https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/"
+DJCK = "https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/"
 PROD_AI = "Are these production settings (not a development/test settings module or a local-only configuration)?"
 sec("PY-DJANGO-ALLOWED-HOSTS-ANY", "Django ALLOWED_HOSTS accepts any host", DJCK,
     "This setting is required to protect your site against some CSRF attacks.",
@@ -583,14 +609,14 @@ sec("PY-DJANGO-ALLOWED-HOSTS-ANY", "Django ALLOWED_HOSTS accepts any host", DJCK
     "DEBUG = False\nALLOWED_HOSTS = ['*']\n", "DEBUG = False\nALLOWED_HOSTS = ['shop.example.com']\n",
     "Any Host header is accepted, enabling host-header poisoning of password-reset links and cache entries. List the real host names.",
     sev="minor", lang="python", applies={"django": ">=3.2"}, files=["**/*.py"], mode="ai-confirm", ai=PROD_AI,
-    filters=["file.has_re:(?m)^(DEBUG|INSTALLED_APPS|MIDDLEWARE|ROOT_URLCONF)\\s*="], cwe=["CWE-20"], asvs=["V4.1.3"], docv="Django 5.2 docs")
+    filters=["file.has_re:(?m)^(DEBUG|INSTALLED_APPS|MIDDLEWARE|ROOT_URLCONF)\\s*="], cwe=["CWE-20"], asvs=["V4.1.3"], docv="Django 6.1 docs")
 sec("PY-DJANGO-COOKIE-NOT-SECURE", "Django session/CSRF cookie Secure flag turned off", DJCK,
     "Set this to True to avoid transmitting the session cookie over HTTP accidentally.",
     r"""((assignment left: (identifier) @n right: (false) @match) (#match? @n "^(SESSION_COOKIE_SECURE|CSRF_COOKIE_SECURE)$"))""",
     "SESSION_COOKIE_SECURE = False\n", "SESSION_COOKIE_SECURE = True\n",
     "The session (or CSRF) cookie is also sent over plain HTTP, where it can be read and replayed. Set it to True once the site is served over HTTPS.",
     sev="minor", lang="python", applies={"django": ">=3.2"}, files=["**/*.py"], mode="ai-confirm", ai=PROD_AI,
-    cwe=["CWE-614"], asvs=["V3.3.1"], docv="Django 5.2 docs")
+    cwe=["CWE-614"], asvs=["V3.3.1"], docv="Django 6.1 docs")
 FLSEC = "https://flask.palletsprojects.com/en/stable/web-security/"
 sec("PY-FLASK-SESSION-COOKIE-NOT-SECURE", "Flask session cookie Secure/HttpOnly turned off", FLSEC, "SESSION_COOKIE_SECURE = True",
     r"""[((keyword_argument name: (identifier) @n value: (false)) @match (#match? @n "^(SESSION_COOKIE_SECURE|SESSION_COOKIE_HTTPONLY|REMEMBER_COOKIE_SECURE)$"))
@@ -805,13 +831,13 @@ sec("DOCKER-COPY-GIT-DIR", "Repository .git directory copied into the image", DC
     cwe=["CWE-538"], asvs=["V13.4.1"], docv="Docker docs", **DKF)
 
 # V13.4.4 HTTP TRACE enabled
-TRACE = "https://tomcat.apache.org/tomcat-10.1-doc/config/http.html"
+TRACE = "https://tomcat.apache.org/tomcat-11.0-doc/config/http.html"
 TRACE_MSG = "The TRACE method is enabled, so the server echoes requests back, including cookies and auth headers; combined with an XSS or a misbehaving proxy this exposes them (cross-site tracing). Keep TRACE disabled (the default)."
 sec("JAVA-HTTP-TRACE-ENABLED", "HTTP TRACE turned on for the connector", TRACE, "allowTrace",
     r"""((method_invocation name: (identifier) @n arguments: (argument_list . (true) .)) @match (#eq? @n "setAllowTrace"))""",
     "class Cfg {\n  void customize(Connector connector) {\n    connector.setAllowTrace(true);\n  }\n}\n",
     "class Cfg {\n  void customize(Connector connector) {\n    connector.setAllowTrace(false);\n  }\n}\n",
-    TRACE_MSG, sev="minor", cwe=["CWE-693"], asvs=["V13.4.4"], docv="Apache Tomcat 10.1 docs", **JAF)
+    TRACE_MSG, sev="minor", cwe=["CWE-693"], asvs=["V13.4.4"], docv="Apache Tomcat 11.0 docs", **JAF)
 sec("JS-HTTP-TRACE-ROUTE", "Route handler registered for HTTP TRACE", "https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods",
     "TRACE",
     r"""((call_expression function: (member_expression object: (identifier) @o property: (property_identifier) @p)) @match (#eq? @p "trace") (#match? @o "^(app|router|server)$"))""",
@@ -836,11 +862,13 @@ sec("PY-SECRET-IN-QUERY-STRING", "Secret sent in a URL query string", QS, "sensi
 # V15.4.1 shared non-thread-safe objects (CWE-567, CWE-362)
 sec("JAVA-STATIC-DATEFORMAT", "Shared static DateFormat/MessageDigest instance", "https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/text/SimpleDateFormat.html",
     "Date formats are not synchronized",
-    r"""((field_declaration (modifiers) @mods type: (type_identifier) @t) @match (#match? @t "^(SimpleDateFormat|DateFormat|DecimalFormat|NumberFormat|MessageFormat|MessageDigest)$") (#match? @mods "\\bstatic\\b"))""",
+    r"""((field_declaration (modifiers) @mods type: (type_identifier) @t declarator: (variable_declarator name: (identifier) @name)) @match (#match? @t "^(SimpleDateFormat|DateFormat|DecimalFormat|NumberFormat|MessageFormat|MessageDigest)$") (#match? @mods "\\bstatic\\b"))""",
     "class Dates {\n  private static final SimpleDateFormat FMT = new SimpleDateFormat(\"yyyy-MM-dd\");\n  static String day(Date d) { return FMT.format(d); }\n}\n",
     "class Dates {\n  private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern(\"yyyy-MM-dd\");\n  static String day(LocalDate d) { return FMT.format(d); }\n}\n",
     "This formatter/digest keeps internal mutable state but is shared through a static field, so concurrent threads corrupt each other's results (wrong dates, exceptions, bad hashes) with no error. Use java.time's immutable DateTimeFormatter, a ThreadLocal, or a new instance per call.",
-    sev="major", cwe=["CWE-567", "CWE-362"], asvs=["V15.4.1"], filters=[r"node.lacks_re:ThreadLocal"], docv="Java SE 21 API", **JAF)
+    sev="major", cwe=["CWE-567", "CWE-362"], asvs=["V15.4.1"], filters=[r"node.lacks_re:ThreadLocal", r"file.lacks_re:\b{cap:name}\s*\.\s*clone\s*\(", r"file.lacks_re:synchronized\s*\(\s*{cap:name}\s*\)"],
+    fp=["class Dates {\n  private static final SimpleDateFormat TEMPLATE = new SimpleDateFormat(\"yyyy\");\n  static String day(Date d) { return ((SimpleDateFormat) TEMPLATE.clone()).format(d); }\n}\n"],
+    docv="Java SE 21 API", **JAF)
 
 # V16.4.1 request data written to logs unencoded (CWE-117)
 LOGI = "https://owasp.org/www-community/attacks/Log_Injection"

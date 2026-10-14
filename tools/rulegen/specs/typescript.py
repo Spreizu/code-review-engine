@@ -42,22 +42,26 @@ T("consistent-type-assertions", "minor", "style", r'''(type_assertion) @match'''
 T("consistent-type-definitions", "info", "style", r'''(type_alias_declaration value: (object_type) @match)''',
   "type User = { id: string }\n", "interface User { id: string }\n", "Prefer interface for object type definitions (extendable, better error messages).")
 T("default-param-last", "minor", "correctness",
-  r'''(formal_parameters [(required_parameter value: (_)) (optional_parameter)] @match . (required_parameter !value))''',
-  "function f(a = 1, b: number) {}\n", "function f(b: number, a = 1) {}\n", "A defaulted/optional parameter before a required one cannot be omitted.")
+  r'''(formal_parameters [(required_parameter value: (_)) (optional_parameter)] @match . (required_parameter !value pattern: [(identifier) (object_pattern) (array_pattern)]))''',
+  "function f(a = 1, b: number) {}\n", "function f(b: number, a = 1) {}\n", "A defaulted/optional parameter before a required one cannot be omitted.",
+  fp=[{"note": "a rest parameter is not required", "code": "function f(delay = 0, ...args: unknown[]) {}\ntype Cb = (err?: unknown, ...rest: unknown[]) => void\n"}])
 T("explicit-function-return-type", "info", "style",
   r'''((export_statement (function_declaration !return_type) @match))''',
   "export function total(items: Item[]) {\n  return items.length\n}\n", "export function total(items: Item[]): number {\n  return items.length\n}\n",
   "Exported functions should declare their return type (stable API, faster type-checking).")
 T("method-signature-style", "info", "style", r'''(interface_body (method_signature) @match)''',
   "interface Api {\n  get(id: string): Item\n}\n", "interface Api {\n  get: (id: string) => Item\n}\n",
-  "Property-style signatures are checked contravariantly under strictFunctionTypes; method shorthand is bivariant.")
+  "Property-style signatures are checked contravariantly under strictFunctionTypes; method shorthand is bivariant.",
+  filters=[r"node.lacks_re:^\s*(get|set)\s+[\w'\x22\[]"])  # accessor signatures have no property form
 T("max-params", "info", "maintainability", r'''(formal_parameters (_) (_) (_) (_)) @match''',
   "function f(a: number, b: number, c: number, d: number) {}\n", "function f(o: { a: number; b: number; c: number; d: number }) {}\n",
   "More than 3 parameters: consider an options object.")
 T("no-array-delete", "major", "correctness",
-  r'''(unary_expression operator: "delete" argument: (subscript_expression index: [(number) (identifier)])) @match''',
-  "delete items[i]\n", "items.splice(i, 1)\n", "delete on an array leaves a hole instead of removing the element.", mode="ai-confirm",
-  ai="Is the object an array (not a Record/dictionary)?")
+  r'''(unary_expression operator: "delete" argument: (subscript_expression object: (_) @o index: [(number) (identifier)])) @match''',
+  "const items: string[] = load()\ndelete items[i]\n", "const items: string[] = load()\nitems.splice(i, 1)\n", "delete on an array leaves a hole instead of removing the element.",
+  # the rule is type-aware: only when the operand is known to be an array (most deletes are on records)
+  filters=[r"type.is:o:array|(Readonly)?Array"],
+  fp=[{"note": "record", "code": "const clients: Record<string, C> = {}\ndelete clients[id]\n"}])
 T("no-confusing-non-null-assertion", "minor", "correctness",
   r'''(binary_expression left: (non_null_expression) operator: ["==" "==="]) @match''',
   "if (a! == b) {}\n", "if (a !== b) {}\n", "a! == b looks like a !== b.")
@@ -89,14 +93,23 @@ T("no-floating-promises", "major", "async",
   "The promise is neither awaited, returned nor given a rejection handler; errors become unhandled rejections.", mode="ai-confirm",
   ai="Is this promise result intentionally fire-and-forget with errors handled elsewhere? (answer reject if so)")
 T("no-import-type-side-effects", "info", "correctness",
-  r'''((import_statement (import_clause (named_imports) @n)) @match (#match? @n "^\\{\\s*type\\s+\\w+(\\s*,\\s*type\\s+\\w+)*\\s*,?\\s*\\}$") (#not-match? @match "^import\\s+type"))''',
+  r'''((import_statement (import_clause (named_imports) @n)) @match (#match? @n "^\\{\\s*type\\s+\\w+(\\s*,\\s*type\\s+\\w+)*\\s*,?\\s*\\}$") (#not-match? @match "^import\\s+type") (#not-match? @match "^import\\s+[\\w$]+\\s*,"))''',
   "import { type A, type B } from './types'\n", "import type { A, B } from './types'\n",
-  "With verbatimModuleSyntax an import with only inline type specifiers is kept as a side-effect import; use import type.")
+  "With verbatimModuleSyntax an import with only inline type specifiers is kept as a side-effect import; use import type.",
+  fp=[{"note": "a default value import keeps the statement needed", "code": "import NextAuth, { type DefaultSession } from 'next-auth'\n"}])
 T("no-inferrable-types", "info", "style",
   r'''((variable_declarator type: (type_annotation (predefined_type) @t) value: [(number) (string) (true) (false)]) @match (#match? @t "^(number|string|boolean)$"))''',
   "const n: number = 5\n", "const n = 5\n", "The type is trivially inferred from the literal.")
-T("no-invalid-void-type", "minor", "correctness", r'''((union_type (predefined_type) @v) @match (#eq? @v "void"))''',
-  "type R = string | void\n", "type R = string | undefined\n", "void is only meaningful as a return type or generic argument; use undefined in unions.")
+T("no-invalid-void-type", "minor", "correctness",
+  # match the whole (left-nested) union; void may sit up to 4 levels down
+  r'''((union_type (predefined_type) @v) @match (#eq? @v "void"))
+((union_type (union_type (predefined_type) @v1)) @match (#eq? @v1 "void"))
+((union_type (union_type (union_type (predefined_type) @v2))) @match (#eq? @v2 "void"))
+((union_type (union_type (union_type (union_type (predefined_type) @v3)))) @match (#eq? @v3 "void"))''',
+  "type R = string | void\n", "type R = string | undefined\n", "void is only meaningful as a return type or generic argument; use undefined in unions.",
+  # the rule accepts unions whose members are all void, never or generics with a void argument (Promise<void> | void)
+  filters=["parentkind.lacks_re:union_type:.", r"node.lacks_re:^\s*\|?\s*(void|never|[\w.$]+\s*<[^|<>]*\bvoid\b[^|<>]*>)(\s*\|\s*(void|never|[\w.$]+\s*<[^|<>]*\bvoid\b[^|<>]*>))*\s*$"],
+  fp=[{"note": "void | Promise<void> is allowed", "code": "type H = (ctx: C) => Promise<void> | void\ntype G = () => void | never\n"}])
 T("no-misused-new", "major", "correctness",
   r'''((interface_body (method_signature name: (property_identifier) @n) @match) (#eq? @n "constructor"))''',
   "interface Point {\n  constructor(): Point\n}\n", "interface PointCtor {\n  new (): Point\n}\n", "Interfaces cannot declare constructors; use a construct signature (new ()).")
@@ -171,7 +184,10 @@ T("prefer-reduce-type-parameter", "info", "style",
   "Use the reduce type parameter instead of asserting the initial value.")
 T("prefer-regexp-exec", "info", "performance",
   r'''((call_expression function: (member_expression property: (property_identifier) @p) arguments: (arguments . (regex) @r .)) @match (#eq? @p "match") (#not-match? @r "/[a-z]*g[a-z]*$"))''',
-  "const m = line.match(/(\\d+)/)\n", "const m = /(\\d+)/.exec(line)\n", "RegExp#exec is equivalent and faster for non-global regexes.")
+  "const m = line.match(/(\\d+)/)\n", "const m = /(\\d+)/.exec(line)\n", "RegExp#exec is equivalent and faster for non-global regexes.",
+  # chai/jest-style assertions (expect(x).to.match(/re/)) are not String#match
+  filters=[r"node.lacks_re:^\s*expect\s*\(|\.(to|be|been|is|that|which|and|not|deep|also|should)\s*\.\s*match\s*\("],
+  fp=[{"note": "chai assertion", "code": "expect(res.text).to.match(/engine\\.io/)\nres.text.should.match(/ok/)\n"}])
 T("prefer-string-starts-ends-with", "info", "style",
   r'''((binary_expression left: (call_expression function: (member_expression property: (property_identifier) @p)) operator: ["===" "=="] right: (number) @n) @match (#eq? @p "indexOf") (#eq? @n "0"))
 ((binary_expression left: (subscript_expression index: (number) @n) operator: ["===" "=="] right: (string)) @match (#eq? @n "0"))''',
@@ -204,8 +220,10 @@ R.append(rule("TS-TS6-NO-DEFAULT-LIB-001", "/// <reference no-default-lib> is no
 FILES = ["**/tsconfig*.json", "**/jsconfig*.json"]
 
 
-def C(id, title, key, op, value, quote, msg, *, url, doc, sev="minor", kind="best-practice", applies=None, mode="deterministic", ai=None, bad=None, good=None, overrides=None, docv="TSConfig reference (current)"):
+def C(id, title, key, op, value, quote, msg, *, url, doc, sev="minor", kind="best-practice", applies=None, mode="deterministic", ai=None, bad=None, good=None, overrides=None, docv="TSConfig reference (current)", unless=None):
     c = {"key": "compilerOptions." + key, "op": op}
+    if unless:
+        c["unless_key"] = unless
     if value is not None:
         c["value"] = value
     R.append(rule("TS-CFG-" + id, title, language="tsconfig", kind=kind, category="configuration", severity=sev, applies=applies or {"typescript": ">=2.0"},
@@ -273,6 +291,6 @@ OPTIN = [
      "Distinguish 'missing' from 'present but undefined' for optional properties.", "info"),
 ]
 for id, k, q, msg, sev in OPTIN:
-    C(id + "-001", f"{k} not enabled", k, "absent", None, q, msg, url=opt(k), doc=f"TSConfig {k}", sev=sev, mode="ai-confirm",
-      ai=f"Considering the whole extends chain of this tsconfig, is {k} left disabled?", bad='{ "compilerOptions": { "strict": true } }',
+    # a tsconfig with "extends" may inherit the option: absence cannot be decided from this file
+    C(id + "-001", f"{k} not enabled", k, "absent", None, q, msg, url=opt(k), doc=f"TSConfig {k}", sev=sev, unless="extends", bad='{ "compilerOptions": { "strict": true } }',
       good='{ "compilerOptions": { "%s": true } }' % k)

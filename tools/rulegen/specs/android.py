@@ -135,4 +135,43 @@ sec("RELEASE-NO-MINIFY", "Release build type without R8 optimisation", "https://
     sev="minor", files=KTS, cwe=["CWE-656"], docv="Android build guide",
 )
 
+# ------------------------------------------------------------------ MASVS-PLATFORM-3 FLAG_SECURE / MASVS-CODE-1 minSdk
+FLAG = "https://developer.android.com/reference/android/view/WindowManager.LayoutParams#FLAG_SECURE"
+sec("CLEAR-FLAG-SECURE", "window.clearFlags(FLAG_SECURE)", FLAG,
+    "preventing it from appearing in screenshots",
+    '((call_expression (navigation_expression (_) (identifier) @m .) (value_arguments (value_argument (navigation_expression (_) (identifier) @f .)))) @match (#eq? @m "clearFlags") (#eq? @f "FLAG_SECURE"))',
+    "window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)\n",
+    "window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)\n",
+    "clearFlags(FLAG_SECURE) lets the window appear in screenshots, recent-apps thumbnails and on non-secure displays (screen recording, screen sharing). Keep FLAG_SECURE on screens that show secrets or personal data.",
+    sev="major", cwe=["CWE-200"], owasp=["MASVS-PLATFORM-3", "M6:2024"], docv="Android API 36")
+sec("PASSWORD-NO-FLAG-SECURE", "Password field without FLAG_SECURE on the window", FLAG,
+    "preventing it from appearing in screenshots",
+    '((assignment left: (navigation_expression (_) (identifier) @p .) right: (navigation_expression (_) (identifier) @v .)) @match (#eq? @p "inputType") (#match? @v "PASSWORD"))',
+    'edit.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD\n',
+    'window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)\nedit.inputType = InputType.TYPE_TEXT_VARIATION_PASSWORD\n',
+    "A password (or PIN) field is shown without FLAG_SECURE, so the value can appear in screenshots, recents and screen recordings. Call window.addFlags(WindowManager.LayoutParams.FLAG_SECURE) on this Activity.",
+    mode="ai-confirm", ai="Does this screen show a password, PIN or other secret, and is FLAG_SECURE not set on the window (including in a base Activity)?",
+    cwe=["CWE-200"], owasp=["MASVS-PLATFORM-3", "M6:2024"], docv="Android API 36",
+    filters=["file.lacks_re:FLAG_SECURE"])
+SDK = "https://developer.android.com/privacy-and-security/security-config"
+SDK_Q = "Android 9 (API level 28)"
+SDK_MSG = "minSdk below 24 (Android 7) keeps the app installable on releases that lack network-security config, the file-URI ban and modern permission defaults. Raise minSdk (or minSdkVersion) to 24 or higher unless you still have a documented need to support those devices."
+SDK_RX = r"^(1[0-9]|2[0-3])$"
+manifest("LOW-MIN-SDK", "uses-sdk minSdkVersion below 24", SDK, SDK_Q,
+         {"key": "manifest.uses-sdk.@minSdkVersion", "op": "matches", "value": SDK_RX},
+         '<?xml version="1.0" encoding="utf-8"?>\n<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-sdk android:minSdkVersion="21"/>\n  <application android:label="@string/app_name"/>\n</manifest>\n',
+         '<?xml version="1.0" encoding="utf-8"?>\n<manifest xmlns:android="http://schemas.android.com/apk/res/android">\n  <uses-sdk android:minSdkVersion="24"/>\n  <application android:label="@string/app_name"/>\n</manifest>\n',
+         SDK_MSG, sev="minor", cwe=["CWE-16"], owasp=["MASVS-CODE-1", "M8:2024"], docv="Android network security configuration")
+sec("LOW-MIN-SDK-KTS", "minSdk / minSdkVersion below 24 (Kotlin DSL)", SDK, SDK_Q,
+    f'((assignment left: (identifier) @n right: (number_literal) @v) @match (#match? @n "^(minSdk|minSdkVersion)$") (#match? @v "{SDK_RX}"))',
+    'android {\n    defaultConfig {\n        minSdk = 21\n    }\n}\n',
+    'android {\n    defaultConfig {\n        minSdk = 24\n    }\n}\n',
+    SDK_MSG, sev="minor", files=KTS, cwe=["CWE-16"], owasp=["MASVS-CODE-1", "M8:2024"], docv="Android network security configuration")
+sec("LOW-MIN-SDK-GROOVY", "minSdk / minSdkVersion below 24 (Groovy DSL)", SDK, SDK_Q,
+    f'((juxt_function_call name: (identifier) @n args: (argument_list (decimal_integer_literal) @v)) @match (#match? @n "^(minSdk|minSdkVersion)$") (#match? @v "{SDK_RX}"))\n'
+    f'((assignment_expression left: (identifier) @n right: (decimal_integer_literal) @v) @match (#match? @n "^(minSdk|minSdkVersion)$") (#match? @v "{SDK_RX}"))',
+    "android {\n    defaultConfig {\n        minSdkVersion 21\n    }\n}\n",
+    "android {\n    defaultConfig {\n        minSdkVersion 24\n    }\n}\n",
+    SDK_MSG, sev="minor", lang="groovy", files=GROOVY, cwe=["CWE-16"], owasp=["MASVS-CODE-1", "M8:2024"], docv="Android network security configuration")
+
 RULES = P.R

@@ -48,6 +48,8 @@ rules:
     - code: |
         FROM alpine
         ADD "https://example.com/x" /opt/
+  xref:
+  - sonar:docker:S7026
   status: active
   rule_version: 1
 - id: DOCKER-QUAL-APT-LISTS-NOT-REMOVED
@@ -70,7 +72,7 @@ rules:
     query: |
       ((run_instruction) @match (#match? @match "apt-get +(-[a-z]+ +)*install"))
     filters:
-    - node.lacks_re:/var/lib/apt/lists
+    - node.lacks_re:/var/lib/apt/lists|apt-get +dist-clean|apt +dist-clean
     - node.lacks_re:type=cache
   message: Remove /var/lib/apt/lists/* in the same RUN to keep the layer small.
   source:
@@ -274,6 +276,7 @@ rules:
       (block_mapping_pair key: (flow_node) @s (#eq? @s "services") value: (block_node (block_mapping (block_mapping_pair value: (block_node (block_mapping (block_mapping_pair key: (flow_node) @k (#eq? @k "image") value: (flow_node) @match (#match? @match "^[\"']?[^:@\"']+(:latest)?[\"']?$"))))))))
     filters:
     - node.lacks_re:\$\{
+    - 'ancestor.lacks_re:block_mapping:(?m)^\s*build\s*:'
   message: Pin image tags (or digests) for reproducible deployments.
   source:
     url: https://docs.docker.com/reference/compose-file/services/
@@ -336,6 +339,45 @@ rules:
           restart: unless-stopped
   status: active
   rule_version: 1
+- id: DOCKER-QUAL-CONSECUTIVE-RUN
+  title: Adjacent RUN instructions that can be one layer
+  language: dockerfile
+  kind: best-practice
+  category: image-size
+  severity: info
+  applies_to:
+    any: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    files:
+    - '**/Dockerfile'
+    - '**/Dockerfile.*'
+    - '**/*.dockerfile'
+    - '**/Containerfile'
+    - '**/Containerfile.*'
+    query: |
+      ((run_instruction) . (run_instruction) @match)
+  message: 'Each RUN is a layer: consecutive RUN instructions that do not need a cache break can be combined with &&.'
+  ai_question: Can these RUN steps be combined without losing a useful cache break (dependency install vs app copy)?
+  source:
+    url: https://docs.docker.com/build/building/best-practices/
+    doc: Adjacent RUN instructions that can be one layer
+    doc_version: Dockerfile frontend 1.28 / Docker docs 2026-10
+    retrieved: '2026-10-09'
+    quote: You can combine multiple commands in a single RUN instruction by using &&.
+  examples:
+    bad: |
+      FROM alpine
+      RUN apk add --no-cache curl
+      RUN apk add --no-cache git
+    good: |
+      FROM alpine
+      RUN apk add --no-cache curl git
+  xref:
+  - sonar:docker:S7031
+  status: active
+  rule_version: 1
 - id: DOCKER-QUAL-CONSISTENT-INSTRUCTION-CASING
   title: Build check consistent-instruction-casing
   language: dockerfile
@@ -371,6 +413,8 @@ rules:
       RUN echo hi
   status: active
   rule_version: 1
+  xref:
+  - sonar:docker:S6476
 - id: DOCKER-QUAL-COPY-ALL-BEFORE-INSTALL
   title: COPY . before installing dependencies
   language: dockerfile
@@ -556,6 +600,44 @@ rules:
     good: |
       FROM debian:12
       ARG DEBIAN_FRONTEND=noninteractive
+  status: active
+  rule_version: 1
+- id: DOCKER-QUAL-ENV-EQUALS-SPACING
+  title: Space before = in ENV key=value
+  language: dockerfile
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    any: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - '**/Dockerfile'
+    - '**/Dockerfile.*'
+    - '**/*.dockerfile'
+    - '**/Containerfile'
+    - '**/Containerfile.*'
+    query: |
+      ((env_instruction) @match (#match? @match "(?i)^env\\s+\\S+\\s+="))
+  message: 'A space before = makes the value include the equals sign (FOO is set to "=bar"): write ENV KEY=value with no space around =.'
+  source:
+    url: https://docs.docker.com/reference/dockerfile/
+    doc: Space before = in ENV key=value
+    doc_version: Dockerfile frontend 1.28 / Docker docs 2026-10
+    retrieved: '2026-10-09'
+    quote: The ENV instruction allows you to set environment variables in the image.
+  examples:
+    bad: |
+      FROM alpine
+      ENV FOO =bar
+    good: |
+      FROM alpine
+      ENV FOO=bar
+      ENV FOO="bar"
+  xref:
+  - sonar:docker:S6574
   status: active
   rule_version: 1
 - id: DOCKER-QUAL-EXPOSE-INVALID-FORMAT
@@ -855,6 +937,43 @@ rules:
       FROM node:24.11-alpine
   status: active
   rule_version: 1
+- id: DOCKER-QUAL-MALFORMED-EXEC-JSON
+  title: CMD/ENTRYPOINT exec form is not a JSON array of strings
+  language: dockerfile
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    any: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - '**/Dockerfile'
+    - '**/Dockerfile.*'
+    - '**/*.dockerfile'
+    - '**/Containerfile'
+    - '**/Containerfile.*'
+    query: |
+      ([(cmd_instruction) (entrypoint_instruction)] @match (#match? @match "\\[\\s*[^\\s\"\'\\]]"))
+  message: Exec form must be a JSON array of quoted strings; unquoted tokens are parsed as shell form (or fail to parse).
+  source:
+    url: https://docs.docker.com/reference/dockerfile/
+    doc: CMD/ENTRYPOINT exec form is not a JSON array of strings
+    doc_version: Dockerfile frontend 1.28 / Docker docs 2026-10
+    retrieved: '2026-10-09'
+    quote: The exec form is parsed as a JSON array, which means that you must use double-quotes (") around words not single-quotes (').
+  examples:
+    bad: |
+      FROM alpine
+      CMD [echo, "hello"]
+    good: |
+      FROM alpine
+      CMD ["echo", "hello"]
+  xref:
+  - sonar:docker:S7030
+  status: active
+  rule_version: 1
 - id: DOCKER-QUAL-MULTIPLE-CMD
   title: Build check multiple-instructions-disallowed
   language: dockerfile
@@ -962,6 +1081,45 @@ rules:
       FROM node:24-alpine
     good: |
       FROM node:24-alpine@sha256:0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+  status: active
+  rule_version: 1
+- id: DOCKER-QUAL-PACKAGE-NONINTERACTIVE
+  title: Package install without a noninteractive flag
+  language: dockerfile
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    any: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - '**/Dockerfile'
+    - '**/Dockerfile.*'
+    - '**/*.dockerfile'
+    - '**/Containerfile'
+    - '**/Containerfile.*'
+    query: |
+      ((run_instruction) @match (#match? @match "(apt-get|apt|yum|dnf|zypper) +(-[a-z]+ +)*install"))
+    filters:
+    - 'node.lacks_re: -y | --yes | --assumeyes | --non-interactive |DEBIAN_FRONTEND=noninteractive'
+  message: 'Without -y / --non-interactive the build stops waiting for a confirmation that will never come: pass -y (and DEBIAN_FRONTEND=noninteractive in the same RUN if the package asks debconf questions).'
+  source:
+    url: https://docs.docker.com/build/building/best-practices/
+    doc: Package install without a noninteractive flag
+    doc_version: Dockerfile frontend 1.28 / Docker docs 2026-10
+    retrieved: '2026-10-09'
+    quote: Always combine RUN apt-get update with apt-get install -y in the same RUN statement.
+  examples:
+    bad: |
+      FROM debian
+      RUN apt-get update && apt-get install curl
+    good: |
+      FROM debian
+      RUN apt-get update && apt-get install -y curl
+  xref:
+  - sonar:docker:S6584
   status: active
   rule_version: 1
 - id: DOCKER-QUAL-PIPE-WITHOUT-PIPEFAIL

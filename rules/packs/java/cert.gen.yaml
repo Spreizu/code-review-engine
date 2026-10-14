@@ -24,11 +24,11 @@ rules:
   message: Library or server code that calls System.exit() kills the whole JVM, including every other request, thread and application in it. Throw an exception or return a status and let main() decide.
   ai_question: Is this server, library or framework code (not a command-line entry point or its direct helpers)?
   source:
-    url: https://wiki.sei.cmu.edu/confluence/display/java/ERR09-J.+Do+not+allow+untrusted+code+to+terminate+the+JVM
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runtime.html
     doc: System.exit() outside main (ERR09-J)
-    doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
+    doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
     retrieved: '2026-10-09'
-    quote: Do not allow untrusted code to terminate the JVM Invocation of System.exit() terminates the Java Virtual Machine (JVM), consequently terminating all running programs and threads. This can result in denial-of-service (DoS) attacks .
+    quote: onding method exec(String[], String[], File) or ProcessBuilder should be used instead. void exit (int status) Initiates the shutdown sequence of the Java Virtual Machine.
   examples:
     bad: |
       class A {
@@ -46,6 +46,9 @@ rules:
           }
         }
       }
+  xref:
+  - https://wiki.sei.cmu.edu/confluence/display/java/ERR09-J.+Do+not+allow+untrusted+code+to+terminate+the+JVM
+  - https://openjdk.org/jeps/486
   cwe:
   - CWE-382
   status: active
@@ -74,11 +77,11 @@ rules:
     exclude_tests: true
   message: java.io.File reports failure only through the boolean result, which is dropped here, so a file that was not deleted/created/renamed goes unnoticed. Check the result, or use java.nio.file.Files, which throws an IOException with the reason.
   source:
-    url: https://wiki.sei.cmu.edu/confluence/display/java/FIO02-J.+Detect+and+handle+file-related+errors
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html
     doc: File.delete/mkdir/renameTo result ignored (FIO02-J)
-    doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
+    doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
     retrieved: '2026-10-09'
-    quote: Noncompliant Code Example ( delete() ) This noncompliant code example attempts to delete a specified file but gives no indication of its success.
+    quote: 'Returns: true if and only if the file or directory is successfully deleted; false otherwise deleteOnExit public void deleteOnExit () Requests that the file or directory denoted by this'
   examples:
     bad: |
       import java.io.File;
@@ -105,6 +108,9 @@ rules:
             repository.delete(u);
           }
         }
+  xref:
+  - https://wiki.sei.cmu.edu/confluence/display/java/FIO02-J.+Detect+and+handle+file-related+errors
+  - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/Files.html#delete(java.nio.file.Path)
   cwe:
   - CWE-252
   status: active
@@ -132,11 +138,11 @@ rules:
   message: The temporary file is never deleted on this path, so data (possibly sensitive) accumulates in a shared directory. Delete it in a finally block (Files.deleteIfExists) or open it with DELETE_ON_CLOSE.
   ai_question: Is the temporary file left behind on some path (not deleted by the caller or a finally block elsewhere)?
   source:
-    url: https://wiki.sei.cmu.edu/confluence/display/java/FIO03-J.+Remove+temporary+files+before+termination
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html
     doc: Temporary file created without being removed (FIO03-J)
-    doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
+    doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
     retrieved: '2026-10-09'
-    quote: '( IOException x ) { // Handle error } } } } } Noncompliant Code Example ( createTempFile() , deleteOnExit() ) This noncompliant code example invokes the File.createTempFile() method, which generates a unique temporary file name based on two parameters: a prefix and an extension.'
+    quote: This method provides only part of a temporary-file facility. To arrange for a file created by this method to be deleted automatically, use the deleteOnExit() method.
   examples:
     bad: |
       import java.io.File;
@@ -161,6 +167,9 @@ rules:
           }
         }
       }
+  xref:
+  - https://wiki.sei.cmu.edu/confluence/display/java/FIO03-J.+Remove+temporary+files+before+termination
+  - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/nio/file/StandardOpenOption.html#DELETE_ON_CLOSE
   cwe:
   - CWE-459
   - CWE-377
@@ -188,11 +197,11 @@ rules:
     exclude_tests: true
   message: String literals and cached boxed values are shared across the whole JVM, so unrelated code (or a library) can take the same lock and deadlock or slow you down. Lock on a private final Object.
   source:
-    url: https://wiki.sei.cmu.edu/confluence/display/java/LCK01-J.+Do+not+synchronize+on+objects+that+may+be+reused
+    url: https://openjdk.org/jeps/390
     doc: synchronized on a string literal or boxed constant (LCK01-J)
-    doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
+    doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
     retrieved: '2026-10-09'
-    quote: Noncompliant Code Example ( String Literal) This noncompliant code example locks on a final String literal. Non-compliant code Copy to clipboard Toggle fullscreen // This bug was found in jetty-6.1.3 BoundedThreadPool
+    quote: pper classes as value-based and deprecate their constructors for removal, prompting new deprecation warnings. Provide warnings about improper attempts to synchronize on instances of any value-based classes in the Java Platform.
   examples:
     bad: |
       class A {
@@ -213,6 +222,10 @@ rules:
         }
         void work() {}
       }
+  xref:
+  - https://wiki.sei.cmu.edu/confluence/display/java/LCK01-J.+Do+not+synchronize+on+objects+that+may+be+reused
+  - https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/doc-files/ValueBased.html
+  - https://docs.oracle.com/javase/specs/jls/se25/html/jls-3.html#jls-3.10.5
   cwe:
   - CWE-412
   status: active
@@ -237,11 +250,11 @@ rules:
     exclude_tests: true
   message: In a subclass getClass() returns the subclass's Class object, so subclass and parent instances take different locks and the static state is no longer protected. Lock on A.class or a private static final lock object.
   source:
-    url: https://wiki.sei.cmu.edu/confluence/display/java/LCK02-J.+Do+not+synchronize+on+the+class+object+returned+by+getClass%28%29
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
     doc: synchronized (getClass()) (LCK02-J)
-    doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
+    doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
     retrieved: '2026-10-09'
-    quote: getClass() Synchronizing on the return value of the Object.getClass() method can lead to unexpected behavior. Whenever the implementing class is subclassed, the subclass locks on the subclass's type. The Class object of the subclass is entirely distinct from the Class object of the parent class.
+    quote: 'Number n = 0; Class<? extends Number> c = n.getClass(); Returns: The Class object that represents the runtime class of this object.'
   examples:
     bad: |
       class A {
@@ -261,6 +274,8 @@ rules:
           }
         }
       }
+  xref:
+  - https://wiki.sei.cmu.edu/confluence/display/java/LCK02-J.+Do+not+synchronize+on+the+class+object+returned+by+getClass%28%29
   cwe:
   - CWE-667
   status: active
@@ -285,11 +300,11 @@ rules:
     exclude_tests: true
   message: 0.1 has no exact binary representation, so the counter drifts and the loop runs one time more or less than intended (or forever). Count with an integer and derive the float value.
   source:
-    url: https://wiki.sei.cmu.edu/confluence/display/java/NUM09-J.+Do+not+use+floating-point+variables+as+loop+counters
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html
     doc: Floating-point loop counter (NUM09-J)
-    doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
+    doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
     retrieved: '2026-10-09'
-    quote: Do not use floating-point variables as loop counters Floating-point variables must not be used as loop counters. Limited-precision IEEE 754 floating-point types cannot represent All simple fractions exactly.
+    quote: '"); d = 0.0/0.0; System.out.println(d); // An example of inexact results and rounding: System.out.print("inexact results with float:"); for (int i = 0; i < 100; i++) { float'
   examples:
     bad: |
       class A {
@@ -308,6 +323,8 @@ rules:
           }
         }
       }
+  xref:
+  - https://wiki.sei.cmu.edu/confluence/display/java/NUM09-J.+Do+not+use+floating-point+variables+as+loop+counters
   cwe:
   - CWE-1339
   status: active
@@ -332,11 +349,11 @@ rules:
     exclude_tests: true
   message: A class with the same name can come from another package or class loader (including attacker-supplied code), so a name check is not an identity check. Compare Class objects or use instanceof.
   source:
-    url: https://wiki.sei.cmu.edu/confluence/display/java/OBJ09-J.+Compare+classes+and+not+class+names
+    url: https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html
     doc: Classes compared by name (OBJ09-J)
-    doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
+    doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
     retrieved: '2026-10-09'
-    quote: e) if they are loaded by the same class loader and they have the same fully qualified name" [ JVMSpec 1999 ]. Two classes with the same name but different package names are distinct, as are two classes with the same fully qualified name loaded by different class loaders.
+    quote: If L loads C directly, we say that L defines C or, equivalently, that L is the defining loader of C .
   examples:
     bad: |
       class A {
@@ -350,6 +367,8 @@ rules:
           return o.getClass() == com.example.Auth.class;
         }
       }
+  xref:
+  - https://wiki.sei.cmu.edu/confluence/display/java/OBJ09-J.+Compare+classes+and+not+class+names
   cwe:
   - CWE-486
   status: active
@@ -375,11 +394,11 @@ rules:
   message: notify() wakes one arbitrary waiter; if it is waiting for a different condition it goes back to sleep and the thread that could proceed is never woken. Use notifyAll() (or java.util.concurrent conditions).
   ai_question: Can more than one thread wait on this monitor for different conditions (so waking a single arbitrary one may wake the wrong one)?
   source:
-    url: https://wiki.sei.cmu.edu/confluence/display/java/THI02-J.+Notify+all+waiting+threads+rather+than+a+single+thread
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html
     doc: notify() instead of notifyAll() (THI02-J)
-    doc_version: SEI CERT Oracle Coding Standard for Java (wiki, 2026)
+    doc_version: JDK 25 API / JLS SE 25 (SEI CERT Java as xref)
     retrieved: '2026-10-09'
-    quote: used to waken a waiting thread, and the thread is not prepared to resume execution, it often resumes waiting. Consequently, no thread wakens, which may cause the system to hang. Noncompliant Code Example ( notify() ) This noncompliant code example shows a complex, multistep process bein
+    quote: If any threads are waiting on this object, one of them is chosen to be awakened. The choice is arbitrary and occurs at the discretion of the implementation.
   examples:
     bad: |
       class A {
@@ -397,6 +416,8 @@ rules:
           notifyAll();
         }
       }
+  xref:
+  - https://wiki.sei.cmu.edu/confluence/display/java/THI02-J.+Notify+all+waiting+threads+rather+than+a+single+thread
   cwe:
   - CWE-662
   status: active

@@ -45,8 +45,12 @@ rules:
     engine: tree-sitter
     query: |
       (method_invocation
+        object: (_) @recv
         name: (identifier) @n (#eq? @n "get")
         arguments: (argument_list) @a (#eq? @a "()")) @match
+    # Only receivers declared as Optional (ThreadLocal/Supplier/Atomic*/Future get() are not this).
+    filters:
+    - type.is:recv:(java\.util\.)?Optional(<.*>)?
   message: Optional.get() - the javadoc states "The preferred alternative to this method is orElseThrow()".
   ai_question: Is the receiver of this zero-argument get() a java.util.Optional?
   source:
@@ -59,6 +63,9 @@ rules:
       class A { String f(Optional<String> o) { return o.get(); } }
     good: |
       class A { String f(Optional<String> o) { return o.orElseThrow(); } }
+    fp:
+    - |
+      class A { static final ThreadLocal<String> LOCAL = new ThreadLocal<>(); String f() { return LOCAL.get(); } }
 - id: JAVA-QUAL-UTF8-001
   title: Be explicit about charsets in Reader/Writer constructors
   language: java

@@ -199,6 +199,9 @@ rules:
       logger.warn("x")
     good: |
       logger.warning("x")
+  xref:
+  - ruff:G010
+  - flake8:G010
   status: active
   rule_version: 1
 - id: PY-MIG-REMOVED-ARRAY-TOSTRING

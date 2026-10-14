@@ -27,7 +27,8 @@ bc("NO-EMPTY-CONTINUATION", "no-empty-continuation", "lines have been deprecated
    filters=[r"file.has_re:\\[ \t]*\r?\n([ \t]*\r?\n)+[ \t]*\S"])
 bc("CONSISTENT-INSTRUCTION-CASING", "consistent-instruction-casing", "Instruction keywords should use consistent casing",
    '([(from_instruction) (run_instruction) (cmd_instruction) (copy_instruction) (add_instruction) (env_instruction) (arg_instruction) (entrypoint_instruction) (workdir_instruction) (user_instruction) (expose_instruction) (label_instruction)] @match (#match? @match "^([A-Z][a-z]|[a-z]+[A-Z])"))',
-   "FROM alpine\nRun echo hi\n", "FROM alpine\nRUN echo hi\n", "Use all-uppercase (or all-lowercase) instruction keywords.", sev="info")
+   "FROM alpine\nRun echo hi\n", "FROM alpine\nRUN echo hi\n", "Use all-uppercase (or all-lowercase) instruction keywords.", sev="info",
+   xref=["sonar:docker:S6476"])
 bc("DUPLICATE-STAGE-NAME", "duplicate-stage-name", "Defining multiple stages with the same name results in an error",
    '(source_file (from_instruction as: (image_alias) @first) (from_instruction as: (image_alias) @match) (#eq? @first @match))',
    "FROM alpine AS build\nFROM debian AS build\n", "FROM alpine AS build\nFROM debian AS runtime\n", "Stage names must be unique.", sev="major", cat="correctness")
@@ -94,7 +95,7 @@ P("APT-NO-INSTALL-RECOMMENDS", "apt-get install without --no-install-recommends"
 P("APT-LISTS-NOT-REMOVED", "apt lists not cleaned in the same layer", BP, "rm -rf /var/lib/apt/lists/*",
   '((run_instruction) @match (#match? @match "apt-get +(-[a-z]+ +)*install"))', "FROM debian\nRUN apt-get update && apt-get install -y curl\n",
   "FROM debian\nRUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*\n", "Remove /var/lib/apt/lists/* in the same RUN to keep the layer small.",
-  sev="info", cat="image-size", filters=["node.lacks_re:/var/lib/apt/lists", "node.lacks_re:type=cache"])
+  sev="info", cat="image-size", filters=["node.lacks_re:/var/lib/apt/lists|apt-get +dist-clean|apt +dist-clean", "node.lacks_re:type=cache"])
 P("PIPE-WITHOUT-PIPEFAIL", "RUN pipeline without set -o pipefail", BP, "prepend set -o pipefail && to ensure that an unexpected error prevents the build from inadvertently succeeding",
   '((run_instruction (shell_command) @match) (#match? @match "[^|][|][^|]"))', "FROM debian\nRUN wget -O - https://example.com/x | wc -l > /n\n",
   "FROM debian\nRUN set -o pipefail && wget -O - https://example.com/x | wc -l > /n\n", "Without pipefail only the last command's exit status counts.",
@@ -107,6 +108,7 @@ P("CURL-PIPE-SHELL", "RUN pipes a download straight into a shell", BP, "prepend 
 P("ADD-LOCAL-FILE", "ADD used to copy local files", BP, "ADD and COPY are functionally similar.",
   '((add_instruction (path) @match . (path)) (#not-match? @match "^[\\\"\']?((https?|git)://|git@)|[.](tar|tgz|tbz2?|txz|gz|bz2|xz|zst|lz|lzma)[\\\"\']?$"))', "FROM alpine\nADD . /app\n", "FROM alpine\nCOPY . /app\n",
   "Prefer COPY for local files; ADD's implicit URL fetch and auto-extraction surprise readers.", sev="minor", cat="best-practice",
+  xref=["sonar:docker:S7026"],
   filters=[r"parent.lacks_re:(?i)^add\s+(--[a-z-]+=?\S*\s+)*[\"']?(https?|git)://"],
   # fixture triage (hadolint DL3020): the query used to test the destination, not the source;
   # archives are auto-extracted (a legitimate ADD), quoted sources included
@@ -230,7 +232,7 @@ C("CONTAINER-NAME", "container_name prevents scaling", SVC, "Compose does not sc
 C("IMAGE-LATEST", "Service image untagged or :latest", SVC, "image specifies the image to start the container from.",
   svc("image", '(flow_node) @match (#match? @match "^[\\"\']?[^:@\\"\']+(:latest)?[\\"\']?$")'), "services:\n  web:\n    image: nginx\n",
   "services:\n  web:\n    image: nginx:1.29\n", "Pin image tags (or digests) for reproducible deployments.", sev="minor", cat="reproducibility",
-  filters=[r"node.lacks_re:\$\{"])
+  filters=[r"node.lacks_re:\$\{", r"ancestor.lacks_re:block_mapping:(?m)^\s*build\s*:"])  # with build: the image names the locally built result
 C("ENV-SECRET", "Secret passed via environment", SVC, "The secrets attribute grants access to sensitive data defined by the secrets top-level element",
   svc("environment", f'(_ (_ (block_mapping_pair key: (flow_node) @n (#match? @n "{SECRET_NAME_RE.replace("^(", "(?i)^.*(").replace(")$", ")$")}") value: (flow_node) @match)))') + "\n" +
   svc("environment", '(_ (_ (block_sequence_item (flow_node) @match (#match? @match "(?i)(password|secret|token|api_?key)[^=]*=[^$]"))))'),
@@ -266,6 +268,37 @@ C("NO-RESOURCE-LIMITS", "Service without memory/CPU/PID limits", "https://docs.d
   sev="info", kind="security", cat="security", mode="ai-confirm", cwe=["CWE-770"], owasp=["D07"],
   filters=[r"parent.lacks_re:(?m)^\s+(limits|mem_limit|pids_limit|cpus)\s*:"],
   ai="Is this a long-running service on a shared host (not a one-off tool or a dev-only container) where a runaway process would affect others?")
+
+# ---- Dockerfile syntax / layering (own detection; Sonar docker keys as xref only)
+P("PACKAGE-NONINTERACTIVE", "Package install without a noninteractive flag", BP, "Always combine RUN apt-get update with apt-get install -y",
+  '((run_instruction) @match (#match? @match "(apt-get|apt|yum|dnf|zypper) +(-[a-z]+ +)*install"))',
+  "FROM debian\nRUN apt-get update && apt-get install curl\n",
+  "FROM debian\nRUN apt-get update && apt-get install -y curl\n",
+  "Without -y / --non-interactive the build stops waiting for a confirmation that will never come: pass -y (and DEBIAN_FRONTEND=noninteractive in the same RUN if the package asks debconf questions).",
+  sev="major", kind="anti-pattern", cat="correctness",
+  quote="Always combine RUN apt-get update with apt-get install -y in the same RUN statement.",
+  xref=["sonar:docker:S6584"],
+  filters=[r"node.lacks_re: -y | --yes | --assumeyes | --non-interactive |DEBIAN_FRONTEND=noninteractive"])
+P("ENV-EQUALS-SPACING", "Space before = in ENV key=value", REF, "The ENV instruction allows you to set environment variables",
+  r'((env_instruction) @match (#match? @match "(?i)^env\\s+\\S+\\s+="))',
+  "FROM alpine\nENV FOO =bar\n", "FROM alpine\nENV FOO=bar\nENV FOO=\"bar\"\n",
+  "A space before = makes the value include the equals sign (FOO is set to \"=bar\"): write ENV KEY=value with no space around =.",
+  sev="major", kind="anti-pattern", cat="correctness", quote="The ENV instruction allows you to set environment variables in the image.",
+  xref=["sonar:docker:S6574"])
+P("MALFORMED-EXEC-JSON", "CMD/ENTRYPOINT exec form is not a JSON array of strings", REF, "The exec form is parsed as a JSON array",
+  r'([(cmd_instruction) (entrypoint_instruction)] @match (#match? @match "\\[\\s*[^\\s\"\'\\]]"))',
+  'FROM alpine\nCMD [echo, "hello"]\n', 'FROM alpine\nCMD ["echo", "hello"]\n',
+  "Exec form must be a JSON array of quoted strings; unquoted tokens are parsed as shell form (or fail to parse).",
+  sev="major", kind="anti-pattern", cat="correctness", quote="The exec form is parsed as a JSON array, which means that you must use double-quotes (\") around words not single-quotes (').",
+  xref=["sonar:docker:S7030"])
+P("CONSECUTIVE-RUN", "Adjacent RUN instructions that can be one layer", BP, "combine RUN",
+  "((run_instruction) . (run_instruction) @match)",
+  "FROM alpine\nRUN apk add --no-cache curl\nRUN apk add --no-cache git\n",
+  "FROM alpine\nRUN apk add --no-cache curl git\n",
+  "Each RUN is a layer: consecutive RUN instructions that do not need a cache break can be combined with &&.",
+  sev="info", kind="best-practice", cat="image-size", quote="You can combine multiple commands in a single RUN instruction by using &&.",
+  xref=["sonar:docker:S7031"], mode="ai-confirm",
+  ai="Can these RUN steps be combined without losing a useful cache break (dependency install vs app copy)?")
 
 # ---- 2026.10 expansion (Compose)
 for key, val, why in [("userns_mode", "host", "disables user-namespace remapping"), ("uts", "host", "shares the host's hostname/UTS namespace"),

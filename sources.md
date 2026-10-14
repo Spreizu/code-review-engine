@@ -175,7 +175,7 @@ Latest versions observed on 2026-10-09 (from GitHub releases/tags and the OpenJD
 
 Every URL a rule cites, grouped by ecosystem, with the number of rules citing it. All were fetched (HTTP 200) and every rule's `source.quote` was found verbatim (whitespace/case-normalised) on the page on 2026-10-09 by `tools/rulegen/rulegen.py verify`.
 
-### java (182 URLs, 312 rule citations)
+### java (203 URLs, 352 rule citations)
 
 | URL | Kind | Rules |
 |---|---|---|
@@ -203,66 +203,78 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://checkstyle.org/checks/naming/typename.html | reference | 1 |
 | https://checkstyle.org/checks/sizes/methodlength.html | reference | 1 |
 | https://checkstyle.org/checks/sizes/parameternumber.html | reference | 1 |
+| https://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/time/DateUtils.html | reference | 1 |
 | https://developer.android.com/reference/android/webkit/WebView | reference | 2 |
 | https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Content-Disposition | reference | 2 |
 | https://docs.junit.org/current/api/org.junit.jupiter.api/org/junit/jupiter/api/Assertions.html | reference | 1 |
 | https://docs.junit.org/current/writing-tests/nested-tests.html | reference | 1 |
 | https://docs.junit.org/current/writing-tests/test-classes-and-methods.html | reference | 2 |
+| https://docs.oracle.com/en/java/javase/11/migrate/index.html | migration | 2 |
 | https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html | reference | 3 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Externalizable.html | reference | 1 |
-| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/InputStream.html | reference | 3 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/InputStream.html | reference | 4 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/ObjectOutputStream.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/Serializable.html | reference | 2 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Cloneable.html | reference | 1 |
-| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Comparable.html | reference | 2 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Comparable.html | reference | 3 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/IllegalMonitorStateException.html | reference | 1 |
-| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html | reference | 2 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Iterable.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Runnable.html | reference | 1 |
-| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Runtime.html | reference | 2 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ScopedValue.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/StringBuilder.html | reference | 3 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/System.html | reference | 3 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Thread.html | reference | 4 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/ThreadGroup.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Throwable.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/RetentionPolicy.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/doc-files/ValueBased.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/reflect/AccessibleObject.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URL.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/Duration.html | reference | 1 |
-| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/LocalDate.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/LocalDate.html | reference | 2 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/format/DateTimeFormatter.html | reference | 2 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/HexFormat.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/IdentityHashMap.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Iterator.html | reference | 2 |
-| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html | reference | 2 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html | reference | 3 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html | reference | 3 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Set.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/TimeZone.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/ScheduledThreadPoolExecutor.html | reference | 3 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicInteger.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/Condition.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/Lock.html | reference | 3 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/regex/Pattern.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/stream/package-summary.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/zip/ZipOutputStream.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/api/java.sql/java/sql/ResultSet.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/21/docs/specs/serialization/class.html | reference | 1 |
-| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/File.html | reference | 3 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/ObjectInputStream.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/io/ObjectOutputStream.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Character.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Class.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Enum.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Integer.html | reference | 2 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Math.html | reference | 1 |
-| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html | reference | 2 |
-| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runtime.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html | reference | 4 |
+| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait() | reference | 1 |
+| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Runtime.html | reference | 2 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/String.html | reference | 2 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/StringBuffer.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/System.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html | reference | 3 |
+| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html#interrupt() | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ThreadGroup.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ThreadLocal.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/ref/Reference.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/AccessibleObject.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/reflect/Proxy.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/math/BigDecimal.html | reference | 3 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/MulticastSocket.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URI.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URL.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URLDecoder.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/net/URLEncoder.html | reference | 1 |
@@ -272,6 +284,7 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/security/cert/X509Certificate.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/text/SimpleDateFormat.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Arrays.html | reference | 1 |
+| https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Calendar.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Collections.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/ConcurrentModificationException.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/util/Date.html | reference | 2 |
@@ -295,21 +308,28 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.base/javax/security/auth/Subject.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/docs/api/java.net.http/java/net/http/HttpClient.html | reference | 1 |
 | https://docs.oracle.com/en/java/javase/25/security/java-api-xml-processing-jaxp-security-guide.html | reference | 1 |
-| https://docs.oracle.com/javase/8/docs/technotes/guides/language/catch-multiple.html | reference | 1 |
-| https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html | reference | 1 |
 | https://docs.oracle.com/javase/specs/jls/se21/html/jls-12.html | reference | 1 |
-| https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html | reference | 18 |
-| https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html | reference | 10 |
+| https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html | reference | 21 |
+| https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html | reference | 11 |
 | https://docs.oracle.com/javase/specs/jls/se21/html/jls-3.html | reference | 4 |
-| https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html | reference | 2 |
+| https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html | reference | 1 |
+| https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html | reference | 3 |
+| https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html | reference | 1 |
+| https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html | reference | 1 |
+| https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20 | reference | 1 |
+| https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3 | reference | 18 |
 | https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html | reference | 2 |
+| https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.4.2 | reference | 1 |
 | https://docs.oracle.com/javase/specs/jls/se25/html/jls-3.html | reference | 1 |
-| https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html | reference | 1 |
-| https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html | reference | 1 |
-| https://docs.oracle.com/javase/tutorial/essential/concurrency/interrupt.html | reference | 1 |
-| https://docs.oracle.com/javase/tutorial/essential/exceptions/chained.html | reference | 1 |
+| https://docs.oracle.com/javase/specs/jls/se25/html/jls-4.html | reference | 1 |
+| https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html | reference | 3 |
+| https://docs.oracle.com/javase/specs/jvms/se25/html/jvms-5.html | reference | 1 |
+| https://docs.oracle.com/javase/tutorial/essential/concurrency/atomic.html | reference | 1 |
+| https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html | reference | 1 |
+| https://docs.oracle.com/javase/tutorial/essential/concurrency/syncmeth.html | reference | 1 |
 | https://docs.oracle.com/javase/tutorial/essential/exceptions/creating.html | reference | 1 |
-| https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html | reference | 18 |
+| https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html | reference | 1 |
+| https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html | reference | 1 |
 | https://docs.oracle.com/javase/tutorial/jdbc/basics/prepared.html | reference | 1 |
 | https://docs.oracle.com/javase/tutorial/jndi/ldap/auth_mechs.html | reference | 1 |
 | https://docs.spring.io/spring-boot/api/java/org/springframework/boot/autoconfigure/SpringBootApplication.html | reference | 1 |
@@ -328,13 +348,13 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/EnableWebSecurity.html | reference | 1 |
 | https://jakarta.ee/specifications/bean-validation/3.0/jakarta-bean-validation-spec-3.0.html | reference | 1 |
 | https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2.html | reference | 2 |
-| https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/http/HttpServlet.html | reference | 1 |
+| https://jakarta.ee/specifications/servlet/6.1/apidocs/jakarta.servlet/jakarta/servlet/http/HttpServlet.html | reference | 1 |
 | https://openjdk.org/jeps/306 | reference | 1 |
 | https://openjdk.org/jeps/320 | reference | 6 |
 | https://openjdk.org/jeps/367 | reference | 1 |
 | https://openjdk.org/jeps/372 | reference | 2 |
 | https://openjdk.org/jeps/378 | reference | 1 |
-| https://openjdk.org/jeps/390 | reference | 1 |
+| https://openjdk.org/jeps/390 | reference | 2 |
 | https://openjdk.org/jeps/394 | reference | 1 |
 | https://openjdk.org/jeps/395 | reference | 1 |
 | https://openjdk.org/jeps/400 | reference | 1 |
@@ -353,6 +373,7 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://openjdk.org/jeps/506 | reference | 1 |
 | https://openjdk.org/jeps/512 | reference | 1 |
 | https://openjdk.org/jeps/513 | reference | 1 |
+| https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/ | reference | 2 |
 | https://owasp.org/www-community/Fail_securely | reference | 3 |
 | https://owasp.org/www-community/attacks/Log_Injection | reference | 3 |
 | https://pmd.github.io/pmd/pmd_rules_java_bestpractices.html | reference | 3 |
@@ -407,7 +428,7 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-4.0-Migration-Guide | migration | 23 |
 | https://spring.io/blog/2022/02/21/spring-security-without-the-websecurityconfigureradapter | release-notes | 1 |
 
-### javascript (235 URLs, 284 rule citations)
+### javascript (251 URLs, 309 rule citations)
 
 | URL | Kind | Rules |
 |---|---|---|
@@ -431,15 +452,18 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://developer.mozilla.org/en-US/docs/Web/Accessibility/Guides/Keyboard-navigable_JavaScript_widgets | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/a | reference | 4 |
 | https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe | reference | 2 |
-| https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img | reference | 3 |
-| https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th | reference | 3 |
+| https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/img | reference | 6 |
+| https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th | reference | 6 |
 | https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/video | reference | 2 |
 | https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/accesskey | reference | 2 |
 | https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/autofocus | reference | 2 |
 | https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/tabindex | reference | 2 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Equality_comparisons_and_sameness | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/arguments/callee | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/get | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap | reference | 1 |
@@ -447,6 +471,8 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map | reference | 2 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/prototype | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort | reference | 2 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted | reference | 1 |
@@ -470,6 +496,7 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/n | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substr | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/escape | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Lexical_grammar | reference | 1 |
@@ -482,11 +509,15 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Property_accessors | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete | reference | 1 |
-| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in | reference | 2 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for | reference | 3 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...in | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of | reference | 1 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/return | reference | 3 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/var | reference | 1 |
 | https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/while | reference | 1 |
@@ -497,6 +528,7 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://eslint.org/docs/latest/rules/camelcase | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/class-methods-use-this | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/complexity | lint-rule-xref | 2 |
+| https://eslint.org/docs/latest/rules/constructor-super | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/curly | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/default-case | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/default-case-last | lint-rule-xref | 1 |
@@ -584,6 +616,7 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://eslint.org/docs/latest/rules/no-shadow-restricted-names | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/no-sparse-arrays | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/no-template-curly-in-string | lint-rule-xref | 1 |
+| https://eslint.org/docs/latest/rules/no-this-before-super | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/no-throw-literal | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/no-unassigned-vars | lint-rule-xref | 1 |
 | https://eslint.org/docs/latest/rules/no-undef-init | lint-rule-xref | 1 |
@@ -637,6 +670,7 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://legacy.reactjs.org/blog/2015/12/16/ismounted-antipattern.html | reference | 1 |
 | https://nodejs.org/api/child_process.html | reference | 2 |
 | https://nodejs.org/api/deprecations.html | reference | 17 |
+| https://nodejs.org/api/process.html#processbindingname | reference | 1 |
 | https://owasp.org/www-community/Double_Encoding | reference | 3 |
 | https://owasp.org/www-community/vulnerabilities/Information_exposure_through_query_strings_in_url | reference | 2 |
 | https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/06-Test_HTTP_Methods | reference | 1 |
@@ -645,13 +679,17 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://react.dev/learn/writing-markup-with-jsx | reference | 1 |
 | https://react.dev/reference/react/useState | reference | 1 |
 | https://tug.org/texlive/doc/texlive-en/texlive-en.html | reference | 2 |
+| https://vuejs.org/api/reactivity-advanced.html | reference | 1 |
 | https://www.rfc-editor.org/rfc/rfc9700.html | reference | 2 |
+| https://www.w3.org/WAI/WCAG22/Techniques/html/H53 | reference | 2 |
+| https://www.w3.org/WAI/WCAG22/Understanding/audio-control.html | reference | 2 |
 
-### typescript (80 URLs, 103 rule citations)
+### typescript (82 URLs, 105 rule citations)
 
 | URL | Kind | Rules |
 |---|---|---|
 | https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/ | release-notes | 4 |
+| https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function | reference | 1 |
 | https://typescript-eslint.io/rules/array-type/ | lint-rule-xref | 1 |
 | https://typescript-eslint.io/rules/ban-ts-comment/ | lint-rule-xref | 1 |
 | https://typescript-eslint.io/rules/ban-tslint-comment/ | lint-rule-xref | 1 |
@@ -705,6 +743,7 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://typescript-eslint.io/rules/use-unknown-in-catch-callback-variable/ | lint-rule-xref | 1 |
 | https://www.typescriptlang.org/docs/handbook/2/classes.html | reference | 1 |
 | https://www.typescriptlang.org/docs/handbook/2/everyday-types.html | reference | 1 |
+| https://www.typescriptlang.org/docs/handbook/2/functions.html | reference | 1 |
 | https://www.typescriptlang.org/docs/handbook/declaration-files/do-s-and-don-ts.html | reference | 3 |
 | https://www.typescriptlang.org/docs/handbook/enums.html | reference | 2 |
 | https://www.typescriptlang.org/docs/handbook/namespaces-and-modules.html | reference | 1 |
@@ -732,7 +771,7 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://www.typescriptlang.org/tsconfig/strictPropertyInitialization.html | reference | 1 |
 | https://www.typescriptlang.org/tsconfig/useUnknownInCatchVariables.html | reference | 1 |
 
-### vue (97 URLs, 113 rule citations)
+### vue (99 URLs, 116 rule citations)
 
 | URL | Kind | Rules |
 |---|---|---|
@@ -833,6 +872,8 @@ Every URL a rule cites, grouped by ecosystem, with the number of rules citing it
 | https://vuejs.org/style-guide/rules-essential.html | reference | 4 |
 | https://vuejs.org/style-guide/rules-strongly-recommended.html | reference | 3 |
 | https://vuejs.org/style-guide/rules-use-with-caution.html | reference | 2 |
+| https://www.w3.org/WAI/WCAG22/Understanding/focus-order.html | reference | 1 |
+| https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html | reference | 2 |
 
 ### nuxt (34 URLs, 99 rule citations)
 

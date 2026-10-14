@@ -37,6 +37,43 @@ rules:
       }
   status: active
   rule_version: 1
+- id: JAVA-MOD-COR-DATEUTILS-TRUNCATE-001
+  title: DateUtils.truncate used for calendar arithmetic
+  language: java
+  kind: modernization
+  category: modernization
+  severity: minor
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_invocation object: (identifier) @c name: (identifier) @m) @match (#eq? @c "DateUtils") (#eq? @m "truncate"))
+  message: DateUtils.truncate works on mutable Date/Calendar; prefer java.time (truncatedTo / LocalDate) for field-level truncation.
+  source:
+    url: https://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/time/DateUtils.html
+    doc: Apache Commons Lang DateUtils
+    doc_version: JDK 25 API
+    retrieved: '2026-10-09'
+    quote: truncated to a Calendar field
+  examples:
+    bad: |
+      class Example {
+        void run() throws Exception {
+          Date day = DateUtils.truncate(now, Calendar.DATE);
+        }
+      }
+    good: |
+      class Example {
+        void run() throws Exception {
+          LocalDate day = now.toLocalDate();
+        }
+      }
+  xref:
+  - sonar:java:S2718
+  status: active
+  rule_version: 1
 - id: JAVA-MOD-COR-REQUIRENONNULL-001
   title: Use Objects.requireNonNull for parameter null checks
   language: java

@@ -26,6 +26,10 @@ rules:
           operator: "-"
           right: (number) @n (#eq? @n "1"))
         (#eq? @a @b)) @match
+    filters:
+    # .at() is a read: not for assignment/update targets, and `arguments` has no .at()
+    - 'parent.lacks_re:^\w+\[\w+\.length\s*-\s*1\]\s*([-+*/%&|^]?=[^=]|\+\+|--)'
+    - 'cap.lacks_re:a:^arguments$'
   message: '`arr[arr.length - 1]` can be written `arr.at(-1)` (ES2022).'
   source:
     url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at
@@ -37,6 +41,14 @@ rules:
       const last = arr[arr.length - 1]
     good: |
       const last = arr.at(-1)
+    regressions:
+    - code: |
+        args[args.length - 1] = done;
+        stack[stack.length - 1] += 1;
+      note: express application.js - assignment targets
+    - code: |
+        function f() { return arguments[arguments.length - 1]; }
+      note: arguments object has no .at()
 - id: JS-MOD-HASOWN-001
   title: Prefer Object.hasOwn over hasOwnProperty
   language: javascript
@@ -78,6 +90,9 @@ rules:
         function: (member_expression object: (identifier) @j (#eq? @j "JSON") property: (property_identifier) @p (#eq? @p "parse"))
         arguments: (arguments (call_expression
           function: (member_expression object: (identifier) @j2 (#eq? @j2 "JSON") property: (property_identifier) @s (#eq? @s "stringify"))))) @match
+    filters:
+    # Vue/Pinia/MobX code clones reactive proxies, which structuredClone rejects: JS-MOD-JSON-CLONE-REACTIVE
+    - 'file.lacks_re:(?m)from\s+[''"](vue|pinia|vuex|mobx|mobx-state-tree|@vue/[\w-]+|#imports)[''"]|\b(defineProps|defineModel|defineStore|storeToRefs|defineComponent|reactive|shallowReactive|shallowRef|readonly|toRaw|observable|makeAutoObservable|makeObservable|use[A-Z]\w*Store)\s*[(<]|\bexport\s+default\s*\{[\s\S]*\b(data|computed|props)\s*[:(]'
   message: JSON.parse(JSON.stringify(x)) drops Dates/Maps/Sets/undefined and fails on cycles; structuredClone() performs a real deep clone (browsers and Node 17+).
   ai_question: Do all target runtimes provide structuredClone, and is the value free of functions/DOM nodes (which structuredClone rejects)?
   source:
@@ -90,6 +105,61 @@ rules:
       const copy = JSON.parse(JSON.stringify(state))
     good: |
       const copy = structuredClone(state)
+    regressions:
+    - code: |
+        import { reactive } from 'vue'
+        const form = reactive({ name: '' })
+        const copy = JSON.parse(JSON.stringify(form))
+      note: reactive proxy; structuredClone(form) throws DataCloneError (JS-MOD-JSON-CLONE-REACTIVE)
+    - code: |
+        const props = defineProps({ items: Array })
+        const local = JSON.parse(JSON.stringify(props.items))
+      note: SFC props are a readonly reactive proxy
+    - code: |
+        export const useCart = defineStore('cart', { state: () => ({ items: [] }) })
+        export function snapshot(store) { return JSON.parse(JSON.stringify(store.$state)) }
+      note: Pinia store state is reactive
+    - code: |
+        export default {
+          data() { return { draft: {} } },
+          methods: { save() { return JSON.parse(JSON.stringify(this.draft)) } },
+        }
+      note: Options API data is reactive
+- id: JS-MOD-JSON-CLONE-REACTIVE
+  title: JSON round-trip clone of possibly reactive state (structuredClone needs toRaw)
+  language: javascript
+  kind: modernization
+  category: correctness
+  severity: info
+  applies_to:
+    ecmascript: '>=2022'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      (call_expression
+        function: (member_expression object: (identifier) @j (#eq? @j "JSON") property: (property_identifier) @p (#eq? @p "parse"))
+        arguments: (arguments (call_expression
+          function: (member_expression object: (identifier) @j2 (#eq? @j2 "JSON") property: (property_identifier) @s (#eq? @s "stringify"))))) @match
+    filters:
+    - 'file.has_re:(?m)from\s+[''"](vue|pinia|vuex|mobx|mobx-state-tree|@vue/[\w-]+|#imports)[''"]|\b(defineProps|defineModel|defineStore|storeToRefs|defineComponent|reactive|shallowReactive|shallowRef|readonly|toRaw|observable|makeAutoObservable|makeObservable|use[A-Z]\w*Store)\s*[(<]|\bexport\s+default\s*\{[\s\S]*\b(data|computed|props)\s*[:(]'
+  message: JSON.parse(JSON.stringify(x)) drops Dates/Maps/Sets/undefined; structuredClone(x) is the real deep clone, but it throws DataCloneError on Vue reactive/ref proxies, Pinia state and MobX observables, so unwrap first (structuredClone(toRaw(x)), toRaw(ref.value)) and make sure no nested value is itself a proxy.
+  ai_question: Is the cloned value plain data once unwrapped with toRaw (no nested reactive proxies, functions or DOM nodes), and do all target runtimes provide structuredClone?
+  source:
+    url: https://vuejs.org/api/reactivity-advanced.html
+    doc: Vue API Reference, Reactivity Advanced (toRaw); MDN structuredClone() (DataCloneError)
+    doc_version: Vue 3.5 docs; MDN (living)
+    retrieved: '2026-10-10'
+    quote: Returns the raw, original object of a Vue-created proxy
+  examples:
+    bad: |
+      import { reactive } from 'vue'
+      const form = reactive({ name: '' })
+      const copy = JSON.parse(JSON.stringify(form))
+    good: |
+      import { reactive, toRaw } from 'vue'
+      const form = reactive({ name: '' })
+      const copy = structuredClone(toRaw(form))
 - id: JS-MOD-NULLISH-001
   title: Use ?? for defaults when 0/''/false are valid
   language: javascript
@@ -155,14 +225,17 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      [
-        (call_expression function: (member_expression
-          object: (call_expression function: (member_expression property: (property_identifier) @s (#eq? @s "slice")) arguments: (arguments) @a (#eq? @a "()"))
-          property: (property_identifier) @p (#any-of? @p "sort" "reverse"))) @match
-        (call_expression function: (member_expression
-          object: (array . (spread_element) .)
-          property: (property_identifier) @p2 (#any-of? @p2 "sort" "reverse"))) @match
-      ]
+      ((call_expression function: (member_expression
+          object: (call_expression function: (member_expression property: (property_identifier) @s) arguments: (arguments) @a)
+          property: (property_identifier) @p)) @match
+        (#eq? @s "slice") (#eq? @a "()") (#any-of? @p "sort" "reverse"))
+      ((call_expression function: (member_expression
+          object: (array . (spread_element (identifier) @x) .)
+          property: (property_identifier) @p2)) @match
+        (#any-of? @p2 "sort" "reverse"))
+    filters:
+    # [...x] only when x is known to be an array: a Set/Map/iterator/NodeList has no toSorted()
+    - 'type.is:x:array|(Readonly)?Array'
   message: ES2023 "Change Array by Copy" adds toSorted()/toReversed()/toSpliced()/with(), which return a new array without the explicit copy.
   source:
     url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted
@@ -175,3 +248,9 @@ rules:
       const r = items.slice().reverse()
     good: |
       const sorted = items.toSorted(cmp)
+    regressions:
+    - code: |
+        const seen = new Set(xs)
+        const a = [...seen].sort()
+        const b = [...map.entries()].sort()
+      note: Set/iterator spreads have no toSorted()

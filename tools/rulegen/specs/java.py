@@ -107,16 +107,18 @@ dep("JAVA-DEP-SSL-PEERCHAIN-001", "SSLSession.getPeerCertificateChain() is depre
     call("getPeerCertificateChain", 0), cls('var chain = session.getPeerCertificateChain();'), cls('var chain = session.getPeerCertificates();'),
     api("javax/net/ssl/SSLSession"), "The getPeerCertificates() method that returns an array of java.security.cert.Certificate should be used instead.",
     "getPeerCertificateChain() returns the legacy javax.security.cert types and is deprecated for removal; use getPeerCertificates().", 9, removal=True)
-dep("JAVA-DEP-FILE-TOURL-001", "File.toURL() is deprecated", call("toURL", 0), cls('URL u = new File(path).toURL();'), cls('URL u = new File(path).toURI().toURL();'),
+dep("JAVA-DEP-FILE-TOURL-001", "File.toURL() is deprecated",
+    '((method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list) @args) @match (#eq? @m "toURL") (#eq? @args "()"))',
+    cls('URL u = new File(path).toURL();'), cls('URL u = new File(path).toURI().toURL();'),
     api("java/io/File"), "Deprecated. This method does not automatically escape characters that are illegal in URLs.",
     "File.toURL() does not escape illegal URL characters and is deprecated; use file.toURI().toURL(). (URI.toURL() itself is fine.)", 8,
-    mode="ai-confirm", ai="Is the receiver of toURL() a java.io.File (deprecated) rather than a java.net.URI (fine)?",
-    filters=["node.lacks_descendant_text:toURI()"])
+    filters=["type.is:o:File"])
 dep("JAVA-DEP-THREADGROUP-001", "ThreadGroup destroy/isDestroyed are deprecated for removal",
-    call("^(destroy|isDestroyed)$", 0, regex=True), cls('ThreadGroup g = new ThreadGroup("w"); g.destroy();'), cls('ThreadGroup g = new ThreadGroup("w");'),
+    '((method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list) @args) @match (#match? @m "^(destroy|isDestroyed)$") (#eq? @args "()"))',
+    cls('ThreadGroup g = new ThreadGroup("w"); g.destroy();'), cls('ThreadGroup g = new ThreadGroup("w");'),
     api("java/lang/ThreadGroup"), "This method was originally specified to destroy an empty thread group.",
     "ThreadGroup.destroy/isDestroyed (and daemon status) are deprecated for removal since JDK 16; thread groups can no longer be destroyed.", 16, removal=True,
-    mode="ai-confirm", ai="Is destroy()/isDestroyed() invoked on a java.lang.ThreadGroup?", filters=["file.has_text:ThreadGroup"])
+    filters=["type.is:o:ThreadGroup"])
 dep("JAVA-DEP-OBSERVABLE-001", "java.util.Observable/Observer are deprecated",
     '((superclass (type_identifier) @t) @match (#eq? @t "Observable"))\n((super_interfaces (type_list (type_identifier) @t)) @match (#eq? @t "Observer"))',
     "class Model extends Observable {}\n", "class Model { private final PropertyChangeSupport pcs = new PropertyChangeSupport(this); }\n",
@@ -310,10 +312,19 @@ sec("JAVA-SEC-JAXP-FSP-001", "Enable FEATURE_SECURE_PROCESSING on JAXP factories
     ai="Does this factory process XML/XPath input that can come from an untrusted source?")
 sec("JAVA-SEC-RANDOM-001", "java.util.Random used for security-sensitive values",
     '((object_creation_expression type: [(type_identifier) (scoped_type_identifier)] @t) @match (#match? @t "^(java\\.util\\.)?Random$"))',
-    cls('String token = Long.toHexString(new Random().nextLong());'), cls('byte[] b = new byte[16]; new SecureRandom().nextBytes(b);'),
+    cls('int roll = new Random().nextInt(6);'), cls('byte[] b = new byte[16]; new SecureRandom().nextBytes(b);'),
     api("java/util/Random"), "Instances of java.util.Random are not cryptographically secure. Consider instead using SecureRandom",
     "java.util.Random is predictable. For tokens, passwords, nonces or keys use SecureRandom.", "Javadoc: Random", docv="JDK 25 API", sev="major",
-    ai="Is the random value used for anything security-sensitive (token, password, session id, nonce, key, OTP)?")
+    ai="Is the random value used for anything security-sensitive (token, password, session id, nonce, key, OTP)?",
+    filters=["func.lacks_re:(?i)(session|cookie|token|passw|pwd|secret|nonce|otp|csrf|api_?key|salt|rememberme|credential|signature|hmac)"])
+# the same API inside a function that builds a session/cookie/token/password value: the usage
+# context removes the "random ads / test data" ambiguity, so this half needs no AI question
+sec("JAVA-SEC-RANDOM-SECURITY-CONTEXT", "java.util.Random in a function that builds a session, cookie, token or password value",
+    '((object_creation_expression type: [(type_identifier) (scoped_type_identifier)] @t) @match (#match? @t "^(java\\.util\\.)?Random$"))',
+    cls('String token = Long.toHexString(new Random().nextLong());'), cls('byte[] token = new byte[16]; new SecureRandom().nextBytes(token);'),
+    api("java/util/Random"), "Instances of java.util.Random are not cryptographically secure. Consider instead using SecureRandom",
+    "java.util.Random is predictable and this function uses it next to a session/cookie/token/password value. Use SecureRandom.", "Javadoc: Random", docv="JDK 25 API", sev="major",
+    mode="deterministic", filters=["func.has_re:(?i)(session|cookie|token|passw|pwd|secret|nonce|otp|csrf|api_?key|salt|rememberme|credential|signature|hmac)"])
 sec("JAVA-SEC-MATHRANDOM-001", "Math.random() used for security-sensitive values", static_call("Math", "random", 0),
     cls('String otp = String.valueOf((int) (Math.random() * 1000000));'), cls('String otp = String.valueOf(new SecureRandom().nextInt(1000000));'),
     api("java/util/Random"), "Instances of java.util.Random are not cryptographically secure.",
@@ -390,9 +401,9 @@ conc("JAVA-CONC-INTERRUPTED-001", "InterruptedException swallowed without restor
      '((catch_clause (catch_formal_parameter (catch_type (type_identifier) @t)) body: (block) @b) @match (#eq? @t "InterruptedException") (#not-match? @b "interrupt\\\\(|throw"))',
      cls('try { Thread.sleep(100); } catch (InterruptedException e) { log.warn("x"); }'),
      cls('try { Thread.sleep(100); } catch (InterruptedException e) { Thread.currentThread().interrupt(); return; }'),
-     "https://docs.oracle.com/javase/tutorial/essential/concurrency/interrupt.html", "An interrupt is an indication to a thread that it should stop what it is doing and do something else.",
-     "Catching InterruptedException without re-interrupting (Thread.currentThread().interrupt()) or rethrowing loses the cancellation request.", "The Java Tutorials: Interrupts",
-     docv="Java Tutorials")
+     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Thread.html#interrupt()", "then its interrupt status will be cleared and it will receive an InterruptedException",
+     "Catching InterruptedException without re-interrupting (Thread.currentThread().interrupt()) or rethrowing loses the cancellation request.", "Javadoc: Thread.interrupt",
+     docv="JDK 25 API")
 conc("JAVA-CONC-THREADLOCAL-REMOVE-001", "ThreadLocal set() without remove() leaks across pooled threads",
      '((method_invocation object: (identifier) @o name: (identifier) @m arguments: (argument_list . (_) .)) @match (#eq? @m "set") (#match? @o "(?i)(context|holder|local|tl)$"))',
      cls('CONTEXT.set(user); handle(req);'), cls('CONTEXT.set(user); try { handle(req); } finally { CONTEXT.remove(); }'),
@@ -400,14 +411,18 @@ conc("JAVA-CONC-THREADLOCAL-REMOVE-001", "ThreadLocal set() without remove() lea
      "A ThreadLocal value set on a pooled thread survives into the next task unless remove() is called (typically in finally).", "Javadoc: ThreadLocal.remove",
      sev="major", mode="ai-confirm", filters=["file.lacks_text:.remove()"], ai="Is the receiver a ThreadLocal used on pooled threads (servlet container, executor) and is remove() never called?", cat="resource-leak")
 
-TWR = "https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html"
+TWR = "https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20.3"  # was the JDK 8 Java Tutorial; JLS SE 25 is the current normative source
 for clsname in ["FileInputStream", "FileOutputStream", "FileReader", "FileWriter", "RandomAccessFile", "ZipFile", "JarFile", "Scanner", "PrintWriter", "Socket", "ServerSocket", "BufferedReader", "ObjectOutputStream"]:
     add(J(f"JAVA-RES-{clsname.upper()}-001", f"{clsname} opened outside try-with-resources", kind="anti-pattern", category="resource-leak", severity="major",
-          query=new(clsname), filters=["node.not_in_try_with_resources", "node.lacks_ancestor:object_creation_expression|return_statement|field_declaration"], mode="ai-confirm",
+          query=new(clsname), filters=["node.not_in_try_with_resources", "node.lacks_ancestor:object_creation_expression|return_statement|field_declaration",
+                                       r"ancestor.lacks_re:assignment_expression:^this\.\w+\s*="]
+          + ([r"node.lacks_re:\bnew\s+\w+\(\s*(new\s+)?(StringWriter|ByteArrayOutputStream|CharArrayWriter|OutputStreamWriter\(\s*(baos|System\.(out|err)))|\(\s*(sw|stringWriter|writer|baos|System\.(out|err|in))\b"]
+             if clsname in ("PrintWriter", "Scanner", "BufferedReader") else []), mode="ai-confirm",
           ai=f"Is this {clsname} closed on every path (try/finally, or returned/owned by a Closeable)? Answer rejected if it is.",
           bad=cls(f'var r = new {clsname}(arg); use(r);'), good=cls(f'try (var r = new {clsname}(arg)) {{ use(r); }}'),
-          url=TWR, doc="The Java Tutorials: The try-with-resources Statement", doc_version="Java Tutorials (JDK 7+ language feature)",
-          quote="The try -with-resources statement ensures that each resource is closed at the end of the statement.",
+          fp=[cls('StringWriter sw = new StringWriter(); e.printStackTrace(new PrintWriter(sw, true));')] if clsname == "PrintWriter" else None,
+          url=TWR, doc="JLS SE 25 14.20.3 try-with-resources", doc_version="JLS Java SE 25",
+          quote="initialized before execution of the try block and closed automatically",
           message=f"{clsname} holds an OS resource; open it in try-with-resources so it is closed even when exceptions occur.", tags=["resource-leak"]))
 for m in ["lines", "list", "walk", "find", "newDirectoryStream", "newBufferedReader", "newInputStream", "newOutputStream", "newBufferedWriter"]:
     stream = m in ("lines", "list", "walk", "find")
@@ -422,14 +437,14 @@ for m in ["lines", "list", "walk", "find", "newDirectoryStream", "newBufferedRea
 # newBufferedReader etc. quote is from the tutorial, fix url accordingly
 for r in R:
     if r["id"] in ("JAVA-RES-FILES-NEWBUFFEREDREADER-001", "JAVA-RES-FILES-NEWINPUTSTREAM-001", "JAVA-RES-FILES-NEWOUTPUTSTREAM-001", "JAVA-RES-FILES-NEWBUFFEREDWRITER-001"):
-        r["source"].update(url=TWR, doc="The Java Tutorials: The try-with-resources Statement", doc_version="Java Tutorials (JDK 7+ language feature)",
-                           quote="A resource is an object that must be closed after the program is finished with it.")
+        r["source"].update(url=TWR, doc="JLS SE 25 14.20.3 try-with-resources", doc_version="JLS Java SE 25",
+                           quote="initialized before execution of the try block and closed automatically")
 add(J("JAVA-RES-JDBC-001", "JDBC Connection/Statement/ResultSet outside try-with-resources", kind="anti-pattern", category="resource-leak", severity="major",
       query='((method_invocation name: (identifier) @m) @match (#match? @m "^(getConnection|createStatement|prepareStatement|prepareCall)$"))',
       filters=["node.not_in_try_with_resources", "node.lacks_ancestor:return_statement"], mode="ai-confirm", ai="Is the JDBC resource closed on all paths (or managed by a framework such as JdbcTemplate)?",
       bad=cls('Connection c = ds.getConnection(); Statement s = c.createStatement();'), good=cls('try (Connection c = ds.getConnection(); Statement s = c.createStatement()) { s.execute(sql); }'),
-      url=TWR, doc="The Java Tutorials: The try-with-resources Statement", doc_version="Java Tutorials (JDK 7+ language feature)",
-      quote="A resource is an object that must be closed after the program is finished with it.",
+      url=TWR, doc="JLS SE 25 14.20.3 try-with-resources", doc_version="JLS Java SE 25",
+      quote="initialized before execution of the try block and closed automatically",
       message="JDBC connections, statements and result sets must be closed; leaked connections exhaust the pool.", tags=["resource-leak"]))
 add(J("JAVA-RES-HTTPCLIENT-001", "HttpClient created per call instead of shared / closed (AutoCloseable since 21)", kind="best-practice", category="resource-leak", severity="minor", applies={"java": ">=21"},
       query='((method_invocation object: (identifier) @c name: (identifier) @m) @match (#eq? @c "HttpClient") (#eq? @m "newHttpClient"))',
@@ -440,9 +455,9 @@ add(J("JAVA-RES-HTTPCLIENT-001", "HttpClient created per call instead of shared 
       message="HttpClient owns threads and connections; create it once and share it, or close it (try-with-resources) on Java 21+.", tags=["resource-leak"]))
 
 
-def corr(id, title, query, bad, good, url, quote, msg, doc, sev="major", mode="deterministic", ai=None, filters=None, kind="anti-pattern", cat="correctness", docv=None, applies=None):
+def corr(id, title, query, bad, good, url, quote, msg, doc, sev="major", mode="deterministic", ai=None, filters=None, kind="anti-pattern", cat="correctness", docv=None, applies=None, fp=None, xref=None):
     add(J(id, title, kind=kind, category=cat, severity=sev, query=query, bad=bad, good=good, url=url, doc=doc, applies=applies or {"java": ">=8"},
-          doc_version=docv or "JDK 25 API", quote=quote, message=msg, mode=mode, ai=ai, filters=filters))
+          doc_version=docv or "JDK 25 API", quote=quote, message=msg, mode=mode, ai=ai, filters=filters, fp=fp, xref=xref))
 
 
 JLS15 = "https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html"
@@ -452,7 +467,12 @@ corr("JAVA-COR-EQUALS-HASHCODE-001", "equals() overridden without hashCode()",
      "class P {\n  @Override public boolean equals(Object o) { return o instanceof P; }\n  @Override public int hashCode() { return 1; }\n}\n",
      api("java/lang/Object"), "It is generally necessary to override the hashCode method whenever this method is overridden",
      "Overriding equals without hashCode breaks HashMap/HashSet: equal objects must have equal hash codes.", "Javadoc: Object.equals",
-     filters=["node.lacks_descendant_text:hashCode()"])
+     # Explicitly suppressed (@SuppressWarnings("EqualsHashCode"/"overrides")) or an abstract re-declaration
+     # that forces subclasses to implement equals is not the bug.
+     filters=["node.lacks_descendant_text:hashCode()", r"node.lacks_re:@SuppressWarnings\([^)]*\x22(EqualsHashCode|overrides)\x22",
+              r"node.lacks_re:\babstract\s+boolean\s+equals\s*\("],
+     fp=["abstract class Node {\n  @Override public abstract boolean equals(Object o);\n}\n",
+         "@SuppressWarnings({\"overrides\", \"EqualsHashCode\"})\nclass P {\n  @Override public boolean equals(Object o) { return o instanceof P; }\n}\n"])
 corr("JAVA-COR-BIGDECIMAL-DOUBLE-001", "new BigDecimal(double) is unpredictable",
      '((object_creation_expression type: (type_identifier) @t arguments: (argument_list . (decimal_floating_point_literal) .)) @match (#eq? @t "BigDecimal"))',
      cls('BigDecimal price = new BigDecimal(0.1);'), cls('BigDecimal price = new BigDecimal("0.1");'),
@@ -544,21 +564,97 @@ corr("JAVA-COR-COLLECTIONS-EMPTY-001", "Prefer List.of()/Collections.emptyList()
 corr("JAVA-COR-THREAD-SLEEP-LOOP-001", "Busy-wait with Thread.sleep in a loop",
      '((while_statement body: (block (_ (method_invocation object: (identifier) @c name: (identifier) @m)))) @match (#eq? @c "Thread") (#eq? @m "sleep"))',
      cls('while (!done) { Thread.sleep(50); }'), cls('latch.await();'),
-     "https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html", "A more efficient guard invokes Object.wait to suspend the current thread.",
-     "Polling a flag with sleep wastes CPU and adds latency; wait on a condition (CountDownLatch, CompletableFuture, BlockingQueue, wait/notify).", "The Java Tutorials: Guarded Blocks",
-     docv="Java Tutorials", sev="minor", mode="ai-confirm", ai="Is the loop polling a condition another thread sets (rather than a deliberate rate-limited retry/backoff)?", cat="concurrency")
+     "https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Object.html#wait()", "Causes the current thread to wait until it is awakened, typically by being notified or interrupted",
+     "Polling a flag with sleep wastes CPU and adds latency; wait on a condition (CountDownLatch, CompletableFuture, BlockingQueue, wait/notify).", "Javadoc: Object.wait",
+     docv="JDK 25 API", sev="minor", mode="ai-confirm", ai="Is the loop polling a condition another thread sets (rather than a deliberate rate-limited retry/backoff)?", cat="concurrency")
 corr("JAVA-COR-ENUM-ORDINAL-001", "Persisting or comparing Enum.ordinal() is fragile",
      '((method_invocation name: (identifier) @m arguments: (argument_list) @a) @match (#eq? @m "ordinal") (#eq? @a "()"))',
      cls('stmt.setInt(1, status.ordinal());'), cls('stmt.setString(1, status.name());'),
      api("java/lang/Enum"), "Most programmers will have no use for this method.",
      "ordinal() changes when constants are reordered; persist/compare name() or an explicit code instead (EnumMap/EnumSet are fine).", "Javadoc: Enum.ordinal", sev="minor", mode="ai-confirm",
      ai="Is the ordinal stored, transmitted or used for business logic (rather than EnumMap-style internal indexing)?")
+corr("JAVA-COR-HARDCODED-URI-001", "Hard-coded http(s) URL",
+     '((string_literal) @match (#match? @match "^\\"https?://[A-Za-z0-9]"))',
+     cls('String url = "https://api.example.com/v1";'), cls('String url = System.getenv("API_BASE") + "/v1";'),
+     api("java/net/URI"), "Represents a Uniform Resource Identifier (URI) reference.",
+     "A hard-coded host is painful to change per environment: take the origin from configuration.",
+     "Javadoc: java.net.URI", sev="minor", kind="best-practice", cat="maintainability", mode="ai-confirm",
+     ai="Is this a deployment-specific origin (API, asset host) rather than a stable public identifier or a test fixture?",
+     filters=[r"node.lacks_re:(?i)example\\.com|localhost|127\\.0\\.0\\.1|schema\\.org|w3\\.org|openjdk\\.org"],
+     xref=["sonar:java:S1075"])
+corr("JAVA-COR-DATEUTILS-TRUNCATE-001", "DateUtils.truncate used for calendar arithmetic",
+     '((method_invocation object: (identifier) @c name: (identifier) @m) @match (#eq? @c "DateUtils") (#eq? @m "truncate"))',
+     cls('Date day = DateUtils.truncate(now, Calendar.DATE);'), cls('LocalDate day = now.toLocalDate();'),
+     "https://commons.apache.org/proper/commons-lang/javadocs/api-release/org/apache/commons/lang3/time/DateUtils.html",
+     "truncated to a Calendar field",
+     "DateUtils.truncate works on mutable Date/Calendar; prefer java.time (truncatedTo / LocalDate) for field-level truncation.",
+     "Apache Commons Lang DateUtils", sev="minor", kind="modernization", cat="modernization",
+     applies={"java": ">=8"}, xref=["sonar:java:S2718"])
+corr("JAVA-COR-MAIN-SIGNATURE-001", "Method named main is not a program entry point",
+     '((method_declaration name: (identifier) @n) @match (#eq? @n "main") (#match? @match "public") (#not-match? @match "public\\\\s+static\\\\s+void\\\\s+main\\\\s*\\\\("))',
+     "class App {\n  public void main(String[] args) {}\n}\n",
+     "class App {\n  public static void main(String[] args) {}\n}\n",
+     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-12.html",
+     "The method main must be declared public, static, and void",
+     "A method named main that is not public static void (String[] or String...) is not the JVM entry point: fix the signature or rename it.",
+     "JLS §12.1.4 Invoke Test.main", sev="minor", cat="correctness", docv="JLS Java SE 25",
+     fp=["class App {\n  public static void main(String[] args) {}\n}\n",
+         "void main() {\n  IO.println(\"hi\");\n}\n"],
+     xref=["sonar:java:S3051"])
+corr("JAVA-COR-WRITEOBJECT-SYNC-001", "writeObject declared synchronized",
+     '((method_declaration name: (identifier) @n) @match (#eq? @n "writeObject") (#match? @match "synchronized"))',
+     "class Box implements Serializable {\n  private synchronized void writeObject(ObjectOutputStream out) throws IOException { out.defaultWriteObject(); }\n}\n",
+     "class Box implements Serializable {\n  private void writeObject(ObjectOutputStream out) throws IOException { out.defaultWriteObject(); }\n}\n",
+     api("java/io/ObjectOutputStream"), "The default serialization mechanism for an object can be overridden",
+     "ObjectOutputStream already serializes one object at a time; synchronizing writeObject does not make serialization thread-safe and can deadlock.",
+     "Javadoc: ObjectOutputStream", sev="minor", cat="concurrency", xref=["sonar:java:S3042"])
+corr("JAVA-COR-ABSTRACT-PUBLIC-CTOR-001", "Public constructor on an abstract class",
+     '((class_declaration (modifiers) @mod body: (class_body (constructor_declaration (modifiers) @cm) @match)) (#match? @mod "\\\\babstract\\\\b") (#eq? @cm "public"))',
+     "abstract class Base {\n  public Base() {}\n}\n",
+     "abstract class Base {\n  protected Base() {}\n}\n",
+     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html",
+     "It is a compile-time error if an attempt is made to create an instance of an abstract class",
+     "An abstract class cannot be instantiated, so a public constructor only invites mistaken new Base() at call sites that are not subclasses: make it protected (or package-private).",
+     "JLS §8.1.1.1 abstract Classes", sev="minor", cat="maintainability", kind="best-practice", docv="JLS Java SE 25",
+     fp=["abstract class Base {\n  protected Base() {}\n}\n",
+         "class Base {\n  public Base() {}\n}\n"],
+     xref=["sonar:java:S2440"])
+corr("JAVA-COR-UNUSED-LABEL-001", "Label never referenced by break or continue",
+     "((labeled_statement (identifier) @lab) @match)",
+     "class Example {\n  void run() {\n    unused:\n    for (int i = 0; i < 10; i++) {\n      break;\n    }\n  }\n}\n",
+     "class Example {\n  void run() {\n    outer:\n    for (int i = 0; i < 10; i++) {\n      break outer;\n    }\n  }\n}\n",
+     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html",
+     "A labeled statement is executed by executing the immediately contained Statement",
+     "This label is never the target of break or continue, so it does nothing: remove it.",
+     "JLS §14.7 Labeled Statements", sev="info", kind="best-practice", cat="maintainability", docv="JLS Java SE 25",
+     filters=[r"node.lacks_re:\b(break|continue)\s+{cap:lab}\b"],
+     xref=["sonar:java:S2654"])
+corr("JAVA-COR-CALENDAR-GETTIME-MUTATE-001", "Date returned by Calendar.getTime() is mutated",
+     '((method_invocation object: (method_invocation name: (identifier) @g) name: (identifier) @s) @match (#eq? @g "getTime") (#match? @s "^set[A-Z]"))',
+     cls("Calendar.getInstance().getTime().setHours(0);"),
+     cls("cal.set(Calendar.HOUR_OF_DAY, 0);"),
+     api("java/util/Calendar"),
+     "Returns a Date object representing this Calendar's time value",
+     "Calendar.getTime() returns a copy; mutating that Date does not change the Calendar (and Date setters are deprecated): call Calendar.set on the calendar itself, or use java.time.",
+     "Javadoc: Calendar.getTime", sev="minor", cat="correctness", mode="ai-confirm",
+     ai="Is getTime() Calendar.getTime() (a Date copy) rather than some other getTime that already returns a mutable Date you own?",
+     xref=["sonar:java:S3064"])
+corr("JAVA-COR-RETURN-CONSTANT-001", "Method body is only a constant return",
+     '((method_declaration body: (block . (return_statement [(decimal_integer_literal) (decimal_floating_point_literal) (string_literal) (character_literal) (true) (false) (null_literal)]) .)) @match)',
+     "class Example {\n  int version() { return 1; }\n}\n",
+     "class Example {\n  static final int VERSION = 1;\n}\n",
+     "https://docs.oracle.com/javase/specs/jls/se25/html/jls-8.html",
+     "A method declaration can declare a method that returns a value",
+     "A method that always returns the same literal can be a constant field (or inlined): keeping it as a method hides that nothing varies.",
+     "JLS §8.4 Method Declarations", sev="info", kind="best-practice", cat="maintainability", mode="ai-confirm",
+     ai="Is this a real constant (never varies, not an override/stub/generated default) that should be a field?",
+     docv="JLS Java SE 25", xref=["sonar:java:S3400"])
 
 
 # ------------------------------------------------------------------ Sonar-way checklist gaps (own detection/wording)
 from specs._common import autoquote as _aq
 from specs._java import JDK25
-JNDI = "https://docs.oracle.com/javase/tutorial/jndi/ldap/auth_mechs.html"
+JNDI = "https://docs.oracle.com/en/java/javase/25/docs/api/java.naming/javax/naming/Context.html#SECURITY_AUTHENTICATION"
 SPRSESS = "https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html"
 SPRDBG = "https://docs.spring.io/spring-security/site/docs/current/api/org/springframework/security/config/annotation/web/configuration/EnableWebSecurity.html"
 H5 = "https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html"
@@ -576,9 +672,9 @@ gap("JAVA-SEC-LDAP-ANON-001", "LDAP context configured for anonymous access",
     '((method_invocation name: (identifier) @m arguments: (argument_list . (field_access field: (identifier) @f) . (string_literal) @v .)) @match (#eq? @m "put") (#eq? @f "SECURITY_AUTHENTICATION") (#match? @v "^\\"none\\"$"))',
     cls('env.put(Context.SECURITY_AUTHENTICATION, "none");', "import javax.naming.Context;\n"),
     cls('env.put(Context.SECURITY_AUTHENTICATION, "simple");\n    env.put(Context.SECURITY_PRINCIPAL, dn);', "import javax.naming.Context;\n"),
-    JNDI, "Use no authentication (anonymous)",
+    JNDI, "Its value is one of the following strings: \"none\", \"simple\", \"strong\"",
     "The directory connection is set to anonymous binding, so the server cannot tie queries to an identity. Authenticate the bind (and protect it with TLS).",
-    "JNDI tutorial: LDAP authentication mechanisms", ["sonar:java:S4433"], docv="Java SE tutorial")
+    "Javadoc: javax.naming.Context.SECURITY_AUTHENTICATION", ["sonar:java:S4433", "https://docs.oracle.com/javase/tutorial/jndi/ldap/auth_mechs.html"], docv="JDK 25 API")
 gap("JAVA-SEC-POSIX-WORLD-WRITABLE-001", "File permissions grant write access to others",
     '((method_invocation object: (identifier) @c name: (identifier) @m arguments: (argument_list . (string_literal) @match .)) (#eq? @c "PosixFilePermissions") (#eq? @m "fromString") (#match? @match "^\\"[-r][-w][-x][-r][-w][-x][-r]w[-x]\\"$"))\n'
     '((method_invocation name: (identifier) @m arguments: (argument_list . (field_access object: (identifier) @o field: (identifier) @match) .)) (#eq? @m "add") (#eq? @o "PosixFilePermission") (#eq? @match "OTHERS_WRITE"))',

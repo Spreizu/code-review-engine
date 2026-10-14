@@ -80,6 +80,13 @@ rules:
       (class_declaration
         body: (class_body
           (method_declaration name: (identifier) @h (#eq? @h "hashCode")))) @match
+    # Records cannot extend a class, be JPA entities, or have mutable instance fields / setters.
+    filters:
+    - node.lacks_re:^[^{]*\bextends\b
+    - node.lacks_re:^[^{]*\babstract\b
+    - node.lacks_re:@(Entity|Embeddable|MappedSuperclass|Table)\b
+    - node.lacks_re:\bvoid\s+set[A-Z]\w*\s*\(
+    - node.lacks_re:(?m)^\s*(private|protected|public)\s+(transient\s+|volatile\s+)?[\w<>\[\],.?]+\s+\w+\s*(=[^;]*)?;
   message: Class hand-writes equals/hashCode; if it is a shallowly-immutable data carrier, a record removes the boilerplate.
   rationale: Records are classes that act as transparent carriers for immutable data; JEP 395 finalized them in JDK 16.
   fix: Replace with `record Name(Type a, Type b) {}` and move validation into a compact constructor.
@@ -99,6 +106,21 @@ rules:
       }
     good: |
       record Point(int x, int y) {}
+    fp:
+    - |
+      public class StringNode extends ValueNode {
+        private final String value;
+        StringNode(String v) { value = v; }
+        public boolean equals(Object o) { return o instanceof StringNode n && n.value.equals(value); }
+        public int hashCode() { return value.hashCode(); }
+      }
+    - |
+      @Entity
+      public class Person {
+        private final long id;
+        Person(long id) { this.id = id; }
+        public int hashCode() { return Long.hashCode(id); }
+      }
 - id: JAVA-MOD-SEQ-001
   title: Use SequencedCollection.getLast()
   language: java
@@ -170,8 +192,14 @@ rules:
     query: |
       (binary_expression
         left: (binary_expression right: (string_literal) @l)
-        right: (string_literal) @match
-        (#match? @l "\\\\n\"$"))
+        right: (string_literal)
+        (#match? @l "\\\\n\"$")) @match
+    # One finding per concatenation (the outermost +), not one per line.
+    filters:
+    - parentkind.lacks_re:binary_expression:.
+    # corpus: only pure literal concatenations; an interpolated variable or call (multipart boundary,
+    # a class-name constant) needs formatted() and is not a plain text block
+    - 'node.has_re:^\s*"(?:[^"\\\n]|\\.)*"(?:\s*\+\s*"(?:[^"\\\n]|\\.)*")*\s*$'
   message: Multi-line string built by concatenating literals ending in \n; a text block (""" ... """) is easier to read and maintain.
   source:
     url: https://openjdk.org/jeps/378
@@ -186,3 +214,7 @@ rules:
           SELECT *
           FROM t
           WHERE id = ?"""; }
+    regressions:
+    - note: interpolated boundary variable; needs formatted(), not a plain text block
+      code: |
+        class A { String part(String b, String t) { return "\r\n--" + b + "\r\n" + "Content-Type: " + t + "\r\n"; } }

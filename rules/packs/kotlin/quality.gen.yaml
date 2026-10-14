@@ -353,6 +353,8 @@ rules:
     - '!**/*.gradle.kts'
     query: |
       (catch_block (block) @match (#match? @match "^\\{\\s*\\}$"))
+    filters:
+    - 'parent.lacks_re:^catch\s*\(\s*(_|ignore\w*|expected\w*)\s*:'
   message: Swallowing exceptions hides failures.
   source:
     url: https://kotlinlang.org/docs/exceptions.html
@@ -365,6 +367,10 @@ rules:
       try { g() } catch (e: Exception) { }
     good: |
       try { g() } catch (e: IOException) { log.warn("g failed", e) }
+    regressions:
+    - code: |
+        try { g() } catch (_: Exception) {}
+        try { g() } catch (ignored: IOException) { }
   status: active
   rule_version: 1
 - id: KT-QUAL-EQUALS-EMPTY
@@ -515,6 +521,9 @@ rules:
     - '!**/*.gradle.kts'
     query: |
       ((function_declaration name: (identifier) @n) @match (#match? @n "^[A-Z]") (#not-match? @match "@Composable|@Test"))
+    filters:
+    - node.lacks_re:\)\s*:\s*([\w.]+\.)?\w*{cap:n}\b|=\s*{cap:n}\s*[(<{.]|@Suppress\([^)]*FunctionNaming
+    - node.lacks_re:\bfun\s+(<[^>]*>\s*)?([\w.<>]+\.)?{cap:n}\s*\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\)\s*(:[^={]+)?=\s*([\w.]+\.)?[A-Z]\w*\s*[(<{]
   message: Use lowerCamelCase (factory functions named after the type are the exception).
   ai_question: Is this a regular function (not a factory function named after the type it returns, and not a Compose/DSL builder)?
   source:
@@ -528,6 +537,64 @@ rules:
       fun LoadUser(id: Long) {}
     good: |
       fun loadUser(id: Long) {}
+    regressions:
+    - code: |
+        fun Size(width: Int, height: Int) = Size(Dimension(width), Dimension(height))
+        fun MainViewModel(r: Resources): MainViewModel {
+            return RealVm(r)
+        }
+    - code: |
+        actual fun ConnectivityChecker(context: PlatformContext) = ConnectivityChecker.ONLINE
+    - code: |
+        fun <T> When(cond: Expression<*>, result: Expression<T>): CaseWhen<T> {
+            return CaseWhen<T>().When(cond, result)
+        }
+    - code: |
+        fun OkHttpFetcherFactory(
+            callFactory: () -> Call.Factory = ::OkHttpClient,
+            cache: () -> Strategy = { Strategy() },
+        ) = NetworkFetcher.Factory(
+            client = { callFactory() },
+        )
+  status: active
+  rule_version: 1
+- id: KT-QUAL-GETTER-SETTER-PROPERTY
+  title: Java-style getX/setX instead of a property
+  language: kotlin
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    kotlin: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    files:
+    - '**/*.kt'
+    - '**/*.kts'
+    - '!**/*.gradle.kts'
+    query: |
+      ((function_declaration name: (identifier) @n (function_value_parameters) @p) @match (#match? @n "^get[A-Z]") (#eq? @p "()"))
+  message: 'A no-arg getX() is a Java getter: expose a Kotlin property instead (the compiler still generates getX for Java callers).'
+  ai_question: Is this a Java-style getter for a backing field (not an expensive computation, factory, or Java override that must stay a function)?
+  source:
+    url: https://kotlinlang.org/docs/coding-conventions.html
+    doc: Java-style getX/setX instead of a property
+    doc_version: Kotlin 2.4
+    retrieved: '2026-10-09'
+    quote: In some cases functions with no arguments might be interchangeable with read-only properties.
+  examples:
+    bad: |
+      class User {
+          private var name: String = ""
+          fun getName(): String = name
+      }
+    good: |
+      class User {
+          var name: String = ""
+      }
+  xref:
+  - sonar:kotlin:S6512
   status: active
   rule_version: 1
 - id: KT-QUAL-GLOBALSCOPE
@@ -547,6 +614,8 @@ rules:
     - '!**/*.gradle.kts'
     query: |
       ((navigation_expression . (identifier) @match . (identifier) @l) (#eq? @match "GlobalScope") (#match? @l "^(launch|async|produce|actor)$"))
+    filters:
+    - file.lacks_re:DelicateCoroutinesApi
   message: GlobalScope coroutines are not bound to any lifecycle and leak; use structured concurrency (a scoped CoroutineScope).
   source:
     url: https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-global-scope/
@@ -563,6 +632,12 @@ rules:
       fun CoroutineScope.start() {
           launch { work() }
       }
+    regressions:
+    - code: |
+        @OptIn(DelicateCoroutinesApi::class)
+        fun start() {
+            GlobalScope.launch { work() }
+        }
   status: active
   rule_version: 1
 - id: KT-QUAL-JOB-PASSED-TO-BUILDER
@@ -632,6 +707,43 @@ rules:
       db?.close()
   status: active
   rule_version: 1
+- id: KT-QUAL-LIFT-RETURN
+  title: return repeated on both branches of if/when
+  language: kotlin
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    kotlin: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    files:
+    - '**/*.kt'
+    - '**/*.kts'
+    - '!**/*.gradle.kts'
+    query: |
+      (if_expression (return_expression) (return_expression) @match)
+  message: 'Both branches return: lift return in front of if so the if is the expression.'
+  source:
+    url: https://kotlinlang.org/docs/coding-conventions.html
+    doc: return repeated on both branches of if/when
+    doc_version: Kotlin 2.4
+    retrieved: '2026-10-09'
+    quote: 'In Kotlin, if is an expression, i.e. it returns a value. Therefore there is no ternary operator (condition ? then : else), because ordinary if works fine in this role.'
+  examples:
+    bad: |
+      fun f(x: Boolean): Int {
+          if (x) return 1 else return 2
+      }
+    good: |
+      fun f(x: Boolean): Int {
+          return if (x) 1 else 2
+      }
+  xref:
+  - sonar:kotlin:S6510
+  status: active
+  rule_version: 1
 - id: KT-QUAL-MAP-FLATTEN
   title: map{}.flatten()
   language: kotlin
@@ -679,7 +791,9 @@ rules:
     - '**/*.kts'
     - '!**/*.gradle.kts'
     query: |
-      ((function_declaration (user_type (identifier) @match)) (#match? @match "^(MutableList|MutableSet|MutableMap|MutableCollection|ArrayList|HashMap|HashSet)$"))
+      ((function_declaration (function_value_parameters) . (user_type (identifier) @match)) (#match? @match "^(MutableList|MutableSet|MutableMap|MutableCollection|ArrayList|HashMap|HashSet)$"))
+    filters:
+    - ancestor.lacks_re:function_declaration:^[^{=]*?\b(private|internal|protected|override|actual)\s+(\w+\s+)*fun\b
   message: Expose read-only interfaces.
   ai_question: Do callers not need to mutate the returned collection?
   source:
@@ -693,6 +807,11 @@ rules:
       fun names(): MutableList<String> = mutableListOf()
     good: |
       fun names(): List<String> = listOf()
+    regressions:
+    - code: |
+        private fun getMap(): MutableMap<Any, E> = m
+        fun MutableSet<String>.newNonce() = 1
+        fun merge(ranges: MutableList<R>): List<R> = ranges
   status: active
   rule_version: 1
 - id: KT-QUAL-NEW-THREAD-CONTEXT-LEAK
@@ -812,6 +931,8 @@ rules:
     - '!**/*.gradle.kts'
     query: |
       ((call_expression (navigation_expression (_) (identifier) @match)) (#eq? @match "printStackTrace"))
+    filters:
+    - ancestor.lacks_re:call_expression:printStackTrace\s*\(\s*([^S\s)]|S[^y])
   message: printStackTrace goes to stderr unstructured; use a logger.
   source:
     url: https://kotlinlang.org/docs/exceptions.html
@@ -824,6 +945,9 @@ rules:
       try { g() } catch (e: Exception) { e.printStackTrace() }
     good: |
       try { g() } catch (e: IOException) { log.error("failed", e) }
+    regressions:
+    - code: |
+        fun format(t: Throwable, pw: PrintWriter) { t.printStackTrace(pw) }
   status: active
   rule_version: 1
 - id: KT-QUAL-RUNBLOCKING-IN-SUSPEND
@@ -975,7 +1099,7 @@ rules:
     - '**/*.kts'
     - '!**/*.gradle.kts'
     query: |
-      ((binary_expression left: (binary_expression left: (string_literal) right: (_)) right: (string_literal)) @match)
+      ((binary_expression left: (binary_expression left: (string_literal) right: (_) @mid) right: (string_literal)) @match (#not-match? @mid "^\""))
   message: Use string templates.
   source:
     url: https://kotlinlang.org/docs/idioms.html
@@ -988,6 +1112,11 @@ rules:
       val s = "Hello, " + name + "!"
     good: |
       val s = "Hello, $name!"
+    regressions:
+    - code: |
+        val m = "first part of a long message " +
+            "second part " +
+            "third part"
   status: active
   rule_version: 1
 - id: KT-QUAL-TEMPLATE-BRACES
@@ -1006,7 +1135,9 @@ rules:
     - '**/*.kts'
     - '!**/*.gradle.kts'
     query: |
-      ((interpolation (identifier)) @match (#match? @match "^\\$\\{"))
+      ((interpolation (identifier) @x) @match (#match? @match "^\\$\\{"))
+    filters:
+    - parent.lacks_re:\$\{{cap:x}\}\w
   message: Drop redundant braces.
   source:
     url: https://kotlinlang.org/docs/coding-conventions.html
@@ -1019,6 +1150,9 @@ rules:
       println("${x}")
     good: |
       println("$x")
+    regressions:
+    - code: |
+        println("took ${ms}ms in ${name}_v2")
   status: active
   rule_version: 1
 - id: KT-QUAL-THREAD-SLEEP-IN-COROUTINE
@@ -1143,6 +1277,8 @@ rules:
     - '!**/*.gradle.kts'
     query: |
       ((function_declaration (function_value_parameters) . (user_type (identifier) @match)) (#eq? @match "Unit"))
+    filters:
+    - ancestor.lacks_re:function_declaration:\)\s*:\s*Unit\s*=
   message: Omit Unit return types.
   source:
     url: https://kotlinlang.org/docs/coding-conventions.html
@@ -1159,6 +1295,9 @@ rules:
       fun log(m: String) {
           println(m)
       }
+    regressions:
+    - code: |
+        override fun close(): Unit = synchronized(lock) { release() }
   status: active
   rule_version: 1
 - id: KT-QUAL-UNSAFE-CAST
@@ -1209,7 +1348,11 @@ rules:
     - '**/*.kts'
     - '!**/*.gradle.kts'
     query: |
-      ((function_body (block (property_declaration) @match)) (#match? @match "^var\\b"))
+      ((function_body (block (property_declaration (variable_declaration (identifier) @name)) @match)) (#match? @match "^var\\b"))
+    filters:
+    - node.has_re:^var\s+\w+\s*(:[^=]+)?=
+    - node.lacks_re:\bby\b
+    - func.count_lt:2:\b{cap:name}\s*(:[^=\n]+)?([-+*/%]?=[^=]|\+\+|--)|(\+\+|--)\s*{cap:name}\b
   message: Prefer immutable locals.
   ai_question: Is this var never reassigned after initialization within the function?
   source:
@@ -1229,6 +1372,57 @@ rules:
           val x = compute()
           return x
       }
+    regressions:
+    - code: |
+        fun f(): Int {
+            var idx: Map<String, Int>? = null
+            if (idx == null) idx = load()
+            var n = 0
+            repeat(3) { n++ }
+            var s = 1
+            s += 2
+            var on by remember { mutableStateOf(false) }
+            return n + s
+        }
+    - code: |
+        class T {
+            @Test
+            fun testSuspendMain() {
+                Assumptions.assumeTrue(dialect == TestDB.POSTGRESQL)
+
+                val latch = CountDownLatch(1)
+                var exception: Throwable? = null
+
+                suspend {
+                    val db = TestDB.POSTGRESQL.connect()
+
+                    suspendTransaction(db) {
+                        SchemaUtils.create(UsersTable)
+                    }
+                }
+                    /**
+                     * The main reason for such a coroutine starting is to get
+                     * [EmptyCoroutineContext] as coroutine context. It will guarantee
+                     * that coroutine dispatcher will be `null` what could lead
+                     * to wrong transaction switching
+                     */
+                    .startCoroutine(object : Continuation<Unit> {
+                        override val context = EmptyCoroutineContext
+
+                        override fun resumeWith(result: Result<Unit>) {
+                            result.onFailure { exception = it }
+                            latch.countDown()
+                        }
+                    })
+
+                // Wait for completion with timeout
+                if (!latch.await(10, TimeUnit.SECONDS)) {
+                    throw AssertionError("Test did not complete within 10 seconds")
+                }
+
+                assertNull(exception)
+            }
+        }
   status: active
   rule_version: 1
 - id: KT-QUAL-WHEN-SUBJECT-ELSE

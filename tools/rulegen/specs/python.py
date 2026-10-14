@@ -172,7 +172,9 @@ P("FINALLY-JUMP", "return/break/continue inside finally", WN("3.14"), "PEP 765",
 # ------------------------------------------------------------------ security (stdlib docs + bandit/ruff S rules)
 P("PICKLE-LOADS", "Unpickling data", LIB("pickle"), "The pickle module is not secure", mcall("pickle|cPickle|dill|_pickle", "load|loads|Unpickler"),
   "obj = pickle.loads(body)\n", "obj = json.loads(body)\n", "Unpickling attacker-controlled data executes arbitrary code; use JSON or sign the payload (hmac).",
-  sev="critical", kind="security", cat="security", mode="ai-confirm", ai="Can the pickled data come from an untrusted source (network, user upload, shared cache)?")
+  sev="critical", kind="security", cat="security", mode="ai-confirm", ai="Can the pickled data come from an untrusted source (network, user upload, shared cache)?",
+  filters=[r"node.lacks_re:\bdumps\("], xref=["ruff:S301", "bandit:B301"],
+  fp=["copy = pickle.loads(pickle.dumps(obj))\n"])
 P("MARSHAL-LOADS", "marshal.load(s) on external data", LIB("marshal"), "not intended to be secure", mcall("marshal", "load|loads"),
   "code = marshal.loads(blob)\n", "data = json.loads(blob)\n", "marshal is not secure against malicious data.", sev="major", kind="security", cat="security")
 P("SHELVE-UNTRUSTED", "shelve.open on a possibly untrusted file", LIB("shelve"), "insecure to load a shelf from an untrusted source", mcall("shelve", "open"),
@@ -181,7 +183,8 @@ P("SHELVE-UNTRUSTED", "shelve.open on a possibly untrusted file", LIB("shelve"),
 P("EVAL", "eval()/exec() on dynamic input", RUFF("suspicious-eval-usage"), rn("Checks for uses of the builtin `eval()` function."),
   '((call function: (identifier) @match arguments: (argument_list . [(identifier) (attribute) (call) (binary_operator) (subscript)])) (#match? @match "^(eval|exec)$"))',
   "result = eval(expr)\n", "result = ast.literal_eval(expr)\n", "eval/exec run arbitrary code; use ast.literal_eval or a parser.",
-  sev="critical", kind="security", cat="security", docv="Ruff (2026)", mode="ai-confirm", ai="Can the evaluated string be influenced by user/external input?")
+  sev="critical", kind="security", cat="security", docv="Ruff (2026)", mode="ai-confirm", ai="Can the evaluated string be influenced by user/external input?",
+  xref=["ruff:S307", "ruff:S102", "bandit:B307", "bandit:B102"])
 P("SUBPROCESS-SHELL", "subprocess with shell=True", LIB("subprocess"), "Unlike some other popen functions",
   kwarg("^subprocess\\\\.(run|call|check_call|check_output|Popen|getoutput)$", "shell", "(true)"),
   "subprocess.run(f\"convert {name} out.png\", shell=True)\n", "subprocess.run([\"convert\", name, \"out.png\"])\n",
@@ -233,22 +236,34 @@ P("ZIPFILE-EXTRACT-UNTRUSTED", "zipfile extractall on untrusted archives", LIB("
   sev="minor", kind="security", cat="security", filters=["file.has_re:zipfile", "file.lacks_re:tarfile"], mode="ai-confirm",
   ai="Is the archive untrusted and extracted without validating member names/sizes?")
 P("ASSERT-FOR-SECURITY", "assert used for an access/security check", DOCS + "reference/simple_stmts.html", "when optimization is requested at compile time",
-  '((assert_statement) @match (#match? @match "(?i)(is_admin|is_staff|is_superuser|authenticated|authorized|permission|has_perm|role|owner|csrf|token)"))',
+  '((assert_statement) @match (#match? @match "(?i)\\\\b(is_admin|is_staff|is_superuser|is_authenticated|authenticated|is_authorized|authorized|has_perms?|has_permission|permission_required|user_passes_test|check_permission|csrf_\\\\w+|is_owner)\\\\b"))',
   "def delete(user):\n    assert user.is_admin\n    do_delete()\n", "def delete(user):\n    if not user.is_admin:\n        raise PermissionError\n    do_delete()\n",
-  "assert is stripped under -O; never use it to enforce security.", sev="major", kind="security", cat="security", docv="Python 3.14 Language Reference")
+  "assert is stripped under -O; never use it to enforce security.", sev="major", kind="security", cat="security", docv="Python 3.14 Language Reference",
+  xref=["bandit:B101", "ruff:S101"],
+  fp=["assert orig_name.type == token.NAME, \"Invalid syntax\"\n", "assert is_rpar_token(parent.children[-1])\n"])
 P("YAML-LOAD-UNSAFE", "yaml.load without SafeLoader", "https://pyyaml.org/wiki/PyYAMLDocumentation", "safe_load",
   '((call function: (attribute object: (identifier) @o attribute: (identifier) @a) arguments: (argument_list) @args) @match (#eq? @o "yaml") (#match? @a "^(load|load_all|unsafe_load|full_load)$") (#not-match? @args "Loader\\\\s*=\\\\s*(yaml\\\\.)?(Safe|CSafe)Loader"))',
   "cfg = yaml.load(f)\n", "cfg = yaml.safe_load(f)\n", "Non-safe loaders can construct arbitrary Python objects; use safe_load.",
   sev="critical", kind="security", cat="security", docv="PyYAML 6.x")
 P("HASH-WEAK", "MD5/SHA-1 for security purposes", LIB("hashlib"), "usedforsecurity",
   '((call function: (attribute object: (identifier) @o attribute: (identifier) @a) arguments: (argument_list) @args) @match (#eq? @o "hashlib") (#match? @a "^(md5|sha1)$") (#not-match? @args "usedforsecurity\\\\s*=\\\\s*False"))',
-  "h = hashlib.md5(password.encode()).hexdigest()\n", "h = hashlib.md5(data, usedforsecurity=False).hexdigest()\n",
+  "h = hashlib.md5(data).hexdigest()\n", "h = hashlib.md5(data, usedforsecurity=False).hexdigest()\n",
   "MD5/SHA-1 are broken for security; use sha256+/scrypt, or mark non-security use with usedforsecurity=False (3.9+).",
-  sev="major", kind="security", cat="security", mode="ai-confirm", precision="low", ai="Is this hash used for a security purpose (passwords, signatures, tokens, integrity against attackers)?")
+  sev="major", kind="security", cat="security", mode="ai-confirm", precision="low", ai="Is this hash used for a security purpose (passwords, signatures, tokens, integrity against attackers)?",
+  filters=["func.lacks_re:(?i)(session|cookie|token|passw|pwd|secret|nonce|otp|csrf|api_?key|salt|rememberme|credential|signature|hmac)"])
+P("HASH-WEAK-SECURITY-CONTEXT", "MD5/SHA-1 in a function handling passwords, tokens or signatures", LIB("hashlib"), "usedforsecurity",
+  '((call function: (attribute object: (identifier) @o attribute: (identifier) @a) arguments: (argument_list) @args) @match (#eq? @o "hashlib") (#match? @a "^(md5|sha1)$") (#not-match? @args "usedforsecurity\\\\s*=\\\\s*False"))',
+  "h = hashlib.md5(password.encode()).hexdigest()\n", "h = hashlib.sha256(data).hexdigest()\n",
+  "MD5/SHA-1 are broken for security and this function handles a password/token/signature value: use hashlib.scrypt / sha256+ (or a password hash).",
+  sev="major", kind="security", cat="security", filters=["func.has_re:(?i)(session|cookie|token|passw|pwd|secret|nonce|otp|csrf|api_?key|salt|rememberme|credential|signature|hmac)"])
 P("HMAC-COMPARE", "Secret compared with ==", LIB("hmac"), "compare_digest",
-  '((comparison_operator (_) @l (_) @r) @match (#match? @l "(?i)(signature|digest|hmac|token|secret|mac)\\\\b") (#match? @match "==|!="))',
+  '((comparison_operator (_) @l (_) @r) @match (#match? @match "==|!="))',
   "if signature == expected:\n    ok()\n", "if hmac.compare_digest(signature, expected):\n    ok()\n", "== leaks timing; use hmac.compare_digest.",
-  sev="major", kind="security", cat="security", mode="ai-confirm", ai="Are secrets/MACs compared here (timing-sensitive), not public values?")
+  sev="major", kind="security", cat="security", mode="ai-confirm", ai="Are secrets/MACs compared here (timing-sensitive), not public values?",
+  # one side must be a MAC/digest value: a .digest()/.hexdigest() call or a name ending in sig/signature/digest/hmac/mac
+  filters=[r"node.has_re:(?i)(\.(hex)?digest\(\)|\b\w*(sig|signature|digest|hmac|mac))\s*(\)\s*)?([!=]=|$)|[!=]=\s*\S*(\.(hex)?digest\(\)|\b\w*(sig|signature|digest|hmac|mac))\b",
+           r"ancestor.lacks_re:assert_statement:.", r"node.lacks_re:\.type\b"],
+  fp=["if token.type == TokenType.identifier:\n    pass\n", "assert record[\"token\"] == \"secret\"\n", "if x_token != fake_secret_token:\n    pass\n"])
 P("BIND-ALL-INTERFACES", "Server bound to 0.0.0.0", RUFF("hardcoded-bind-all-interfaces"), rn("Checks for hardcoded bindings to all network interfaces"),
   '((string (string_content) @c) @match (#eq? @c "0.0.0.0"))', "app.run(host=\"0.0.0.0\")\n", "app.run(host=os.environ.get(\"HOST\", \"127.0.0.1\"))\n",
   "Binding to all interfaces exposes the service on every network.", sev="minor", kind="security", cat="security", docv="Ruff (2026)",
@@ -280,7 +295,8 @@ P("HARDCODED-TMP", "Hard-coded /tmp path", RUFF("hardcoded-temp-file"), rn("Chec
       "files = sorted(glob.glob('/tmp/src/notes/*.asciidoc'))\n"])
 P("FLASK-DEBUG", "Flask app.run(debug=True)", RUFF("flask-debug-true"), rn("Checks for uses of `debug=True` in Flask."),
   kwarg("^(app|application)\\\\.run$", "debug", "(true)"), "app.run(debug=True)\n", "app.run(debug=os.environ.get('FLASK_DEBUG') == '1')\n",
-  "The Werkzeug debugger allows arbitrary code execution.", sev="critical", kind="security", cat="security", docv="Ruff (2026)")
+  "The Werkzeug debugger allows arbitrary code execution.", sev="critical", kind="security", cat="security", docv="Ruff (2026)",
+  filters=[r"file.lacks_re:(?m)^\s*(app|application)\s*=\s*([^\sFc(]|F[^l]|c[^r])"])  # app rebound to something that is not Flask(...) / create_app()
 P("JINJA-AUTOESCAPE-FALSE", "Jinja2 Environment without autoescape", RUFF("jinja2-autoescape-false"), rn("Checks for `jinja2` templates that use `autoescape=False`."),
   '((call function: (_) @f arguments: (argument_list) @args) @match (#match? @f "^(jinja2\\\\.)?Environment$") (#not-match? @args "autoescape\\\\s*=\\\\s*(True|[A-Za-z0-9_.]*select_autoescape)"))',
   "env = jinja2.Environment(loader=loader)\n", "env = jinja2.Environment(loader=loader, autoescape=jinja2.select_autoescape())\n",
@@ -295,19 +311,46 @@ P("HARDCODED-PASSWORD", "Hard-coded password/secret assigned to a variable", RUF
   sev="critical", kind="security", cat="security", docv="Ruff (2026)")
 
 # ------------------------------------------------------------------ correctness / idioms (Ruff docs)
+# Ruff rule codes (docs.astral.sh/ruff/rules) so `# noqa: CODE` suppresses the crev equivalent.
+RUFF_CODES = {
+    "mutable-argument-default": "B006", "bare-except": "E722", "try-except-pass": "S110", "none-comparison": "E711",
+    "true-false-comparison": "E712", "is-literal": "F632", "type-comparison": "E721", "f-string-missing-placeholders": "F541",
+    "assert-tuple": "F631", "raise-not-implemented": "F901", "get-attr-with-constant": "B009",
+    "zip-without-explicit-strict": "B905", "call-datetime-now-without-tzinfo": "DTZ005", "unspecified-encoding": "PLW1514",
+    "undefined-local-with-import-star": "F403", "function-uses-loop-variable": "B023", "strip-with-multi-characters": "B005",
+    "assert-false": "B011", "except-with-empty-tuple": "B029", "raise-without-from-inside-except": "B904",
+    "cached-instance-method": "B019", "logging-f-string": "G004", "logging-warn": "G010", "in-dict-keys": "SIM118",
+    "useless-comparison": "B015", "unreliable-callable-check": "B004",
+}
+# flake8/pycodestyle names for the same checks (bare-except is also pylint's name).
+PYLINT_EQ = {"bare-except": "bare-except", "unspecified-encoding": "unspecified-encoding", "logging-f-string": "logging-fstring-interpolation",
+             "none-comparison": "singleton-comparison", "true-false-comparison": "singleton-comparison", "raise-without-from-inside-except": "raise-missing-from"}
+
+
 def ruff(id, title, name, needle, query, bad, good, msg, sev="minor", cat="correctness", **kw):
-    P(id, title, RUFF(name), rn(needle), query, bad, good, msg, sev=sev, cat=cat, docv="Ruff (2026)", **kw)
+    xr = list(kw.pop("xref", None) or [])
+    if name in RUFF_CODES:
+        xr += [f"ruff:{RUFF_CODES[name]}", f"flake8:{RUFF_CODES[name]}"]
+    if name in PYLINT_EQ:
+        xr.append(f"pylint:{PYLINT_EQ[name]}")
+    P(id, title, RUFF(name), rn(needle), query, bad, good, msg, sev=sev, cat=cat, docv="Ruff (2026)", xref=xr or None, **kw)
 
 
 ruff("MUTABLE-DEFAULT", "Mutable default argument", "mutable-argument-default", "Checks for uses of mutable objects as function argument defaults.",
      '([(default_parameter value: [(list) (dictionary) (set)] @match) (typed_default_parameter value: [(list) (dictionary) (set)] @match)])',
      "def add(x, acc=[]):\n    acc.append(x)\n    return acc\n", "def add(x, acc=None):\n    acc = [] if acc is None else acc\n    acc.append(x)\n    return acc\n",
-     "Defaults are evaluated once and shared between calls.", sev="major")
+     "Defaults are evaluated once and shared between calls.", sev="major",
+     # FastAPI parameter declarations: the default is a pydantic field default, copied per request (FastAPI docs: Query parameter list).
+     filters=[r"ancestor.lacks_re:typed_default_parameter:\b(Query|Header|Cookie|Form|Body|Path|File)\("],
+     fp=["async def read_items(q: Annotated[list[str], Query()] = [\"foo\"]):\n    return q\n"])
 ruff("BARE-EXCEPT", "Bare except:", "bare-except", "Checks for bare `except` catches", '((except_clause . (block)) @match)',
      "try:\n    f()\nexcept:\n    log()\n", "try:\n    f()\nexcept Exception:\n    log()\n", "Bare except also catches KeyboardInterrupt/SystemExit.", sev="major")
 ruff("TRY-EXCEPT-PASS", "Exception silently swallowed", "try-except-pass", "Checks for uses of the try - except - pass pattern",
-     '(except_clause (block . (pass_statement) .) @match)', "try:\n    f()\nexcept ValueError:\n    pass\n",
-     "try:\n    f()\nexcept ValueError:\n    log.debug('ignored', exc_info=True)\n", "Silently ignoring errors hides bugs; log or use contextlib.suppress explicitly.")
+     '(except_clause (block . (pass_statement) .) @match)', "try:\n    f()\nexcept Exception:\n    pass\n",
+     "try:\n    f()\nexcept Exception:\n    log.debug('ignored', exc_info=True)\n", "Silently ignoring errors hides bugs; log or use contextlib.suppress explicitly.",
+     # Ruff S110 default (check-typed-exception = false): only bare except, Exception and BaseException.
+     filters=[r"parentkind.has_re:except_clause:^except\s*(\(?\s*(builtins\.)?(Exception|BaseException)\s*\)?\s*(as\s+\w+\s*)?)?:"],
+     fp=["try:\n    import ujson\nexcept ImportError:\n    pass\n"])
 ruff("NONE-COMPARISON", "== None / != None", "none-comparison", "Checks for comparisons to `None` which are not using the `is` operator.",
      '((comparison_operator (_) operators: ["==" "!="] (none)) @match)', "if x == None:\n    pass\n", "if x is None:\n    pass\n",
      "Use `is None`; == can be overridden.")
@@ -322,15 +365,20 @@ ruff("TYPE-COMPARISON", "type(x) == T", "type-comparison", "Checks for object ty
      "if isinstance(x, int):\n    pass\n", "Use isinstance() (or `is` for exact type checks).")
 ruff("FSTRING-NO-PLACEHOLDER", "f-string without placeholders", "f-string-missing-placeholders", "Checks for f-strings that do not contain any placeholder expressions.",
      '((string (string_start) @s) @match (#match? @s "^[rRbB]?[fF]") (#not-match? @match "\\\\{[^{]"))', "msg = f\"done\"\n", "msg = \"done\"\n",
-     "The f prefix is unnecessary — or a placeholder was forgotten.")
+     "The f prefix is unnecessary — or a placeholder was forgotten.",
+     # Implicit concatenation is one f-string (one JoinedStr in the AST): F541 only fires when no part has a placeholder.
+     filters=[r"parentkind.lacks_re:concatenated_string:\{[^{]"],
+     fp=["msg = (f\"Timed out after \"\n       f\"{secs}s\")\n"])
 ruff("ASSERT-TUPLE", "assert on a tuple (always true)", "assert-tuple", "Checks for `assert` statements that use non-empty tuples as test conditions.",
      '(assert_statement . (tuple) @match)', "assert (x > 0, \"positive\")\n", "assert x > 0, \"positive\"\n", "A non-empty tuple is always truthy.", sev="major")
 ruff("RAISE-NOTIMPLEMENTED", "raise NotImplemented", "raise-not-implemented", "Checks for `raise` statements that raise `NotImplemented`.",
      '((raise_statement [(identifier) @match (call function: (identifier) @match)]) (#eq? @match "NotImplemented"))', "def f():\n    raise NotImplemented\n",
      "def f():\n    raise NotImplementedError\n", "NotImplemented is a constant, not an exception (TypeError at runtime).", sev="major")
 ruff("GETATTR-CONSTANT", "getattr/setattr with a constant name", "get-attr-with-constant", "Checks for uses of `getattr` that take a constant attribute value",
-     '((call function: (identifier) @f arguments: (argument_list . (_) . (string (string_content) @n) .)) @match (#match? @f "^getattr$") (#match? @n "^[A-Za-z_][A-Za-z0-9_]*$"))',
-     "v = getattr(obj, \"name\")\n", "v = obj.name\n", "Use plain attribute access.")
+     '((call function: (identifier) @f arguments: (argument_list . (_) . (string (string_content) @n) @s .)) @match (#match? @f "^getattr$") (#match? @n "^[A-Za-z_][A-Za-z0-9_]*$"))',
+     "v = getattr(obj, \"name\")\n", "v = obj.name\n", "Use plain attribute access.",
+     filters=[r"cap.lacks_re:s:^[rRbBuU]*[fF]|\{", r"cap.lacks_re:n:^_[A-Za-z0-9]+__[A-Za-z0-9_]"],
+     fp=["f = getattr(self, f\"parse_{kind}\")\n", "class T:\n    def t(self, x):\n        return getattr(x, \"_Thread__stopped\")\n"])
 ruff("ZIP-WITHOUT-STRICT", "zip() without strict=", "zip-without-explicit-strict", "Checks for `zip` calls without an explicit `strict` parameter.",
      '((call function: (identifier) @f arguments: (argument_list (_) (_)) @args) @match (#eq? @f "zip") (#not-match? @args "strict\\\\s*="))',
      "for a, b in zip(xs, ys):\n    pass\n", "for a, b in zip(xs, ys, strict=True):\n    pass\n", "zip silently truncates to the shortest input.",
@@ -343,6 +391,7 @@ ruff("OPEN-NO-ENCODING", "open() in text mode without encoding", "unspecified-en
      '((call function: (identifier) @f arguments: (argument_list) @args) @match (#eq? @f "open") (#not-match? @args "encoding\\\\s*=|[\'\\"][rwax+]*b[rwax+]*[\'\\"]"))',
      "with open(path) as f:\n    data = f.read()\n", "with open(path, encoding=\"utf-8\") as f:\n    data = f.read()\n",
      "The default is locale-dependent (PEP 597); Python 3.15 switches to UTF-8 mode by default. Be explicit.",
+     applies={"python": "<3.15"},  # PEP 686: UTF-8 mode is the default from 3.15
      # fixture triage (ruff PLW1514): encoding passed positionally (4th arg), forwarded *args /
      # **kwargs, and a mode computed at runtime cannot be judged statically
      filters=[r"cap.lacks_re:args:\*|^\(\s*[^,()]+,\s*[^,()]+,\s*[^,()]+,\s*[^,()]+|mode\s*=\s*[A-Za-z_]|^\(\s*[^,()]+,\s*[A-Za-z_][\w.\[\]]*\s*[,)]"],
@@ -381,7 +430,8 @@ ruff("LOGGING-WARN", "logger.warn()", "logging-warn", "Checks for uses of `loggi
      "warn() is a deprecated alias of warning() (logging.warn was removed in 3.13).", kind="deprecation", cat="deprecation")
 ruff("IN-DICT-KEYS", "key in dict.keys()", "in-dict-keys", "Checks for key-existence checks against `dict.keys()` calls.",
      '((comparison_operator (_) operators: ["in" "not in"] (call function: (attribute attribute: (identifier) @k) arguments: (argument_list) @args) @match) (#eq? @k "keys") (#eq? @args "()"))',
-     "if k in d.keys():\n    pass\n", "if k in d:\n    pass\n", "Test membership on the dict directly.", sev="info", cat="style")
+     "if k in d.keys():\n    pass\n", "if k in d:\n    pass\n", "Test membership on the dict directly.", sev="info", cat="style",
+     filters=[r"ancestor.lacks_re:function_definition:^(async\s+)?def\s+__contains__\b"])  # `in self` there would recurse
 ruff("USELESS-COMPARISON", "Comparison result unused", "useless-comparison", "Checks for useless comparisons.",
      '(expression_statement (comparison_operator) @match)', "def f(x):\n    x == 1\n", "def f(x):\n    assert x == 1\n",
      "The comparison has no effect (probably meant = or assert).", sev="major")
@@ -464,7 +514,7 @@ P("CHMOD-WORLD-WRITABLE", "File mode grants write access to others", LIB("stat")
   "import os\nos.chmod(path, 0o777)\n", "import os\nos.chmod(path, 0o750)\n",
   "Every local user can modify this file or directory. Drop the write bit for others (and usually group).",
   sev="major", kind="security", cat="security", xref=["sonar:python:S2612"])
-P("DJANGO-CSRF-EXEMPT", "Django view exempted from CSRF protection", "https://docs.djangoproject.com/en/5.2/ref/csrf/",
+P("DJANGO-CSRF-EXEMPT", "Django view exempted from CSRF protection", "https://docs.djangoproject.com/en/6.1/ref/csrf/",
   "This decorator marks a view as being exempt from the protection ensured by the middleware",
   '(decorator [(identifier) @match (attribute attribute: (identifier) @match)] (#eq? @match "csrf_exempt"))',
   "from django.views.decorators.csrf import csrf_exempt\n\n@csrf_exempt\ndef update_profile(request):\n    request.user.email = request.POST['email']\n",
@@ -472,15 +522,15 @@ P("DJANGO-CSRF-EXEMPT", "Django view exempted from CSRF protection", "https://do
   "The view accepts state-changing requests from any site the user visits. Keep CSRF on, or authenticate the caller another way (signed webhook, token header).",
   sev="major", kind="security", cat="security", mode="ai-confirm", framework="django",
   ai="Does this view change state for a cookie-authenticated user (rather than being a signed webhook / token-authenticated API endpoint)?",
-  xref=["sonar:python:S4502"], docv="Django 5.2")
-P("DJANGO-DEBUG-TRUE", "Django DEBUG = True in settings", "https://docs.djangoproject.com/en/5.2/ref/settings/",
+  xref=["sonar:python:S4502"], docv="Django 6.1")
+P("DJANGO-DEBUG-TRUE", "Django DEBUG = True in settings", "https://docs.djangoproject.com/en/6.1/ref/settings/",
   "Never deploy a site into production with DEBUG turned on",
   '((expression_statement (assignment left: (identifier) @n right: (true))) @match (#eq? @n "DEBUG"))',
   "DEBUG = True\nALLOWED_HOSTS = ['example.com']\n", "DEBUG = os.environ.get('DJANGO_DEBUG') == '1'\n",
   "Debug mode shows stack traces, settings and SQL to anyone who triggers an error. Read DEBUG from the environment and default it to False.",
   sev="major", kind="security", cat="security", mode="ai-confirm", framework="django",
   files=["**/settings.py", "**/settings/*.py", "!**/settings/dev*.py", "!**/settings/local*.py", "!**/settings/test*.py"],
-  ai="Is this the settings module used in production (not a local/dev/test settings file)?", xref=["sonar:python:S4507"], docv="Django 5.2")
+  ai="Is this the settings module used in production (not a local/dev/test settings file)?", xref=["sonar:python:S4507"], docv="Django 6.1")
 P("JWT-NO-VERIFY", "JWT decoded without signature verification", "https://pyjwt.readthedocs.io/en/stable/usage.html",
   "the integrity or authenticity of the claimset cannot be trusted",
   '((call function: (attribute object: (identifier) @o attribute: (identifier) @a) arguments: (argument_list (keyword_argument name: (identifier) @k value: (dictionary (pair key: (string) @key value: (false)))))) @match (#eq? @o "jwt") (#eq? @a "decode") (#eq? @k "options") (#match? @key "verify_signature"))',
@@ -519,8 +569,28 @@ P("RANDOM-SESSION-VALUE", "random module value stored in a session, cookie or to
   "import secrets\n\ndef remember(session):\n    value = str(secrets.randbelow(2**32))\n    session['rememberMe'] = value\n",
   "This value comes from the random module (a predictable PRNG) and ends up in a session/cookie/token in the same function. Use the secrets module.",
   sev="major", kind="security", cat="security", mode="ai-confirm",
-  filters=["func.has_re:(?i)session|set_cookie|cookie|token|password|passwd|secret|nonce|otp|csrf|api_?key"],
+  filters=["func.has_re:(?i)session|set_cookie|cookie|token|password|passwd|secret|nonce|otp|csrf|api_?key",
+           r"func.lacks_re:(?i)\bjitter\b|backoff|span_id|trace_id|traceid|spanid"],
   ai="Is the random value used as (or to derive) a secret/identifier an attacker should not predict (session value, cookie, token, password, nonce)?",
-  cwe=["CWE-330"], xref=["sonar:python:S2245"])
+  cwe=["CWE-330"], xref=["sonar:python:S2245"],
+  fp=["import random\nimport time\n\ndef retry(secret_name):\n    delay = random.uniform(0.1, 0.5)  # jitter\n    time.sleep(delay)\n",
+      "import random\n\ndef new_span_id(token_store):\n    return format(random.getrandbits(64), '016x')\n"])
+
+P("INDEX-RETURNS-NON-INT", "__index__ returns a non-integer", LIB("stdtypes"), "Called to implement operator.index()",
+  '(function_definition name: (identifier) @n body: (block (return_statement [(string) (float) (true) (false) (none) (list) (dictionary) (set)] @match)) (#eq? @n "__index__"))',
+  "class N:\n    def __index__(self):\n        return '1'\n",
+  "class N:\n    def __index__(self):\n        return 1\n",
+  "__index__ must return an int (or a subclass of int); any other type raises TypeError when the object is used as a sequence index.",
+  sev="major", kind="anti-pattern", cat="correctness", quote="Called to implement operator.index() and whenever Python needs to losslessly convert the numeric object to an integer object (such as in slicing, or in the built-in bin(), hex() and oct() functions).",
+  xref=["sonar:python:S6663"])
+P("ORDERING-WITHOUT-EQ", "__lt__ defined without __eq__", "https://docs.python.org/3/library/functools.html", "Given a class defining one or more rich comparison ordering methods",
+  '((class_definition body: (block (function_definition name: (identifier) @n))) @match (#eq? @n "__lt__") (#not-match? @match "__eq__"))',
+  "class V:\n    def __lt__(self, other):\n        return self.n < other.n\n",
+  "class V:\n    def __eq__(self, other):\n        return self.n == other.n\n    def __lt__(self, other):\n        return self.n < other.n\n",
+  "Ordering without equality is incomplete: objects can be less-than each other and still not compare equal to anything. Define __eq__ (and functools.total_ordering, or the rest of the rich comparisons).",
+  sev="minor", kind="best-practice", cat="correctness", mode="ai-confirm",
+  ai="Does this class participate in sorting or comparisons where equality should be consistent with ordering?",
+  quote="The class must define one of __lt__(), __le__(), __gt__(), or __ge__(). In addition, the class should supply an __eq__() method.",
+  xref=["sonar:python:S8500"])
 
 RULES = P.R

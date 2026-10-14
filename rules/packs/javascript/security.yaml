@@ -70,7 +70,11 @@ rules:
     engine: tree-sitter
     query: |
       (assignment_expression
-        left: (member_expression property: (property_identifier) @p (#any-of? @p "innerHTML" "outerHTML")) @match)
+        left: (member_expression property: (property_identifier) @p (#any-of? @p "innerHTML" "outerHTML")) @match
+        right: (_) @v)
+    filters:
+    # a constant string (no substitution) cannot carry untrusted data
+    - 'cap.lacks_re:v:^(''[^''\\]*''|"[^"\\]*"|`[^`$\\]*`)$'
   message: Assigning untrusted strings to innerHTML can execute script; use textContent for plain text or sanitize (Trusted Types / DOMPurify).
   ai_question: Can the assigned value contain user-controlled data that is not sanitized?
   source:

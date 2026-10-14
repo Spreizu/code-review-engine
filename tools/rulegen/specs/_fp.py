@@ -6,6 +6,13 @@ extra guards on helper-built rules. Every fp entry is a former false positive (s
 run, linter fixture or `crev feedback fp`) and is run by rulecheck as a must-not-match example.
 """
 AMEND = {
+    "KT-MAINT-DUPLICATE-BRANCH": {"fp": [
+        "fun f(range: R) {\n    when (range) {\n        is R.A -> {\n            w(range.b1)\n            w(0)\n        }\n        is R.B -> {\n            w(range.b1)\n            w(range.b2)\n        }\n        is R.C -> {\n            w(range.b1)\n            w(range.b2)\n        }\n    }\n}\n",
+        "fun Any.f(p: P) {\n    when (this) {\n        is AppExt -> {\n            defaultConfig.targetSdk = p.sdk\n            log(p)\n        }\n        is TestExt -> {\n            defaultConfig.targetSdk = p.sdk\n            log(p)\n        }\n    }\n}\n"]},
+    "KT-MAINT-COMMENTED-OUT-CODE": {"fp": ["fun f(): Int {\n    // return -1 which may trigger it to release its resources.\n    //   val years = 1_970 \u2212 1_601\n    return 0\n}\n",
+                                         "fun g(t: Long): Long {\n    //   val years = 1_970 \u2212 1_601\n    //   val days = years * 365\n    return t\n}\n"]},
+    # corpus m8: every hit was a test fixture (JsonInclude CUSTOM filters use equals() as a predicate, test POJOs)
+    "JAVA-COR-EQUALS-HASHCODE-001": {"files_add": ["!**/src/test/**", "!**/*Test.java", "!**/*Tests.java"]},
     "JS-NO-SCRIPT-URL": {"rule_version": 2},
     "PY-BIND-ALL-INTERFACES": {"rule_version": 2},
     "PY-HARDCODED-TMP": {"rule_version": 2},
@@ -14,6 +21,32 @@ AMEND = {
     "TAINT-PY-XSS": {"rule_version": 2},
     "TAINT-GO-PATH": {"rule_version": 2},
     "KT-WEAK-HASH": {"rule_version": 2, "fp": ["val md = MessageDigest.getInstance(\"SHA-256\")\nval other = Hashing.getInstance(\"MD5\")\n"]},
+    "PHP-REFLECTION-GETCLASS": {"rule_version": 2},
+    "PHP-MIG-REFLECTION-GETCLASS": {"rule_version": 2},
+    "PY-RANDOM-SESSION-VALUE": {"rule_version": 2},
+    "PY-SEC-RANDOM-SESSION-VALUE": {"rule_version": 2},
+    "CSS-DUPLICATE-SELECTOR": {"rule_version": 2},
+    "CSS-QUAL-DUPLICATE-SELECTOR": {"rule_version": 2},
+    "GO-DSA": {"rule_version": 2},
+    "GO-MIG-DSA": {"rule_version": 2},
+    "GO-HTTP-CLOSENOTIFIER": {"rule_version": 2},
+    "GO-MIG-HTTP-CLOSENOTIFIER": {"rule_version": 2},
+    "GO-OS-SEEK-CONSTANTS": {"rule_version": 2},
+    "GO-MIG-OS-SEEK-CONSTANTS": {"rule_version": 2},
+    "GO-X-NET-CONTEXT": {"rule_version": 2},
+    "GO-MIG-X-NET-CONTEXT": {"rule_version": 2},
+    "JAVA-DEP-FILE-TOURL-001": {"rule_version": 2, "fp": [
+        {"note": "URI.toURL is not deprecated",
+         "code": "class Example {\n  void run() throws Exception {\n    URL u = new URI(s).toURL();\n  }\n}\n"}]},
+    "JAVA-MIG-DEP-FILE-TOURL-001": {"rule_version": 2},
+    "JAVA-DEP-THREADGROUP-001": {"rule_version": 2, "fp": [
+        {"note": "Process.destroy is not ThreadGroup.destroy",
+         "code": "class Example {\n  void run() throws Exception {\n    ThreadGroup g = new ThreadGroup(\"w\");\n    Process p = new ProcessBuilder(\"true\").start();\n    p.destroy();\n  }\n}\n"}]},
+    "JAVA-MIG-DEP-THREADGROUP-001": {"rule_version": 2},
+    "NG-JSONP": {"rule_version": 2, "fp": [
+        {"note": "jsonp on a non-HttpClient object",
+         "code": "this.client.jsonp(url, 'callback');\n"}]},
+    "NG-MIG-JSONP": {"rule_version": 2},
     # self-scan: inner loop walks a value or index lookup derived from the outer loop variable
     # (grouped-by-key maps), which is not an n*m cross product.
     "SIMP-GO-IDX-NESTED-LOOP-NO-LIMIT-NOTE": {"fp": [

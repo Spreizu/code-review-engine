@@ -186,7 +186,9 @@ dep("ASSERT-OPTIONS", "assert_options()", "8.3", "migration83.deprecated", "asse
     T + "assert_options(ASSERT_ACTIVE, 1);\n", T + "ini_set('zend.assertions', '1');\n", "Deprecated in 8.3; configure zend.assertions/assert.exception in php.ini.")
 dep("IMPLICIT-NULLABLE", "Implicitly nullable parameter type", "8.4", "migration84.deprecated", "Implicitly nullable",
     '((simple_parameter type: [(named_type) (primitive_type)] @match default_value: (null)))', T + "function f(int $a = null) {}\n",
-    T + "function f(?int $a = null) {}\n", "T $x = null is deprecated in 8.4; declare ?T (or T|null) explicitly.")
+    T + "function f(?int $a = null) {}\n", "T $x = null is deprecated in 8.4; declare ?T (or T|null) explicitly.",
+    # mixed and null already include null, so nothing is implicitly widened
+    filters=[r"node.lacks_re:(?i)^\\?(mixed|null)$"], fp=[T + "function f(mixed $default = null) {}\n"])
 dep("E-STRICT", "E_STRICT constant", "8.4", "migration84.deprecated", "E_STRICT", '((name) @match (#eq? @match "E_STRICT"))',
     T + "error_reporting(E_ALL | E_STRICT);\n", T + "error_reporting(E_ALL);\n", "E_STRICT is deprecated in 8.4 (no longer emitted since 8.0).", sev="minor")
 dep("TRIGGER-ERROR-USER-ERROR", "trigger_error(..., E_USER_ERROR)", "8.4", "migration84.deprecated", "E_USER_ERROR",
@@ -218,8 +220,13 @@ dep("LIBXML-ENTITY-LOADER", "libxml_disable_entity_loader()", "8.0", "migration8
     fn("libxml_disable_entity_loader"), T + "libxml_disable_entity_loader(true);\n", T + "$doc->loadXML($xml);\n",
     "Deprecated in 8.0: with libxml >= 2.9 external entities are disabled by default; don't pass LIBXML_NOENT.", sev="minor")
 dep("REFLECTION-GETCLASS", "ReflectionParameter::getClass()", "8.0", "migration80.deprecated", "getClass()",
-    '((member_call_expression name: (name) @match) (#match? @match "^(getClass|isArray|isCallable)$"))', T + "$param = new ReflectionParameter('f', 0);\n$c = $param->getClass();\n",
-    T + "$param = new ReflectionParameter('f', 0);\n$t = $param->getType();\n", "Deprecated in 8.0; use getType().", filters=["file.has_re:Reflection"])
+    '((member_call_expression object: (_) @o name: (name) @match) (#match? @match "^(getClass|isArray|isCallable)$"))', T + "$param = new ReflectionParameter('f', 0);\n$c = $param->getClass();\n",
+    T + "$param = new ReflectionParameter('f', 0);\n$t = $param->getType();\n", "Deprecated in 8.0; use getType().",
+    # getClass/isArray are common method names (DI Definition, InputOption). type.is keeps only
+    # ReflectionParameter receivers; unknown types stay unmatched (no review-list FPs).
+    filters=[r"file.has_re:ReflectionParameter|getParameters\(", r"type.is:o:ReflectionParameter"],
+    fp=[T + "$r = new ReflectionClass($c);\n$isArr = $option->isArray();\n$cls = $definition->getClass();\n",
+        T + "class InputOption { function isArray() { return true; } }\n$option = new InputOption();\n$option->isArray();\n"])
 dep("CASE-INSENSITIVE-CONSTANT-73", "define() with case_insensitive=true", "7.3", "migration73.deprecated", "case-insensitive constants",
     '((function_call_expression function: (name) @f arguments: (arguments (argument) (argument) (argument (boolean)))) @match (#match? @f "(?i)^define$"))',
     T + "define('X', 1, true);\n", T + "define('X', 1);\n", "Deprecated in 7.3, removed in 8.0.", applies={"php": ">=7.3 <8.0"})
@@ -326,8 +333,10 @@ mod("NULL-COALESCE-ASSIGN", "$x = $x ?? y", "7.4", "migration74.new-features", "
     '((assignment_expression left: (_) @l right: (binary_expression left: (_) @r operator: "??")) @match (#eq? @l @r))', T + "$a['k'] = $a['k'] ?? 1;\n",
     T + "$a['k'] ??= 1;\n", "Use ??= (7.4+).")
 mod("STR-CONTAINS", "strpos() !== false", "8.0", "function.str-contains", "str_contains",
-    '((binary_expression left: (function_call_expression function: (name) @f) operator: ["!==" "===" "!=" "=="] right: (boolean)) @match (#match? @f "(?i)^(strpos|stripos|mb_strpos)$"))',
-    T + "if (strpos($h, 'x') !== false) {}\n", T + "if (str_contains($h, 'x')) {}\n", "Use str_contains() (8.0+).")
+    '((binary_expression left: (function_call_expression function: (name) @f) operator: ["!==" "==="] right: (boolean)) @match (#match? @f "(?i)^(strpos|mb_strpos)$"))',
+    T + "if (strpos($h, 'x') !== false) {}\n", T + "if (str_contains($h, 'x')) {}\n", "Use str_contains() (8.0+).",
+    # stripos is case-insensitive (str_contains is not); loose == false also matches position 0
+    fp=[T + "if (stripos($ct, 'text/html') !== false) {}\nif (strpos($s, 'a') == false) {}\n"])
 mod("STR-STARTS-WITH", "substr($s, 0, n) === / strpos() === 0", "8.0", "function.str-starts-with", "str_starts_with",
     '((binary_expression left: (function_call_expression function: (name) @f) operator: ["===" "=="] right: (integer) @z) @match (#match? @f "(?i)^strpos$") (#eq? @z "0"))',
     T + "if (strpos($h, 'x') === 0) {}\n", T + "if (str_starts_with($h, 'x')) {}\n", "Use str_starts_with()/str_ends_with() (8.0+).")
@@ -370,10 +379,19 @@ mod("ARRAY-KEY-FIRST", "reset()/key() to get the first key", "7.3", "function.ar
     T + "reset($a);\n$k = key($a);\n", T + "$k = array_key_first($a);\n", "array_key_first()/array_key_last() (7.3+).",
     filters=[r"file.has_re:(?i)\breset\s*\("])
 mod("READONLY-PROPERTY", "Private property only set in the constructor", "8.1", "language.oop5.properties", "readonly",
-    '(class_declaration body: (declaration_list (property_declaration (visibility_modifier) @v type: (_) (property_element)) @match) (#eq? @v "private") (#not-match? @match "readonly"))',
+    '(class_declaration body: (declaration_list (property_declaration (visibility_modifier) @v type: (_) (property_element (variable_name (name) @name))) @match) (#eq? @v "private") (#not-match? @match "readonly"))',
     T + "class P { private int $x; public function __construct(int $x) { $this->x = $x; } }\n",
     T + "class P { private readonly int $x; public function __construct(int $x) { $this->x = $x; } }\n",
-    "Mark write-once properties readonly (8.1+).", mode="ai-confirm", ai="Is the property assigned only in the constructor?")
+    "Mark write-once properties readonly (8.1+).", mode="ai-confirm", ai="Is the property assigned only in the constructor?",
+    # readonly forbids a default value and static; any second write (setter, wither on a clone, $this->a[] =) rules it out
+    filters=[r"node.lacks_re:=|\bstatic\b", r"file.count_lt:2:->{cap:name}\s*(=[^=>]|\[|[-.+*/?%]{1,2}=|\+\+|--)",
+             # corpus: the one write must be a plain assignment in the constructor body (not ??= lazy init, not
+             # =& by reference, not a setter/helper the constructor or setUp calls); braces nest up to 3 levels
+             r"file.has_re:function\s+__construct\s*\([^{]*\{(?:[^{}]|\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\})*->{cap:name}\s*=\s*[^=>&\s]"],
+    fp=[T + "class S { private string $pad = ' '; private array $h; public function __construct() { $this->h = []; }\n  public function add($x) { $this->h[] = $x; } }\n",
+        T + "class N { private Formatter $f;\n  public function getFormatter(): Formatter { return $this->f ??= new Formatter(); } }\n",
+        T + "class C { private array $s; public function __construct(array &$s) { $this->s = &$s; } }\n",
+        T + "class A { private mixed $d; public function __construct($d) { $this->setDefault($d); }\n  public function setDefault($d): void { $this->d = $d; } }\n"])
 mod("ENUM", "Class of string/int constants used as an enum", "8.1", "language.enumerations", "Enumerations",
     '((class_declaration name: (name) @n body: (declaration_list . (const_declaration) . (const_declaration) . (const_declaration))) @match (#match? @n "(Status|Type|State|Kind|Level|Role|Mode)$"))',
     T + "class Status { const ACTIVE = 'a'; const INACTIVE = 'i'; const BANNED = 'b'; }\n",
@@ -397,6 +415,45 @@ sec("CORS-WILDCARD", "Access-Control-Allow-Origin: * sent by header()", "functio
     T + "header('Access-Control-Allow-Origin: *');\n", T + "header('Access-Control-Allow-Origin: https://app.example.com');\n",
     "Any origin may read this response from a browser. Use an allow-list of origins unless the endpoint is deliberately public and carries nothing user-specific.",
     sev="major", mode="ai-confirm", ai="Does this endpoint serve user-specific or non-public data (so a wildcard origin is a real exposure)?", xref=["sonar:php:S5122"])
+
+P("HARDCODED-URI", "Hard-coded absolute URI", M("language.types.string"), "string",
+  '((string (string_content) @match) (#match? @match "(?i)^https?://[a-z0-9]"))\n'
+  '((encapsed_string (string_content) @match) (#match? @match "(?i)^https?://[a-z0-9]"))',
+  T + "$url = 'https://api.pay.internal/v1/users';\n", T + "$url = getenv('API_BASE') . '/v1/users';\n",
+  "An absolute URL baked into source has to change in every environment; take the origin from configuration.",
+  sev="minor", kind="best-practice", cat="maintainability", quote="A string literal can be specified in four different ways.",
+  mode="ai-confirm", ai="Is this a real deployment URL (API, asset host) rather than a test fixture, schema.org IRI or example.com documentation string?",
+  xref=["sonar:php:S1075"],
+  filters=[r"node.lacks_re:(?i)example\\.(com|org|net)|localhost|127\\.0\\.0\\.1|schema\\.org|w3\\.org|php\\.net"])
+P("CALL-TIME-PASS-BY-REF", "Call-time pass-by-reference", M("language.references.pass"), "There is no reference sign on a function call",
+  "((argument (reference_modifier)) @match)",
+  T + "foo(&$x);\n", T + "function foo(&$x) {}\nfoo($x);\n",
+  "The & belongs on the parameter in the function declaration, not at the call site (call-time pass-by-reference was removed).",
+  sev="critical", kind="anti-pattern", cat="correctness", quote="There is no reference sign on a function call - only on function definitions. Function definitions alone are enough to correctly pass the argument by reference.",
+  xref=["sonar:php:S1998"])
+P("CONSTANT-AS-CONDITION", "Bare constant used as an if/while condition", M("language.constants"), "A constant is an identifier",
+  '((if_statement condition: (parenthesized_expression (name) @match)) (#match? @match "^[A-Z][A-Z0-9_]*$"))\n'
+  '((while_statement condition: (parenthesized_expression (name) @match)) (#match? @match "^[A-Z][A-Z0-9_]*$"))',
+  T + "if (DEBUG) {\n    log();\n}\n", T + "if ($debug) {\n    log();\n}\n",
+  "A named constant as the whole condition is fixed at compile time, so one branch is dead: use a variable, defined(), or an expression.",
+  sev="minor", kind="anti-pattern", cat="correctness", quote="A constant is an identifier (name) for a simple value. As the name suggests, that value cannot change during the execution of the script.",
+  xref=["sonar:php:S5797"],
+  filters=[r"cap.lacks_re:match:^(true|false|null|TRUE|FALSE|NULL)$"])
+P("CATCH-THROWABLE", "catch (Throwable) swallows Error", M("class.throwable"), "Throwable is the base interface for any object that can be thrown",
+  '((catch_clause type: (type_list (named_type (name) @t))) @match (#match? @t "^(Throwable|Error)$"))',
+  T + "try {\n    foo();\n} catch (Throwable $e) {\n    log($e);\n}\n",
+  T + "try {\n    foo();\n} catch (RuntimeException $e) {\n    log($e);\n}\n",
+  "Throwable includes Error (TypeError, ParseError, ...): catching it hides engine failures. Catch Exception (or a narrower type) unless you rethrow Error.",
+  sev="major", kind="anti-pattern", cat="correctness",
+  quote="Throwable is the base interface for any object that can be thrown via a throw statement, including Error and Exception.",
+  xref=["sonar:php:S5708", "sonar:php:S5632"], mode="ai-confirm",
+  ai="Is Error swallowed here (logged and ignored) rather than rethrown after cleanup?")
+P("CONSTANT-REDEFINED", "define() called twice with the same name", M("function.define"), "define() will return false if the name is already defined",
+  '((expression_statement (function_call_expression function: (name) @f arguments: (arguments (argument [(string) (encapsed_string)] @a)))) . (expression_statement (function_call_expression function: (name) @g arguments: (arguments (argument [(string) (encapsed_string)] @b)))) @match (#match? @f "(?i)^define$") (#eq? @f @g) (#eq? @a @b))',
+  T + "define('MAX', 10);\ndefine('MAX', 20);\n", T + "define('MAX', 10);\n",
+  "The second define() of the same name does nothing (and raises a notice): pick one value, or check defined() first.",
+  sev="major", kind="anti-pattern", cat="correctness", quote="define() will return false if the name is already defined, and emit an E_NOTICE.",
+  xref=["sonar:php:S6344"])
 
 sec("SETCOOKIE-NO-FLAGS", "Session/token cookie set without secure/httponly", "function.setcookie", "accessible only through the HTTP protocol",
     '((function_call_expression function: (name) @f arguments: (arguments . (argument (string) @n) . (argument) .)) @match (#eq? @f "setcookie") (#match? @n "(?i)(session|sid|token|auth|jwt|remember)"))',

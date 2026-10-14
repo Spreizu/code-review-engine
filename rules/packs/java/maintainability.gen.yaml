@@ -207,6 +207,9 @@ rules:
     engine: tree-sitter
     query: |
       (method_invocation name: (identifier) @m arguments: (argument_list . (_) @x . (_) @y .) (#match? @m "^assert(Equals|Same|NotEquals|NotSame)$") (#eq? @x @y)) @match
+    filters:
+    - cap.lacks_re:x:\(|\bnew\b
+    - ancestor.lacks_re:method_declaration:(?is)^[^{]*\b\w*(equal|hash|reflex|identit|same|cach)\w*\s*\(
   message: 'Comparing a value with itself always passes (or always fails): compare against the expected value.'
   source:
     url: https://docs.junit.org/current/user-guide/
@@ -218,7 +221,7 @@ rules:
     bad: |
       class OrderTest {
           void total() {
-              assertEquals(order.total(), order.total());
+              assertEquals(total, total);
           }
       }
     good: |
@@ -227,6 +230,19 @@ rules:
               assertEquals(42, order.total());
           }
       }
+    regressions:
+    - code: |
+        class RangeTest {
+            void testEquals() {
+                assertEquals(range1, range1);
+            }
+        }
+    - code: |
+        class NodeTest {
+            void pojo() {
+                assertEquals(new POJONode(null), new POJONode(null));
+            }
+        }
   xref:
   - sonar:java:S5863
   status: active
@@ -412,6 +428,60 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-ATOMIC-EQUALS
+  title: equals() on an Atomic* value
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list (_)) (#eq? @m "equals")) @match
+    filters:
+    - type.is:o:Atomic(Integer|Long|Boolean|Reference)
+  message: 'Atomic* classes do not override equals(), so this compares identities, not values: compare get() results.'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/atomic/AtomicInteger.html
+    doc: 'Java SE 21 API: AtomicInteger'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: An AtomicInteger is used in applications such as atomically incremented counters, and cannot be used as a replacement for an Integer .
+  examples:
+    bad: |
+      class A {
+          void f(AtomicInteger hits, AtomicInteger limit) {
+              if (hits.equals(limit)) {
+                  stop();
+              }
+          }
+      }
+    good: |
+      class A {
+          void f(AtomicInteger hits, AtomicInteger limit) {
+              if (hits.get() == limit.get()) {
+                  stop();
+              }
+          }
+      }
+    regressions:
+    - code: |
+        class A {
+            void f(Counter hits, Counter limit) {
+                if (hits.equals(limit)) {
+                    stop();
+                }
+            }
+        }
+  xref:
+  - sonar:java:S2204
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-BIT-OP-IDENTITY
   title: Bit operation with no effect or a constant result
   language: java
@@ -494,6 +564,189 @@ rules:
   xref:
   - checkstyle:SimplifyBooleanExpression
   - sonar:java:S1125
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-BOXED-BOOLEAN-CONDITION
+  title: Boxed Boolean used as a condition
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      [(if_statement condition: (parenthesized_expression (_) @c)) (while_statement condition: (parenthesized_expression (_) @c)) (ternary_expression condition: (_) @c)] @match
+    filters:
+    - type.is:c:Boolean
+    - cap.lacks_re:c:^Boolean\.(TRUE|FALSE)$
+  message: 'Unboxing a null Boolean in a condition throws NullPointerException: compare with Boolean.TRUE or handle null.'
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se21/html/jls-5.html
+    doc: JLS 5.1.8 Unboxing Conversion
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: If r is null, unboxing conversion throws a NullPointerException
+  examples:
+    bad: |
+      class A {
+          void f(Boolean ready) {
+              if (ready) {
+                  run();
+              }
+          }
+      }
+    good: |
+      class A {
+          void f(Boolean ready) {
+              if (Boolean.TRUE.equals(ready)) {
+                  run();
+              }
+          }
+      }
+    regressions:
+    - code: |
+        class A {
+            void f(boolean ready) {
+                if (ready) {
+                    run();
+                }
+            }
+        }
+  xref:
+  - sonar:java:S5411
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-BOXED-PARSE
+  title: valueOf used where a primitive parse is enough
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (local_variable_declaration type: [(integral_type) (floating_point_type) (boolean_type)] (variable_declarator value: (method_invocation object: (identifier) @c name: (identifier) @m (#eq? @m "valueOf") (#match? @c "^(Integer|Long|Short|Byte|Double|Float|Boolean)$")))) @match
+  message: 'valueOf boxes the result and then unboxes it into the primitive: parseInt/parseLong/parseBoolean skip the wrapper.'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Integer.html
+    doc: 'Java SE 21 API: Integer.parseInt'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: Parses the string argument as a signed decimal integer.
+  examples:
+    bad: |
+      class A {
+          void f(String s) {
+              int n = Integer.valueOf(s);
+          }
+      }
+    good: |
+      class A {
+          void f(String s) {
+              int n = Integer.parseInt(s);
+          }
+      }
+  xref:
+  - sonar:java:S2130
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-BOXED-TOSTRING
+  title: toString() on a boxed primitive
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list) @a (#eq? @m "toString") (#eq? @a "()")) @match
+    filters:
+    - type.is:o:Integer|Long|Short|Byte|Float|Double|Boolean|Character
+  message: 'toString() on a boxed value throws if the wrapper is null: use String.valueOf, which yields "null".'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html
+    doc: 'Java SE 21 API: String.valueOf'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: if the argument is null, then a string equal to "null"
+  examples:
+    bad: |
+      class A {
+          String id(Integer n) {
+              return n.toString();
+          }
+      }
+    good: |
+      class A {
+          String id(Integer n) {
+              return String.valueOf(n);
+          }
+      }
+    regressions:
+    - code: |
+        class A {
+            String id(Name n) {
+                return n.toString();
+            }
+        }
+  xref:
+  - sonar:java:S1158
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-BYTE-SIGN-EXTENSION-IN-SHIFT
+  title: byte combined with shifted bits without masking
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      [(binary_expression left: (parenthesized_expression (binary_expression operator: "<<")) operator: "|" right: (identifier) @b) (binary_expression left: (parenthesized_expression (binary_expression left: (identifier) @b operator: "<<")) operator: "|")] @match
+    filters:
+    - type.is:b:byte
+  message: 'A byte is sign-extended when widened, so negative values set all the high bits and corrupt the result: mask with & 0xff first.'
+  source:
+    url: https://docs.oracle.com/javase/tutorial/java/nutsandbolts/datatypes.html
+    doc: 'Java tutorial: Primitive Data Types'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: 'The eight primitive data types supported by the Java programming language are: byte : The byte data type is an 8-bit signed two''s complement integer.'
+  examples:
+    bad: |
+      class A {
+          int word(byte hi, byte lo) {
+              return (hi << 8) | lo;
+          }
+      }
+    good: |
+      class A {
+          int word(byte hi, byte lo) {
+              return ((hi & 0xff) << 8) | (lo & 0xff);
+          }
+      }
+  xref:
+  - sonar:java:S3034
   status: active
   rule_version: 1
   tags:
@@ -928,7 +1181,7 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (method_invocation object: (identifier) @o name: (identifier) @m arguments: (argument_list . (identifier) @a .) (#eq? @o @a) (#match? @m "^(addAll|removeAll|retainAll|containsAll|equals)$")) @match
+      (method_invocation object: (identifier) @o name: (identifier) @m arguments: (argument_list . (identifier) @a .) (#eq? @o @a) (#match? @m "^(addAll|removeAll|retainAll|containsAll)$")) @match
   message: 'Passing a collection to its own bulk method is a no-op, undefined, or always true: pass the other collection.'
   source:
     url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html
@@ -949,6 +1202,13 @@ rules:
               items.addAll(extra);
           }
       }
+    regressions:
+    - code: |
+        class A {
+            void f() {
+                assertTrue(listener.equals(listener));
+            }
+        }
   xref:
   - sonar:java:S2114
   status: active
@@ -1043,6 +1303,45 @@ rules:
       }
   xref:
   - sonar:java:S2167
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-COMPARETO-OVERLOAD
+  title: compareTo overloaded with a type other than the Comparable argument
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((class_declaration interfaces: (super_interfaces (type_list (generic_type (type_identifier) @c (type_arguments . (type_identifier) @t .)))) body: (class_body (method_declaration name: (identifier) @n parameters: (formal_parameters . (formal_parameter type: (_) @pt) .)) @match)) (#eq? @c "Comparable") (#eq? @n "compareTo"))
+    filters:
+    - cap.lacks_re:pt:^{cap:t}$
+  message: Sorting and collections only call compareTo(T) from Comparable<T>; an overload with another type is never used by them and confuses callers.
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Comparable.html
+    doc: 'Java SE 21 API: Comparable'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: ZoneOffsetTransition , ZoneOffsetTransitionRule.TimeDefinition public interface Comparable<T> This interface imposes a total ordering on the objects of each class that implements it.
+  examples:
+    bad: |
+      class Version implements Comparable<Version> {
+          public int compareTo(Version o) { return 0; }
+          public int compareTo(String s) { return 0; }
+      }
+    good: |
+      class Version implements Comparable<Version> {
+          public int compareTo(Version o) { return 0; }
+          public int compareToText(String s) { return 0; }
+      }
+  xref:
+  - sonar:java:S4351
   status: active
   rule_version: 1
   tags:
@@ -1482,6 +1781,51 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-DATE-FIELD-OUT-OF-RANGE
+  title: java.time factory called with an out-of-range month or day
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_invocation object: (identifier) @o name: (identifier) @n arguments: (argument_list . (_) . (decimal_integer_literal) @v)) @match (#match? @o "^(LocalDate|LocalDateTime|YearMonth)$") (#eq? @n "of") (#match? @v "^(0+|1[3-9]|[2-9][0-9]|[0-9]{3,})$"))
+      ((method_invocation object: (identifier) @o name: (identifier) @n arguments: (argument_list . (_) . (_) . (decimal_integer_literal) @v)) @match (#match? @o "^(LocalDate|LocalDateTime)$") (#eq? @n "of") (#match? @v "^(0+|3[2-9]|[4-9][0-9]|[0-9]{3,})$"))
+    filters:
+    - cap.lacks_re:v:^0[0-9]
+  message: 'Months run 1-12 and days 1-31: this call always throws DateTimeException.'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/time/LocalDate.html
+    doc: 'Java SE 21 API: LocalDate.of'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: 'Parameters: year - the year to represent, from MIN_YEAR to MAX_YEAR month - the month-of-year to represent, from 1 (January) to 12 (December) dayOfMonth - the day-of-month to represent, from 1 to 31 Returns: the local date, not null Throws: DateTimeEx'
+  examples:
+    bad: |
+      class A {
+          LocalDate end() {
+              return LocalDate.of(2026, 12, 31);
+          }
+          LocalDate next() {
+              return LocalDate.of(2027, 13, 1);
+          }
+      }
+    good: |
+      class A {
+          LocalDate next() {
+              return LocalDate.of(2027, 1, 1);
+          }
+      }
+  xref:
+  - sonar:java:S2110
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-DEEP-NESTING
   title: Control flow nested too deeply
   language: java
@@ -1513,7 +1857,9 @@ rules:
                       if (c) {
                           if (d) {
                               if (e) {
-                                  g();
+                                  if (f) {
+                                      g();
+                                  }
                               }
                           }
                       }
@@ -1597,6 +1943,65 @@ rules:
   xref:
   - checkstyle:DefaultComesLast
   - sonar:java:S4524
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-DOUBLE-CHECKED-LOCKING
+  title: Double-checked locking on a non-volatile field
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((if_statement condition: (parenthesized_expression (binary_expression left: (identifier) @f right: (null_literal))) consequence: (block (synchronized_statement body: (block (if_statement condition: (parenthesized_expression (binary_expression left: (identifier) @f2 right: (null_literal)))))))) @match (#eq? @f @f2))
+    filters:
+    - node.has_re:==\s*null
+    - ancestor.has_re:class_body:(?m)^\s*(?:(?:private|protected|public|static|transient)\s+)+[\w<>\[\], .?]+\s+{cap:f}\s*[;=]
+    - ancestor.lacks_re:class_body:\bvolatile\b[^;=(]*\b{cap:f}\s*[;=]
+  message: 'Without volatile, another thread can see the field set before the object is fully built: make the field volatile or use a holder class / eager init.'
+  source:
+    url: https://docs.oracle.com/javase/tutorial/essential/concurrency/atomic.html
+    doc: 'Java tutorial: Atomic Access'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: s not eliminate all need to synchronize atomic actions, because memory consistency errors are still possible. Using volatile variables reduces the risk of memory consistency errors, because any write to a volatile variable establishes a happens-before relationship with subsequent reads of
+  examples:
+    bad: |
+      class A {
+          private static Config cfg;
+          static Config get() {
+              if (cfg == null) {
+                  synchronized (A.class) {
+                      if (cfg == null) {
+                          cfg = load();
+                      }
+                  }
+              }
+              return cfg;
+          }
+      }
+    good: |
+      class A {
+          private static volatile Config cfg;
+          static Config get() {
+              if (cfg == null) {
+                  synchronized (A.class) {
+                      if (cfg == null) {
+                          cfg = load();
+                      }
+                  }
+              }
+              return cfg;
+          }
+      }
+  xref:
+  - sonar:java:S2168
   status: active
   rule_version: 1
   tags:
@@ -1952,6 +2357,45 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-EMPTY-STATEMENT
+  title: Stray empty statement
+  language: java
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (block ";" @match)
+  message: A lone ';' does nothing; it is usually a typo and can hide a misplaced loop or if body.
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html
+    doc: JLS 14.6 The Empty Statement
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: The Empty Statement An empty statement does nothing.
+  examples:
+    bad: |
+      class A {
+          void run() {
+              start();;
+          }
+      }
+    good: |
+      class A {
+          void run() {
+              start();
+          }
+      }
+  xref:
+  - sonar:java:S1116
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-EMPTY-ZIP-ENTRY
   title: Archive entry closed without content
   language: java
@@ -2009,6 +2453,7 @@ rules:
     query: |
       (method_declaration type: (boolean_type) name: (identifier) @n parameters: (formal_parameters . (formal_parameter type: (_) @t) .) (#eq? @n "equals") (#not-eq? @t "Object")) @match
     filters:
+    - ancestor.lacks_re:class_body:\bequals\s*\(\s*(final\s+)?(java\.lang\.)?Object\s+\w+\s*\)
     - cap.lacks_re:t:^java\.lang\.Object$
   message: 'equals(A) overloads instead of overriding equals(Object), so collections never call it: take Object and test the type.'
   source:
@@ -2206,6 +2651,7 @@ rules:
             }
         }
   xref:
+  - https://openjdk.org/jeps/421
   - sonar:java:S1111
   status: active
   rule_version: 1
@@ -2256,6 +2702,7 @@ rules:
             }
         }
   xref:
+  - https://openjdk.org/jeps/421
   - sonar:java:S1175
   status: active
   rule_version: 1
@@ -2499,6 +2946,11 @@ rules:
   detection:
     mode: ai-confirm
     engine: tree-sitter
+    files:
+    - '!**/src/test/**'
+    - '!**/test/**'
+    - '!**/*Test.java'
+    - '!**/*Tests.java'
     query: |
       (string_literal) @match
     filters:
@@ -2634,11 +3086,11 @@ rules:
     - cap.lacks_re:a:^\{\s*\}$
   message: 'Both handlers do the same thing: one multi-catch (A | B e) keeps them in sync.'
   source:
-    url: https://docs.oracle.com/javase/8/docs/technotes/guides/language/catch-multiple.html
-    doc: 'Java guide: multi-catch'
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-14.html#jls-14.20
+    doc: JLS SE 25 14.20 The try statement
     doc_version: Java 21
     retrieved: '2026-10-09'
-    quote: eption Types as final in catch Parameter --> Handling More Than One Type of Exception In Java SE 7 and later, a single catch block can handle more than one type of exception.
+    quote: A catch clause whose exception parameter is denoted as a union of types is called a multi-catch clause
   examples:
     bad: |
       class A {
@@ -2683,6 +3135,7 @@ rules:
       (binary_expression left: (_) @l operator: ["<" ">" "<=" ">=" "&&" "||" "-" "/" "%" "^" "&" "|"] right: (_) @r (#eq? @l @r)) @match
     filters:
     - cap.lacks_re:l:[(]|\+\+|--|\bawait\b|^[\d.]+$
+    - cap.lacks_re:l:^(true|false|True|False|null|nil|None|-?\d[\w.]*|'[^']*'|\x22[^\x22]*\x22)$
   message: Both operands are the same expression, so the result is constant (or the second operand was meant to be something else).
   source:
     url: https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html
@@ -2709,6 +3162,10 @@ rules:
             int f() {
                 return next() - next();
             }
+        }
+    - code: |
+        class A {
+            boolean[] t = {true ^ true, false ^ false};
         }
   xref:
   - sonar:java:S1764
@@ -2767,9 +3224,10 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (expression_statement (method_invocation object: (_) name: (identifier) @m (#match? @m "^(trim|strip|stripLeading|stripTrailing|toUpperCase|toLowerCase|substring|concat|replace|replaceAll|isBlank|isEmpty|equalsIgnoreCase|startsWith|endsWith|matches|repeat)$"))) @match
+      (expression_statement (method_invocation object: (_) @recv name: (identifier) @m (#match? @m "^(trim|strip|stripLeading|stripTrailing|toUpperCase|toLowerCase|substring|concat|replace|replaceAll|isBlank|isEmpty|equalsIgnoreCase|startsWith|endsWith|matches|repeat)$"))) @match
     filters:
     - file.lacks_re:\bStringBuilder\b|\bStringBuffer\b
+    - type.is:recv:String
   message: 'This call returns a new value and changes nothing; discarding the result means the statement has no effect: assign or use it.'
   source:
     url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html
@@ -2792,6 +3250,19 @@ rules:
               use(s);
           }
       }
+    regressions:
+    - code: |
+        class A {
+            void f(List<String> xs) {
+                assertThat(xs).isEmpty();
+            }
+        }
+    - code: |
+        class A {
+            void f(ArrayNode array) {
+                array.replace(100, null);
+            }
+        }
   xref:
   - sonar:java:S2201
   status: active
@@ -3596,11 +4067,11 @@ rules:
       (catch_clause (catch_formal_parameter name: (identifier) @e) body: (block (expression_statement (method_invocation object: (identifier) @l arguments: (argument_list (_)* (identifier) @a))) (throw_statement (identifier) @t)) (#match? @l "(?i)^(log|logger)$") (#eq? @a @e) (#eq? @t @e)) @match
   message: 'Logging and rethrowing reports the same failure twice (once here, once by whoever handles it): do one or the other.'
   source:
-    url: https://docs.oracle.com/javase/tutorial/essential/exceptions/chained.html
-    doc: 'The Java Tutorials: Chained Exceptions'
+    url: https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/Throwable.html
+    doc: 'Java SE 25 API: Throwable'
     doc_version: Java 21
     retrieved: '2026-10-09'
-    quote: Chained Exceptions (The Java™ Tutorials > Essential Java Classes > Exceptions) A browser with JavaScript enabled is required for
+    quote: The recording of this causal information is referred to as the chained exception facility, as the cause can, itself, have a cause, and so on, leading to a "chain" of exceptions, each caused by anothe
   examples:
     bad: |
       class A {
@@ -3644,6 +4115,10 @@ rules:
       (method_invocation object: (identifier) @o name: (identifier) @m arguments: (argument_list . (binary_expression operator: "+") @a) (#match? @o "(?i)^(log|logger|LOG|LOGGER)$") (#match? @m "^(trace|debug|info)$")) @match
     filters:
     - cap.has_re:a:\x22
+    - cap.has_re:a:[^\x22\s]\s*\+|\+\s*[^\x22\s]
+    - file.has_re:import\s+(org\.slf4j\.|org\.apache\.logging\.log4j\.|lombok\.extern\.(slf4j|log4j)\.)|@(Slf4j|Log4j2|XSlf4j)\b
+    - ancestor.lacks_re:if_statement:^if\s*\([^)]*\bis(Trace|Debug|Info)Enabled\(
+    - ancestor.lacks_re:if_statement:^if\s*\([^)]*\bisLoggable\(
   message: 'The message is concatenated even when the level is disabled: use {} placeholders.'
   source:
     url: https://www.slf4j.org/faq.html
@@ -3653,17 +4128,45 @@ rules:
     quote: Second, SLF4J offers two enhancements which tend to be underestimated. Parameterized log messages solve an important problem associated with logging performance, in a pragmatic way.
   examples:
     bad: |
+      import org.slf4j.Logger;
       class A {
           void f(List<String> items) {
               log.debug("loaded " + items.size() + " items");
           }
       }
     good: |
+      import org.slf4j.Logger;
       class A {
           void f(List<String> items) {
               log.debug("loaded {} items", items.size());
           }
       }
+    regressions:
+    - code: |
+        class A {
+            void f() {
+                log.debug("If the method is POST "
+                    + "use @FormParam");
+            }
+        }
+    - code: |
+        import org.slf4j.Logger;
+        class A {
+          Logger log;
+          void f(int n) {
+            if (log.isDebugEnabled()) {
+              log.debug("n=" + n);
+            }
+          }
+        }
+    - code: |
+        import org.apache.commons.logging.Log;
+        class A {
+          Log log;
+          void f(int n) {
+            log.info("n=" + n);
+          }
+        }
   xref:
   - sonar:java:S2629
   status: active
@@ -3805,6 +4308,99 @@ rules:
   match_kind: metric
   status: active
   rule_version: 1
+- id: JAVA-MAINT-LOOP-LIST-REPLACE-ALL
+  title: Index loop rewriting every list element
+  language: java
+  kind: modernization
+  category: maintainability
+  severity: minor
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((for_statement body: [(block . (expression_statement (method_invocation object: (identifier) @l name: (identifier) @s arguments: (argument_list . (identifier) @i . (_) @v .))) .) (expression_statement (method_invocation object: (identifier) @l name: (identifier) @s arguments: (argument_list . (identifier) @i . (_) @v .)))]) @match (#eq? @s "set"))
+    filters:
+    - cap.has_re:v:\b{cap:l}\.get\(\s*{cap:i}\s*\)
+    - node.has_re:^for\s*\(\s*int\s+{cap:i}\s*=\s*0\s*;\s*{cap:i}\s*<\s*{cap:l}\.size\(\)\s*;\s*({cap:i}\+\+|\+\+{cap:i})\s*\)
+  message: This loop maps every element in place; List.replaceAll(op) says it directly.
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html
+    doc: 'Java SE 21 API: List.replaceAll'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: last element of this collection (optional operation). default void replaceAll ( UnaryOperator < E > operator) Replaces each element of this list with the result of applying the operator to that element.
+  examples:
+    bad: |
+      class A {
+          void trim(List<String> names) {
+              for (int i = 0; i < names.size(); i++) {
+                  names.set(i, names.get(i).trim());
+              }
+          }
+      }
+    good: |
+      class A {
+          void trim(List<String> names) {
+              names.replaceAll(String::trim);
+          }
+      }
+  xref:
+  - sonar:java:S9411
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-LOOP-MULTIPLE-JUMPS
+  title: Loop body with several break/continue statements
+  language: java
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      [(for_statement body: (block) @b) (enhanced_for_statement body: (block) @b) (while_statement body: (block) @b) (do_statement body: (block) @b)] @match
+    filters:
+    - cap.has_re:b:(?s)\b(break|continue)(\s+\w+)?\s*;.*\b(break|continue)(\s+\w+)?\s*;
+    - cap.lacks_re:b:\b(for|while|do|switch)\s*[({]|->|\bnew\s+\w+(<[^>]*>)?\s*\([^)]*\)\s*\{
+  message: 'Each extra break or continue adds another exit to follow when reading the loop: fold the conditions or extract the body.'
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html
+    doc: JLS 14.15 The break Statement
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: The break Statement A break statement transfers control out of an enclosing statement.
+  examples:
+    bad: |
+      class A {
+          void scan(int[] xs) {
+              for (int x : xs) {
+                  if (x < 0) continue;
+                  if (x == 0) break;
+                  use(x);
+              }
+          }
+      }
+    good: |
+      class A {
+          void scan(int[] xs) {
+              for (int x : xs) {
+                  if (x == 0) break;
+                  if (x > 0) use(x);
+              }
+          }
+      }
+  xref:
+  - sonar:java:S135
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-LOOP-NEVER-RUNS
   title: for loop whose condition is false from the start
   language: java
@@ -4263,6 +4859,8 @@ rules:
     engine: tree-sitter
     query: |
       (method_invocation object: (object_creation_expression) name: (identifier) @m arguments: (argument_list) (#eq? @m "getClass")) @match
+    filters:
+    - node.lacks_re:\}\s*\.\s*getClass\s*\(\s*\)$
   message: 'Building an instance just to read its class runs a constructor for nothing: use Type.class.'
   source:
     url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html
@@ -4283,6 +4881,13 @@ rules:
               Class<?> c = Order.class;
           }
       }
+    regressions:
+    - code: |
+        class A {
+            void f() {
+                Class<?> anon = new Object() {}.getClass();
+            }
+        }
   xref:
   - sonar:java:S2133
   status: active
@@ -4464,7 +5069,9 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (block (expression_statement (method_invocation object: (_) @o name: (identifier) @n arguments: (argument_list . (_) @k))) @match . (expression_statement (method_invocation object: (_) @o2 name: (identifier) @n2 arguments: (argument_list . (_) @k2))) (#eq? @n "put") (#eq? @n2 "put") (#eq? @o @o2) (#eq? @k @k2) (#match? @k "^(\"[^\"]*\"|[0-9]+)$"))
+      (block (expression_statement (method_invocation object: [(identifier) (field_access)] @o name: (identifier) @n arguments: (argument_list . (_) @k))) @match . (expression_statement (method_invocation object: (_) @o2 name: (identifier) @n2 arguments: (argument_list . (_) @k2))) (#eq? @n "put") (#eq? @n2 "put") (#eq? @o @o2) (#eq? @k @k2) (#match? @k "^(\"[^\"]*\"|[0-9]+)$"))
+    filters:
+    - type.is:o:\w*Map|Properties|Hashtable
   message: 'The same key/index is assigned twice in consecutive statements, so the first value is lost: fix the key or drop the first write.'
   source:
     url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html
@@ -4487,6 +5094,14 @@ rules:
               m.put("b", 2);
           }
       }
+    regressions:
+    - code: |
+        class A {
+            void f(Node parent) {
+                parent.put("a", 1);
+                parent.put("a", 2);
+            }
+        }
   xref:
   - sonar:java:S4143
   status: active
@@ -4596,6 +5211,49 @@ rules:
       }
   xref:
   - sonar:java:S9142
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-PREPARED-STATEMENT-PARAM-SET-TWICE
+  title: PreparedStatement parameter set twice in a row
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (block (expression_statement (method_invocation object: (identifier) @o name: (identifier) @n arguments: (argument_list . (decimal_integer_literal) @k))) @match . (expression_statement (method_invocation object: (identifier) @o2 name: (identifier) @n2 arguments: (argument_list . (decimal_integer_literal) @k2))) (#eq? @o @o2) (#eq? @k @k2) (#match? @n "^set[A-Z]\\w*$") (#match? @n2 "^set[A-Z]\\w*$"))
+    filters:
+    - type.is:o:PreparedStatement|CallableStatement
+  message: 'The second call overwrites the first value of the same parameter index, so one bind is lost: check the indexes.'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.sql/java/sql/PreparedStatement.html
+    doc: 'Java SE 21 API: PreparedStatement'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: 'Parameters: parameterIndex - the first parameter is 1, the second is 2, ...'
+  examples:
+    bad: |
+      class A {
+          void f(PreparedStatement ps, String name, int age) throws SQLException {
+              ps.setString(1, name);
+              ps.setInt(1, age);
+          }
+      }
+    good: |
+      class A {
+          void f(PreparedStatement ps, String name, int age) throws SQLException {
+              ps.setString(1, name);
+              ps.setInt(2, age);
+          }
+      }
+  xref:
+  - sonar:java:S6909
   status: active
   rule_version: 1
   tags:
@@ -4734,6 +5392,53 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-RECORD-ACCESSOR-IN-COMPACT-CONSTRUCTOR
+  title: Record accessor called inside the compact constructor
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      [((method_invocation !object name: (identifier) @m arguments: (argument_list) @a) @match (#match? @a "^\\(\\s*\\)$")) ((method_invocation object: (this) name: (identifier) @m arguments: (argument_list) @a) @match (#match? @a "^\\(\\s*\\)$"))]
+    filters:
+    - ancestor.has_re:compact_constructor_declaration:.
+    - ancestor.has_re:record_declaration:^[^{]*?\brecord\s+\w+\s*(<[^>]*>)?\s*\([^)]*\b{cap:m}\s*[,)]
+    - ancestor.lacks_re:class_body#2:\b{cap:m}\s*\(\s*\)\s*\{
+  message: 'Fields are only assigned after the compact constructor body: the accessor still returns 0/null here. Use the parameter instead.'
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se21/html/jls-8.html
+    doc: JLS 8.10.4.2 Compact Canonical Constructors
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: After the last statement, if any, in the body of the compact constructor has completed normally ( §14.1 ), all component fields of the record class are implicitly initialized to the values of the corresponding formal parameters.
+  examples:
+    bad: |
+      record Range(int lo, int hi) {
+          Range {
+              if (lo() > hi()) {
+                  throw new IllegalArgumentException();
+              }
+          }
+      }
+    good: |
+      record Range(int lo, int hi) {
+          Range {
+              if (lo > hi) {
+                  throw new IllegalArgumentException();
+              }
+          }
+      }
+  xref:
+  - sonar:java:S3037
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-RECORD-SERIALVERSIONUID-ZERO
   title: Record declares serialVersionUID = 0L
   language: java
@@ -4768,6 +5473,54 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-REDUNDANT-CAST
+  title: Cast to a type the expression already has
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (cast_expression type: (_) @t value: (_) @v) @match
+    filters:
+    - type.eq_text:v:t
+  message: 'The value is already that type, so the cast does nothing: drop it.'
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se21/html/jls-15.html
+    doc: JLS 15.16 Cast Expressions
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: A cast expression converts, at run time, a value of one numeric type to a similar value of another numeric type
+  examples:
+    bad: |
+      class A {
+          void f(String name) {
+              String t = (String) name;
+          }
+      }
+    good: |
+      class A {
+          void f(String name) {
+              String t = name;
+          }
+      }
+    regressions:
+    - code: |
+        class A {
+            void f(Object name) {
+                String t = (String) name;
+            }
+        }
+  xref:
+  - sonar:java:S1905
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-REDUNDANT-PARENTHESES
   title: Doubled parentheses
   language: java
@@ -4781,6 +5534,8 @@ rules:
     engine: tree-sitter
     query: |
       (parenthesized_expression . (parenthesized_expression) .) @match
+    filters:
+    - parentkind.lacks_re:parenthesized_expression:.
   message: 'The extra pair of parentheses adds nothing: remove it.'
   source:
     url: https://checkstyle.org/checks/coding/unnecessaryparentheses.html
@@ -4803,6 +5558,85 @@ rules:
       }
   xref:
   - sonar:java:S1110
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-REFLECTION-ON-SOURCE-ANNOTATION
+  title: Reflection looks for an annotation that is not kept at run time
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation name: (identifier) @m arguments: (argument_list . (class_literal (type_identifier) @a) .) (#match? @m "^(isAnnotationPresent|getAnnotation|getDeclaredAnnotation|getAnnotationsByType)$") (#match? @a "^(Override|SuppressWarnings)$")) @match
+  message: '@Override and @SuppressWarnings have SOURCE retention, so reflection never sees them and this check is always false.'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/annotation/RetentionPolicy.html
+    doc: 'Java SE 21 API: RetentionPolicy'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: SOURCE Annotations are to be discarded by the compiler.
+  examples:
+    bad: |
+      class A {
+          void f(Method m) {
+              boolean o = m.isAnnotationPresent(Override.class);
+          }
+      }
+    good: |
+      class A {
+          void f(Method m) {
+              boolean d = m.isAnnotationPresent(Deprecated.class);
+          }
+      }
+  xref:
+  - sonar:java:S2109
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-REPEATABLE-ANNOTATION-WRAPPED
+  title: Repeated annotations wrapped in their container
+  language: java
+  kind: modernization
+  category: maintainability
+  severity: minor
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((annotation name: (identifier) @n arguments: (annotation_argument_list (element_value_array_initializer (annotation name: (identifier) @i)))) @match)
+    filters:
+    - cap.has_re:n:^{cap:i}s$
+  message: Since Java 8 a @Repeatable annotation can simply be written several times; the container wrapper only adds noise.
+  source:
+    url: https://docs.oracle.com/javase/tutorial/java/annotations/repeating.html
+    doc: 'Java tutorial: Repeating Annotations'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: Repeating Annotations (The Java™ Tutorials > Learning the Java Language > Annotations) A browser with JavaScript enabled is require
+  examples:
+    bad: |
+      class A {
+          @Schedules({@Schedule(hour = 1), @Schedule(hour = 2)})
+          void run() {}
+      }
+    good: |
+      class A {
+          @Schedule(hour = 1)
+          @Schedule(hour = 2)
+          void run() {}
+      }
+  xref:
+  - sonar:java:S1710
   status: active
   rule_version: 1
   tags:
@@ -5132,7 +5966,7 @@ rules:
   category: correctness
   severity: major
   applies_to:
-    java: '*'
+    java: <11
   detection:
     mode: deterministic
     engine: tree-sitter
@@ -5140,11 +5974,11 @@ rules:
       (method_invocation name: (identifier) @m (#eq? @m "runFinalizersOnExit")) @match
   message: 'This method is inherently unsafe and was removed from the JDK: use a shutdown hook.'
   source:
-    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Runtime.html
-    doc: 'Java SE 21 API: Runtime'
+    url: https://docs.oracle.com/en/java/javase/11/migrate/index.html
+    doc: 'JDK 11 Migration Guide: APIs removed'
     doc_version: Java 21
     retrieved: '2026-10-09'
-    quote: Runtime (Java SE 21 & JDK 21) JavaScript is disabled on your browser.
+    quote: For information on the possible alternatives, see JDK 11 API Specification . javax.security.auth.Policy java.lang.Runtime.runFinalizersOnExit(boolean) java.lang.SecurityManager.checkAwtEventQueueAccess() java.lang.SecurityManager.checkMemberAccess(java.lang.Cl
   examples:
     bad: |
       class A {
@@ -5159,6 +5993,7 @@ rules:
           }
       }
   xref:
+  - https://docs.oracle.com/javase/8/docs/api/java/lang/Runtime.html#runFinalizersOnExit-boolean-
   - sonar:java:S2151
   status: active
   rule_version: 1
@@ -5384,11 +6219,11 @@ rules:
     - cap.lacks_re:f:\b(static|final)\b|@
   message: 'One servlet instance serves all requests concurrently, so this field is shared and racy: keep request state in locals.'
   source:
-    url: https://jakarta.ee/specifications/servlet/6.0/apidocs/jakarta.servlet/jakarta/servlet/http/HttpServlet.html
-    doc: 'Jakarta Servlet 6.0 API: HttpServlet'
+    url: https://jakarta.ee/specifications/servlet/6.1/apidocs/jakarta.servlet/jakarta/servlet/http/HttpServlet.html
+    doc: 'Jakarta Servlet 6.1 API: HttpServlet'
     doc_version: Java 21
     retrieved: '2026-10-09'
-    quote: Servlets typically run on multithreaded servers, so be aware that a servlet must handle concurrent requests and be careful to synchronize access to s
+    quote: Likewise, there's almost no reason to override the doOptions and doTrace methods. Servlets typically run on multithreaded servers, so be aware that a servlet must handle concurrent requests and be careful to synchronize access to shared re
   examples:
     bad: |
       public class Hello extends HttpServlet {
@@ -5578,7 +6413,12 @@ rules:
     mode: ai-confirm
     engine: tree-sitter
     query: |
-      (binary_expression left: (method_invocation name: (identifier) @m arguments: (argument_list) @args) operator: ["==" "!=" ">"] right: (decimal_integer_literal) @z (#match? @m "^(size|length)$") (#match? @args "^\\(\\s*\\)$") (#eq? @z "0")) @match
+      (binary_expression left: (method_invocation object: (_) @recv name: (identifier) @m arguments: (argument_list) @args) operator: ["==" "!=" ">"] right: (decimal_integer_literal) @z (#match? @m "^(size|length)$") (#match? @args "^\\(\\s*\\)$") (#eq? @z "0")) @match
+    filters:
+    - type.not_or_unknown:recv:.*(StringBuilder|StringBuffer|CharSequence|Builder|Writer|OutputStream)\b.*
+    - cap.lacks_re:recv:(?i)(sb|buf|buffer|builder|out|accum)$
+    - cap.lacks_re:recv:\bCharSequence\b
+    - func.lacks_re:\bextends\s+CharSequence\b
   message: 'Use isEmpty(): it states the intent and is constant-time for every collection.'
   ai_question: Does the receiver type have an isEmpty() method (Collection, String, Map...)?
   source:
@@ -5600,6 +6440,36 @@ rules:
               return xs.isEmpty();
           }
       }
+    regressions:
+    - code: |
+        class A {
+            String f(StringBuilder sb) {
+                return sb.length() > 0 ? sb.toString() : null;
+            }
+        }
+    - code: |
+        class A {
+            private final ByteArrayOutputStream body = new ByteArrayOutputStream();
+            byte[] f() {
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                if (bytes.size() == 0 || body.size() > 0) {
+                    throw new IllegalStateException();
+                }
+                return bytes.toByteArray();
+            }
+        }
+    - code: |
+        class A {
+            boolean f(Object o) {
+                return ((CharSequence) o).length() == 0;
+            }
+            <T extends CharSequence> T g(T chars) {
+                if (chars.length() == 0) {
+                    throw new IllegalArgumentException();
+                }
+                return chars;
+            }
+        }
   xref:
   - sonar:java:S1155
   status: active
@@ -5794,6 +6664,7 @@ rules:
     query: |
       (interface_declaration body: (interface_body) @b) @match
     filters:
+    - node.lacks_re:\bextends\b[^{]*Repository\b
     - node.has_re:@Cach(eable|ePut|eEvict|ing|eConfig)\b
   message: 'With class-based (and AspectJ) proxies, annotations on interfaces are not seen, so caching silently stops: annotate the implementation.'
   source:
@@ -6307,6 +7178,49 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-STREAM-READ-RESULT-IGNORED
+  title: Result of InputStream/Reader read() or skip() ignored
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (expression_statement (method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list (_))) (#match? @m "^(read|skip)$")) @match
+    filters:
+    - type.is:o:InputStream|FileInputStream|BufferedInputStream|DataInputStream|ObjectInputStream|ByteArrayInputStream|PushbackInputStream|SequenceInputStream|Reader|InputStreamReader|BufferedReader|FileReader|StringReader|CharArrayReader|RandomAccessFile
+  message: 'read()/skip() may process fewer bytes than asked; ignoring the count leaves part of the buffer stale: loop on the return value or use readNBytes()/readFully().'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/io/InputStream.html
+    doc: 'Java SE 21 API: InputStream'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: 'Returns: the total number of bytes read into the buffer, or -1 if there is no more data because the end of the stream has been reached.'
+  examples:
+    bad: |
+      class A {
+          void f(InputStream in, byte[] buf) throws IOException {
+              in.read(buf);
+              use(buf);
+          }
+      }
+    good: |
+      class A {
+          void f(InputStream in, byte[] buf) throws IOException {
+              in.readNBytes(buf, 0, buf.length);
+              use(buf);
+          }
+      }
+  xref:
+  - sonar:java:S2674
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-STRING-CONCAT-IN-LOOP
   title: String built with += inside a loop
   language: java
@@ -6351,6 +7265,48 @@ rules:
       }
   xref:
   - sonar:java:S1643
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-STRING-EQUALS-BUILDER
+  title: String.equals() given a StringBuilder/StringBuffer
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation object: (_) @o name: (identifier) @m arguments: (argument_list . (_) @a .) (#eq? @m "equals")) @match
+    filters:
+    - type.is:o:String
+    - type.is:a:StringBuilder|StringBuffer|CharBuffer
+  message: 'A String is never equal to a StringBuilder/StringBuffer, so this is always false: use contentEquals() or compare buf.toString().'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html
+    doc: 'Java SE 21 API: String.contentEquals'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: only if this string contains the specified sequence of char values. boolean contentEquals ( CharSequence cs) Compares this string to the specified CharSequence .
+  examples:
+    bad: |
+      class A {
+          boolean same(String name, StringBuilder buf) {
+              return name.equals(buf);
+          }
+      }
+    good: |
+      class A {
+          boolean same(String name, StringBuilder buf) {
+              return name.contentEquals(buf);
+          }
+      }
+  xref:
+  - sonar:java:S9394
   status: active
   rule_version: 1
   tags:
@@ -6557,6 +7513,57 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-SWITCH-TOO-FEW-CASES
+  title: switch statement with fewer than three cases
+  language: java
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (block (switch_expression body: (switch_block . (switch_block_statement_group) . (switch_block_statement_group)? .) @b) @match)
+    filters:
+    - cap.lacks_re:b:(?s)(\bcase\b.*){3}
+  message: A switch with one or two branches reads more plainly as an if/else.
+  source:
+    url: https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html
+    doc: JLS 14.11 The switch Statement
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: The switch Statement The switch statement transfers control to one of several statements or expressions, depending on the value of an expression.
+  examples:
+    bad: |
+      class A {
+          void apply(int mode) {
+              switch (mode) {
+                  case 1:
+                      start();
+                      break;
+                  default:
+                      stop();
+              }
+          }
+      }
+    good: |
+      class A {
+          void apply(int mode) {
+              if (mode == 1) {
+                  start();
+              } else {
+                  stop();
+              }
+          }
+      }
+  xref:
+  - sonar:java:S1301
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-SWITCH-WITHOUT-DEFAULT
   title: switch statement has no default clause
   language: java
@@ -6618,6 +7625,102 @@ rules:
   xref:
   - checkstyle:MissingSwitchDefault
   - sonar:java:S131
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-SYNC-ON-NON-FINAL-FIELD
+  title: synchronized on a non-final field
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (synchronized_statement (parenthesized_expression [(identifier) @l (field_access object: (this) field: (identifier) @l)])) @match
+    filters:
+    - ancestor.has_re:class_body:(?m)^\s*(?:(?:private|protected|public|static|transient|volatile)\s+)+[\w<>\[\], .?]+\s+{cap:l}\s*[;=]
+    - ancestor.lacks_re:class_body:(?m)^\s*(?:\w+\s+)*final\s+(?:\w+\s+)*[\w<>\[\], .?]+\s+{cap:l}\s*[;=]
+  message: 'If the field is reassigned, threads lock different objects and the block is no longer exclusive: lock a private final field.'
+  source:
+    url: https://docs.oracle.com/javase/tutorial/essential/concurrency/locksync.html
+    doc: 'Java tutorial: Intrinsic Locks and Synchronization'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: e access to an object's state and establishing happens-before relationships that are essential to visibility. Every object has an intrinsic lock associated with it.
+  examples:
+    bad: |
+      class A {
+          private Object lock = new Object();
+          void f() {
+              synchronized (lock) {
+                  work();
+              }
+          }
+      }
+    good: |
+      class A {
+          private final Object lock = new Object();
+          void f() {
+              synchronized (lock) {
+                  work();
+              }
+          }
+      }
+  xref:
+  - sonar:java:S2445
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-SYNC-ON-VALUE-BASED
+  title: synchronized on a boxed or value-based object
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (synchronized_statement (parenthesized_expression (_) @l)) @match
+    filters:
+    - type.is:l:Integer|Long|Short|Byte|Character|Boolean|Double|Float|Optional|LocalDate|LocalTime|LocalDateTime|Instant|Duration|ZonedDateTime|OffsetDateTime
+  message: 'Boxed numbers, Boolean, Optional and java.time values can be cached and shared, so unrelated code may lock the same instance (deadlocks, contention): lock a private new Object().'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/doc-files/ValueBased.html
+    doc: 'Java SE 21 API: Value-based Classes'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: ccording to equals() produces no visible change in the behavior of the class's methods; the class performs no synchronization using an instance's monitor; the class does not declare (or has deprecated any) accessible constructors; the
+  examples:
+    bad: |
+      class A {
+          private final Integer lock = 0;
+          void f() {
+              synchronized (lock) {
+                  work();
+              }
+          }
+      }
+    good: |
+      class A {
+          private final Object lock = new Object();
+          void f() {
+              synchronized (lock) {
+                  work();
+              }
+          }
+      }
+  xref:
+  - sonar:java:S1860
+  - sonar:java:S3436
   status: active
   rule_version: 1
   tags:
@@ -6815,6 +7918,7 @@ rules:
       (method_declaration (modifiers (marker_annotation name: (identifier) @a)) body: (block) @b (#eq? @a "Test")) @match
     filters:
     - cap.lacks_re:b:(?i)\b(assert|verify|expect|fail|then|should|check|validate)\w*\s*\(|assertThat|\.andExpect\(
+    - cap.lacks_helper_re:b:(?i)\b(assert|verify|expect|fail|then|should|check|validate)\w*\s*\(|assertThat|\.andExpect\(
   message: 'The test never checks anything, so it passes whatever the code does: add assertions (or assertDoesNotThrow if that is the point).'
   ai_question: Does the test lack any check (no helper method that asserts, no expected-exception setup)?
   source:
@@ -6842,6 +7946,33 @@ rules:
               assertEquals(0, new Order().total());
           }
       }
+    regressions:
+    - code: |
+        import org.junit.jupiter.api.Test;
+
+        class OrderTest {
+            @Test
+            void total() {
+                checkTotal(new Order());
+            }
+
+            private void checkTotal(Order o) {
+                assertEquals(0, o.total());
+            }
+        }
+    - code: |
+        import org.junit.jupiter.api.Test;
+
+        class OrderTest {
+            @Test
+            void total() {
+                _testTotal(new Order());
+            }
+
+            private void _testTotal(Order o) {
+                assertEquals(0, o.total());
+            }
+        }
   xref:
   - sonar:java:S2699
   status: active
@@ -7075,6 +8206,48 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-TIMEZONE-INVALID-ID
+  title: TimeZone.getTimeZone() with an ID it does not know
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation object: (identifier) @c name: (identifier) @m arguments: (argument_list . (string_literal) @s .) (#eq? @c "TimeZone") (#eq? @m "getTimeZone")) @match
+    filters:
+    - cap.lacks_re:s:^"(GMT|UTC|UT|GMT[+-]\d{1,2}(:?\d{2})?|[A-Z][A-Za-z_]*(/[A-Za-z0-9_+-]+){1,2}|EST|MST|HST|ACT|AET|AGT|ART|AST|BET|BST|CAT|CNT|CST|CTT|EAT|ECT|IET|IST|JST|MIT|NET|NST|PLT|PNT|PRT|PST|SST|VST|EST5EDT|CST6CDT|MST7MDT|PST8PDT|CET|EET|MET|WET|UCT|Zulu|Universal|Greenwich|GB|GB-Eire|NZ|NZ-CHAT|PRC|ROK|ROC|Japan|Cuba|Egypt|Eire|Iran|Israel|Jamaica|Libya|Navajo|Poland|Portugal|Singapore|Turkey|W-SU|Hongkong|Iceland|Kwajalein|GMT0)"$
+  message: 'Unknown IDs silently become GMT, so times are off without any error: use a region ID (Europe/Paris), GMT+hh:mm, or ZoneId.of(), which throws.'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/TimeZone.html
+    doc: 'Java SE 21 API: TimeZone'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: 'Returns: the specified TimeZone , or the GMT zone if the given ID cannot be understood.'
+  examples:
+    bad: |
+      class A {
+          void f() {
+              TimeZone tz = TimeZone.getTimeZone("UTC+3");
+          }
+      }
+    good: |
+      class A {
+          void f() {
+              TimeZone tz = TimeZone.getTimeZone("GMT+3");
+              TimeZone paris = TimeZone.getTimeZone("Europe/Paris");
+          }
+      }
+  xref:
+  - sonar:java:S9363
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-TODO-COMMENT
   title: TODO comment left in the code
   language: java
@@ -7292,6 +8465,9 @@ rules:
     engine: tree-sitter
     query: |
       (method_declaration name: (identifier) @n body: (block (return_statement (null_literal)) @match) (#match? @n "^(toString|clone)$"))
+    filters:
+    - ancestor.lacks_re:method_declaration:^[^{]*\bstatic\b
+    - ancestor.has_re:method_declaration:^[^{]*\(\s*\)
   message: 'Callers (string concatenation, logging, copies) assume a non-null result: return an empty string or a real copy.'
   source:
     url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html
@@ -7370,6 +8546,50 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-UNSYNCHRONIZED-GETTER
+  title: Getter not synchronized while its setter is
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_declaration name: (identifier) @n body: (block)) @match (#match? @n "^(get|is)[A-Z]"))
+    filters:
+    - node.lacks_re:^[^{]*\bsynchronized\b
+    - node.lacks_re:synchronized\s*\(
+    - ancestor.has_re:class_body:\bsynchronized\b[^;{()]*\bset{cap:n~prop}\s*\(
+    - ancestor.lacks_re:class_body:\b(volatile|Atomic\w+)\b
+  message: 'Only the setter holds the lock, so a reader can see a stale value: synchronize the getter too (or make the field volatile).'
+  source:
+    url: https://docs.oracle.com/javase/tutorial/essential/concurrency/syncmeth.html
+    doc: 'Java tutorial: Synchronized Methods'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: First, it is not possible for two invocations of synchronized methods on the same object to interleave.
+  examples:
+    bad: |
+      class A {
+          private int size;
+          public synchronized void setSize(int s) { size = s; }
+          public int getSize() { return size; }
+      }
+    good: |
+      class A {
+          private int size;
+          public synchronized void setSize(int s) { size = s; }
+          public synchronized int getSize() { return size; }
+      }
+  xref:
+  - sonar:java:S2886
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-UNUSED-IMPORT
   title: Import is never used
   language: java
@@ -7386,6 +8606,7 @@ rules:
     filters:
     - node.lacks_re:^import\s+static\b
     - file.count_lt:2:\b{cap:name}\b
+    - node.lacks_re:\*\s*;
   message: 'Nothing in this file refers to the imported name: remove the import.'
   source:
     url: https://checkstyle.org/checks/imports/unusedimports.html
@@ -7414,6 +8635,12 @@ rules:
         /** Builds a {@link Map}. */
         class A {
         }
+    - code: |
+        import java.sql.*;
+
+        class A {
+            Connection c;
+        }
   xref:
   - checkstyle:UnusedImports
   - sonar:java:S1128
@@ -7436,6 +8663,7 @@ rules:
       (local_variable_declaration declarator: (variable_declarator name: (identifier) @name) (#not-match? @name "^(_|ignored?|unused)")) @match
     filters:
     - func.count_lt:2:\b{cap:name}\b
+    - node.lacks_re:@SuppressWarnings\(\s*\{?\s*"unused"
   message: 'This local variable is assigned but never read: remove it, or use it where it was meant to be used.'
   ai_question: Is the variable really never read (no reflection, template, or dynamic access)?
   source:
@@ -7478,9 +8706,10 @@ rules:
     mode: ai-confirm
     engine: tree-sitter
     query: |
-      (method_declaration (modifiers "private") parameters: (formal_parameters (formal_parameter name: (identifier) @name) @match) body: (block))
+      (method_declaration (modifiers "private") name: (identifier) @mname parameters: (formal_parameters (formal_parameter name: (identifier) @name) @match) body: (block))
     filters:
     - func.count_lt:2:\b{cap:name}\b
+    - file.count_lt:1:::\s*{cap:mname}\b
     - ancestor.lacks_re:method_declaration:^[^{(]*@\w+|\b(writeObject|readObject)\s*\(
   message: 'This parameter is never used inside the function: remove it from the private signature (callers are all in this file).'
   ai_question: Is the parameter unused and not required by a callback or interface signature?
@@ -7635,6 +8864,54 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-URL-EQUALS-HASHCODE
+  title: URL.equals()/hashCode() called
+  language: java
+  kind: anti-pattern
+  category: performance
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation object: (_) @o name: (identifier) @m (#match? @m "^(equals|hashCode)$")) @match
+    filters:
+    - type.is:o:URL
+  message: 'URL.equals and hashCode resolve host names over the network (slow, blocking, and different results offline): compare URI objects instead.'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/URL.html
+    doc: 'Java SE 21 API: URL'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: ame can't be resolved, the host names must be equal without regard to case; or both host names equal to null. Since hosts comparison requires name resolution, this operation is a blocking operation.
+  examples:
+    bad: |
+      class A {
+          boolean same(URL home, URL other) {
+              return home.equals(other);
+          }
+      }
+    good: |
+      class A {
+          boolean same(URL home, URL other) throws Exception {
+              return home.toURI().equals(other.toURI());
+          }
+      }
+    regressions:
+    - code: |
+        class A {
+            boolean same(URI home, URI other) {
+                return home.equals(other);
+            }
+        }
+  xref:
+  - sonar:java:S2112
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-USELESS-BIT-OPERATION
   title: Bit operation with an identity operand
   language: java
@@ -7728,13 +9005,17 @@ rules:
     engine: tree-sitter
     query: |
       (method_invocation name: (identifier) @n arguments: (argument_list (array_creation_expression value: (array_initializer)) .) (#match? @n "^(format|formatted|printf|asList)$")) @match
+    filters:
+    - node.lacks_re:\bformat\(\s*new\b
+    - node.lacks_re:\basList\(\s*([^n\s]|n[^e]|ne[^w])
+    - node.lacks_re:(?s)\basList\(\s*new\b.*\}\s*,
   message: 'The method takes varargs, so the explicit array only adds noise: pass the elements directly.'
   source:
-    url: https://docs.oracle.com/javase/8/docs/technotes/guides/language/varargs.html
-    doc: 'Java guide: Varargs'
+    url: https://docs.oracle.com/javase/specs/jls/se25/html/jls-15.html#jls-15.12.4.2
+    doc: JLS SE 25 15.12.4.2 Evaluate Arguments
     doc_version: Java 21
     retrieved: '2026-10-09'
-    quote: + "{0,number,integer}.", arguments); It is still true that multiple arguments must be passed in an array, but the varargs feature automates and hides the process.
+    quote: Identify Methods Applicable by Variable Arity Invocation 15.12.2.5.
   examples:
     bad: |
       class A {
@@ -7748,6 +9029,19 @@ rules:
               String s = String.format("%s=%d", key, value);
           }
       }
+    regressions:
+    - code: |
+        class A {
+            void f() {
+                String s = messageFormat.format(new Object[] {"a", "b"});
+            }
+        }
+    - code: |
+        class A {
+            void f() {
+                List<Object[]> rows = Arrays.asList(new Object[] {1}, new Object[] {2});
+            }
+        }
   xref:
   - sonar:java:S3878
   status: active
@@ -7884,6 +9178,47 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JAVA-MAINT-WAIT-ON-CONDITION
+  title: Object.wait()/notify() on a Condition
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (method_invocation object: (_) @o name: (identifier) @m (#match? @m "^(wait|notify|notifyAll)$")) @match
+    filters:
+    - type.is:o:Condition
+  message: 'wait()/notify() use the Condition object''s own monitor, not the lock it belongs to: call await()/signal() instead.'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/Condition.html
+    doc: 'Java SE 21 API: Condition'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: Note that Condition instances are just normal objects and can themselves be used as the target in a synchronized statement, and can have their own monitor wait and
+  examples:
+    bad: |
+      class A {
+          void f(Condition ready) throws InterruptedException {
+              ready.wait();
+          }
+      }
+    good: |
+      class A {
+          void f(Condition ready) throws InterruptedException {
+              ready.await();
+          }
+      }
+  xref:
+  - sonar:java:S1844
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JAVA-MAINT-WAIT-ON-THREAD
   title: wait/notify called on a Thread object
   language: java
@@ -7923,6 +9258,53 @@ rules:
       }
   xref:
   - sonar:java:S2236
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JAVA-MAINT-WAIT-WITH-SEVERAL-LOCKS
+  title: wait() while holding more than one lock
+  language: java
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    java: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (synchronized_statement body: (block (synchronized_statement body: (block) @inner))) @match
+    filters:
+    - cap.has_re:inner:\.wait\s*\(
+  message: 'wait() releases only the innermost monitor; the outer lock stays held while waiting, which easily deadlocks: wait with a single lock held.'
+  source:
+    url: https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html
+    doc: 'Java SE 21 API: Object.wait'
+    doc_version: Java 21
+    retrieved: '2026-10-09'
+    quote: the locks on this object are relinquished; any other objects on which the current thread may be synchronized remain locked while the thread waits.
+  examples:
+    bad: |
+      class A {
+          void f(Object a, Object b) throws InterruptedException {
+              synchronized (a) {
+                  synchronized (b) {
+                      b.wait();
+                  }
+              }
+          }
+      }
+    good: |
+      class A {
+          void f(Object b) throws InterruptedException {
+              synchronized (b) {
+                  b.wait();
+              }
+          }
+      }
+  xref:
+  - sonar:java:S3046
   status: active
   rule_version: 1
   tags:

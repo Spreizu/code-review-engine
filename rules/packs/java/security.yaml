@@ -463,6 +463,8 @@ rules:
     query: |
       ((method_invocation object: [(identifier) (field_access)] @c name: (identifier) @m arguments: (argument_list . (string_literal) @alg)) @match
         (#match? @c "MessageDigest$") (#eq? @m "getInstance") (#match? @alg "^\"(MD2|MD4|MD5|SHA|SHA1|SHA-1)\"$"))
+    filters:
+    - 'func.lacks_re:(?i)(session|cookie|token|passw|pwd|secret|nonce|otp|csrf|api_?key|salt|rememberme|credential|signature|hmac)'
   message: MD5 and SHA-1 are broken for collision resistance; use SHA-256 or stronger for integrity, and a password hash (PBKDF2, bcrypt, scrypt, Argon2) for passwords.
   ai_question: Is the digest used for a security purpose (password storage, signature, integrity of untrusted data, tokens) rather than a non-security checksum or cache key?
   source:
@@ -479,6 +481,43 @@ rules:
   - sonar:java:S4790
   - semgrep:java.lang.security.audit.crypto.use-of-md5
   - semgrep:java.lang.security.audit.crypto.use-of-sha1
+  cwe:
+  - CWE-328
+  owasp:
+  - A02:2021
+  - A04:2025
+  tags:
+  - appsec
+- id: JAVA-SEC-WEAK-HASH-SECURITY-CONTEXT
+  title: MD5 / SHA-1 / MD2 digest in a function handling passwords, tokens or signatures
+  language: java
+  kind: security
+  category: security
+  severity: major
+  precision: high
+  applies_to:
+    java: '>=8'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((method_invocation object: [(identifier) (field_access)] @c name: (identifier) @m arguments: (argument_list . (string_literal) @alg)) @match
+        (#match? @c "MessageDigest$") (#eq? @m "getInstance") (#match? @alg "^\"(MD2|MD4|MD5|SHA|SHA1|SHA-1)\"$"))
+    filters:
+    - 'func.has_re:(?i)(session|cookie|token|passw|pwd|secret|nonce|otp|csrf|api_?key|salt|rememberme|credential|signature|hmac)'
+  message: MD5/SHA-1 are broken and this function handles a password, token or signature value; use a password hash (PBKDF2, bcrypt, scrypt, Argon2) for passwords and SHA-256+ / HMAC otherwise.
+  source:
+    url: https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html
+    doc: OWASP Password Storage Cheat Sheet; JDK Security Standard Algorithm Names
+    doc_version: OWASP Cheat Sheet Series 2026
+    retrieved: '2026-10-10'
+  examples:
+    bad: |
+      class H { byte[] hashPassword(byte[] password) throws Exception { return java.security.MessageDigest.getInstance("MD5").digest(password); } }
+    good: |
+      class H { byte[] hashPassword(byte[] password) throws Exception { return java.security.MessageDigest.getInstance("SHA-256").digest(password); } }
+  xref:
+  - sonar:java:S4790
   cwe:
   - CWE-328
   owasp:

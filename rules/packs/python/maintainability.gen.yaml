@@ -86,6 +86,39 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: PY-MAINT-ANNOTATION-MISMATCH
+  title: Assigned value does not match the variable's annotation
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (assignment left: (identifier) type: (type) @t right: (_) @v) @match
+    filters:
+    - type.vs_text:v:t
+  message: 'The value''s type contradicts the annotation, so readers and type checkers are misled and later arithmetic or calls fail: fix the value or the annotation.'
+  source:
+    url: https://typing.python.org/en/latest/spec/annotations.html
+    doc: 'Python typing spec: Annotations'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: Type annotations — typing documentation Theme Auto Light Dark Table of Contents Type annotations The meaning of annotations T
+  examples:
+    bad: |
+      retries: int = "3"
+    good: |
+      retries: int = 3
+  xref:
+  - sonar:python:S5890
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: PY-MAINT-ANY-ALL-LIST-COMPREHENSION
   title: any()/all() over a list comprehension
   language: python
@@ -223,6 +256,85 @@ rules:
           return await get(url)
   xref:
   - sonar:python:S7483
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-ASYNC-WITHOUT-AWAIT
+  title: async def that never awaits
+  language: python
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (module (function_definition body: (block) @b) @match)
+    filters:
+    - node.has_re:^async\s+def
+    - cap.lacks_re:b:\bawait\b|\basync\s+(for|with)\b|\byield\b
+    - cap.lacks_re:b:^\s*((\x22\x22\x22[\s\S]*?\x22\x22\x22|\x27\x27\x27[\s\S]*?\x27\x27\x27)\s*)?(pass|\.\.\.|raise\s+NotImplementedError\b[^\n]*)\s*$
+  message: 'Nothing in this coroutine awaits, so callers must await a function that never yields to the event loop: make it a plain def or await the real async work.'
+  source:
+    url: https://docs.python.org/3/reference/compound_stmts.html
+    doc: 'Python reference: Coroutine function definition'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: Coroutines 8.9.1. Coroutine function definition 8.9.2.
+  examples:
+    bad: |
+      async def total(items):
+          return sum(items)
+    good: |
+      def total(items):
+          return sum(items)
+  xref:
+  - sonar:python:S7503
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-AWAIT-NON-AWAITABLE
+  title: await applied to a plain value
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (await (_) @e) @match
+    filters:
+    - type.is:e:str|int|float|bool|list|dict|tuple|set|bytes
+  message: 'The awaited value is a str/number/collection, not an awaitable, so this raises TypeError: drop await or await a real coroutine.'
+  source:
+    url: https://docs.python.org/3/reference/expressions.html
+    doc: 'Python reference: Await expression'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: Suspend the execution of coroutine on an awaitable object.
+  examples:
+    bad: |
+      async def f():
+          n = 3
+          return await n
+    good: |
+      async def f():
+          n = 3
+          return n
+    regressions:
+    - code: |
+        async def f():
+            n = fetch()
+            return await n
+  xref:
+  - sonar:python:S3862
   status: active
   rule_version: 1
   tags:
@@ -483,6 +595,43 @@ rules:
       soup = BeautifulSoup(html, "html.parser")
   xref:
   - sonar:python:S8905
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-CALL-NON-CALLABLE
+  title: Calling a value of a built-in non-callable type
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call function: (identifier) @f) @match
+    filters:
+    - type.is:f:str|int|float|bool|list|dict|tuple|set|bytes|complex|frozenset
+  message: 'This name holds a str/number/collection, so calling it raises TypeError: drop the parentheses or call the intended function.'
+  source:
+    url: https://docs.python.org/3/library/exceptions.html
+    doc: 'Python docs: TypeError'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: (Defaults to None .) exception TypeError ¶ Raised when an operation or function is applied to an object of inappropriate type.
+  examples:
+    bad: |
+      def f():
+          total = 0
+          return total()
+    good: |
+      def f():
+          total = 0
+          return total
+  xref:
+  - sonar:python:S5756
   status: active
   rule_version: 1
   tags:
@@ -898,6 +1047,8 @@ rules:
     engine: tree-sitter
     query: |
       (if_statement condition: [(true) (false) (none) (integer) (string) (list) (dictionary) (tuple)]) @match
+    filters:
+    - node.lacks_re:^if\s+(0|False)\s*:\s*yield\s*$
   message: 'The condition is always true or always false, so one branch is dead: remove the if, or use a named flag if it is a toggle.'
   source:
     url: https://docs.python.org/3/reference/compound_stmts.html
@@ -914,6 +1065,11 @@ rules:
       def f(enabled):
           if enabled:
               debug()
+    regressions:
+    - code: |
+        def worker():
+            if 0:
+                yield
   xref:
   - sonar:python:S5797
   status: active
@@ -1057,7 +1213,8 @@ rules:
                   if c:
                       if d:
                           if e:
-                              g()
+                              if f:
+                                  g()
           return 0
     good: |
       def f(a, b, c, d, e):
@@ -1074,7 +1231,7 @@ rules:
   - sonar:python:S134
   params:
     max:
-      default: 4
+      default: 5
       from:
       - ruff:PLR1702.max
       - pylint:too-many-nested-blocks.max
@@ -1218,6 +1375,43 @@ rules:
               print(name, price)
   xref:
   - sonar:python:S7517
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-DICT-UNPACK-NON-MAPPING
+  title: '** unpacking of a value that is not a mapping'
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (dictionary_splat (_) @v) @match
+    filters:
+    - type.is:v:list|tuple|str|int|float|bool|set|bytes|frozenset
+  message: '** needs a mapping; a list/str/number raises TypeError at run time: unpack a dict (or use * for sequences).'
+  source:
+    url: https://docs.python.org/3/reference/expressions.html
+    doc: 'Python reference: Expressions'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: ', * numbers ] [1, 2, ''word'', 1, 2] Dictionary displays use a similar mechanism called dictionary unpacking , denoted with a double asterisk ( ** ).'
+  examples:
+    bad: |
+      def f(g):
+          opts = ["a", "b"]
+          return g(**opts)
+    good: |
+      def f(g):
+          opts = {"a": 1}
+          return g(**opts)
+  xref:
+  - sonar:python:S5633
   status: active
   rule_version: 1
   tags:
@@ -1391,8 +1585,9 @@ rules:
     query: |
       (block . (pass_statement) .) @match
     filters:
-    - parentkind.has_re:if_statement|elif_clause|else_clause|for_statement|while_statement|with_statement|finally_clause:.
-    - parentkind.lacks_re:if_statement|elif_clause|else_clause|for_statement|while_statement|with_statement|finally_clause:#
+    - parentkind.has_re:if_statement|elif_clause|else_clause|while_statement|finally_clause:.
+    - parentkind.lacks_re:if_statement|elif_clause|else_clause|while_statement|finally_clause:#
+    - ancestor.lacks_re:if_statement:(?m)^\s*(elif\b|else\s*:)
   message: 'This block is empty and has no comment saying why: add the missing code, remove the block, or explain the intent in a comment.'
   source:
     url: https://docs.python.org/3/reference/simple_stmts.html
@@ -1420,6 +1615,18 @@ rules:
     - code: |
         class Skip(Exception):
             pass
+    - code: |
+        def consume(it):
+            for _ in it:
+                pass
+    - code: |
+        def f(a):
+            if a == 1:
+                pass
+            elif a == 2:
+                g()
+            else:
+                h()
   xref:
   - sonar:python:S108
   status: active
@@ -1944,6 +2151,11 @@ rules:
   detection:
     mode: ai-confirm
     engine: tree-sitter
+    files:
+    - '!**/tests/**'
+    - '!**/test/**'
+    - '!**/test_*.py'
+    - '!**/*_test.py'
     query: |
       (string) @match
     filters:
@@ -1985,7 +2197,9 @@ rules:
     query: |
       [(comparison_operator (_) @l ["<" ">" "<=" ">=" "is"] (_) @r (#eq? @l @r)) (boolean_operator left: (_) @l right: (_) @r (#eq? @l @r)) (binary_operator left: (_) @l operator: ["-" "/" "%" "^" "&" "|" "//"] right: (_) @r (#eq? @l @r))] @match
     filters:
+    - cap.lacks_re:l:(^|\.)[A-Z][a-z]\w*$
     - cap.lacks_re:l:[(]|\+\+|--|\bawait\b|^[\d.]+$
+    - cap.lacks_re:l:^(true|false|True|False|null|nil|None|-?\d[\w.]*|'[^']*'|\x22[^\x22]*\x22)$
   message: Both operands are the same expression, so the result is constant (or the second operand was meant to be something else).
   source:
     url: https://docs.astral.sh/ruff/rules/comparison-with-itself/
@@ -2006,7 +2220,46 @@ rules:
             return next(it) - next(it)
   xref:
   - ruff:PLR0124
+  - pylint:comparison-with-itself
   - sonar:python:S1764
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-IDENTITY-DISSIMILAR-TYPES
+  title: is / is not between values of different built-in types
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (comparison_operator . (_) @a . (_) @b .) @match
+    filters:
+    - node.has_re:\sis\s
+    - type.differ:a:b
+  message: 'Two values of different built-in types are never the same object, so this is constant: compare values with ==, converting first.'
+  source:
+    url: https://docs.python.org/3/reference/expressions.html
+    doc: 'Python reference: Identity comparisons'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: The operators is and is not test for an object's identity
+  examples:
+    bad: |
+      def f(code: int):
+          label = "200"
+          return code is label
+    good: |
+      def f(code: int):
+          label = "200"
+          return str(code) == label
+  xref:
+  - sonar:python:S3403
   status: active
   rule_version: 1
   tags:
@@ -2058,7 +2311,9 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (expression_statement [(call function: (attribute attribute: (identifier) @m)) (call function: (identifier) @m)] (#match? @m "^(strip|lstrip|rstrip|upper|lower|casefold|title|capitalize|swapcase|removeprefix|removesuffix|zfill|sorted)$")) @match
+      (expression_statement [(call function: (attribute object: (_) @recv attribute: (identifier) @m)) (call function: (identifier) @m)] (#match? @m "^(strip|lstrip|rstrip|upper|lower|casefold|title|capitalize|swapcase|removeprefix|removesuffix|zfill|sorted)$")) @match
+    filters:
+    - type.is:recv:str|bytes
   message: 'This call returns a new value and changes nothing; discarding the result means the statement has no effect: assign or use it.'
   source:
     url: https://docs.python.org/3/library/stdtypes.html
@@ -2068,13 +2323,21 @@ rules:
     quote: ng' . startswith ( 'is' , 7 ) True See also endswith() and removeprefix() . str. strip ( chars = None , / ) ¶ Return a copy of the string with the leading and trailing characters removed.
   examples:
     bad: |
-      def f(s):
+      def f(s: str):
           s.strip()
           use(s)
     good: |
-      def f(s):
+      def f(s: str):
           s = s.strip()
           use(s)
+    regressions:
+    - code: |
+        from rich.text import Text
+
+        def f():
+            t = Text("x ")
+            t.rstrip()
+            return t
   xref:
   - sonar:python:S2201
   status: active
@@ -2147,6 +2410,77 @@ rules:
       COLORS = ["red", "green", "blue"]
   xref:
   - sonar:python:S5799
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-IN-NON-CONTAINER
+  title: in / not in against a number or bool
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (comparison_operator . (_) . (_) @r .) @match
+    filters:
+    - node.has_re:\sin\s
+    - type.is:r:int|float|bool|complex
+  message: 'Numbers and bools are not containers, so the membership test raises TypeError: test against a collection or use a comparison.'
+  source:
+    url: https://docs.python.org/3/reference/expressions.html
+    doc: 'Python reference: Membership test operations'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: he __contains__() method, x in y returns True if y.__contains__(x) returns a true value, and False otherwise. For user-defined classes which do not define __contains__() but do define __iter__() , x in y is True if some value z , for which the expression x is z or x == z is true
+  examples:
+    bad: |
+      def f(x, limit: int):
+          return x in limit
+    good: |
+      def f(x, limit: int):
+          return x < limit
+  xref:
+  - sonar:python:S5642
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-INCOMPATIBLE-ADDITION
+  title: + between incompatible built-in types
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (binary_operator left: (_) @a operator: "+" right: (_) @b) @match
+    filters:
+    - type.differ:a:b
+  message: 'Adding these types raises TypeError at run time (for example str + int): convert one side first.'
+  source:
+    url: https://docs.python.org/3/library/exceptions.html
+    doc: 'Python docs: TypeError'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: (Defaults to None .) exception TypeError ¶ Raised when an operation or function is applied to an object of inappropriate type.
+  examples:
+    bad: |
+      def label(count: int):
+          return "items: " + count
+    good: |
+      def label(count: int):
+          return "items: " + str(count)
+  xref:
+  - sonar:python:S5607
   status: active
   rule_version: 1
   tags:
@@ -2749,8 +3083,9 @@ rules:
     query: |
       (class_definition body: (block (function_definition name: (identifier) @f parameters: (parameters . (identifier) @p)) @match))
     filters:
-    - cap.lacks_re:p:^(self|cls|_\w*|mcs|mcls|metacls|klass)$
+    - cap.lacks_re:p:^(self|cls|_\w*|mcs|mcls|metacls|klass|self_\w*)$
     - cap.lacks_re:f:^__(new|init_subclass|class_getitem|prepare)__$
+    - ancestor.lacks_re:class_definition:^class\s+\w+\s*\([^)]*\bInterface\b
   message: Readers and tools rely on self naming the instance; a different first name hides that this is an instance method (or a forgotten @staticmethod).
   source:
     url: https://docs.python.org/3/tutorial/classes.html
@@ -2767,7 +3102,16 @@ rules:
       class A:
           def size(self):
               return self.n
+    regressions:
+    - code: |
+        from zope.interface import Interface
+
+        class ISpiderLoader(Interface):
+            def load(spider_name):
+                pass
   xref:
+  - ruff:N805
+  - pylint:no-self-argument
   - sonar:python:S5720
   status: active
   rule_version: 1
@@ -2788,6 +3132,7 @@ rules:
       (class_definition body: (block (function_definition parameters: (parameters) @p) @match))
     filters:
     - cap.has_re:p:^\(\s*\)$
+    - ancestor.lacks_re:class_definition:^class\s+\w+\s*\([^)]*\bInterface\b
   message: 'An undecorated method always receives the instance, so calling one with no parameters raises TypeError: add self or mark it @staticmethod.'
   source:
     url: https://docs.python.org/3/tutorial/classes.html
@@ -2804,7 +3149,15 @@ rules:
       class A:
           def size(self):
               return 1
+    regressions:
+    - code: |
+        from zope.interface import Interface
+
+        class ISpiderLoader(Interface):
+            def list():
+                pass
   xref:
+  - pylint:no-method-argument
   - sonar:python:S5719
   status: active
   rule_version: 1
@@ -3155,9 +3508,11 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (assignment right: (call function: [(attribute attribute: (identifier) @m) (identifier) @m]) (#match? @m "^(append|extend|insert|sort|reverse|print)$")) @match
+      ((assignment right: (call function: (attribute object: (_) @recv attribute: (identifier) @m))) @match (#match? @m "^(append|extend|insert|sort|reverse)$"))
+      ((assignment right: (call function: (identifier) @m)) @match (#eq? @m "print"))
     filters:
     - node.lacks_re:\b(self|cls)\.\w+\s*=\s*\w+\.(append|extend|insert)\b
+    - type.is:recv:list(\[.*\])?|List(\[.*\])?
   message: 'These calls work in place (or just write output) and return None, so the variable becomes None: call it as a statement or use sorted()/a copy.'
   source:
     url: https://docs.python.org/3/library/stdtypes.html
@@ -3167,9 +3522,24 @@ rules:
     quote: The methods that add, subtract, or rearrange their members in place, and don’t return a specific item, never return the collection instance itself but None .
   examples:
     bad: |
-      items = items.sort()
+      def f(items: list):
+          ordered = items.sort()
+          return ordered
     good: |
-      items.sort()
+      def f(items: list):
+          items.sort()
+          return items
+    regressions:
+    - code: |
+        from django.urls import reverse
+
+        def f():
+            url = reverse("home")
+            return url
+    - code: |
+        def f(client):
+            video = client.videos.extend(prompt="x")
+            return video
   xref:
   - sonar:python:S3699
   status: active
@@ -3302,9 +3672,10 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (block (expression_statement (assignment left: (subscript) @l)) @match . (expression_statement (assignment left: (subscript) @l2 right: (_) @r)) (#eq? @l @l2) (#match? @l "\\[\\s*(['\"][^'\"]*['\"]|[0-9]+)\\s*\\]$"))
+      (block (expression_statement (assignment left: (subscript value: (_) @obj) @l)) @match . (expression_statement (assignment left: (subscript) @l2 right: (_) @r)) (#eq? @l @l2) (#match? @l "\\[\\s*(['\"][^'\"]*['\"]|[0-9]+)\\s*\\]$"))
     filters:
     - cap.lacks_re:r:{cap:l}
+    - type.is:obj:dict|list|OrderedDict|defaultdict|Counter
   message: 'The same key/index is assigned twice in consecutive statements, so the first value is lost: fix the key or drop the first write.'
   source:
     url: https://docs.python.org/3/library/stdtypes.html
@@ -3314,13 +3685,18 @@ rules:
     quote: A different __missing__() method is used by collections.defaultdict . d[key] = value Set d[key] to value .
   examples:
     bad: |
-      def f(d):
+      def f(d: dict):
           d["a"] = 1
           d["a"] = 2
     good: |
-      def f(d):
+      def f(d: dict):
           d["a"] = 1
           d["b"] = 2
+    regressions:
+    - code: |
+        def f(t):
+            t["a"] = 1
+            t["a"] = 2
   xref:
   - sonar:python:S4143
   status: active
@@ -3477,10 +3853,11 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (decorated_definition (decorator (identifier) @d) definition: (function_definition) @match (#eq? @d "property"))
+      (decorated_definition (decorator (identifier) @d) definition: (function_definition body: (block) @b) @match (#eq? @d "property"))
     filters:
     - node.lacks_re:\b(return|raise|yield)\b
     - node.lacks_re:(?m)^\s*(\.\.\.|pass)\s*$
+    - cap.lacks_re:b:^\s*(\"\"\"[\s\S]*?\"\"\"|'\'\'[\s\S]*?'\'\'|\"[^\"\n]*\")?\s*(\.\.\.|pass)?\s*(#.*)?$
   message: The getter never returns, so the property always reads as None.
   source:
     url: https://docs.python.org/3/library/functions.html
@@ -3499,6 +3876,16 @@ rules:
           @property
           def size(self):
               return len(self.items)
+    regressions:
+    - code: |
+        class P(Protocol):
+            @property
+            def name(self) -> str: ...
+    - code: |
+        class P(Protocol):
+            @property
+            def name(self) -> str:
+                """The name."""
   xref:
   - sonar:python:S8504
   status: active
@@ -3517,10 +3904,9 @@ rules:
     mode: deterministic
     engine: tree-sitter
     query: |
-      (decorated_definition (decorator) @d definition: (function_definition) @match)
+      (decorated_definition (decorator) @d definition: (function_definition body: [(block (expression_statement (yield)) (expression_statement (yield))) (block (with_statement body: (block (expression_statement (yield)) (expression_statement (yield)))))]) @match)
     filters:
     - cap.has_re:d:fixture
-    - node.has_re:\byield\b[\s\S]*\byield\b
   message: pytest drives a yield fixture exactly once; a second yield makes teardown fail.
   source:
     url: https://docs.pytest.org/en/stable/how-to/fixtures.html
@@ -3540,6 +3926,28 @@ rules:
           conn = connect()
           yield conn
           conn.close()
+    regressions:
+    - code: |
+        @pytest.fixture
+        def m(request):
+            if request.param:
+                yield 1
+            else:
+                yield 2
+    - code: |
+        @pytest.fixture
+        def f():
+            def inner():
+                yield 1
+                yield 2
+            return inner
+    - code: |
+        @pytest.fixture
+        def files(p):
+            p.write_text("""
+        yield
+        yield
+        """)
   xref:
   - sonar:python:S8994
   status: active
@@ -3731,6 +4139,8 @@ rules:
     engine: tree-sitter
     query: |
       (parenthesized_expression . (parenthesized_expression) .) @match
+    filters:
+    - parentkind.lacks_re:parenthesized_expression:.
   message: 'The extra pair of parentheses adds nothing: remove it.'
   source:
     url: https://docs.python.org/3/reference/compound_stmts.html
@@ -3786,6 +4196,41 @@ rules:
   xref:
   - ruff:SIM103
   - sonar:python:S1126
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-RETURN-HINT-MISMATCH
+  title: Returned value does not match the return annotation
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (function_definition return_type: (type) @t body: (block (return_statement (_) @v) @match))
+    filters:
+    - type.vs_text:v:t
+  message: 'The returned value''s type contradicts the declared return type, so callers relying on the hint break: return the declared type or fix the hint.'
+  source:
+    url: https://typing.python.org/en/latest/spec/annotations.html
+    doc: 'Python typing spec: Annotations'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: Type annotations — typing documentation Theme Auto Light Dark Table of Contents Type annotations The meaning of annotations T
+  examples:
+    bad: |
+      def port() -> int:
+          return "8080"
+    good: |
+      def port() -> int:
+          return 8080
+  xref:
+  - sonar:python:S5886
   status: active
   rule_version: 1
   tags:
@@ -4165,6 +4610,7 @@ rules:
     query: |
       (raise_statement [(identifier) @e (call function: (identifier) @e)] (#eq? @e "StopIteration")) @match
     filters:
+    - func.lacks_re:^\s*(async\s+)?def\s+__next__\b
     - func.has_re:\byield\b
   message: 'Inside a generator a raised StopIteration becomes RuntimeError: use return to finish.'
   source:
@@ -4189,6 +4635,48 @@ rules:
   xref:
   - ruff:PLR1708
   - sonar:python:S8493
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-SUBSCRIPT-NON-CONTAINER
+  title: Subscript on a number or bool
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (subscript value: (_) @v) @match
+    filters:
+    - type.is:v:int|float|bool|complex
+  message: 'Numbers and bools are not subscriptable, so this raises TypeError: index a sequence or mapping.'
+  source:
+    url: https://docs.python.org/3/reference/expressions.html
+    doc: 'Python reference: Subscriptions'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: __getitem__() or __class_getitem__() special method
+  examples:
+    bad: |
+      def f(n: int):
+          return n[0]
+    good: |
+      def f(n: int):
+          return n
+    regressions:
+    - code: |
+        def f(n: list):
+            return n[0]
+    - code: |
+        def f(n: str):
+            return n[0]
+  xref:
+  - sonar:python:S5644
   status: active
   rule_version: 1
   tags:
@@ -4240,7 +4728,7 @@ rules:
       (except_clause value: [(identifier) @e (as_pattern (identifier) @e)]) @match
     filters:
     - cap.has_re:e:^(SystemExit|BaseException)$
-    - node.lacks_re:\braise\b|sys\.exit|os\._exit
+    - node.lacks_re:\b(re)?raise\b|sys\.exit|os\._exit|\.code\b|exc_info|ExceptionInfo\(
   message: 'Swallowing SystemExit (or BaseException) stops sys.exit() and Ctrl-C from ending the program: re-raise it.'
   source:
     url: https://docs.python.org/3/library/exceptions.html
@@ -4262,6 +4750,17 @@ rules:
           except SystemExit:
               log("exit")
               raise
+    regressions:
+    - code: |
+        try:
+            run()
+        except BaseException:
+            reraise(*capture())
+    - code: |
+        try:
+            main()
+        except SystemExit as e:
+            code = e.code
   xref:
   - sonar:python:S5754
   status: active
@@ -4299,6 +4798,40 @@ rules:
   xref:
   - ruff:RUF006
   - sonar:python:S7502
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-TEMPLATE-STRING-CONCAT
+  title: t-string concatenated with a plain string
+  language: python
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (binary_operator left: (string) operator: "+" right: (string)) @match
+    filters:
+    - node.has_re:(^|\+\s*)[rR]?[tT][rR]?[\x22']
+    - node.has_re:(^|\+\s*)[rRbBfFuU]{0,2}[\x22']
+  message: 'Template (t-string) objects cannot be concatenated with str (TypeError): put the text inside the t-string or process the template first.'
+  source:
+    url: https://docs.python.org/3/library/string.templatelib.html
+    doc: 'Python docs: string.templatelib'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: string.templatelib — Support for template string literals — Python 3.15.0 documentation Theme Auto Light Dark Table of Conten
+  examples:
+    bad: |
+      page = t"<p>{name}</p>" + "<hr>"
+    good: |
+      page = t"<p>{name}</p><hr>"
+  xref:
+  - sonar:python:S7943
   status: active
   rule_version: 1
   tags:
@@ -4527,6 +5060,7 @@ rules:
       (block [(return_statement) (raise_statement) (break_statement) (continue_statement)] . (_) @match)
     filters:
     - node.lacks_re:^#
+    - node.lacks_re:^yield\b
   message: 'This statement follows an unconditional return, raise/throw, break or continue in the same block, so it never runs: remove it or move it before the jump.'
   source:
     url: https://docs.python.org/3/reference/simple_stmts.html
@@ -4548,8 +5082,55 @@ rules:
         def f(x):
             return x * 2
             # trailing note
+    - code: |
+        def empty():
+            return
+            yield  # keeps this a generator
   xref:
+  - pylint:unreachable
   - sonar:python:S1763
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: PY-MAINT-UNREAD-PRIVATE-ATTRIBUTE
+  title: Private attribute is assigned but never read
+  language: python
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    python: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((assignment left: (attribute object: (identifier) @s attribute: (identifier) @a)) @match (#eq? @s "self") (#match? @a "^__[A-Za-z0-9]") (#not-match? @a "__$"))
+    filters:
+    - ancestor.lacks_re:class_definition:self\.{cap:a}\b(\s*[^=\s]|\s*==)
+  message: 'A double-underscore attribute can only be read inside this class, and nothing here reads it: remove it or use it.'
+  source:
+    url: https://docs.python.org/3/tutorial/classes.html
+    doc: 'Python tutorial: Private Variables'
+    doc_version: Python 3.14
+    retrieved: '2026-10-09'
+    quote: ame clashes of names with names defined by subclasses), there is limited support for such a mechanism, called name mangling .
+  examples:
+    bad: |
+      class Job:
+          def __init__(self, name):
+              self.name = name
+              self.__retries = 3
+    good: |
+      class Job:
+          def __init__(self, name):
+              self.__retries = 3
+
+          def retry(self):
+              self.__retries -= 1
+              return self.__retries
+  xref:
+  - sonar:python:S4487
   status: active
   rule_version: 1
   tags:
@@ -4569,7 +5150,9 @@ rules:
       (expression_statement (assignment left: (identifier) @name) @match (#not-match? @name "^_"))
     filters:
     - node.has_ancestor:function_definition
-    - func.count_lt:2:\b{cap:name}\b
+    - ancestor.has_re:function_definition|class_definition:^(async\s+)?def\b
+    - node.has_re:=
+    - func.count_lt:2:(^|[^\p{L}\p{N}_]){cap:name}($|[^\p{L}\p{N}_])
     - func.lacks_re:\b(locals|vars|eval|exec)\(|\b(global|nonlocal)\b
   message: 'This local variable is assigned but never read: remove it, or use it where it was meant to be used.'
   ai_question: Is the variable really never read (no reflection, template, or dynamic access)?
@@ -4589,6 +5172,15 @@ rules:
           total = a + 1
           return total * 2
     regressions:
+    - code: |
+        def t():
+            class Meta:
+                model = User
+            return Meta
+    - code: |
+        def f(v):
+            Ø = set()
+            return g(v, parens=Ø)
     - code: |
         TOTAL = 1
     - code: |

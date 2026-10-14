@@ -627,6 +627,52 @@ rules:
   rule_version: 1
   tags:
   - appsec
+- id: JS-SEC-IDOR-FIND-BY-ID
+  title: findById with a request path id and no owner check
+  language: javascript
+  kind: security
+  category: security
+  severity: major
+  applies_to:
+    ecmascript: '>=2015'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((call_expression function: (member_expression property: (property_identifier) @m) arguments: (arguments (member_expression object: (member_expression object: (identifier) @r property: (property_identifier) @p) property: (property_identifier)))) @match (#match? @m "^(findById|findByIdAndUpdate|findByIdAndDelete|findByIdAndRemove)$") (#match? @r "^(req|request)$") (#eq? @p "params"))
+    exclude_tests: true
+  message: The object is loaded by a client-supplied id with no owner/tenant check in this handler, so any authenticated user who can guess or enumerate ids can read or change someone else's record (BOLA/IDOR). Look the object up by id and owner together, or deny when it is not the caller's.
+  ai_question: Does this load, update or delete a record identified by a client-supplied id without checking that the authenticated caller may access that object?
+  source:
+    url: https://owasp.org/API-Security/editions/2023/en/0xa1-broken-object-level-authorization/
+    doc: findById with a request path id and no owner check
+    doc_version: OWASP API Security Top 10 2023
+    retrieved: '2026-10-09'
+    quote: Attackers can exploit API endpoints that are vulnerable to broken object-level authorization by manipulating the ID of an object that is sent within the request.
+  examples:
+    bad: |
+      app.get('/orders/:id', async (req, res) => {
+        res.json(await Order.findById(req.params.id))
+      })
+    good: |
+      app.get('/orders/:id', async (req, res) => {
+        res.json(await Order.findOne({ _id: req.params.id, owner: req.user.id }))
+      })
+    regressions:
+    - code: |
+        app.get('/me', async (req, res) => {
+          res.json(await User.findById(req.user.id))
+        })
+  cwe:
+  - CWE-639
+  owasp:
+  - API1:2023
+  asvs:
+  - V8.2.2
+  status: active
+  rule_version: 1
+  tags:
+  - appsec
 - id: JS-SEC-JWT-ALG-NONE
   title: JWT verification accepts the 'none' algorithm
   language: javascript

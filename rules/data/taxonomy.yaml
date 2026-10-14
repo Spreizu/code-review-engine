@@ -14,6 +14,14 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  ANDROID-SEC-CLEAR-FLAG-SECURE:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-200
+    owasp:
+    - A01:2021
+    - A01:2025
   ANDROID-SEC-CLEARTEXT-TRAFFIC:
     asvs:
     - V12.2
@@ -63,6 +71,30 @@ rules:
     owasp:
     - A09:2021
     - A09:2025
+  ANDROID-SEC-LOW-MIN-SDK:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-16
+    owasp:
+    - A05:2021
+    - A02:2025
+  ANDROID-SEC-LOW-MIN-SDK-GROOVY:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-16
+    owasp:
+    - A05:2021
+    - A02:2025
+  ANDROID-SEC-LOW-MIN-SDK-KTS:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-16
+    owasp:
+    - A05:2021
+    - A02:2025
   ANDROID-SEC-NSC-CLEARTEXT:
     asvs:
     - V12.2
@@ -84,6 +116,14 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  ANDROID-SEC-PASSWORD-NO-FLAG-SECURE:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-200
+    owasp:
+    - A01:2021
+    - A01:2025
   ANDROID-SEC-PREFS-PLAINTEXT-SECRET:
     asvs:
     - V13.3.1
@@ -119,477 +159,33 @@ rules:
     - CWE-732
     owasp:
     - A01:2025
-  GO-SEC-ATOI-NARROWING:
+  COMPOSER-MIG-BLOCK-INSECURE-DEPRECATED:
     asvs:
-    - V1.4
-    - V1.4.2
+    - V15.2
+    - V15.4.3
     cwe:
-    - CWE-190
-    - CWE-681
-  GO-SEC-ERR-TO-CLIENT:
-    asvs:
-    - V16.5
-    - V16.5.1
-    cwe:
-    - CWE-209
+    - CWE-477
     owasp:
-    - A04:2021
-    - A10:2025
-  GO-SEC-HARDCODED-CRYPTO-KEY:
+    - A03:2025
+  COMPOSER-SEC-ALLOW-ALL-PLUGINS:
     asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
+    - V15.2
+    - V15.2.4
     cwe:
-    - CWE-321
-    - CWE-798
-    owasp:
-    - A02:2021
-    - A07:2021
-    - A04:2025
-    - A07:2025
-  GO-SEC-LOG-SECRET:
-    asvs:
-    - V13.3.1
-    - V14.2
-    - V16.2
-    - V16.2.5
-    cwe:
-    - CWE-532
-    - CWE-312
-    owasp:
-    - A04:2021
-    - A09:2021
-    - A06:2025
-    - A09:2025
-  GO-SEC-STATIC-IV:
-    asvs:
-    - V11.3
-    - V11.3.4
-    cwe:
-    - CWE-329
-    - CWE-1204
-    owasp:
-    - A02:2021
-    - A04:2025
-  GO-SEC-TLS-INSECURE-CIPHER:
-    asvs:
-    - V11.2.3
-    - V11.3
-    - V11.3.2
-    - V11.4.1
-    - V11.4.2
-    - V11.4.3
-    - V12.1.2
-    cwe:
-    - CWE-327
-    owasp:
-    - A02:2021
-    - A04:2025
-  GO-SEC-WS-ANY-ORIGIN:
-    asvs:
-    - V4.4
-    - V4.4.2
-    cwe:
-    - CWE-1385
-  JAVA-SEC-FORMAT-STRING-VARIABLE:
-    asvs:
-    - V1.2
-    - V1.2.4
-    - V1.3.10
-    cwe:
-    - CWE-134
-  JAVA-SEC-HEADER-FROM-REQUEST:
-    asvs:
-    - V1.2
-    - V1.2.2
-    - V4.2.5
-    cwe:
-    - CWE-113
-    owasp:
-    - A03:2021
-    - A05:2025
-  JAVA-SEC-HTTP-URL:
-    asvs:
-    - V12.2
-    - V12.2.1
-    - V12.3.1
-    cwe:
-    - CWE-319
-    owasp:
-    - A02:2021
-    - A04:2025
-  JAVA-SEC-JNDI-LOOKUP-DYNAMIC:
-    asvs:
-    - V1.3
-    - V1.3.8
-    cwe:
-    - CWE-74
-    owasp:
-    - A03:2021
-    - A05:2025
-  JAVA-SEC-LOG-SECRET:
-    asvs:
-    - V16.2
-    - V16.2.5
-    cwe:
-    - CWE-532
-    owasp:
-    - A09:2021
-    - A09:2025
-  JAVA-SEC-SPEL-DYNAMIC:
-    asvs:
-    - V1.3
-    - V1.3.5
-    cwe:
-    - CWE-917
-    owasp:
-    - A03:2021
-    - A05:2025
-  JAVA-SEC-SPRING-HEADERS-OFF:
-    asvs:
-    - V3.4
-    - V3.4.1
-    - V3.4.4
-    cwe:
-    - CWE-693
-    owasp:
-    - A06:2025
-  JAVA-SEC-STACKTRACE-TO-RESPONSE:
-    asvs:
-    - V16.5
-    - V16.5.1
-    cwe:
-    - CWE-209
-    owasp:
-    - A04:2021
-    - A10:2025
-  JAVA-SEC-STATIC-IV:
-    asvs:
-    - V11.3
-    - V11.3.4
-    cwe:
-    - CWE-329
-    - CWE-1204
-    owasp:
-    - A02:2021
-    - A04:2025
-  JAVA-SEC-TIMING-COMPARE:
-    asvs:
-    - V11.2
-    - V11.2.4
-    cwe:
-    - CWE-208
-  JS-SEC-COOKIE-SAMESITE-NONE:
-    asvs:
-    - V3.3
-    - V3.3.2
-    - V3.5
-    - V3.5.1
-    cwe:
-    - CWE-1275
-    - CWE-352
-    owasp:
-    - A01:2021
-    - A01:2025
-  JS-SEC-DEEP-MERGE-REQUEST:
-    asvs:
-    - V15.3
-    - V15.3.6
-    cwe:
-    - CWE-1321
-  JS-SEC-EXPRESS-POWERED-BY:
-    asvs:
-    - V13.4
-    - V13.4.6
-    - V16.5.1
-    cwe:
-    - CWE-497
-    owasp:
-    - A01:2021
-    - A01:2025
-  JS-SEC-GRAPHQL-INTROSPECTION:
-    asvs:
-    - V4.3.2
-    - V13.4
-    cwe:
-    - CWE-200
-    owasp:
-    - A01:2021
-    - A01:2025
-  JS-SEC-HARDCODED-CRYPTO-KEY:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-321
-    - CWE-798
-    owasp:
-    - A02:2021
-    - A07:2021
-    - A04:2025
-    - A07:2025
-  JS-SEC-HARDCODED-SECRET:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  JS-SEC-HELMET-HEADER-OFF:
-    asvs:
-    - V3.4
-    - V3.4.1
-    - V3.4.3
-    - V3.4.4
-    - V3.4.5
-    - V3.4.8
-    cwe:
-    - CWE-693
-    owasp:
-    - A06:2025
-  JS-SEC-JWT-ALG-NONE:
-    asvs:
-    - V6.8.2
-    - V9.1
-    - V9.1.1
-    - V9.1.2
-    cwe:
-    - CWE-347
-    owasp:
-    - A02:2021
-  JS-SEC-JWT-DECODE-NO-VERIFY:
-    asvs:
-    - V6.8.2
-    - V9.1
-    - V9.1.1
-    - V9.1.2
-    - V9.2.1
-    cwe:
-    - CWE-347
-    owasp:
-    - A02:2021
-  JS-SEC-LIBXML-NOENT:
-    asvs:
-    - V1.5
-    - V1.5.1
-    cwe:
-    - CWE-611
-    owasp:
-    - A05:2021
-    - A02:2025
-  JS-SEC-MASS-ASSIGN-BODY:
-    asvs:
-    - V8.2.3
-    - V15.3
-    - V15.3.3
-    cwe:
-    - CWE-915
+    - CWE-829
     owasp:
     - A08:2021
     - A08:2025
-  JS-SEC-MONGO-WHERE-DYNAMIC:
+  COMPOSER-SEC-ALLOW-PLUGINS-WILDCARD:
     asvs:
-    - V1.2
-    - V1.2.4
+    - V15.2
+    - V15.2.4
     cwe:
-    - CWE-943
-  JS-SEC-NODE-SERIALIZE:
-    asvs:
-    - V1.5
-    - V1.5.2
-    cwe:
-    - CWE-502
+    - CWE-829
     owasp:
     - A08:2021
     - A08:2025
-  JS-SEC-NOSQL-REQUEST-FILTER:
-    asvs:
-    - V1.2
-    - V1.2.4
-    cwe:
-    - CWE-943
-  JS-SEC-SERVE-INDEX:
-    asvs:
-    - V13.4
-    - V13.4.3
-    cwe:
-    - CWE-548
-    owasp:
-    - A01:2021
-    - A01:2025
-  JS-SEC-SESSION-COOKIE-NOT-SECURE:
-    asvs:
-    - V3.3
-    - V3.3.1
-    - V3.3.4
-    - V7.2.3
-    cwe:
-    - CWE-614
-    - CWE-1004
-    owasp:
-    - A05:2021
-    - A02:2025
-  JS-SEC-STACK-IN-RESPONSE:
-    asvs:
-    - V16.5
-    - V16.5.1
-    cwe:
-    - CWE-209
-    owasp:
-    - A04:2021
-    - A10:2025
-  JS-SEC-STATIC-IV:
-    asvs:
-    - V11.3
-    - V11.3.4
-    cwe:
-    - CWE-329
-    - CWE-1204
-    owasp:
-    - A02:2021
-    - A04:2025
-  JS-SEC-STORAGE-SECRET:
-    asvs:
-    - V14.2
-    - V14.3.3
-    cwe:
-    - CWE-922
-  JS-SEC-TIMING-COMPARE:
-    asvs:
-    - V11.2
-    - V11.2.4
-    cwe:
-    - CWE-208
-  JS-SEC-TRUST-PROXY-ALL:
-    asvs:
-    - V4.1
-    - V4.1.3
-    cwe:
-    - CWE-348
-  JS-SEC-WS-CLEARTEXT:
-    asvs:
-    - V4.4.1
-    - V12.2
-    - V12.2.1
-    - V12.3.1
-    cwe:
-    - CWE-319
-    owasp:
-    - A02:2021
-    - A04:2025
-  KT-SEC-COOKIE-NO-HTTPONLY:
-    asvs:
-    - V3.3
-    - V3.3.1
-    - V3.3.4
-    cwe:
-    - CWE-1004
-    owasp:
-    - A05:2021
-    - A02:2025
-  KT-SEC-COOKIE-NO-SECURE:
-    asvs:
-    - V3.3
-    - V3.3.1
-    - V3.3.4
-    cwe:
-    - CWE-614
-    owasp:
-    - A05:2021
-    - A02:2025
-  KT-SEC-CORS-ANY-ORIGIN:
-    asvs:
-    - V3.4
-    - V3.4.2
-    cwe:
-    - CWE-942
-    owasp:
-    - A05:2021
-    - A02:2025
-  KT-SEC-FORMAT-STRING-VARIABLE:
-    asvs:
-    - V1.2
-    - V1.2.4
-    - V1.3.10
-    cwe:
-    - CWE-134
-  KT-SEC-HEADER-FROM-REQUEST:
-    asvs:
-    - V1.2
-    - V1.2.2
-    - V4.2.5
-    cwe:
-    - CWE-113
-    owasp:
-    - A03:2021
-    - A05:2025
-  KT-SEC-HTTP-URL:
-    asvs:
-    - V12.2
-    - V12.2.1
-    - V12.3.1
-    cwe:
-    - CWE-319
-    owasp:
-    - A02:2021
-    - A04:2025
-  KT-SEC-LOG-SECRET:
-    asvs:
-    - V16.2
-    - V16.2.5
-    cwe:
-    - CWE-532
-    owasp:
-    - A09:2021
-    - A09:2025
-  KT-SEC-SCRIPT-EVAL:
-    asvs:
-    - V1.2
-    - V1.3.2
-    cwe:
-    - CWE-94
-    owasp:
-    - A03:2021
-    - A05:2025
-  KT-SEC-SPRING-CSRF-DISABLED:
-    asvs:
-    - V3.5
-    - V3.5.1
-    cwe:
-    - CWE-352
-    owasp:
-    - A01:2021
-    - A01:2025
-  KT-SEC-STACKTRACE-TO-RESPONSE:
-    asvs:
-    - V16.5
-    - V16.5.1
-    cwe:
-    - CWE-209
-    owasp:
-    - A04:2021
-    - A10:2025
-  KT-SEC-TIMING-COMPARE:
-    asvs:
-    - V11.2
-    - V11.2.4
-    cwe:
-    - CWE-208
-  KT-SEC-XXE:
-    asvs:
-    - V1.5
-    - V1.5.1
-    cwe:
-    - CWE-611
-    owasp:
-    - A05:2021
-    - A02:2025
-  PHP-SEC-HARDCODED-SECRET:
+  COMPOSER-SEC-AUTH-IN-COMPOSER-JSON:
     asvs:
     - V13.2.3
     - V13.3
@@ -599,166 +195,27 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
-  PHP-SEC-LIBXML-NOENT:
+  COMPOSER-SEC-BLOCK-INSECURE-OFF:
     asvs:
-    - V1.5
-    - V1.5.1
+    - V15.2
+    - V15.4.3
     cwe:
-    - CWE-611
+    - CWE-1395
     owasp:
-    - A05:2021
-    - A02:2025
-  PHP-SEC-PHPINFO:
+    - A03:2025
+  COMPOSER-SEC-DISABLE-TLS:
     asvs:
-    - V13.4
-    - V13.4.2
+    - V12.2
+    - V12.3
+    - V12.3.2
+    - V12.3.4
     cwe:
-    - CWE-200
-    owasp:
-    - A01:2021
-    - A01:2025
-  PY-SEC-ACCESS-THEN-OPEN:
-    asvs:
-    - V15.4
-    - V15.4.2
-    cwe:
-    - CWE-367
-  PY-SEC-DJANGO-ALLOWED-HOSTS-ANY:
-    asvs:
-    - V2.2
-    - V2.2.1
-    - V4.1.3
-    cwe:
-    - CWE-20
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-SEC-DJANGO-COOKIE-NOT-SECURE:
-    asvs:
-    - V3.3
-    - V3.3.1
-    - V3.3.4
-    cwe:
-    - CWE-614
-    owasp:
-    - A05:2021
-    - A02:2025
-  PY-SEC-DJANGO-FIELDS-ALL:
-    asvs:
-    - V8.2.3
-    - V15.3
-    - V15.3.1
-    - V15.3.3
-    cwe:
-    - CWE-915
-    owasp:
-    - A08:2021
-    - A08:2025
-  PY-SEC-DJANGO-NO-PASSWORD-VALIDATORS:
-    asvs:
-    - V6.2
-    - V6.2.1
-    cwe:
-    - CWE-521
+    - CWE-295
     owasp:
     - A07:2021
     - A07:2025
-  PY-SEC-FLASK-SESSION-COOKIE-NOT-SECURE:
+  COMPOSER-SEC-REPO-HTTP:
     asvs:
-    - V3.3
-    - V3.3.1
-    - V3.3.4
-    - V7.2.3
-    cwe:
-    - CWE-614
-    - CWE-1004
-    owasp:
-    - A05:2021
-    - A02:2025
-  PY-SEC-HARDCODED-CRYPTO-KEY:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-321
-    - CWE-798
-    owasp:
-    - A02:2021
-    - A07:2021
-    - A04:2025
-    - A07:2025
-  PY-SEC-HEADER-FROM-REQUEST:
-    asvs:
-    - V1.2
-    - V1.2.2
-    - V4.2.5
-    cwe:
-    - CWE-113
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-SEC-JWT-CLAIM-CHECK-OFF:
-    asvs:
-    - V6.3
-    - V9.1.2
-    - V9.2.3
-    cwe:
-    - CWE-287
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-SSL-OLD-PROTOCOL:
-    asvs:
-    - V11.2.3
-    - V11.3
-    - V11.3.2
-    - V11.4.1
-    - V11.4.2
-    - V11.4.3
-    - V12.1
-    - V12.1.1
-    cwe:
-    - CWE-757
-    - CWE-327
-    owasp:
-    - A02:2021
-    - A04:2025
-  PY-SEC-STATIC-IV:
-    asvs:
-    - V11.3
-    - V11.3.4
-    cwe:
-    - CWE-329
-    - CWE-1204
-    owasp:
-    - A02:2021
-    - A04:2025
-  PY-SEC-TEMPLATE-FROM-STRING:
-    asvs:
-    - V1.3
-    - V1.3.5
-    - V1.3.7
-    cwe:
-    - CWE-1336
-  PY-SEC-TIMING-COMPARE:
-    asvs:
-    - V11.2
-    - V11.2.4
-    cwe:
-    - CWE-208
-  PY-SEC-TRACEBACK-IN-RESPONSE:
-    asvs:
-    - V16.5
-    - V16.5.1
-    cwe:
-    - CWE-209
-    owasp:
-    - A04:2021
-    - A10:2025
-  PY-SEC-WS-CLEARTEXT:
-    asvs:
-    - V4.4.1
     - V12.2
     - V12.2.1
     - V12.3.1
@@ -767,36 +224,34 @@ rules:
     owasp:
     - A02:2021
     - A04:2025
-  JAVA-CERT-ERR09-SYSTEM-EXIT:
-    cwe:
-    - CWE-382
-  JAVA-CERT-FIO02-FILE-RESULT-IGNORED:
-    cwe:
-    - CWE-252
-  JAVA-CERT-FIO03-TEMP-FILE-NOT-REMOVED:
+  COMPOSER-SEC-SCRIPT-REMOTE-EXEC:
     asvs:
-    - V5.3
+    - V15.2
+    - V15.2.4
     cwe:
-    - CWE-459
-    - CWE-377
+    - CWE-494
     owasp:
-    - A01:2021
-    - A01:2025
-  JAVA-CERT-LCK01-SYNC-SHARED-LITERAL:
+    - A08:2021
+    - A08:2025
+  COMPOSER-SEC-SECURE-HTTP-OFF:
+    asvs:
+    - V12.2
+    - V12.2.1
+    - V12.3.1
     cwe:
-    - CWE-412
-  JAVA-CERT-LCK02-SYNC-GETCLASS:
+    - CWE-319
+    owasp:
+    - A02:2021
+    - A04:2025
+  DOCKER-SEC-ADD-REMOTE-NO-CHECKSUM:
+    asvs:
+    - V15.2
+    - V15.2.4
     cwe:
-    - CWE-667
-  JAVA-CERT-NUM09-FLOAT-LOOP-COUNTER:
-    cwe:
-    - CWE-1339
-  JAVA-CERT-OBJ09-CLASS-NAME-COMPARE:
-    cwe:
-    - CWE-486
-  JAVA-CERT-THI02-NOTIFY:
-    cwe:
-    - CWE-662
+    - CWE-494
+    owasp:
+    - A08:2021
+    - A08:2025
   DOCKER-SEC-COMPOSE-BUILD-ARGS-SECRET:
     asvs:
     - V13.2.3
@@ -892,99 +347,15 @@ rules:
     - V13.3.2
     cwe:
     - CWE-250
-  COMPOSER-SEC-ALLOW-ALL-PLUGINS:
+  DOCKER-SEC-COPY-GIT-DIR:
     asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-829
-    owasp:
-    - A08:2021
-    - A08:2025
-  COMPOSER-SEC-ALLOW-PLUGINS-WILDCARD:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-829
-    owasp:
-    - A08:2021
-    - A08:2025
-  COMPOSER-SEC-AUTH-IN-COMPOSER-JSON:
-    asvs:
-    - V13.2.3
     - V13.3
-    - V13.3.1
+    - V13.4.1
     cwe:
-    - CWE-798
+    - CWE-538
     owasp:
-    - A07:2021
-    - A07:2025
-  COMPOSER-MIG-BLOCK-INSECURE-DEPRECATED:
-    asvs:
-    - V15.2
-    - V15.4.3
-    cwe:
-    - CWE-477
-    owasp:
-    - A03:2025
-  COMPOSER-SEC-BLOCK-INSECURE-OFF:
-    asvs:
-    - V15.2
-    - V15.4.3
-    cwe:
-    - CWE-1395
-    owasp:
-    - A03:2025
-  COMPOSER-SEC-DISABLE-TLS:
-    asvs:
-    - V12.2
-    - V12.3
-    - V12.3.2
-    - V12.3.4
-    cwe:
-    - CWE-295
-    owasp:
-    - A07:2021
-    - A07:2025
-  COMPOSER-SEC-REPO-HTTP:
-    asvs:
-    - V12.2
-    - V12.2.1
-    - V12.3.1
-    cwe:
-    - CWE-319
-    owasp:
-    - A02:2021
-    - A04:2025
-  COMPOSER-SEC-SCRIPT-REMOTE-EXEC:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
-  COMPOSER-SEC-SECURE-HTTP-OFF:
-    asvs:
-    - V12.2
-    - V12.2.1
-    - V12.3.1
-    cwe:
-    - CWE-319
-    owasp:
-    - A02:2021
-    - A04:2025
-  DOCKER-SEC-ADD-REMOTE-NO-CHECKSUM:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
+    - A01:2021
+    - A01:2025
   DOCKER-SEC-COPY-SECRET-FILE:
     asvs:
     - V13.3
@@ -1028,6 +399,46 @@ rules:
     - V13.3.2
     cwe:
     - CWE-250
+  DOCKER-SUPPLY-DOWNLOAD-NO-CHECKSUM:
+    asvs:
+    - V15.2
+    - V15.2.4
+    cwe:
+    - CWE-829
+    - CWE-494
+    owasp:
+    - A08:2021
+    - A08:2025
+  DOCKER-SUPPLY-GO-INSTALL-LATEST:
+    asvs:
+    - V15.2
+    - V15.2.4
+    cwe:
+    - CWE-829
+    - CWE-494
+    owasp:
+    - A08:2021
+    - A08:2025
+  DOCKER-SUPPLY-NPM-INSTALL:
+    asvs:
+    - V15.2
+    - V15.2.4
+    cwe:
+    - CWE-829
+    - CWE-494
+    owasp:
+    - A08:2021
+    - A08:2025
+  DOCKER-SUPPLY-PIP-UNPINNED:
+    asvs:
+    - V15.2
+    - V15.2.4
+    cwe:
+    - CWE-829
+    - CWE-494
+    owasp:
+    - A08:2021
+    - A08:2025
   GHA-SEC-CURL-PIPE-SHELL:
     asvs:
     - V15.2
@@ -1110,6 +521,16 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  GHA-SUPPLY-NPM-INSTALL:
+    asvs:
+    - V15.2
+    - V15.2.4
+    cwe:
+    - CWE-829
+    - CWE-494
+    owasp:
+    - A08:2021
+    - A08:2025
   GITLAB-SEC-CURL-PIPE-SHELL:
     asvs:
     - V15.2
@@ -1140,6 +561,67 @@ rules:
     owasp:
     - A08:2021
     - A08:2025
+  GITLAB-SUPPLY-NPM-INSTALL:
+    asvs:
+    - V15.2
+    - V15.2.4
+    cwe:
+    - CWE-829
+    - CWE-494
+    owasp:
+    - A08:2021
+    - A08:2025
+  GO-MIG-DSA:
+    asvs:
+    - V11.2.3
+    - V11.3
+    - V11.3.2
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    cwe:
+    - CWE-327
+    owasp:
+    - A02:2021
+    - A04:2025
+  GO-MIG-ELLIPTIC-LOW-LEVEL:
+    asvs:
+    - V11.2.3
+    - V11.3
+    - V11.3.2
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    cwe:
+    - CWE-327
+    owasp:
+    - A02:2021
+    - A04:2025
+  GO-QUAL-CTX-NIL:
+    cwe:
+    - CWE-476
+  GO-QUAL-HTTP-BODY-NOT-CLOSED:
+    cwe:
+    - CWE-772
+  GO-QUAL-VET-COPYLOCKS:
+    cwe:
+    - CWE-667
+  GO-QUAL-VET-HTTPRESPONSE:
+    cwe:
+    - CWE-476
+  GO-QUAL-VET-LOSTCANCEL:
+    cwe:
+    - CWE-772
+  GO-QUAL-VET-UNREACHABLE:
+    cwe:
+    - CWE-561
+  GO-SEC-ATOI-NARROWING:
+    asvs:
+    - V1.4
+    - V1.4.2
+    cwe:
+    - CWE-190
+    - CWE-681
   GO-SEC-CIPHER-UNAUTHENTICATED-MODE:
     asvs:
     - V11.2.3
@@ -1174,35 +656,15 @@ rules:
     owasp:
     - A05:2021
     - A02:2025
-  GO-QUAL-CTX-NIL:
-    cwe:
-    - CWE-476
-  GO-MIG-DSA:
+  GO-SEC-ERR-TO-CLIENT:
     asvs:
-    - V11.2.3
-    - V11.3
-    - V11.3.2
-    - V11.4.1
-    - V11.4.2
-    - V11.4.3
+    - V16.5
+    - V16.5.1
     cwe:
-    - CWE-327
+    - CWE-209
     owasp:
-    - A02:2021
-    - A04:2025
-  GO-MIG-ELLIPTIC-LOW-LEVEL:
-    asvs:
-    - V11.2.3
-    - V11.3
-    - V11.3.2
-    - V11.4.1
-    - V11.4.2
-    - V11.4.3
-    cwe:
-    - CWE-327
-    owasp:
-    - A02:2021
-    - A04:2025
+    - A04:2021
+    - A10:2025
   GO-SEC-EXEC-SHELL:
     asvs:
     - V1.2
@@ -1227,6 +689,19 @@ rules:
     - CWE-489
     owasp:
     - A02:2025
+  GO-SEC-HARDCODED-CRYPTO-KEY:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-321
+    - CWE-798
+    owasp:
+    - A02:2021
+    - A07:2021
+    - A04:2025
+    - A07:2025
   GO-SEC-HARDCODED-PASSWORD:
     asvs:
     - V6.3.2
@@ -1238,14 +713,25 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
-  GO-QUAL-HTTP-BODY-NOT-CLOSED:
-    cwe:
-    - CWE-772
   GO-SEC-HTTP-LISTEN-NO-TIMEOUTS:
     asvs:
     - V15.3
     cwe:
     - CWE-400
+  GO-SEC-LOG-SECRET:
+    asvs:
+    - V13.3.1
+    - V14.2
+    - V16.2
+    - V16.2.5
+    cwe:
+    - CWE-532
+    - CWE-312
+    owasp:
+    - A04:2021
+    - A09:2021
+    - A06:2025
+    - A09:2025
   GO-SEC-MATH-RAND-READ:
     asvs:
     - V6.4.1
@@ -1308,6 +794,16 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  GO-SEC-STATIC-IV:
+    asvs:
+    - V11.3
+    - V11.3.4
+    cwe:
+    - CWE-329
+    - CWE-1204
+    owasp:
+    - A02:2021
+    - A04:2025
   GO-SEC-TEMPLATE-HTML-CONVERSION:
     asvs:
     - V1.2
@@ -1328,6 +824,20 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  GO-SEC-TLS-INSECURE-CIPHER:
+    asvs:
+    - V11.2.3
+    - V11.3
+    - V11.3.2
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    - V12.1.2
+    cwe:
+    - CWE-327
+    owasp:
+    - A02:2021
+    - A04:2025
   GO-SEC-TLS-INSECURE-SKIP-VERIFY:
     asvs:
     - V12.2
@@ -1359,18 +869,6 @@ rules:
     - V1.4.1
     cwe:
     - CWE-242
-  GO-QUAL-VET-COPYLOCKS:
-    cwe:
-    - CWE-667
-  GO-QUAL-VET-HTTPRESPONSE:
-    cwe:
-    - CWE-476
-  GO-QUAL-VET-LOSTCANCEL:
-    cwe:
-    - CWE-772
-  GO-QUAL-VET-UNREACHABLE:
-    cwe:
-    - CWE-561
   GO-SEC-WEAK-CRYPTO-DES:
     asvs:
     - V11.2.3
@@ -1423,6 +921,12 @@ rules:
     owasp:
     - A02:2021
     - A04:2025
+  GO-SEC-WS-ANY-ORIGIN:
+    asvs:
+    - V4.4
+    - V4.4.2
+    cwe:
+    - CWE-1385
   GO-SEC-X509-PEM-ENCRYPTION:
     asvs:
     - V11.2.3
@@ -1436,40 +940,149 @@ rules:
     owasp:
     - A02:2021
     - A04:2025
+  GO-TAINT-CMDI:
+    asvs:
+    - V1.2
+    - V1.2.5
+    cwe:
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  GO-TAINT-LDAP:
+    asvs:
+    - V1.2
+    - V1.2.6
+    cwe:
+    - CWE-90
+    owasp:
+    - A03:2021
+    - A05:2025
+  GO-TAINT-PATH:
+    asvs:
+    - V5.3
+    - V5.3.2
+    - V5.4.1
+    cwe:
+    - CWE-22
+    - CWE-23
+    owasp:
+    - A01:2021
+    - A01:2025
+  GO-TAINT-REDIRECT:
+    asvs:
+    - V1.2.2
+    - V3.7.2
+    - V15.3.2
+    cwe:
+    - CWE-601
+    owasp:
+    - A01:2021
+    - A01:2025
+  GO-TAINT-REGEX:
+    asvs:
+    - V1.3
+    - V1.3.12
+    - V15.3
+    cwe:
+    - CWE-1333
+    - CWE-400
+    - CWE-730
+  GO-TAINT-SMTP:
+    asvs:
+    - V1.3
+    - V1.3.11
+    - V4.2.5
+    - V8.2
+    - V8.2.1
+    cwe:
+    - CWE-93
+    - CWE-284
+    owasp:
+    - A01:2021
+    - A03:2021
+    - A01:2025
+    - A05:2025
+  GO-TAINT-SQLI:
+    asvs:
+    - V1.2
+    - V1.2.4
+    cwe:
+    - CWE-89
+    owasp:
+    - A03:2021
+    - A05:2025
+  GO-TAINT-SSRF:
+    asvs:
+    - V1.3
+    - V1.3.6
+    cwe:
+    - CWE-918
+    owasp:
+    - A10:2021
+    - A01:2025
+  GO-TAINT-TRUST:
+    asvs:
+    - V2.2
+    cwe:
+    - CWE-501
+    owasp:
+    - A04:2021
+    - A06:2025
+  GO-TAINT-XSS:
+    asvs:
+    - V1.2
+    - V1.2.1
+    - V3.2
+    cwe:
+    - CWE-79
+    owasp:
+    - A03:2021
+    - A05:2025
   GRADLE-SEC-ALLOW-INSECURE-PROTOCOL-GROOVY:
     asvs:
-    - V12.2
-    - V12.2.1
-    - V12.3.1
+    - V15.2
+    - V15.2.4
     cwe:
-    - CWE-319
+    - CWE-494
+    - CWE-829
     owasp:
-    - A02:2021
-    - A04:2025
+    - A08:2021
+    - A08:2025
   GRADLE-SEC-ALLOW-INSECURE-PROTOCOL-KTS:
     asvs:
-    - V12.2
-    - V12.2.1
-    - V12.3.1
+    - V15.2
+    - V15.2.4
     cwe:
-    - CWE-319
+    - CWE-494
+    - CWE-829
     owasp:
-    - A02:2021
-    - A04:2025
+    - A08:2021
+    - A08:2025
   GRADLE-SEC-DYNAMIC-VERSION-GROOVY:
     asvs:
     - V15.2
+    - V15.2.4
     cwe:
-    - CWE-1357
+    - CWE-1104
+    - CWE-494
     owasp:
+    - A06:2021
+    - A08:2021
     - A03:2025
+    - A08:2025
   GRADLE-SEC-DYNAMIC-VERSION-KTS:
     asvs:
     - V15.2
+    - V15.2.4
     cwe:
-    - CWE-1357
+    - CWE-1104
+    - CWE-494
     owasp:
+    - A06:2021
+    - A08:2021
     - A03:2025
+    - A08:2025
   GRADLE-SEC-HARDCODED-REPO-CREDENTIALS-GROOVY:
     asvs:
     - V13.2.3
@@ -1492,57 +1105,72 @@ rules:
     - A07:2025
   GRADLE-SEC-INSECURE-REPO-URL-GROOVY:
     asvs:
-    - V12.2
-    - V12.2.1
-    - V12.3.1
+    - V15.2
+    - V15.2.4
     cwe:
-    - CWE-319
+    - CWE-494
+    - CWE-829
     owasp:
-    - A02:2021
-    - A04:2025
+    - A08:2021
+    - A08:2025
   GRADLE-SEC-INSECURE-REPO-URL-KTS:
     asvs:
-    - V12.2
-    - V12.2.1
-    - V12.3.1
+    - V15.2
+    - V15.2.4
     cwe:
-    - CWE-319
+    - CWE-494
+    - CWE-829
     owasp:
-    - A02:2021
-    - A04:2025
+    - A08:2021
+    - A08:2025
   GRADLE-SEC-MAVEN-LOCAL-GROOVY:
     asvs:
     - V15.2
+    - V15.2.4
     cwe:
-    - CWE-1357
+    - CWE-1104
+    - CWE-494
     owasp:
+    - A06:2021
+    - A08:2021
     - A03:2025
+    - A08:2025
   GRADLE-SEC-MAVEN-LOCAL-KTS:
     asvs:
     - V15.2
+    - V15.2.4
     cwe:
-    - CWE-1357
+    - CWE-1104
+    - CWE-494
     owasp:
+    - A06:2021
+    - A08:2021
     - A03:2025
+    - A08:2025
   GRADLE-SEC-SNAPSHOT-DEPENDENCY-GROOVY:
     asvs:
     - V15.2
+    - V15.2.4
     cwe:
-    - CWE-1357
+    - CWE-1104
+    - CWE-494
     owasp:
+    - A06:2021
+    - A08:2021
     - A03:2025
+    - A08:2025
   GRADLE-SEC-SNAPSHOT-DEPENDENCY-KTS:
     asvs:
     - V15.2
+    - V15.2.4
     cwe:
-    - CWE-1357
+    - CWE-1104
+    - CWE-494
     owasp:
+    - A06:2021
+    - A08:2021
     - A03:2025
-  GRAPHQL-SEC-ALIAS-FAN-OUT:
-    asvs:
-    - V4.3
-    cwe:
-    - CWE-770
+    - A08:2025
   GRAPHQL-QUAL-INLINE-DYNAMIC-ARGUMENT:
     asvs:
     - V2.2
@@ -1552,11 +1180,62 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  GRAPHQL-SEC-ALIAS-FAN-OUT:
+    asvs:
+    - V4.3
+    cwe:
+    - CWE-770
   GRAPHQL-SEC-LIST-FIELD-NOT-PAGINATED:
     asvs:
     - V4.3
     cwe:
     - CWE-770
+  HTML-MAINT-REMOTE-SCRIPT-WITHOUT-INTEGRITY:
+    asvs:
+    - V3.6
+    - V3.6.1
+    - V15.2.4
+    cwe:
+    - CWE-353
+    owasp:
+    - A08:2021
+  JAVA-CERT-ERR09-SYSTEM-EXIT:
+    cwe:
+    - CWE-382
+  JAVA-CERT-FIO02-FILE-RESULT-IGNORED:
+    cwe:
+    - CWE-252
+  JAVA-CERT-FIO03-TEMP-FILE-NOT-REMOVED:
+    asvs:
+    - V5.3
+    cwe:
+    - CWE-459
+    - CWE-377
+    owasp:
+    - A01:2021
+    - A01:2025
+  JAVA-CERT-LCK01-SYNC-SHARED-LITERAL:
+    cwe:
+    - CWE-412
+  JAVA-CERT-LCK02-SYNC-GETCLASS:
+    cwe:
+    - CWE-667
+  JAVA-CERT-NUM09-FLOAT-LOOP-COUNTER:
+    cwe:
+    - CWE-1339
+  JAVA-CERT-OBJ09-CLASS-NAME-COMPARE:
+    cwe:
+    - CWE-486
+  JAVA-CERT-THI02-NOTIFY:
+    cwe:
+    - CWE-662
+  JAVA-MIG-SM-001:
+    asvs:
+    - V15.2
+    cwe:
+    - CWE-477
+    owasp:
+    - A03:2025
   JAVA-QUAL-COR-EQUALS-HASHCODE-001:
     cwe:
     - CWE-581
@@ -1575,6 +1254,16 @@ rules:
     - V1.2.5
     cwe:
     - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  JAVA-SEC-CONTENT-DISPOSITION-CONCAT:
+    asvs:
+    - V1.2
+    - V4.2.5
+    - V5.4.2
+    cwe:
+    - CWE-113
     owasp:
     - A03:2021
     - A05:2025
@@ -1640,6 +1329,20 @@ rules:
     owasp:
     - A02:2021
     - A04:2025
+  JAVA-SEC-FAIL-OPEN-CATCH:
+    asvs:
+    - V16.5
+    - V16.5.2
+    cwe:
+    - CWE-636
+    - CWE-755
+  JAVA-SEC-FORMAT-STRING-VARIABLE:
+    asvs:
+    - V1.2
+    - V1.2.4
+    - V1.3.10
+    cwe:
+    - CWE-134
   JAVA-SEC-HARDCODED-PASSWORD-001:
     asvs:
     - V6.3.2
@@ -1651,6 +1354,16 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  JAVA-SEC-HEADER-FROM-REQUEST:
+    asvs:
+    - V1.2
+    - V1.2.2
+    - V4.2.5
+    cwe:
+    - CWE-113
+    owasp:
+    - A03:2021
+    - A05:2025
   JAVA-SEC-HOSTNAME-VERIFIER-001:
     asvs:
     - V12.3
@@ -1660,6 +1373,33 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  JAVA-SEC-HTTP-TRACE-ENABLED:
+    asvs:
+    - V3.4
+    - V13.4.4
+    cwe:
+    - CWE-693
+    owasp:
+    - A06:2025
+  JAVA-SEC-HTTP-URL:
+    asvs:
+    - V12.2
+    - V12.2.1
+    - V12.3.1
+    cwe:
+    - CWE-319
+    owasp:
+    - A02:2021
+    - A04:2025
+  JAVA-SEC-IDOR-FIND-BY-ID:
+    asvs:
+    - V8.2
+    - V8.2.2
+    cwe:
+    - CWE-639
+    owasp:
+    - A01:2021
+    - A01:2025
   JAVA-SEC-JAXP-FSP-001:
     asvs:
     - V1.5
@@ -1669,6 +1409,15 @@ rules:
     owasp:
     - A05:2021
     - A02:2025
+  JAVA-SEC-JNDI-LOOKUP-DYNAMIC:
+    asvs:
+    - V1.3
+    - V1.3.8
+    cwe:
+    - CWE-74
+    owasp:
+    - A03:2021
+    - A05:2025
   JAVA-SEC-LDAP-ANON-001:
     asvs:
     - V6.3
@@ -1686,6 +1435,23 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  JAVA-SEC-LOG-INJECTION:
+    asvs:
+    - V16.4
+    - V16.4.1
+    cwe:
+    - CWE-117
+    owasp:
+    - A09:2021
+  JAVA-SEC-LOG-SECRET:
+    asvs:
+    - V16.2
+    - V16.2.5
+    cwe:
+    - CWE-532
+    owasp:
+    - A09:2021
+    - A09:2025
   JAVA-SEC-MATHRANDOM-001:
     asvs:
     - V6.4.1
@@ -1735,6 +1501,23 @@ rules:
     owasp:
     - A02:2021
     - A04:2025
+  JAVA-SEC-REGEX-INJECTION:
+    asvs:
+    - V1.2.9
+    - V1.3
+    cwe:
+    - CWE-730
+  JAVA-SEC-REQUESTMAPPING-NO-METHOD:
+    asvs:
+    - V3.5
+    - V3.5.1
+    - V3.5.3
+    cwe:
+    - CWE-650
+    - CWE-352
+    owasp:
+    - A01:2021
+    - A01:2025
   JAVA-SEC-RSA-KEYSIZE-001:
     asvs:
     - V11.2.3
@@ -1768,6 +1551,24 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  JAVA-SEC-SPEL-DYNAMIC:
+    asvs:
+    - V1.3
+    - V1.3.5
+    cwe:
+    - CWE-917
+    owasp:
+    - A03:2021
+    - A05:2025
+  JAVA-SEC-SPRING-HEADERS-OFF:
+    asvs:
+    - V3.4
+    - V3.4.1
+    - V3.4.4
+    cwe:
+    - CWE-693
+    owasp:
+    - A06:2025
   JAVA-SEC-SPRING-SECURITY-DEBUG-001:
     asvs:
     - V13.4
@@ -1803,6 +1604,38 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  JAVA-SEC-STACKTRACE-TO-RESPONSE:
+    asvs:
+    - V16.5
+    - V16.5.1
+    cwe:
+    - CWE-209
+    owasp:
+    - A04:2021
+    - A10:2025
+  JAVA-SEC-STATIC-DATEFORMAT:
+    asvs:
+    - V15.4
+    - V15.4.1
+    cwe:
+    - CWE-567
+    - CWE-362
+  JAVA-SEC-STATIC-IV:
+    asvs:
+    - V11.3
+    - V11.3.4
+    cwe:
+    - CWE-329
+    - CWE-1204
+    owasp:
+    - A02:2021
+    - A04:2025
+  JAVA-SEC-TIMING-COMPARE:
+    asvs:
+    - V11.2
+    - V11.2.4
+    cwe:
+    - CWE-208
   JAVA-SEC-TRUST-ALL-001:
     asvs:
     - V12.2
@@ -1836,6 +1669,19 @@ rules:
     - A02:2021
     - A04:2025
   JAVA-SEC-WEAK-HASH-001:
+    asvs:
+    - V11.2.3
+    - V11.3.2
+    - V11.4
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    cwe:
+    - CWE-328
+    owasp:
+    - A02:2021
+    - A04:2025
+  JAVA-SEC-WEAK-HASH-SECURITY-CONTEXT:
     asvs:
     - V11.2.3
     - V11.3.2
@@ -1942,76 +1788,7 @@ rules:
     owasp:
     - A05:2021
     - A02:2025
-  JAVA-MIG-SM-001:
-    asvs:
-    - V15.2
-    cwe:
-    - CWE-477
-    owasp:
-    - A03:2025
-  JS-SEC-EVAL-001:
-    asvs:
-    - V1.2
-    - V1.3.2
-    cwe:
-    - CWE-95
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-SEC-IMPLIED-EVAL-001:
-    asvs:
-    - V1.2
-    - V1.3.2
-    cwe:
-    - CWE-95
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-SEC-INNERHTML-001:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V3.2
-    - V3.2.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-QUAL-NO-DUPE-ELSE-IF:
-    cwe:
-    - CWE-561
-  JS-QUAL-NO-FALLTHROUGH:
-    cwe:
-    - CWE-484
-  JS-SEC-NO-NEW-FUNC:
-    asvs:
-    - V1.2
-    - V1.3.2
-    cwe:
-    - CWE-95
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-SEC-NO-SCRIPT-URL:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V3.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-QUAL-NO-UNREACHABLE:
-    cwe:
-    - CWE-561
-  JS-SEC-NODE-BUFFER-CTOR-001:
-    asvs:
-    - V1.4
-    cwe:
-    - CWE-665
-  JS-SEC-NODE-CHILD-EXEC-INJECTION-001:
+  JAVA-TAINT-CMDI:
     asvs:
     - V1.2
     - V1.2.5
@@ -2020,6 +1797,161 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  JAVA-TAINT-CODE:
+    asvs:
+    - V1.2
+    - V1.3.2
+    cwe:
+    - CWE-94
+    owasp:
+    - A03:2021
+    - A05:2025
+  JAVA-TAINT-LDAP:
+    asvs:
+    - V1.2
+    - V1.2.6
+    cwe:
+    - CWE-90
+    owasp:
+    - A03:2021
+    - A05:2025
+  JAVA-TAINT-PATH:
+    asvs:
+    - V5.3
+    - V5.3.2
+    - V5.4.1
+    cwe:
+    - CWE-22
+    - CWE-23
+    owasp:
+    - A01:2021
+    - A01:2025
+  JAVA-TAINT-REDIRECT:
+    asvs:
+    - V1.2.2
+    - V3.7.2
+    - V15.3.2
+    cwe:
+    - CWE-601
+    owasp:
+    - A01:2021
+    - A01:2025
+  JAVA-TAINT-REGEX:
+    asvs:
+    - V1.3
+    - V1.3.12
+    - V15.3
+    cwe:
+    - CWE-1333
+    - CWE-400
+    - CWE-730
+  JAVA-TAINT-SMTP:
+    asvs:
+    - V1.3
+    - V1.3.11
+    - V4.2.5
+    - V8.2
+    - V8.2.1
+    cwe:
+    - CWE-93
+    - CWE-284
+    owasp:
+    - A01:2021
+    - A03:2021
+    - A01:2025
+    - A05:2025
+  JAVA-TAINT-SQLI:
+    asvs:
+    - V1.2
+    - V1.2.4
+    cwe:
+    - CWE-89
+    owasp:
+    - A03:2021
+    - A05:2025
+  JAVA-TAINT-SSRF:
+    asvs:
+    - V1.3
+    - V1.3.6
+    cwe:
+    - CWE-918
+    owasp:
+    - A10:2021
+    - A01:2025
+  JAVA-TAINT-TRUST:
+    asvs:
+    - V2.2
+    cwe:
+    - CWE-501
+    owasp:
+    - A04:2021
+    - A06:2025
+  JAVA-TAINT-XPATH:
+    asvs:
+    - V1.2
+    - V1.2.7
+    cwe:
+    - CWE-643
+    owasp:
+    - A03:2021
+    - A05:2025
+  JAVA-TAINT-XSS:
+    asvs:
+    - V1.2
+    - V1.2.1
+    - V3.2
+    cwe:
+    - CWE-79
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-LLM-NO-MAX-TOKENS:
+    asvs:
+    - V4.3
+    cwe:
+    - CWE-770
+  JS-LLM-OUTPUT-TO-EXEC:
+    asvs:
+    - V1.2
+    - V1.2.5
+    - V1.3.2
+    cwe:
+    - CWE-94
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-LLM-OUTPUT-TO-HTML:
+    asvs:
+    - V1.2
+    - V1.2.1
+    - V3.2
+    cwe:
+    - CWE-79
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-LLM-REQUEST-IN-SYSTEM-PROMPT:
+    asvs:
+    - V1.2
+    - V1.2.5
+    cwe:
+    - CWE-77
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-LLM-SECRET-IN-PROMPT:
+    asvs:
+    - V13.4
+    - V14.2
+    cwe:
+    - CWE-200
+    - CWE-522
+    owasp:
+    - A01:2021
+    - A04:2021
+    - A01:2025
+    - A06:2025
   JS-MIG-NODE-CREATECIPHER-001:
     asvs:
     - V11.2.3
@@ -2047,24 +1979,48 @@ rules:
     owasp:
     - A02:2021
     - A04:2025
-  JS-SEC-NODE-SHELL-ARGS-001:
+  JS-QUAL-NO-DUPE-ELSE-IF:
+    cwe:
+    - CWE-561
+  JS-QUAL-NO-FALLTHROUGH:
+    cwe:
+    - CWE-484
+  JS-QUAL-NO-UNREACHABLE:
+    cwe:
+    - CWE-561
+  JS-QUAL-USE-ISNAN:
+    cwe:
+    - CWE-1077
+  JS-SEC-CONTENT-DISPOSITION-CONCAT:
     asvs:
     - V1.2
-    - V1.2.5
+    - V4.2.5
+    - V5.4.2
     cwe:
-    - CWE-78
+    - CWE-113
     owasp:
     - A03:2021
     - A05:2025
-  JS-SEC-NODE-URL-PARSE-001:
+  JS-SEC-COOKIE-SAMESITE-NONE:
     asvs:
-    - V2.2
-    - V2.2.1
+    - V3.3
+    - V3.3.2
+    - V3.5
+    - V3.5.1
     cwe:
-    - CWE-20
+    - CWE-1275
+    - CWE-352
     owasp:
-    - A03:2021
-    - A05:2025
+    - A01:2021
+    - A01:2025
+  JS-SEC-COOKIE-WITHOUT-HOST-PREFIX:
+    asvs:
+    - V3.3
+    - V3.3.3
+    cwe:
+    - CWE-565
+    owasp:
+    - A08:2021
   JS-SEC-CORS-REFLECT-ANY-001:
     asvs:
     - V3.4
@@ -2083,9 +2039,366 @@ rules:
     owasp:
     - A05:2021
     - A02:2025
-  JS-QUAL-USE-ISNAN:
+  JS-SEC-DEEP-MERGE-REQUEST:
+    asvs:
+    - V15.3
+    - V15.3.6
     cwe:
-    - CWE-1077
+    - CWE-1321
+  JS-SEC-DOUBLE-ENCODING:
+    asvs:
+    - V1.1
+    - V1.1.2
+    cwe:
+    - CWE-116
+    owasp:
+    - A03:2021
+  JS-SEC-EVAL-001:
+    asvs:
+    - V1.2
+    - V1.3.2
+    cwe:
+    - CWE-95
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-SEC-EXPRESS-POWERED-BY:
+    asvs:
+    - V13.4
+    - V13.4.6
+    - V16.5.1
+    cwe:
+    - CWE-497
+    owasp:
+    - A01:2021
+    - A01:2025
+  JS-SEC-FAIL-OPEN-CATCH:
+    asvs:
+    - V16.5
+    - V16.5.2
+    cwe:
+    - CWE-636
+    - CWE-755
+  JS-SEC-GET-STATE-CHANGE:
+    asvs:
+    - V3.5
+    - V3.5.1
+    - V3.5.3
+    cwe:
+    - CWE-650
+    - CWE-352
+    owasp:
+    - A01:2021
+    - A01:2025
+  JS-SEC-GRAPHQL-INTROSPECTION:
+    asvs:
+    - V4.3.2
+    - V13.4
+    cwe:
+    - CWE-200
+    owasp:
+    - A01:2021
+    - A01:2025
+  JS-SEC-GRAPHQL-NO-DEPTH-LIMIT:
+    asvs:
+    - V4.3
+    - V4.3.1
+    cwe:
+    - CWE-770
+  JS-SEC-HARDCODED-CRYPTO-KEY:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-321
+    - CWE-798
+    owasp:
+    - A02:2021
+    - A07:2021
+    - A04:2025
+    - A07:2025
+  JS-SEC-HARDCODED-SECRET:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  JS-SEC-HELMET-HEADER-OFF:
+    asvs:
+    - V3.4
+    - V3.4.1
+    - V3.4.3
+    - V3.4.4
+    - V3.4.5
+    - V3.4.8
+    cwe:
+    - CWE-693
+    owasp:
+    - A06:2025
+  JS-SEC-HTTP-TRACE-ROUTE:
+    asvs:
+    - V3.4
+    - V13.4.4
+    cwe:
+    - CWE-693
+    owasp:
+    - A06:2025
+  JS-SEC-IDOR-FIND-BY-ID:
+    asvs:
+    - V8.2
+    - V8.2.2
+    cwe:
+    - CWE-639
+    owasp:
+    - A01:2021
+    - A01:2025
+  JS-SEC-IMPLIED-EVAL-001:
+    asvs:
+    - V1.2
+    - V1.3.2
+    cwe:
+    - CWE-95
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-SEC-INNERHTML-001:
+    asvs:
+    - V1.2
+    - V1.2.1
+    - V3.2
+    - V3.2.2
+    cwe:
+    - CWE-79
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-SEC-JWT-ALG-NONE:
+    asvs:
+    - V6.8.2
+    - V9.1
+    - V9.1.1
+    - V9.1.2
+    cwe:
+    - CWE-347
+    owasp:
+    - A02:2021
+  JS-SEC-JWT-DECODE-NO-VERIFY:
+    asvs:
+    - V6.8.2
+    - V9.1
+    - V9.1.1
+    - V9.1.2
+    - V9.2.1
+    cwe:
+    - CWE-347
+    owasp:
+    - A02:2021
+  JS-SEC-LATEX-SHELL-ESCAPE:
+    asvs:
+    - V1.2
+    - V1.2.5
+    - V1.2.8
+    cwe:
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-SEC-LIBXML-NOENT:
+    asvs:
+    - V1.5
+    - V1.5.1
+    cwe:
+    - CWE-611
+    owasp:
+    - A05:2021
+    - A02:2025
+  JS-SEC-LOG-INJECTION:
+    asvs:
+    - V16.4
+    - V16.4.1
+    cwe:
+    - CWE-117
+    owasp:
+    - A09:2021
+  JS-SEC-MASS-ASSIGN-BODY:
+    asvs:
+    - V8.2.3
+    - V15.3
+    - V15.3.3
+    cwe:
+    - CWE-915
+    owasp:
+    - A08:2021
+    - A08:2025
+  JS-SEC-MONGO-WHERE-DYNAMIC:
+    asvs:
+    - V1.2
+    - V1.2.4
+    cwe:
+    - CWE-943
+  JS-SEC-NO-NEW-FUNC:
+    asvs:
+    - V1.2
+    - V1.3.2
+    cwe:
+    - CWE-95
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-SEC-NO-SCRIPT-URL:
+    asvs:
+    - V1.2
+    - V1.2.1
+    - V3.2
+    cwe:
+    - CWE-79
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-SEC-NODE-BUFFER-CTOR-001:
+    asvs:
+    - V1.4
+    cwe:
+    - CWE-665
+  JS-SEC-NODE-CHILD-EXEC-INJECTION-001:
+    asvs:
+    - V1.2
+    - V1.2.5
+    cwe:
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-SEC-NODE-SERIALIZE:
+    asvs:
+    - V1.5
+    - V1.5.2
+    cwe:
+    - CWE-502
+    owasp:
+    - A08:2021
+    - A08:2025
+  JS-SEC-NODE-SHELL-ARGS-001:
+    asvs:
+    - V1.2
+    - V1.2.5
+    cwe:
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-SEC-NODE-URL-PARSE-001:
+    asvs:
+    - V2.2
+    - V2.2.1
+    cwe:
+    - CWE-20
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-SEC-NOSQL-REQUEST-FILTER:
+    asvs:
+    - V1.2
+    - V1.2.4
+    cwe:
+    - CWE-943
+  JS-SEC-OAUTH-NO-STATE-PKCE:
+    asvs:
+    - V3.5
+    - V3.5.1
+    - V10.2.1
+    cwe:
+    - CWE-352
+    owasp:
+    - A01:2021
+    - A01:2025
+  JS-SEC-REGEX-INJECTION:
+    asvs:
+    - V1.2.9
+    - V1.3
+    cwe:
+    - CWE-730
+  JS-SEC-SECRET-IN-QUERY-STRING:
+    asvs:
+    - V14.2
+    - V14.2.1
+    cwe:
+    - CWE-598
+    owasp:
+    - A04:2021
+  JS-SEC-SERVE-INDEX:
+    asvs:
+    - V13.4
+    - V13.4.3
+    cwe:
+    - CWE-548
+    owasp:
+    - A01:2021
+    - A01:2025
+  JS-SEC-SESSION-COOKIE-NOT-SECURE:
+    asvs:
+    - V3.3
+    - V3.3.1
+    - V3.3.4
+    - V7.2.3
+    cwe:
+    - CWE-614
+    - CWE-1004
+    owasp:
+    - A05:2021
+    - A02:2025
+  JS-SEC-SESSION-NO-MAXAGE:
+    asvs:
+    - V7.2.3
+    - V7.3
+    - V7.3.1
+    - V7.3.2
+    cwe:
+    - CWE-613
+    owasp:
+    - A07:2021
+  JS-SEC-STACK-IN-RESPONSE:
+    asvs:
+    - V16.5
+    - V16.5.1
+    cwe:
+    - CWE-209
+    owasp:
+    - A04:2021
+    - A10:2025
+  JS-SEC-STATIC-IV:
+    asvs:
+    - V11.3
+    - V11.3.4
+    cwe:
+    - CWE-329
+    - CWE-1204
+    owasp:
+    - A02:2021
+    - A04:2025
+  JS-SEC-STORAGE-SECRET:
+    asvs:
+    - V14.2
+    - V14.3.3
+    cwe:
+    - CWE-922
+  JS-SEC-TIMING-COMPARE:
+    asvs:
+    - V11.2
+    - V11.2.4
+    cwe:
+    - CWE-208
+  JS-SEC-TRUST-PROXY-ALL:
+    asvs:
+    - V4.1
+    - V4.1.3
+    cwe:
+    - CWE-348
   JS-SEC-WEB-DOCUMENT-DOMAIN-001:
     asvs:
     - V3.5
@@ -2144,6 +2457,125 @@ rules:
     owasp:
     - A08:2021
     - A08:2025
+  JS-SEC-WS-CLEARTEXT:
+    asvs:
+    - V4.4.1
+    - V12.2
+    - V12.2.1
+    - V12.3.1
+    cwe:
+    - CWE-319
+    owasp:
+    - A02:2021
+    - A04:2025
+  JS-TAINT-CMDI:
+    asvs:
+    - V1.2
+    - V1.2.5
+    cwe:
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-TAINT-CODE:
+    asvs:
+    - V1.2
+    - V1.3.2
+    cwe:
+    - CWE-94
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-TAINT-LDAP:
+    asvs:
+    - V1.2
+    - V1.2.6
+    cwe:
+    - CWE-90
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-TAINT-PATH:
+    asvs:
+    - V5.3
+    - V5.3.2
+    - V5.4.1
+    cwe:
+    - CWE-22
+    - CWE-23
+    owasp:
+    - A01:2021
+    - A01:2025
+  JS-TAINT-REDIRECT:
+    asvs:
+    - V1.2.2
+    - V3.7.2
+    - V15.3.2
+    cwe:
+    - CWE-601
+    owasp:
+    - A01:2021
+    - A01:2025
+  JS-TAINT-REGEX:
+    asvs:
+    - V1.3
+    - V1.3.12
+    - V15.3
+    cwe:
+    - CWE-1333
+    - CWE-400
+    - CWE-730
+  JS-TAINT-SMTP:
+    asvs:
+    - V1.3
+    - V1.3.11
+    - V4.2.5
+    - V8.2
+    - V8.2.1
+    cwe:
+    - CWE-93
+    - CWE-284
+    owasp:
+    - A01:2021
+    - A03:2021
+    - A01:2025
+    - A05:2025
+  JS-TAINT-SQLI:
+    asvs:
+    - V1.2
+    - V1.2.4
+    cwe:
+    - CWE-89
+    owasp:
+    - A03:2021
+    - A05:2025
+  JS-TAINT-SSRF:
+    asvs:
+    - V1.3
+    - V1.3.6
+    cwe:
+    - CWE-918
+    owasp:
+    - A10:2021
+    - A01:2025
+  JS-TAINT-TRUST:
+    asvs:
+    - V2.2
+    cwe:
+    - CWE-501
+    owasp:
+    - A04:2021
+    - A06:2025
+  JS-TAINT-XSS:
+    asvs:
+    - V1.2
+    - V1.2.1
+    - V3.2
+    cwe:
+    - CWE-79
+    owasp:
+    - A03:2021
+    - A05:2025
   JSON-SEC-AWS-ACCESS-KEY:
     asvs:
     - V13.2.3
@@ -2261,6 +2693,15 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  KT-QUAL-EMPTY-CATCH:
+    cwe:
+    - CWE-1069
+  KT-QUAL-EQUALS-WITHOUT-HASHCODE:
+    cwe:
+    - CWE-581
+  KT-QUAL-NOT-NULL-ASSERTION:
+    cwe:
+    - CWE-476
   KT-SEC-AWS-ACCESS-KEY:
     asvs:
     - V13.2.3
@@ -2298,17 +2739,47 @@ rules:
     owasp:
     - A02:2021
     - A04:2025
-  KT-QUAL-EMPTY-CATCH:
+  KT-SEC-COOKIE-NO-HTTPONLY:
+    asvs:
+    - V3.3
+    - V3.3.1
+    - V3.3.4
     cwe:
-    - CWE-1069
-  KT-QUAL-EQUALS-WITHOUT-HASHCODE:
+    - CWE-1004
+    owasp:
+    - A05:2021
+    - A02:2025
+  KT-SEC-COOKIE-NO-SECURE:
+    asvs:
+    - V3.3
+    - V3.3.1
+    - V3.3.4
     cwe:
-    - CWE-581
+    - CWE-614
+    owasp:
+    - A05:2021
+    - A02:2025
+  KT-SEC-CORS-ANY-ORIGIN:
+    asvs:
+    - V3.4
+    - V3.4.2
+    cwe:
+    - CWE-942
+    owasp:
+    - A05:2021
+    - A02:2025
   KT-SEC-EXTERNAL-STORAGE:
     asvs:
     - V14.2
     cwe:
     - CWE-922
+  KT-SEC-FORMAT-STRING-VARIABLE:
+    asvs:
+    - V1.2
+    - V1.2.4
+    - V1.3.10
+    cwe:
+    - CWE-134
   KT-SEC-GITHUB-TOKEN:
     asvs:
     - V13.2.3
@@ -2329,6 +2800,16 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  KT-SEC-HEADER-FROM-REQUEST:
+    asvs:
+    - V1.2
+    - V1.2.2
+    - V4.2.5
+    cwe:
+    - CWE-113
+    owasp:
+    - A03:2021
+    - A05:2025
   KT-SEC-HOSTNAME-VERIFIER-ALL:
     asvs:
     - V12.3
@@ -2338,6 +2819,16 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  KT-SEC-HTTP-URL:
+    asvs:
+    - V12.2
+    - V12.2.1
+    - V12.3.1
+    cwe:
+    - CWE-319
+    owasp:
+    - A02:2021
+    - A04:2025
   KT-SEC-INSECURE-RANDOM:
     asvs:
     - V6.4.1
@@ -2369,9 +2860,15 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
-  KT-QUAL-NOT-NULL-ASSERTION:
+  KT-SEC-LOG-SECRET:
+    asvs:
+    - V16.2
+    - V16.2.5
     cwe:
-    - CWE-476
+    - CWE-532
+    owasp:
+    - A09:2021
+    - A09:2025
   KT-SEC-PRIVATE-KEY:
     asvs:
     - V13.2.3
@@ -2391,6 +2888,15 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  KT-SEC-SCRIPT-EVAL:
+    asvs:
+    - V1.2
+    - V1.3.2
+    cwe:
+    - CWE-94
+    owasp:
+    - A03:2021
+    - A05:2025
   KT-SEC-SLACK-TOKEN:
     asvs:
     - V13.2.3
@@ -2401,6 +2907,15 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  KT-SEC-SPRING-CSRF-DISABLED:
+    asvs:
+    - V3.5
+    - V3.5.1
+    cwe:
+    - CWE-352
+    owasp:
+    - A01:2021
+    - A01:2025
   KT-SEC-SQL-TEMPLATE:
     asvs:
     - V1.2
@@ -2410,6 +2925,15 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  KT-SEC-STACKTRACE-TO-RESPONSE:
+    asvs:
+    - V16.5
+    - V16.5.1
+    cwe:
+    - CWE-209
+    owasp:
+    - A04:2021
+    - A10:2025
   KT-SEC-STRIPE-LIVE-KEY:
     asvs:
     - V13.2.3
@@ -2420,6 +2944,12 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  KT-SEC-TIMING-COMPARE:
+    asvs:
+    - V11.2
+    - V11.2.4
+    cwe:
+    - CWE-208
   KT-SEC-TRUST-ALL:
     asvs:
     - V12.2
@@ -2462,6 +2992,118 @@ rules:
     - CWE-489
     owasp:
     - A02:2025
+  KT-SEC-XXE:
+    asvs:
+    - V1.5
+    - V1.5.1
+    cwe:
+    - CWE-611
+    owasp:
+    - A05:2021
+    - A02:2025
+  KT-TAINT-CMDI:
+    asvs:
+    - V1.2
+    - V1.2.5
+    cwe:
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  KT-TAINT-CODE:
+    asvs:
+    - V1.2
+    - V1.3.2
+    cwe:
+    - CWE-94
+    owasp:
+    - A03:2021
+    - A05:2025
+  KT-TAINT-LDAP:
+    asvs:
+    - V1.2
+    - V1.2.6
+    cwe:
+    - CWE-90
+    owasp:
+    - A03:2021
+    - A05:2025
+  KT-TAINT-PATH:
+    asvs:
+    - V5.3
+    - V5.3.2
+    - V5.4.1
+    cwe:
+    - CWE-22
+    - CWE-23
+    owasp:
+    - A01:2021
+    - A01:2025
+  KT-TAINT-REDIRECT:
+    asvs:
+    - V1.2.2
+    - V3.7.2
+    - V15.3.2
+    cwe:
+    - CWE-601
+    owasp:
+    - A01:2021
+    - A01:2025
+  KT-TAINT-REGEX:
+    asvs:
+    - V1.3
+    - V1.3.12
+    - V15.3
+    cwe:
+    - CWE-1333
+    - CWE-400
+    - CWE-730
+  KT-TAINT-SQLI:
+    asvs:
+    - V1.2
+    - V1.2.4
+    cwe:
+    - CWE-89
+    owasp:
+    - A03:2021
+    - A05:2025
+  KT-TAINT-SSRF:
+    asvs:
+    - V1.3
+    - V1.3.6
+    cwe:
+    - CWE-918
+    owasp:
+    - A10:2021
+    - A01:2025
+  KT-TAINT-TRUST:
+    asvs:
+    - V2.2
+    cwe:
+    - CWE-501
+    owasp:
+    - A04:2021
+    - A06:2025
+  KT-TAINT-XSS:
+    asvs:
+    - V1.2
+    - V1.2.1
+    - V3.2
+    cwe:
+    - CWE-79
+    owasp:
+    - A03:2021
+    - A05:2025
+  KUBE-QUAL-NO-RESOURCE-LIMITS:
+    asvs:
+    - V4.3
+    cwe:
+    - CWE-770
+  KUBE-QUAL-SA-TOKEN-AUTOMOUNT:
+    asvs:
+    - V13.3.2
+    cwe:
+    - CWE-250
   KUBE-SEC-APPARMOR-UNCONFINED:
     asvs:
     - V3.4
@@ -2544,11 +3186,6 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
-  KUBE-QUAL-NO-RESOURCE-LIMITS:
-    asvs:
-    - V4.3
-    cwe:
-    - CWE-770
   KUBE-SEC-PRIV-ESC:
     asvs:
     - V13.3.2
@@ -2592,11 +3229,6 @@ rules:
     - V13.3.2
     cwe:
     - CWE-250
-  KUBE-QUAL-SA-TOKEN-AUTOMOUNT:
-    asvs:
-    - V13.3.2
-    cwe:
-    - CWE-250
   KUBE-SEC-SECCOMP-UNCONFINED:
     asvs:
     - V3.4
@@ -2623,133 +3255,6 @@ rules:
     - V13.3.2
     cwe:
     - CWE-250
-  JS-LLM-NO-MAX-TOKENS:
-    asvs:
-    - V4.3
-    cwe:
-    - CWE-770
-  JS-LLM-OUTPUT-TO-EXEC:
-    asvs:
-    - V1.2
-    - V1.2.5
-    - V1.3.2
-    cwe:
-    - CWE-94
-    - CWE-78
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-LLM-OUTPUT-TO-HTML:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V3.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-LLM-REQUEST-IN-SYSTEM-PROMPT:
-    asvs:
-    - V1.2
-    - V1.2.5
-    cwe:
-    - CWE-77
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-LLM-SECRET-IN-PROMPT:
-    asvs:
-    - V13.4
-    - V14.2
-    cwe:
-    - CWE-200
-    - CWE-522
-    owasp:
-    - A01:2021
-    - A04:2021
-    - A01:2025
-    - A06:2025
-  PY-LLM-AGENT-SHELL-TOOL:
-    asvs:
-    - V1.2
-    - V1.3.2
-    - V13.3.2
-    cwe:
-    - CWE-250
-    - CWE-94
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-LLM-NO-MAX-TOKENS:
-    asvs:
-    - V4.3
-    cwe:
-    - CWE-770
-  PY-LLM-OUTPUT-TO-EXEC:
-    asvs:
-    - V1.2
-    - V1.2.5
-    - V1.3.2
-    cwe:
-    - CWE-94
-    - CWE-78
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-LLM-OUTPUT-TO-SQL:
-    asvs:
-    - V1.2
-    - V1.2.4
-    cwe:
-    - CWE-89
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-LLM-REQUEST-IN-SYSTEM-PROMPT:
-    asvs:
-    - V1.2
-    - V1.2.5
-    cwe:
-    - CWE-77
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-LLM-SECRET-IN-PROMPT:
-    asvs:
-    - V13.4
-    - V14.2
-    cwe:
-    - CWE-200
-    - CWE-522
-    owasp:
-    - A01:2021
-    - A04:2021
-    - A01:2025
-    - A06:2025
-  PY-LLM-TORCH-LOAD-UNSAFE:
-    asvs:
-    - V1.5
-    - V1.5.2
-    cwe:
-    - CWE-502
-    owasp:
-    - A08:2021
-    - A08:2025
-  PY-LLM-TRUST-REMOTE-CODE:
-    asvs:
-    - V1.2
-    - V1.3.2
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-829
-    - CWE-94
-    owasp:
-    - A03:2021
-    - A08:2021
-    - A05:2025
-    - A08:2025
   MAVEN-SEC-AWS-ACCESS-KEY:
     asvs:
     - V13.2.3
@@ -2873,6 +3378,15 @@ rules:
     - CWE-1357
     owasp:
     - A03:2025
+  NG-MIG-JSONP:
+    asvs:
+    - V1.2.3
+    - V3.5.6
+    - V15.2
+    cwe:
+    - CWE-477
+    owasp:
+    - A03:2025
   NG-SEC-BYPASS-SECURITY-TRUST:
     asvs:
     - V1.2
@@ -2884,15 +3398,6 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
-  NG-MIG-JSONP:
-    asvs:
-    - V1.2.3
-    - V3.5.6
-    - V15.2
-    cwe:
-    - CWE-477
-    owasp:
-    - A03:2025
   NG-SEC-NATIVE-ELEMENT-INNER-HTML:
     asvs:
     - V1.2
@@ -2916,6 +3421,11 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  NUXT-SEC-CACHED-PAYLOAD-001:
+    asvs:
+    - V14.3
+    cwe:
+    - CWE-524
   NUXT-SEC-COOKIE-SENSITIVE-001:
     asvs:
     - V3.3
@@ -2927,6 +3437,15 @@ rules:
     owasp:
     - A05:2021
     - A02:2025
+  NUXT-SEC-ROUTERULE-UPPERCASE-AUTH-001:
+    asvs:
+    - V8.2
+    - V8.2.2
+    cwe:
+    - CWE-863
+    owasp:
+    - A01:2021
+    - A01:2025
   NUXT-SEC-RTC-PUBLIC-001:
     asvs:
     - V13.4
@@ -2940,20 +3459,6 @@ rules:
     - V13.4
     cwe:
     - CWE-200
-    owasp:
-    - A01:2021
-    - A01:2025
-  NUXT-SEC-CACHED-PAYLOAD-001:
-    asvs:
-    - V14.3
-    cwe:
-    - CWE-524
-  NUXT-SEC-ROUTERULE-UPPERCASE-AUTH-001:
-    asvs:
-    - V8.2
-    - V8.2.2
-    cwe:
-    - CWE-863
     owasp:
     - A01:2021
     - A01:2025
@@ -2996,6 +3501,14 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  PAYLOAD-QUAL-GRAPHQL-UNUSED:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-16
+    owasp:
+    - A05:2021
+    - A02:2025
   PAYLOAD-SEC-AUTH-COLLECTION-VERSIONS:
     asvs:
     - V13.4
@@ -3031,14 +3544,6 @@ rules:
     owasp:
     - A01:2021
     - A01:2025
-  PAYLOAD-QUAL-GRAPHQL-UNUSED:
-    asvs:
-    - V13.4
-    cwe:
-    - CWE-16
-    owasp:
-    - A05:2021
-    - A02:2025
   PAYLOAD-SEC-HARDCODED-SECRET:
     asvs:
     - V13.2.3
@@ -3148,6 +3653,14 @@ rules:
     owasp:
     - A05:2021
     - A02:2025
+  PHP-SEC-CSV-FORMULA-INJECTION:
+    asvs:
+    - V1.2
+    - V1.2.10
+    cwe:
+    - CWE-1236
+    owasp:
+    - A03:2021
   PHP-SEC-CURL-NO-VERIFY:
     asvs:
     - V12.2
@@ -3168,6 +3681,14 @@ rules:
     owasp:
     - A04:2021
     - A10:2025
+  PHP-SEC-DOUBLE-ENCODING:
+    asvs:
+    - V1.1
+    - V1.1.2
+    cwe:
+    - CWE-116
+    owasp:
+    - A03:2021
   PHP-SEC-EVAL:
     asvs:
     - V1.2
@@ -3184,6 +3705,16 @@ rules:
     cwe:
     - CWE-621
   PHP-SEC-GITHUB-TOKEN:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PHP-SEC-HARDCODED-SECRET:
     asvs:
     - V13.2.3
     - V13.3
@@ -3231,6 +3762,15 @@ rules:
     owasp:
     - A07:2021
     - A07:2025
+  PHP-SEC-LIBXML-NOENT:
+    asvs:
+    - V1.5
+    - V1.5.1
+    cwe:
+    - CWE-611
+    owasp:
+    - A05:2021
+    - A02:2025
   PHP-SEC-MD5-PASSWORD:
     asvs:
     - V11.2.3
@@ -3251,6 +3791,15 @@ rules:
     - V15.3.2
     cwe:
     - CWE-601
+    owasp:
+    - A01:2021
+    - A01:2025
+  PHP-SEC-PHPINFO:
+    asvs:
+    - V13.4
+    - V13.4.2
+    cwe:
+    - CWE-200
     owasp:
     - A01:2021
     - A01:2025
@@ -3344,1157 +3893,6 @@ rules:
     - A07:2021
     - A07:2025
   PHP-SEC-XSS-ECHO-INPUT:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V3.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  PKG-SEC-DEP-HTTP-TARBALL:
-    asvs:
-    - V5.3.3
-    - V12.2
-    - V12.2.1
-    - V12.3.1
-    cwe:
-    - CWE-319
-    owasp:
-    - A02:2021
-    - A04:2025
-  PKG-SEC-DEP-TARBALL-URL:
-    asvs:
-    - V5.3.3
-    - V15.2
-    cwe:
-    - CWE-1357
-    owasp:
-    - A03:2025
-  PKG-SEC-INSTALL-SCRIPT-DOWNLOAD:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
-  PKG-SEC-PUBLISHCONFIG-HTTP:
-    asvs:
-    - V12.2
-    - V12.2.1
-    - V12.3.1
-    cwe:
-    - CWE-319
-    owasp:
-    - A02:2021
-    - A04:2025
-  PKG-SEC-SCRIPT-SUDO:
-    asvs:
-    - V13.3.2
-    cwe:
-    - CWE-250
-  PY-SEC-ASSERT-FOR-SECURITY:
-    asvs:
-    - V15.3
-    cwe:
-    - CWE-617
-  PY-SEC-AWS-ACCESS-KEY:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-AZURE-STORAGE-KEY:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-BIND-ALL-INTERFACES:
-    asvs:
-    - V13.2
-    cwe:
-    - CWE-1327
-  PY-SEC-CHMOD-WORLD-WRITABLE:
-    asvs:
-    - V13.3.2
-    cwe:
-    - CWE-732
-    owasp:
-    - A01:2025
-  PY-SEC-COOKIE-HTTPONLY-FALSE:
-    asvs:
-    - V3.3
-    - V3.3.1
-    - V3.3.4
-    cwe:
-    - CWE-1004
-    owasp:
-    - A05:2021
-    - A02:2025
-  PY-SEC-COOKIE-INSECURE:
-    asvs:
-    - V3.3
-    - V3.3.1
-    - V3.3.4
-    cwe:
-    - CWE-614
-    owasp:
-    - A05:2021
-    - A02:2025
-  PY-SEC-DJANGO-CSRF-EXEMPT:
-    asvs:
-    - V3.5
-    - V3.5.1
-    cwe:
-    - CWE-352
-    owasp:
-    - A01:2021
-    - A01:2025
-  PY-SEC-DJANGO-DEBUG-TRUE:
-    asvs:
-    - V13.4
-    - V13.4.2
-    cwe:
-    - CWE-489
-    owasp:
-    - A02:2025
-  PY-SEC-EVAL:
-    asvs:
-    - V1.2
-    - V1.3.2
-    cwe:
-    - CWE-95
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-SEC-FLASK-CORS-ALL-ORIGINS:
-    asvs:
-    - V3.4
-    - V3.4.2
-    cwe:
-    - CWE-942
-    owasp:
-    - A05:2021
-    - A02:2025
-  PY-SEC-FLASK-DEBUG:
-    asvs:
-    - V13.4
-    - V13.4.2
-    cwe:
-    - CWE-489
-    owasp:
-    - A02:2025
-  PY-SEC-GITHUB-TOKEN:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-HARDCODED-PASSWORD:
-    asvs:
-    - V6.3.2
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-HARDCODED-TMP:
-    asvs:
-    - V5.3
-    cwe:
-    - CWE-377
-    owasp:
-    - A01:2021
-    - A01:2025
-  PY-SEC-HASH-WEAK:
-    asvs:
-    - V11.2.3
-    - V11.3.2
-    - V11.4
-    - V11.4.1
-    - V11.4.2
-    - V11.4.3
-    cwe:
-    - CWE-328
-    owasp:
-    - A02:2021
-    - A04:2025
-  PY-SEC-HMAC-COMPARE:
-    asvs:
-    - V11.2
-    - V11.2.4
-    cwe:
-    - CWE-208
-  PY-SEC-HTTP-SERVER-PRODUCTION:
-    asvs:
-    - V13.4
-    - V13.4.2
-    cwe:
-    - CWE-489
-    owasp:
-    - A02:2025
-  PY-SEC-JINJA-AUTOESCAPE-FALSE:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V3.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-SEC-JWT-LITERAL:
-    asvs:
-    - V9.1.2
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-JWT-NO-VERIFY:
-    asvs:
-    - V6.8.2
-    - V9.1
-    - V9.1.1
-    - V9.1.2
-    - V9.2.1
-    cwe:
-    - CWE-347
-    owasp:
-    - A02:2021
-  PY-SEC-LDAP-INJECTION:
-    asvs:
-    - V1.2
-    - V1.2.6
-    cwe:
-    - CWE-90
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-SEC-MARSHAL-LOADS:
-    asvs:
-    - V1.5
-    - V1.5.2
-    cwe:
-    - CWE-502
-    owasp:
-    - A08:2021
-    - A08:2025
-  PY-SEC-OPEN-REDIRECT:
-    asvs:
-    - V1.2.2
-    - V3.7.2
-    - V15.3.2
-    cwe:
-    - CWE-601
-    owasp:
-    - A01:2021
-    - A01:2025
-  PY-SEC-OS-SYSTEM:
-    asvs:
-    - V1.2
-    - V1.2.5
-    cwe:
-    - CWE-78
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-SEC-PICKLE-LOADS:
-    asvs:
-    - V1.5
-    - V1.5.2
-    cwe:
-    - CWE-502
-    owasp:
-    - A08:2021
-    - A08:2025
-  PY-SEC-PRIVATE-KEY:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-RANDOM-FOR-SECURITY:
-    asvs:
-    - V6.4.1
-    - V6.5.3
-    - V11.5
-    - V11.5.1
-    cwe:
-    - CWE-330
-    owasp:
-    - A02:2021
-    - A04:2025
-  PY-SEC-RANDOM-SESSION-VALUE:
-    asvs:
-    - V6.4.1
-    - V6.5.3
-    - V7.2.3
-    - V11.5
-    - V11.5.1
-    cwe:
-    - CWE-330
-    owasp:
-    - A02:2021
-    - A04:2025
-  PY-SEC-REQUESTS-VERIFY-FALSE:
-    asvs:
-    - V12.2
-    - V12.3
-    - V12.3.2
-    - V12.3.4
-    cwe:
-    - CWE-295
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-SHELVE-UNTRUSTED:
-    asvs:
-    - V1.5
-    - V1.5.2
-    cwe:
-    - CWE-502
-    owasp:
-    - A08:2021
-    - A08:2025
-  PY-SEC-SLACK-TOKEN:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-SQL-STRING-FORMAT:
-    asvs:
-    - V1.2
-    - V1.2.4
-    cwe:
-    - CWE-89
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-SEC-SSL-NO-VERIFY:
-    asvs:
-    - V12.2
-    - V12.3
-    - V12.3.2
-    - V12.3.4
-    cwe:
-    - CWE-295
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-STRIPE-LIVE-KEY:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-SUBPROCESS-SHELL:
-    asvs:
-    - V1.2
-    - V1.2.5
-    cwe:
-    - CWE-78
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-SEC-TARFILE-EXTRACTALL-NO-FILTER:
-    asvs:
-    - V5.3
-    - V5.3.2
-    - V5.3.3
-    - V5.4.1
-    cwe:
-    - CWE-22
-    owasp:
-    - A01:2021
-    - A01:2025
-  PY-SEC-TEMPFILE-MKTEMP:
-    asvs:
-    - V5.3
-    cwe:
-    - CWE-377
-    owasp:
-    - A01:2021
-    - A01:2025
-  PY-SEC-TORCH-LOAD-UNSAFE:
-    asvs:
-    - V1.5
-    - V1.5.2
-    cwe:
-    - CWE-502
-    owasp:
-    - A08:2021
-    - A08:2025
-  PY-SEC-URL-CREDENTIALS:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  PY-SEC-WEAK-CIPHER:
-    asvs:
-    - V11.2.3
-    - V11.3
-    - V11.3.2
-    - V11.4.1
-    - V11.4.2
-    - V11.4.3
-    cwe:
-    - CWE-327
-    owasp:
-    - A02:2021
-    - A04:2025
-  PY-SEC-XML-UNTRUSTED:
-    asvs:
-    - V1.5
-    - V1.5.1
-    cwe:
-    - CWE-611
-    owasp:
-    - A05:2021
-    - A02:2025
-  PY-SEC-XPATH-INJECTION:
-    asvs:
-    - V1.2
-    - V1.2.7
-    cwe:
-    - CWE-643
-    owasp:
-    - A03:2021
-    - A05:2025
-  PY-SEC-YAML-LOAD-UNSAFE:
-    asvs:
-    - V1.5
-    - V1.5.2
-    cwe:
-    - CWE-502
-    owasp:
-    - A08:2021
-    - A08:2025
-  PY-SEC-ZIPFILE-EXTRACT-UNTRUSTED:
-    asvs:
-    - V5.3
-    - V5.3.2
-    - V5.3.3
-    - V5.4.1
-    cwe:
-    - CWE-22
-    owasp:
-    - A01:2021
-    - A01:2025
-  REACT-SEC-DANGEROUSLY-SET-INNER-HTML:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V1.3.1
-    - V3.2
-    - V3.2.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  REACT-SEC-JAVASCRIPT-URL:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V3.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  REACT-SEC-SERVER-FUNCTION-NO-AUTH:
-    asvs:
-    - V8.2.1
-    - V8.3
-    cwe:
-    - CWE-862
-    owasp:
-    - A01:2021
-    - A01:2025
-  SB-SEC-ACT-001:
-    asvs:
-    - V13.4
-    cwe:
-    - CWE-200
-    owasp:
-    - A01:2021
-    - A01:2025
-  SB-SEC-CFG-CONFIGPROPS-VALUES-001:
-    asvs:
-    - V13.4
-    cwe:
-    - CWE-200
-    owasp:
-    - A01:2021
-    - A01:2025
-  SB-SEC-CFG-H2-CONSOLE-001:
-    asvs:
-    - V13.4
-    - V13.4.2
-    cwe:
-    - CWE-489
-    owasp:
-    - A02:2025
-  SB-SEC-CFG-H2-REMOTE-001:
-    asvs:
-    - V8.2.1
-    - V8.3
-    cwe:
-    - CWE-862
-    owasp:
-    - A01:2021
-    - A01:2025
-  SB-SEC-CFG-HEALTH-DETAILS-001:
-    asvs:
-    - V13.4
-    cwe:
-    - CWE-200
-    owasp:
-    - A01:2021
-    - A01:2025
-  SB-SEC-CFG-SHOW-VALUES-001:
-    asvs:
-    - V13.4
-    cwe:
-    - CWE-200
-    owasp:
-    - A01:2021
-    - A01:2025
-  SB-MIG-SEC-001:
-    asvs:
-    - V15.2
-    cwe:
-    - CWE-477
-    owasp:
-    - A03:2025
-  SB-MIG-SEC-002:
-    asvs:
-    - V15.2
-    cwe:
-    - CWE-477
-    owasp:
-    - A03:2025
-  SB-MIG-SEC-ANTMATCHERS-001:
-    asvs:
-    - V15.2
-    cwe:
-    - CWE-477
-    owasp:
-    - A03:2025
-  SB-SEC-CSRF-001:
-    asvs:
-    - V3.5
-    - V3.5.1
-    cwe:
-    - CWE-352
-    owasp:
-    - A01:2021
-    - A01:2025
-  SB-SEC-DEFAULT-ENCODER-001:
-    asvs:
-    - V11.2.3
-    - V11.3.2
-    - V11.4
-    - V11.4.1
-    - V11.4.2
-    - V11.4.3
-    cwe:
-    - CWE-916
-    owasp:
-    - A02:2021
-    - A04:2025
-  SB-SEC-FRAMEOPTIONS-001:
-    asvs:
-    - V3.4
-    - V3.4.6
-    cwe:
-    - CWE-1021
-    owasp:
-    - A04:2021
-    - A06:2025
-  SB-MIG-SEC-GLOBAL-METHOD-001:
-    asvs:
-    - V15.2
-    cwe:
-    - CWE-477
-    owasp:
-    - A03:2025
-  SB-SEC-LEGACY-ENCODER-001:
-    asvs:
-    - V11.2.3
-    - V11.3.2
-    - V11.4
-    - V11.4.1
-    - V11.4.2
-    - V11.4.3
-    cwe:
-    - CWE-916
-    owasp:
-    - A02:2021
-    - A04:2025
-  SB-SEC-NOOP-ENCODER-001:
-    asvs:
-    - V11.2.3
-    - V11.3.2
-    - V11.4
-    - V11.4.1
-    - V11.4.2
-    - V11.4.3
-    cwe:
-    - CWE-916
-    owasp:
-    - A02:2021
-    - A04:2025
-  SB-SEC-PERMITALL-001:
-    asvs:
-    - V8.2.1
-    - V8.3
-    cwe:
-    - CWE-862
-    owasp:
-    - A01:2021
-    - A01:2025
-  SB-QUAL-TX-SWALLOW-001:
-    cwe:
-    - CWE-390
-  SB-SEC-WEB-CORS-ALL-001:
-    asvs:
-    - V3.4
-    - V3.4.2
-    cwe:
-    - CWE-942
-    owasp:
-    - A05:2021
-    - A02:2025
-  SB-SEC-WEB-CORS-CRED-001:
-    asvs:
-    - V3.4
-    - V3.4.2
-    cwe:
-    - CWE-942
-    owasp:
-    - A05:2021
-    - A02:2025
-  DOCKER-SUPPLY-DOWNLOAD-NO-CHECKSUM:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-829
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
-  DOCKER-SUPPLY-GO-INSTALL-LATEST:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-829
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
-  DOCKER-SUPPLY-NPM-INSTALL:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-829
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
-  DOCKER-SUPPLY-PIP-UNPINNED:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-829
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
-  GHA-SUPPLY-NPM-INSTALL:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-829
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
-  GITLAB-SUPPLY-NPM-INSTALL:
-    asvs:
-    - V15.2
-    - V15.2.4
-    cwe:
-    - CWE-829
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
-  PKG-SUPPLY-NPM-NO-LOCKFILE:
-    asvs:
-    - V15.2
-    - V15.2.4
-    - V15.4.3
-    cwe:
-    - CWE-829
-    - CWE-494
-    owasp:
-    - A08:2021
-    - A08:2025
-  GO-TAINT-CMDI:
-    asvs:
-    - V1.2
-    - V1.2.5
-    cwe:
-    - CWE-78
-    owasp:
-    - A03:2021
-    - A05:2025
-  GO-TAINT-LDAP:
-    asvs:
-    - V1.2
-    - V1.2.6
-    cwe:
-    - CWE-90
-    owasp:
-    - A03:2021
-    - A05:2025
-  GO-TAINT-PATH:
-    asvs:
-    - V5.3
-    - V5.3.2
-    - V5.4.1
-    cwe:
-    - CWE-22
-    - CWE-23
-    owasp:
-    - A01:2021
-    - A01:2025
-  GO-TAINT-REDIRECT:
-    asvs:
-    - V1.2.2
-    - V3.7.2
-    - V15.3.2
-    cwe:
-    - CWE-601
-    owasp:
-    - A01:2021
-    - A01:2025
-  GO-TAINT-REGEX:
-    asvs:
-    - V1.3
-    - V1.3.12
-    - V15.3
-    cwe:
-    - CWE-1333
-    - CWE-400
-    - CWE-730
-  GO-TAINT-SMTP:
-    asvs:
-    - V1.3
-    - V1.3.11
-    - V4.2.5
-    - V8.2
-    - V8.2.1
-    cwe:
-    - CWE-93
-    - CWE-284
-    owasp:
-    - A01:2021
-    - A03:2021
-    - A01:2025
-    - A05:2025
-  GO-TAINT-SQLI:
-    asvs:
-    - V1.2
-    - V1.2.4
-    cwe:
-    - CWE-89
-    owasp:
-    - A03:2021
-    - A05:2025
-  GO-TAINT-SSRF:
-    asvs:
-    - V1.3
-    - V1.3.6
-    cwe:
-    - CWE-918
-    owasp:
-    - A10:2021
-    - A01:2025
-  GO-TAINT-TRUST:
-    asvs:
-    - V2.2
-    cwe:
-    - CWE-501
-    owasp:
-    - A04:2021
-    - A06:2025
-  GO-TAINT-XSS:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V3.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  JAVA-TAINT-CMDI:
-    asvs:
-    - V1.2
-    - V1.2.5
-    cwe:
-    - CWE-78
-    owasp:
-    - A03:2021
-    - A05:2025
-  JAVA-TAINT-CODE:
-    asvs:
-    - V1.2
-    - V1.3.2
-    cwe:
-    - CWE-94
-    owasp:
-    - A03:2021
-    - A05:2025
-  JAVA-TAINT-LDAP:
-    asvs:
-    - V1.2
-    - V1.2.6
-    cwe:
-    - CWE-90
-    owasp:
-    - A03:2021
-    - A05:2025
-  JAVA-TAINT-PATH:
-    asvs:
-    - V5.3
-    - V5.3.2
-    - V5.4.1
-    cwe:
-    - CWE-22
-    - CWE-23
-    owasp:
-    - A01:2021
-    - A01:2025
-  JAVA-TAINT-REDIRECT:
-    asvs:
-    - V1.2.2
-    - V3.7.2
-    - V15.3.2
-    cwe:
-    - CWE-601
-    owasp:
-    - A01:2021
-    - A01:2025
-  JAVA-TAINT-REGEX:
-    asvs:
-    - V1.3
-    - V1.3.12
-    - V15.3
-    cwe:
-    - CWE-1333
-    - CWE-400
-    - CWE-730
-  JAVA-TAINT-SMTP:
-    asvs:
-    - V1.3
-    - V1.3.11
-    - V4.2.5
-    - V8.2
-    - V8.2.1
-    cwe:
-    - CWE-93
-    - CWE-284
-    owasp:
-    - A01:2021
-    - A03:2021
-    - A01:2025
-    - A05:2025
-  JAVA-TAINT-SQLI:
-    asvs:
-    - V1.2
-    - V1.2.4
-    cwe:
-    - CWE-89
-    owasp:
-    - A03:2021
-    - A05:2025
-  JAVA-TAINT-SSRF:
-    asvs:
-    - V1.3
-    - V1.3.6
-    cwe:
-    - CWE-918
-    owasp:
-    - A10:2021
-    - A01:2025
-  JAVA-TAINT-TRUST:
-    asvs:
-    - V2.2
-    cwe:
-    - CWE-501
-    owasp:
-    - A04:2021
-    - A06:2025
-  JAVA-TAINT-XPATH:
-    asvs:
-    - V1.2
-    - V1.2.7
-    cwe:
-    - CWE-643
-    owasp:
-    - A03:2021
-    - A05:2025
-  JAVA-TAINT-XSS:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V3.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-TAINT-CMDI:
-    asvs:
-    - V1.2
-    - V1.2.5
-    cwe:
-    - CWE-78
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-TAINT-CODE:
-    asvs:
-    - V1.2
-    - V1.3.2
-    cwe:
-    - CWE-94
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-TAINT-LDAP:
-    asvs:
-    - V1.2
-    - V1.2.6
-    cwe:
-    - CWE-90
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-TAINT-PATH:
-    asvs:
-    - V5.3
-    - V5.3.2
-    - V5.4.1
-    cwe:
-    - CWE-22
-    - CWE-23
-    owasp:
-    - A01:2021
-    - A01:2025
-  JS-TAINT-REDIRECT:
-    asvs:
-    - V1.2.2
-    - V3.7.2
-    - V15.3.2
-    cwe:
-    - CWE-601
-    owasp:
-    - A01:2021
-    - A01:2025
-  JS-TAINT-REGEX:
-    asvs:
-    - V1.3
-    - V1.3.12
-    - V15.3
-    cwe:
-    - CWE-1333
-    - CWE-400
-    - CWE-730
-  JS-TAINT-SMTP:
-    asvs:
-    - V1.3
-    - V1.3.11
-    - V4.2.5
-    - V8.2
-    - V8.2.1
-    cwe:
-    - CWE-93
-    - CWE-284
-    owasp:
-    - A01:2021
-    - A03:2021
-    - A01:2025
-    - A05:2025
-  JS-TAINT-SQLI:
-    asvs:
-    - V1.2
-    - V1.2.4
-    cwe:
-    - CWE-89
-    owasp:
-    - A03:2021
-    - A05:2025
-  JS-TAINT-SSRF:
-    asvs:
-    - V1.3
-    - V1.3.6
-    cwe:
-    - CWE-918
-    owasp:
-    - A10:2021
-    - A01:2025
-  JS-TAINT-TRUST:
-    asvs:
-    - V2.2
-    cwe:
-    - CWE-501
-    owasp:
-    - A04:2021
-    - A06:2025
-  JS-TAINT-XSS:
-    asvs:
-    - V1.2
-    - V1.2.1
-    - V3.2
-    cwe:
-    - CWE-79
-    owasp:
-    - A03:2021
-    - A05:2025
-  KT-TAINT-CMDI:
-    asvs:
-    - V1.2
-    - V1.2.5
-    cwe:
-    - CWE-78
-    owasp:
-    - A03:2021
-    - A05:2025
-  KT-TAINT-CODE:
-    asvs:
-    - V1.2
-    - V1.3.2
-    cwe:
-    - CWE-94
-    owasp:
-    - A03:2021
-    - A05:2025
-  KT-TAINT-LDAP:
-    asvs:
-    - V1.2
-    - V1.2.6
-    cwe:
-    - CWE-90
-    owasp:
-    - A03:2021
-    - A05:2025
-  KT-TAINT-PATH:
-    asvs:
-    - V5.3
-    - V5.3.2
-    - V5.4.1
-    cwe:
-    - CWE-22
-    - CWE-23
-    owasp:
-    - A01:2021
-    - A01:2025
-  KT-TAINT-REDIRECT:
-    asvs:
-    - V1.2.2
-    - V3.7.2
-    - V15.3.2
-    cwe:
-    - CWE-601
-    owasp:
-    - A01:2021
-    - A01:2025
-  KT-TAINT-REGEX:
-    asvs:
-    - V1.3
-    - V1.3.12
-    - V15.3
-    cwe:
-    - CWE-1333
-    - CWE-400
-    - CWE-730
-  KT-TAINT-SQLI:
-    asvs:
-    - V1.2
-    - V1.2.4
-    cwe:
-    - CWE-89
-    owasp:
-    - A03:2021
-    - A05:2025
-  KT-TAINT-SSRF:
-    asvs:
-    - V1.3
-    - V1.3.6
-    cwe:
-    - CWE-918
-    owasp:
-    - A10:2021
-    - A01:2025
-  KT-TAINT-TRUST:
-    asvs:
-    - V2.2
-    cwe:
-    - CWE-501
-    owasp:
-    - A04:2021
-    - A06:2025
-  KT-TAINT-XSS:
     asvs:
     - V1.2
     - V1.2.1
@@ -4621,6 +4019,818 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
+  PKG-SEC-DEP-HTTP-TARBALL:
+    asvs:
+    - V5.3.3
+    - V12.2
+    - V12.2.1
+    - V12.3.1
+    cwe:
+    - CWE-319
+    owasp:
+    - A02:2021
+    - A04:2025
+  PKG-SEC-DEP-TARBALL-URL:
+    asvs:
+    - V5.3.3
+    - V15.2
+    cwe:
+    - CWE-1357
+    owasp:
+    - A03:2025
+  PKG-SEC-INSTALL-SCRIPT-DOWNLOAD:
+    asvs:
+    - V15.2
+    - V15.2.4
+    cwe:
+    - CWE-494
+    owasp:
+    - A08:2021
+    - A08:2025
+  PKG-SEC-PUBLISHCONFIG-HTTP:
+    asvs:
+    - V12.2
+    - V12.2.1
+    - V12.3.1
+    cwe:
+    - CWE-319
+    owasp:
+    - A02:2021
+    - A04:2025
+  PKG-SEC-SCRIPT-SUDO:
+    asvs:
+    - V13.3.2
+    cwe:
+    - CWE-250
+  PKG-SUPPLY-NPM-NO-LOCKFILE:
+    asvs:
+    - V15.2
+    - V15.2.4
+    - V15.4.3
+    cwe:
+    - CWE-829
+    - CWE-494
+    owasp:
+    - A08:2021
+    - A08:2025
+  PY-LLM-AGENT-SHELL-TOOL:
+    asvs:
+    - V1.2
+    - V1.3.2
+    - V13.3.2
+    cwe:
+    - CWE-250
+    - CWE-94
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-LLM-NO-MAX-TOKENS:
+    asvs:
+    - V4.3
+    cwe:
+    - CWE-770
+  PY-LLM-OUTPUT-TO-EXEC:
+    asvs:
+    - V1.2
+    - V1.2.5
+    - V1.3.2
+    cwe:
+    - CWE-94
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-LLM-OUTPUT-TO-SQL:
+    asvs:
+    - V1.2
+    - V1.2.4
+    cwe:
+    - CWE-89
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-LLM-REQUEST-IN-SYSTEM-PROMPT:
+    asvs:
+    - V1.2
+    - V1.2.5
+    cwe:
+    - CWE-77
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-LLM-SECRET-IN-PROMPT:
+    asvs:
+    - V13.4
+    - V14.2
+    cwe:
+    - CWE-200
+    - CWE-522
+    owasp:
+    - A01:2021
+    - A04:2021
+    - A01:2025
+    - A06:2025
+  PY-LLM-TORCH-LOAD-UNSAFE:
+    asvs:
+    - V1.5
+    - V1.5.2
+    cwe:
+    - CWE-502
+    owasp:
+    - A08:2021
+    - A08:2025
+  PY-LLM-TRUST-REMOTE-CODE:
+    asvs:
+    - V1.2
+    - V1.3.2
+    - V15.2
+    - V15.2.4
+    cwe:
+    - CWE-829
+    - CWE-94
+    owasp:
+    - A03:2021
+    - A08:2021
+    - A05:2025
+    - A08:2025
+  PY-SEC-ACCESS-THEN-OPEN:
+    asvs:
+    - V15.4
+    - V15.4.2
+    cwe:
+    - CWE-367
+  PY-SEC-ARCHIVE-EXTRACT-NO-LIMIT:
+    asvs:
+    - V5.2
+    - V5.2.3
+    - V5.3.3
+    cwe:
+    - CWE-409
+  PY-SEC-ASSERT-FOR-SECURITY:
+    asvs:
+    - V15.3
+    cwe:
+    - CWE-617
+  PY-SEC-AWS-ACCESS-KEY:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-AZURE-STORAGE-KEY:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-BIND-ALL-INTERFACES:
+    asvs:
+    - V13.2
+    cwe:
+    - CWE-1327
+  PY-SEC-CHMOD-WORLD-WRITABLE:
+    asvs:
+    - V13.3.2
+    cwe:
+    - CWE-732
+    owasp:
+    - A01:2025
+  PY-SEC-COOKIE-HTTPONLY-FALSE:
+    asvs:
+    - V3.3
+    - V3.3.1
+    - V3.3.4
+    cwe:
+    - CWE-1004
+    owasp:
+    - A05:2021
+    - A02:2025
+  PY-SEC-COOKIE-INSECURE:
+    asvs:
+    - V3.3
+    - V3.3.1
+    - V3.3.4
+    cwe:
+    - CWE-614
+    owasp:
+    - A05:2021
+    - A02:2025
+  PY-SEC-COOKIE-WITHOUT-HOST-PREFIX:
+    asvs:
+    - V3.3
+    - V3.3.3
+    cwe:
+    - CWE-565
+    owasp:
+    - A08:2021
+  PY-SEC-CSV-FORMULA-INJECTION:
+    asvs:
+    - V1.2
+    - V1.2.10
+    cwe:
+    - CWE-1236
+    owasp:
+    - A03:2021
+  PY-SEC-DJANGO-ALLOWED-HOSTS-ANY:
+    asvs:
+    - V2.2
+    - V2.2.1
+    - V4.1.3
+    cwe:
+    - CWE-20
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-DJANGO-COOKIE-NOT-SECURE:
+    asvs:
+    - V3.3
+    - V3.3.1
+    - V3.3.4
+    cwe:
+    - CWE-614
+    owasp:
+    - A05:2021
+    - A02:2025
+  PY-SEC-DJANGO-CSRF-EXEMPT:
+    asvs:
+    - V3.5
+    - V3.5.1
+    cwe:
+    - CWE-352
+    owasp:
+    - A01:2021
+    - A01:2025
+  PY-SEC-DJANGO-DEBUG-TRUE:
+    asvs:
+    - V13.4
+    - V13.4.2
+    cwe:
+    - CWE-489
+    owasp:
+    - A02:2025
+  PY-SEC-DJANGO-FIELDS-ALL:
+    asvs:
+    - V8.2.3
+    - V15.3
+    - V15.3.1
+    - V15.3.3
+    cwe:
+    - CWE-915
+    owasp:
+    - A08:2021
+    - A08:2025
+  PY-SEC-DJANGO-NO-PASSWORD-VALIDATORS:
+    asvs:
+    - V6.2
+    - V6.2.1
+    cwe:
+    - CWE-521
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-DOUBLE-ENCODING:
+    asvs:
+    - V1.1
+    - V1.1.2
+    cwe:
+    - CWE-116
+    owasp:
+    - A03:2021
+  PY-SEC-EVAL:
+    asvs:
+    - V1.2
+    - V1.3.2
+    cwe:
+    - CWE-95
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-FAIL-OPEN-EXCEPT:
+    asvs:
+    - V16.5
+    - V16.5.2
+    cwe:
+    - CWE-636
+    - CWE-755
+  PY-SEC-FLASK-CORS-ALL-ORIGINS:
+    asvs:
+    - V3.4
+    - V3.4.2
+    cwe:
+    - CWE-942
+    owasp:
+    - A05:2021
+    - A02:2025
+  PY-SEC-FLASK-DEBUG:
+    asvs:
+    - V13.4
+    - V13.4.2
+    cwe:
+    - CWE-489
+    owasp:
+    - A02:2025
+  PY-SEC-FLASK-SESSION-COOKIE-NOT-SECURE:
+    asvs:
+    - V3.3
+    - V3.3.1
+    - V3.3.4
+    - V7.2.3
+    cwe:
+    - CWE-614
+    - CWE-1004
+    owasp:
+    - A05:2021
+    - A02:2025
+  PY-SEC-GITHUB-TOKEN:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-HARDCODED-CRYPTO-KEY:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-321
+    - CWE-798
+    owasp:
+    - A02:2021
+    - A07:2021
+    - A04:2025
+    - A07:2025
+  PY-SEC-HARDCODED-PASSWORD:
+    asvs:
+    - V6.3.2
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-HARDCODED-TMP:
+    asvs:
+    - V5.3
+    cwe:
+    - CWE-377
+    owasp:
+    - A01:2021
+    - A01:2025
+  PY-SEC-HASH-WEAK:
+    asvs:
+    - V11.2.3
+    - V11.3.2
+    - V11.4
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    cwe:
+    - CWE-328
+    owasp:
+    - A02:2021
+    - A04:2025
+  PY-SEC-HEADER-FROM-REQUEST:
+    asvs:
+    - V1.2
+    - V1.2.2
+    - V4.2.5
+    cwe:
+    - CWE-113
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-HMAC-COMPARE:
+    asvs:
+    - V11.2
+    - V11.2.4
+    cwe:
+    - CWE-208
+  PY-SEC-HTTP-SERVER-PRODUCTION:
+    asvs:
+    - V13.4
+    - V13.4.2
+    cwe:
+    - CWE-489
+    owasp:
+    - A02:2025
+  PY-SEC-JINJA-AUTOESCAPE-FALSE:
+    asvs:
+    - V1.2
+    - V1.2.1
+    - V3.2
+    cwe:
+    - CWE-79
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-JWT-CLAIM-CHECK-OFF:
+    asvs:
+    - V6.3
+    - V9.1.2
+    - V9.2.3
+    cwe:
+    - CWE-287
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-JWT-LITERAL:
+    asvs:
+    - V9.1.2
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-JWT-NO-VERIFY:
+    asvs:
+    - V6.8.2
+    - V9.1
+    - V9.1.1
+    - V9.1.2
+    - V9.2.1
+    cwe:
+    - CWE-347
+    owasp:
+    - A02:2021
+  PY-SEC-LATEX-SHELL-ESCAPE:
+    asvs:
+    - V1.2
+    - V1.2.5
+    - V1.2.8
+    cwe:
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-LDAP-INJECTION:
+    asvs:
+    - V1.2
+    - V1.2.6
+    cwe:
+    - CWE-90
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-LOG-INJECTION:
+    asvs:
+    - V16.4
+    - V16.4.1
+    cwe:
+    - CWE-117
+    owasp:
+    - A09:2021
+  PY-SEC-MARSHAL-LOADS:
+    asvs:
+    - V1.5
+    - V1.5.2
+    cwe:
+    - CWE-502
+    owasp:
+    - A08:2021
+    - A08:2025
+  PY-SEC-OAUTH-NO-STATE-PKCE:
+    asvs:
+    - V3.5
+    - V3.5.1
+    - V10.2.1
+    cwe:
+    - CWE-352
+    owasp:
+    - A01:2021
+    - A01:2025
+  PY-SEC-OPEN-REDIRECT:
+    asvs:
+    - V1.2.2
+    - V3.7.2
+    - V15.3.2
+    cwe:
+    - CWE-601
+    owasp:
+    - A01:2021
+    - A01:2025
+  PY-SEC-OS-SYSTEM:
+    asvs:
+    - V1.2
+    - V1.2.5
+    cwe:
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-PICKLE-LOADS:
+    asvs:
+    - V1.5
+    - V1.5.2
+    cwe:
+    - CWE-502
+    owasp:
+    - A08:2021
+    - A08:2025
+  PY-SEC-PRIVATE-KEY:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-RANDOM-FOR-SECURITY:
+    asvs:
+    - V6.4.1
+    - V6.5.3
+    - V11.5
+    - V11.5.1
+    cwe:
+    - CWE-330
+    owasp:
+    - A02:2021
+    - A04:2025
+  PY-SEC-RANDOM-SESSION-VALUE:
+    asvs:
+    - V6.4.1
+    - V6.5.3
+    - V7.2.3
+    - V11.5
+    - V11.5.1
+    cwe:
+    - CWE-330
+    owasp:
+    - A02:2021
+    - A04:2025
+  PY-SEC-REGEX-INJECTION:
+    asvs:
+    - V1.2.9
+    - V1.3
+    cwe:
+    - CWE-730
+  PY-SEC-REQUESTS-VERIFY-FALSE:
+    asvs:
+    - V12.2
+    - V12.3
+    - V12.3.2
+    - V12.3.4
+    cwe:
+    - CWE-295
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-SECRET-IN-QUERY-STRING:
+    asvs:
+    - V14.2
+    - V14.2.1
+    cwe:
+    - CWE-598
+    owasp:
+    - A04:2021
+  PY-SEC-SESSION-LIFETIME-LONG:
+    asvs:
+    - V7.2.3
+    - V7.3
+    - V7.3.2
+    cwe:
+    - CWE-613
+    owasp:
+    - A07:2021
+  PY-SEC-SHELVE-UNTRUSTED:
+    asvs:
+    - V1.5
+    - V1.5.2
+    cwe:
+    - CWE-502
+    owasp:
+    - A08:2021
+    - A08:2025
+  PY-SEC-SLACK-TOKEN:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-SQL-STRING-FORMAT:
+    asvs:
+    - V1.2
+    - V1.2.4
+    cwe:
+    - CWE-89
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-SSL-NO-VERIFY:
+    asvs:
+    - V12.2
+    - V12.3
+    - V12.3.2
+    - V12.3.4
+    cwe:
+    - CWE-295
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-SSL-OLD-PROTOCOL:
+    asvs:
+    - V11.2.3
+    - V11.3
+    - V11.3.2
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    - V12.1
+    - V12.1.1
+    cwe:
+    - CWE-757
+    - CWE-327
+    owasp:
+    - A02:2021
+    - A04:2025
+  PY-SEC-STATIC-IV:
+    asvs:
+    - V11.3
+    - V11.3.4
+    cwe:
+    - CWE-329
+    - CWE-1204
+    owasp:
+    - A02:2021
+    - A04:2025
+  PY-SEC-STRIPE-LIVE-KEY:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-SUBPROCESS-SHELL:
+    asvs:
+    - V1.2
+    - V1.2.5
+    cwe:
+    - CWE-78
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-TAR-EXTRACT-NO-FILTER:
+    asvs:
+    - V5.2
+    - V5.2.5
+    - V5.3
+    - V5.3.2
+    - V5.3.3
+    - V5.4.1
+    cwe:
+    - CWE-59
+    - CWE-22
+    owasp:
+    - A01:2021
+    - A01:2025
+  PY-SEC-TARFILE-EXTRACTALL-NO-FILTER:
+    asvs:
+    - V5.3
+    - V5.3.2
+    - V5.3.3
+    - V5.4.1
+    cwe:
+    - CWE-22
+    owasp:
+    - A01:2021
+    - A01:2025
+  PY-SEC-TEMPFILE-MKTEMP:
+    asvs:
+    - V5.3
+    cwe:
+    - CWE-377
+    owasp:
+    - A01:2021
+    - A01:2025
+  PY-SEC-TEMPLATE-FROM-STRING:
+    asvs:
+    - V1.3
+    - V1.3.5
+    - V1.3.7
+    cwe:
+    - CWE-1336
+  PY-SEC-TIMING-COMPARE:
+    asvs:
+    - V11.2
+    - V11.2.4
+    cwe:
+    - CWE-208
+  PY-SEC-TORCH-LOAD-UNSAFE:
+    asvs:
+    - V1.5
+    - V1.5.2
+    cwe:
+    - CWE-502
+    owasp:
+    - A08:2021
+    - A08:2025
+  PY-SEC-TRACEBACK-IN-RESPONSE:
+    asvs:
+    - V16.5
+    - V16.5.1
+    cwe:
+    - CWE-209
+    owasp:
+    - A04:2021
+    - A10:2025
+  PY-SEC-URL-CREDENTIALS:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  PY-SEC-WEAK-CIPHER:
+    asvs:
+    - V11.2.3
+    - V11.3
+    - V11.3.2
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    cwe:
+    - CWE-327
+    owasp:
+    - A02:2021
+    - A04:2025
+  PY-SEC-WS-CLEARTEXT:
+    asvs:
+    - V4.4.1
+    - V12.2
+    - V12.2.1
+    - V12.3.1
+    cwe:
+    - CWE-319
+    owasp:
+    - A02:2021
+    - A04:2025
+  PY-SEC-XML-UNTRUSTED:
+    asvs:
+    - V1.5
+    - V1.5.1
+    cwe:
+    - CWE-611
+    owasp:
+    - A05:2021
+    - A02:2025
+  PY-SEC-XPATH-INJECTION:
+    asvs:
+    - V1.2
+    - V1.2.7
+    cwe:
+    - CWE-643
+    owasp:
+    - A03:2021
+    - A05:2025
+  PY-SEC-YAML-LOAD-UNSAFE:
+    asvs:
+    - V1.5
+    - V1.5.2
+    cwe:
+    - CWE-502
+    owasp:
+    - A08:2021
+    - A08:2025
+  PY-SEC-ZIPFILE-EXTRACT-UNTRUSTED:
+    asvs:
+    - V5.3
+    - V5.3.2
+    - V5.3.3
+    - V5.4.1
+    cwe:
+    - CWE-22
+    owasp:
+    - A01:2021
+    - A01:2025
   PY-TAINT-CMDI:
     asvs:
     - V1.2
@@ -4738,23 +4948,201 @@ rules:
     owasp:
     - A03:2021
     - A05:2025
-  TF-SEC-AWS-ACCESS-KEY:
+  REACT-SEC-DANGEROUSLY-SET-INNER-HTML:
     asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
+    - V1.2
+    - V1.2.1
+    - V1.3.1
+    - V3.2
+    - V3.2.2
     cwe:
-    - CWE-798
+    - CWE-79
     owasp:
-    - A07:2021
-    - A07:2025
-  TF-SEC-AWS-AMI-MOST-RECENT-NO-OWNER:
+    - A03:2021
+    - A05:2025
+  REACT-SEC-JAVASCRIPT-URL:
+    asvs:
+    - V1.2
+    - V1.2.1
+    - V3.2
+    cwe:
+    - CWE-79
+    owasp:
+    - A03:2021
+    - A05:2025
+  REACT-SEC-SERVER-FUNCTION-NO-AUTH:
+    asvs:
+    - V8.2.1
+    - V8.3
+    cwe:
+    - CWE-862
+    owasp:
+    - A01:2021
+    - A01:2025
+  SB-MIG-SEC-001:
     asvs:
     - V15.2
     cwe:
-    - CWE-1357
+    - CWE-477
     owasp:
     - A03:2025
+  SB-MIG-SEC-002:
+    asvs:
+    - V15.2
+    cwe:
+    - CWE-477
+    owasp:
+    - A03:2025
+  SB-MIG-SEC-ANTMATCHERS-001:
+    asvs:
+    - V15.2
+    cwe:
+    - CWE-477
+    owasp:
+    - A03:2025
+  SB-MIG-SEC-GLOBAL-METHOD-001:
+    asvs:
+    - V15.2
+    cwe:
+    - CWE-477
+    owasp:
+    - A03:2025
+  SB-QUAL-TX-SWALLOW-001:
+    cwe:
+    - CWE-390
+  SB-SEC-ACT-001:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-200
+    owasp:
+    - A01:2021
+    - A01:2025
+  SB-SEC-CFG-CONFIGPROPS-VALUES-001:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-200
+    owasp:
+    - A01:2021
+    - A01:2025
+  SB-SEC-CFG-H2-CONSOLE-001:
+    asvs:
+    - V13.4
+    - V13.4.2
+    cwe:
+    - CWE-489
+    owasp:
+    - A02:2025
+  SB-SEC-CFG-H2-REMOTE-001:
+    asvs:
+    - V8.2.1
+    - V8.3
+    cwe:
+    - CWE-862
+    owasp:
+    - A01:2021
+    - A01:2025
+  SB-SEC-CFG-HEALTH-DETAILS-001:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-200
+    owasp:
+    - A01:2021
+    - A01:2025
+  SB-SEC-CFG-SHOW-VALUES-001:
+    asvs:
+    - V13.4
+    cwe:
+    - CWE-200
+    owasp:
+    - A01:2021
+    - A01:2025
+  SB-SEC-CSRF-001:
+    asvs:
+    - V3.5
+    - V3.5.1
+    cwe:
+    - CWE-352
+    owasp:
+    - A01:2021
+    - A01:2025
+  SB-SEC-DEFAULT-ENCODER-001:
+    asvs:
+    - V11.2.3
+    - V11.3.2
+    - V11.4
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    cwe:
+    - CWE-916
+    owasp:
+    - A02:2021
+    - A04:2025
+  SB-SEC-FRAMEOPTIONS-001:
+    asvs:
+    - V3.4
+    - V3.4.6
+    cwe:
+    - CWE-1021
+    owasp:
+    - A04:2021
+    - A06:2025
+  SB-SEC-LEGACY-ENCODER-001:
+    asvs:
+    - V11.2.3
+    - V11.3.2
+    - V11.4
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    cwe:
+    - CWE-916
+    owasp:
+    - A02:2021
+    - A04:2025
+  SB-SEC-NOOP-ENCODER-001:
+    asvs:
+    - V11.2.3
+    - V11.3.2
+    - V11.4
+    - V11.4.1
+    - V11.4.2
+    - V11.4.3
+    cwe:
+    - CWE-916
+    owasp:
+    - A02:2021
+    - A04:2025
+  SB-SEC-PERMITALL-001:
+    asvs:
+    - V8.2.1
+    - V8.3
+    cwe:
+    - CWE-862
+    owasp:
+    - A01:2021
+    - A01:2025
+  SB-SEC-WEB-CORS-ALL-001:
+    asvs:
+    - V3.4
+    - V3.4.2
+    cwe:
+    - CWE-942
+    owasp:
+    - A05:2021
+    - A02:2025
+  SB-SEC-WEB-CORS-CRED-001:
+    asvs:
+    - V3.4
+    - V3.4.2
+    cwe:
+    - CWE-942
+    owasp:
+    - A05:2021
+    - A02:2025
   TF-CLOUD-AWS-CLOUDTRAIL-NO-LOG-VALIDATION:
     asvs:
     - V16.2
@@ -4771,15 +5159,6 @@ rules:
     owasp:
     - A09:2021
     - A09:2025
-  TF-SEC-AWS-EBS-UNENCRYPTED:
-    asvs:
-    - V12.3.1
-    - V14.2
-    cwe:
-    - CWE-311
-    owasp:
-    - A04:2021
-    - A06:2025
   TF-CLOUD-AWS-EC2-IMDSV1:
     asvs:
     - V1.3
@@ -4819,13 +5198,6 @@ rules:
     owasp:
     - A01:2021
     - A01:2025
-  TF-SEC-AWS-IAM-WILDCARD-ADMIN:
-    asvs:
-    - V13.3.2
-    cwe:
-    - CWE-732
-    owasp:
-    - A01:2025
   TF-CLOUD-AWS-KMS-NO-ROTATION:
     asvs:
     - V11.1
@@ -4852,54 +5224,6 @@ rules:
     owasp:
     - A04:2021
     - A06:2025
-  TF-SEC-AWS-PROVIDER-HARDCODED-CREDENTIALS:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  TF-SEC-AWS-RDS-PUBLICLY-ACCESSIBLE:
-    asvs:
-    - V13.3.2
-    cwe:
-    - CWE-732
-    owasp:
-    - A01:2025
-  TF-SEC-AWS-RDS-UNENCRYPTED:
-    asvs:
-    - V12.3.1
-    - V14.2
-    cwe:
-    - CWE-311
-    owasp:
-    - A04:2021
-    - A06:2025
-  TF-SEC-AWS-S3-PUBLIC-ACCESS-BLOCK-OFF:
-    asvs:
-    - V13.3.2
-    - V15.4.3
-    cwe:
-    - CWE-732
-    owasp:
-    - A01:2025
-  TF-SEC-AWS-S3-PUBLIC-ACL:
-    asvs:
-    - V13.3.2
-    cwe:
-    - CWE-732
-    owasp:
-    - A01:2025
-  TF-SEC-AWS-SG-ADMIN-PORT-OPEN:
-    asvs:
-    - V13.3.2
-    cwe:
-    - CWE-732
-    owasp:
-    - A01:2025
   TF-CLOUD-AZURE-APP-HTTP-ALLOWED:
     asvs:
     - V12.2
@@ -4959,16 +5283,6 @@ rules:
     owasp:
     - A02:2021
     - A04:2025
-  TF-SEC-AZURE-STORAGE-KEY:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
   TF-CLOUD-AZURE-STORAGE-PUBLIC-BLOBS:
     asvs:
     - V8.2
@@ -4978,25 +5292,6 @@ rules:
     owasp:
     - A01:2021
     - A01:2025
-  TF-SEC-BACKEND-CREDENTIALS:
-    asvs:
-    - V13.2.3
-    - V13.3
-    - V13.3.1
-    cwe:
-    - CWE-798
-    owasp:
-    - A07:2021
-    - A07:2025
-  TF-MOD-EPHEMERAL-SECRET-VARIABLE:
-    asvs:
-    - V16.2
-    - V16.2.5
-    cwe:
-    - CWE-532
-    owasp:
-    - A09:2021
-    - A09:2025
   TF-CLOUD-GCP-BUCKET-PUBLIC:
     asvs:
     - V8.2
@@ -5056,6 +5351,116 @@ rules:
     owasp:
     - A02:2021
     - A04:2025
+  TF-MOD-EPHEMERAL-SECRET-VARIABLE:
+    asvs:
+    - V16.2
+    - V16.2.5
+    cwe:
+    - CWE-532
+    owasp:
+    - A09:2021
+    - A09:2025
+  TF-SEC-AWS-ACCESS-KEY:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  TF-SEC-AWS-AMI-MOST-RECENT-NO-OWNER:
+    asvs:
+    - V15.2
+    cwe:
+    - CWE-1357
+    owasp:
+    - A03:2025
+  TF-SEC-AWS-EBS-UNENCRYPTED:
+    asvs:
+    - V12.3.1
+    - V14.2
+    cwe:
+    - CWE-311
+    owasp:
+    - A04:2021
+    - A06:2025
+  TF-SEC-AWS-IAM-WILDCARD-ADMIN:
+    asvs:
+    - V13.3.2
+    cwe:
+    - CWE-732
+    owasp:
+    - A01:2025
+  TF-SEC-AWS-PROVIDER-HARDCODED-CREDENTIALS:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  TF-SEC-AWS-RDS-PUBLICLY-ACCESSIBLE:
+    asvs:
+    - V13.3.2
+    cwe:
+    - CWE-732
+    owasp:
+    - A01:2025
+  TF-SEC-AWS-RDS-UNENCRYPTED:
+    asvs:
+    - V12.3.1
+    - V14.2
+    cwe:
+    - CWE-311
+    owasp:
+    - A04:2021
+    - A06:2025
+  TF-SEC-AWS-S3-PUBLIC-ACCESS-BLOCK-OFF:
+    asvs:
+    - V13.3.2
+    - V15.4.3
+    cwe:
+    - CWE-732
+    owasp:
+    - A01:2025
+  TF-SEC-AWS-S3-PUBLIC-ACL:
+    asvs:
+    - V13.3.2
+    cwe:
+    - CWE-732
+    owasp:
+    - A01:2025
+  TF-SEC-AWS-SG-ADMIN-PORT-OPEN:
+    asvs:
+    - V13.3.2
+    cwe:
+    - CWE-732
+    owasp:
+    - A01:2025
+  TF-SEC-AZURE-STORAGE-KEY:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
+  TF-SEC-BACKEND-CREDENTIALS:
+    asvs:
+    - V13.2.3
+    - V13.3
+    - V13.3.1
+    cwe:
+    - CWE-798
+    owasp:
+    - A07:2021
+    - A07:2025
   TF-SEC-GITHUB-TOKEN:
     asvs:
     - V13.2.3

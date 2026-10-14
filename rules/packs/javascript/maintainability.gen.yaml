@@ -34,6 +34,7 @@ rules:
   status: active
   rule_version: 1
   tags:
+  - a11y-best-practice
   - maintainability
 - id: JS-MAINT-ALL-BRANCHES-SAME
   title: Every branch runs the same code
@@ -127,6 +128,8 @@ rules:
   - sonar:typescript:S6844
   status: active
   rule_version: 1
+  wcag:
+  - 4.1.2
   tags:
   - maintainability
 - id: JS-MAINT-ANCHOR-WITHOUT-CONTENT
@@ -161,6 +164,9 @@ rules:
   - sonar:typescript:S6827
   status: active
   rule_version: 1
+  wcag:
+  - 2.4.4
+  - 4.1.2
   tags:
   - maintainability
 - id: JS-MAINT-ARRAY-CALLBACK-THISARG
@@ -191,6 +197,49 @@ rules:
   xref:
   - sonar:javascript:S7729
   - sonar:typescript:S7729
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JS-MAINT-ARRAY-STRING-INDEX
+  title: Array given a non-numeric string index
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (assignment_expression left: (subscript_expression object: (_) @o index: (string) @i)) @match
+    filters:
+    - type.is:o:Array
+    - cap.lacks_re:i:^[\x22'`]\d+[\x22'`]$
+  message: 'A string key on an array adds a plain property, not an element: length, iteration and JSON ignore it. Use an object or Map.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
+    doc: 'MDN: Array'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: are separate, and the array's traversal and mutation operations cannot be applied to these named properties. Array elements are object properties in the same way that toString is a property (to be specific, however, toString() is a method).
+  examples:
+    bad: |
+      function f() {
+        const list = [];
+        list["total"] = 3;
+        return list;
+      }
+    good: |
+      function f() {
+        const totals = {};
+        totals["total"] = 3;
+        return totals;
+      }
+  xref:
+  - sonar:javascript:S3579
+  - sonar:typescript:S3579
   status: active
   rule_version: 1
   tags:
@@ -266,6 +315,47 @@ rules:
   status: active
   rule_version: 1
   tags:
+  - a11y-best-practice
+  - maintainability
+- id: JS-MAINT-AWAIT-NON-PROMISE
+  title: await applied to a plain value
+  language: javascript
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (await_expression (_) @e) @match
+    filters:
+    - type.is:e:string|number|boolean
+  message: 'The awaited value is not a promise (string/number/boolean), so await only delays the code by a tick: remove it or await the real async call.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/await
+    doc: 'MDN: await'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: 'eject(new Error("rejected!")); }, }; await thenable; // Throws Error: rejected! } f2(); Conversion to promise If the value is not a Promise , await converts the value to a resolved Promise , and waits for it.'
+  examples:
+    bad: |
+      async function f() {
+        const n = 3;
+        return await n;
+      }
+    good: |
+      async function f() {
+        const n = 3;
+        return n;
+      }
+  xref:
+  - sonar:javascript:S4123
+  - sonar:typescript:S4123
+  status: active
+  rule_version: 1
+  tags:
   - maintainability
 - id: JS-MAINT-BITWISE-IN-CONDITION
   title: Bitwise & or | between comparisons
@@ -331,6 +421,86 @@ rules:
   xref:
   - sonar:javascript:S7767
   - sonar:typescript:S7767
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JS-MAINT-BOOLEAN-SELECTOR-PARAM
+  title: Leading boolean parameter selects behaviour
+  language: javascript
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((function_declaration parameters: (formal_parameters) @ps) @match (#match? @ps "^\\(\\s*(is|has|should|can|enable|use)[A-Z]") (#match? @ps ","))
+  message: 'A boolean flag to pick one of two behaviours hides two functions behind one name: split them, or take an options object.'
+  ai_question: Does this boolean choose between two different behaviours (rather than a true/false field that is stored or forwarded)?
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions
+    doc: 'MDN: Functions'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: A JavaScript function can have any number of parameters.
+  examples:
+    bad: |
+      function save(isDraft, body) {
+        if (isDraft) queue(body); else publish(body);
+      }
+    good: |
+      function saveDraft(body) {
+        queue(body);
+      }
+      function publish(body) {
+        send(body);
+      }
+  xref:
+  - sonar:javascript:S2301
+  - sonar:typescript:S2301
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JS-MAINT-CALL-NON-CALLABLE
+  title: Calling a value of a primitive or array type
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (call_expression function: (identifier) @f) @match
+    filters:
+    - type.is:f:string|number|boolean|Array
+  message: 'This name holds a string, number, boolean or array, so calling it throws TypeError: drop the parentheses or call the intended function.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError
+    doc: 'MDN: TypeError'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: See full compatibility Learn more The TypeError object represents an error when an operation could not be performed, typically (but not exclusively) when a value is not of the expected type.
+  examples:
+    bad: |
+      function f() {
+        const total = 0;
+        return total();
+      }
+    good: |
+      function f() {
+        const total = 0;
+        return total;
+      }
+  xref:
+  - sonar:javascript:S7757
+  - sonar:typescript:S7757
   status: active
   rule_version: 1
   tags:
@@ -444,8 +614,12 @@ rules:
   xref:
   - sonar:javascript:S1082
   - sonar:typescript:S1082
+  - sonar:javascript:S6847
+  - sonar:typescript:S6847
   status: active
   rule_version: 1
+  wcag:
+  - 2.1.1
   tags:
   - maintainability
 - id: JS-MAINT-COGNITIVE-COMPLEXITY
@@ -650,6 +824,39 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JS-MAINT-CONSECUTIVE-PUSH
+  title: Consecutive push() calls on the same array
+  language: javascript
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((expression_statement (call_expression function: (member_expression object: (identifier) @a property: (property_identifier) @p))) . (expression_statement (call_expression function: (member_expression object: (identifier) @b property: (property_identifier) @q))) @match (#eq? @a @b) (#eq? @p "push") (#eq? @q "push"))
+  message: 'push accepts any number of arguments: consecutive push calls on the same array can be one call.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
+    doc: 'MDN: Array.prototype.push'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: The push() method of Array instances adds the specified elements to the end of an array and returns the new length of the array.
+  examples:
+    bad: |
+      items.push(a);
+      items.push(b);
+    good: |
+      items.push(a, b);
+  xref:
+  - sonar:javascript:S7778
+  - sonar:typescript:S7778
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JS-MAINT-CYCLOMATIC-COMPLEXITY
   title: Function has too many independent paths (cyclomatic complexity)
   language: javascript
@@ -827,7 +1034,9 @@ rules:
                   if (c) {
                       if (d) {
                           if (e) {
-                              g();
+                              if (f) {
+                                  g();
+                              }
                           }
                       }
                   }
@@ -1196,6 +1405,58 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JS-MAINT-FOR-OF-PRIMITIVE
+  title: for...of over a number or boolean
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (for_in_statement operator: "of" right: (_) @r) @match
+    filters:
+    - type.is:r:number|boolean
+  message: 'for...of needs an iterable; a number or boolean throws TypeError: iterate an array, string, or other iterable.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of
+    doc: 'MDN: for...of'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: See full compatibility Learn more The for...of statement executes a loop that operates on a sequence of values sourced from an iterable object .
+  examples:
+    bad: |
+      function f() {
+        const n = 3;
+        for (const x of n) {
+          use(x);
+        }
+      }
+    good: |
+      function f() {
+        const n = [3];
+        for (const x of n) {
+          use(x);
+        }
+      }
+    regressions:
+    - code: |
+        function f() {
+          const n = "abc";
+          for (const x of n) {
+            use(x);
+          }
+        }
+  xref:
+  - sonar:javascript:S4138
+  - sonar:typescript:S4138
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JS-MAINT-FOR-UPDATE-OTHER-VARIABLE
   title: for loop updates a variable other than the one it tests
   language: javascript
@@ -1397,6 +1658,12 @@ rules:
   detection:
     mode: ai-confirm
     engine: tree-sitter
+    files:
+    - '!**/*.test.*'
+    - '!**/*.spec.*'
+    - '!**/__tests__/**'
+    - '!**/test/**'
+    - '!**/tests/**'
     query: |
       (string) @match
     filters:
@@ -1440,6 +1707,7 @@ rules:
       (binary_expression left: (_) @l operator: ["<" ">" "<=" ">=" "&&" "||" "-" "/" "%" "^" "&" "|"] right: (_) @r (#eq? @l @r)) @match
     filters:
     - cap.lacks_re:l:[(]|\+\+|--|\bawait\b|^[\d.]+$
+    - cap.lacks_re:l:^(true|false|True|False|null|nil|None|-?\d[\w.]*|'[^']*'|\x22[^\x22]*\x22)$
   message: Both operands are the same expression, so the result is constant (or the second operand was meant to be something else).
   source:
     url: https://eslint.org/docs/latest/rules/no-self-compare
@@ -1501,6 +1769,8 @@ rules:
   - sonar:typescript:S1090
   status: active
   rule_version: 1
+  wcag:
+  - 4.1.2
   tags:
   - maintainability
 - id: JS-MAINT-IGNORED-RESULT
@@ -1574,6 +1844,8 @@ rules:
   - sonar:typescript:S1077
   status: active
   rule_version: 1
+  wcag:
+  - 1.1.1
   tags:
   - maintainability
 - id: JS-MAINT-IN-ON-ARRAY-LITERAL
@@ -1608,6 +1880,82 @@ rules:
   xref:
   - sonar:javascript:S4619
   - sonar:typescript:S4619
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JS-MAINT-IN-ON-PRIMITIVE
+  title: in operator applied to a primitive
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (binary_expression operator: "in" right: (_) @r) @match
+    filters:
+    - type.is:r:string|number|boolean
+  message: 'in on a string, number or boolean throws TypeError: test a property of an object (or use includes() for strings).'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/in
+    doc: 'MDN: in'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: Exceptions TypeError Thrown if object is not an object (i.e., a primitive).
+  examples:
+    bad: |
+      function has(key) {
+        const name = "config";
+        return key in name;
+      }
+    good: |
+      function has(key) {
+        const config = { a: 1 };
+        return key in config;
+      }
+  xref:
+  - sonar:javascript:S3785
+  - sonar:typescript:S3785
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JS-MAINT-INDEXOF-INCLUDES
+  title: indexOf compared with -1 instead of includes()
+  language: javascript
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (binary_expression left: (call_expression function: (member_expression property: (property_identifier) @m)) right: (unary_expression argument: (number) @n) (#eq? @m "indexOf") (#eq? @n "1")) @match
+  message: 'indexOf(...) !== -1 is a membership test: includes() states that and does not confuse 0 with missing.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+    doc: 'MDN: Array.prototype.includes'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: The includes() method determines whether an array includes a certain value among its entries, returning true or false as appropriate.
+  examples:
+    bad: |
+      if (tags.indexOf('a') !== -1) {
+        hit();
+      }
+    good: |
+      if (tags.includes('a')) {
+        hit();
+      }
+  xref:
+  - sonar:javascript:S7776
+  - sonar:typescript:S7776
   status: active
   rule_version: 1
   tags:
@@ -1690,6 +2038,46 @@ rules:
   xref:
   - sonar:javascript:S2189
   - sonar:typescript:S2189
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JS-MAINT-INNER-FUNCTION-DECLARATION
+  title: Function declaration inside a block
+  language: javascript
+  kind: best-practice
+  category: maintainability
+  severity: info
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (if_statement consequence: [(function_declaration) (statement_block (function_declaration))] @match)
+      (for_statement body: [(function_declaration) (statement_block (function_declaration))] @match)
+      (while_statement body: [(function_declaration) (statement_block (function_declaration))] @match)
+  message: 'A function declaration in a block does not hoist the way a script-level declaration does: use a const function expression.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function
+    doc: 'MDN: function statement'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: Starting with ECMAScript 2015, nested function declarations are scoped to the block in which they are defined.
+  examples:
+    bad: |
+      if (ready) {
+        function run() { go(); }
+        run();
+      }
+    good: |
+      if (ready) {
+        const run = () => { go(); };
+        run();
+      }
+  xref:
+  - sonar:javascript:S7721
+  - sonar:typescript:S7721
   status: active
   rule_version: 1
   tags:
@@ -2199,6 +2587,43 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JS-MAINT-OBJECT-DEFAULT-PARAM
+  title: Object or array used as a default parameter
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: minor
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((formal_parameters) @match (#match? @match "=\\s*[\\[\\{]"))
+  message: A default {} or [] is a shared mutable value if something ever writes to it; default to undefined and substitute a fresh object in the body.
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Default_parameters
+    doc: 'MDN: Default parameters'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: Default function parameters allow named parameters to be initialized with default values if no value or undefined is passed.
+  examples:
+    bad: |
+      function load(opts = {}) {
+        return opts.url;
+      }
+    good: |
+      function load(opts) {
+        const url = (opts ?? {}).url;
+        return url;
+      }
+  xref:
+  - sonar:javascript:S7737
+  - sonar:typescript:S7737
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
 - id: JS-MAINT-OVERWRITTEN-ELEMENT
   title: Collection element written twice in a row
   language: javascript
@@ -2269,6 +2694,72 @@ rules:
   xref:
   - sonar:javascript:S6841
   - sonar:typescript:S6841
+  status: active
+  rule_version: 1
+  wcag:
+  - 2.4.3
+  tags:
+  - maintainability
+- id: JS-MAINT-PROCESS-BINDING
+  title: process.binding() used (Node.js internal)
+  language: javascript
+  kind: deprecation
+  category: maintainability
+  severity: major
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((call_expression function: (member_expression object: (identifier) @o property: (property_identifier) @p)) @match (#eq? @o "process") (#eq? @p "binding"))
+  message: 'process.binding loads undocumented internals that change between Node releases: use the public node: API.'
+  source:
+    url: https://nodejs.org/api/process.html#processbindingname
+    doc: Node.js process.binding
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: The process.binding() method provides access to the internal binding modules of Node.js. Using process.binding() is not recommended.
+  examples:
+    bad: |
+      const spawn = process.binding('spawn_sync');
+    good: |
+      import { spawnSync } from 'node:child_process';
+  xref:
+  - sonar:javascript:S6627
+  - sonar:typescript:S6627
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JS-MAINT-PROTOTYPE-POLYFILL
+  title: Built-in prototype patched in application code
+  language: javascript
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((assignment_expression left: (member_expression object: (member_expression object: (identifier) @o property: (property_identifier) @p))) @match (#match? @o "^(Array|String|Object|Number|Promise|Map|Set|Symbol)$") (#eq? @p "prototype"))
+  message: 'Patching a built-in prototype collides with the platform and with other polyfills: use the native method or a local helper.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/prototype
+    doc: 'MDN: Array.prototype'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: 'Warning: Changing one of the built-in object prototypes is considered bad practice.'
+  examples:
+    bad: |
+      Array.prototype.flat = function flat() { return [].concat(...this); };
+    good: |
+      const flat = (xs) => xs.flat();
+  xref:
+  - sonar:javascript:S7742
+  - sonar:typescript:S7742
   status: active
   rule_version: 1
   tags:
@@ -2524,6 +3015,43 @@ rules:
   rule_version: 1
   tags:
   - maintainability
+- id: JS-MAINT-ROLE-WITHOUT-TABINDEX
+  title: Interactive role on a non-focusable JSX element
+  language: jsx
+  kind: best-practice
+  category: accessibility
+  severity: minor
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ([(jsx_self_closing_element name: (identifier) @t) (jsx_opening_element name: (identifier) @t)] @match (#match? @t "^(div|span|li|p|img|section|td)$"))
+    filters:
+    - node.has_re:\brole\s*=\s*[\x22'{]?(button|link|checkbox|menuitem|tab|switch|radio|option|slider|textbox|combobox|spinbutton)\b
+    - node.lacks_re:\btabIndex\s*=
+  message: 'An element announced as interactive must be reachable with the keyboard: add tabIndex={0} or use a native button/link.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Reference/Roles/button_role
+    doc: 'MDN: ARIA button role'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: tabindex
+  examples:
+    bad: |
+      const C = ({ save }) => <div role="button" onClick={save} onKeyDown={save}>Save</div>;
+    good: |
+      const C = ({ save }) => <div role="button" tabIndex={0} onClick={save} onKeyDown={save}>Save</div>;
+  xref:
+  - sonar:javascript:S6852
+  - sonar:typescript:S6852
+  status: active
+  rule_version: 1
+  wcag:
+  - 2.1.1
+  tags:
+  - maintainability
 - id: JS-MAINT-SCOPE-ON-NON-TH
   title: scope attribute on an element other than th
   language: jsx
@@ -2557,6 +3085,8 @@ rules:
   - sonar:typescript:S9380
   status: active
   rule_version: 1
+  wcag:
+  - 1.3.1
   tags:
   - maintainability
 - id: JS-MAINT-SETSTATE-WITH-OWN-VALUE
@@ -2633,6 +3163,48 @@ rules:
   xref:
   - sonar:javascript:S3981
   - sonar:typescript:S3981
+  status: active
+  rule_version: 1
+  tags:
+  - maintainability
+- id: JS-MAINT-STRICT-EQUALITY-DISSIMILAR-TYPES
+  title: === / !== between values of different types
+  language: javascript
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    javascript: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      (binary_expression left: (_) @a operator: ["===" "!=="] right: (_) @b) @match
+    filters:
+    - type.differ:a:b
+  message: 'The operands have different types, so === is always false (!== always true): convert one side first.'
+  source:
+    url: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Strict_equality
+    doc: 'MDN: Strict equality (===)'
+    doc_version: ECMAScript 2025
+    retrieved: '2026-10-09'
+    quote: ax js x === y Description The strict equality operators ( === and !== ) provide the IsStrictlyEqual semantic. If the operands are of different types, return false .
+  examples:
+    bad: |
+      function isOk(code) {
+        const expected = 200;
+        const got = String(code);
+        const text = "200";
+        return expected === text;
+      }
+    good: |
+      function isOk(code) {
+        const expected = 200;
+        return Number(code) === expected;
+      }
+  xref:
+  - sonar:javascript:S3403
+  - sonar:typescript:S3403
   status: active
   rule_version: 1
   tags:
@@ -3068,5 +3640,7 @@ rules:
   - sonar:typescript:S4084
   status: active
   rule_version: 1
+  wcag:
+  - 1.2.2
   tags:
   - maintainability

@@ -19,8 +19,17 @@ def src(s):
 
 
 def mcall(obj, prop):
-    return (f'((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match '
-            f'(#match? @o "{obj}") (#match? @p "^({prop})$"))')
+    # Capture the last identifier of the callee object so ExactAPI sees anchored name predicates.
+    # obj="." means any object (structural, not exact-api).
+    if obj == ".":
+        return (f'((call_expression function: (member_expression object: (_) @o property: (property_identifier) @p)) @match '
+                f'(#match? @o ".") (#match? @p "^({prop})$"))')
+    ident = obj.removeprefix("^").removesuffix("$")
+    return (f'((call_expression function: (member_expression object: ['
+            f'(identifier) @o '
+            f'(member_expression property: (property_identifier) @o)'
+            f'] property: (property_identifier) @p)) @match '
+            f'(#match? @o "^({ident})$") (#match? @p "^({prop})$"))')
 
 
 def ident_call(fn):
@@ -213,7 +222,7 @@ dep("ANIMATION-DRIVER-NOOP", "AnimationDriver.NOOP", "The `AnimationDriver.NOOP`
     r'((member_expression object: (identifier) @o property: (property_identifier) @p) @match (#eq? @o "AnimationDriver") (#eq? @p "NOOP"))',
     "const d = AnimationDriver.NOOP;\n", "const d = new NoopAnimationDriver();\n", "Use NoopAnimationDriver.", 17, sev="info")
 dep("RUN-IN-CONTEXT", "EnvironmentInjector.runInContext", "`EnvironmentInjector.runInContext` is now deprecated, with",
-    mcall("njector$", "runInContext"), "this.injector.runInContext(() => inject(Svc));\n", "runInInjectionContext(this.injector, () => inject(Svc));\n",
+    mcall("injector", "runInContext"), "this.injector.runInContext(() => inject(Svc));\n", "runInInjectionContext(this.injector, () => inject(Svc));\n",
     "Use runInInjectionContext(injector, fn).", 16)
 dep("CAN-LOAD", "CanLoad guard", "CanLoad guards in the Router are deprecated. Use CanMatch",
     r'((pair key: (property_identifier) @k) @match (#eq? @k "canLoad"))' + "\n" + r'((implements_clause (type_identifier) @t) @match (#eq? @t "CanLoad"))',

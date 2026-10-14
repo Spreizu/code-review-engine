@@ -72,7 +72,7 @@ P("UNDECLARED-ALIAS", "Alias references an undeclared anchor", YL, "Set forbid-u
   sev="major", cat="correctness", filters=[r"file.count_lt:1:&{text}(\s|$)"])
 P("DUPLICATE-ANCHOR", "Anchor name declared twice", YL, "Set forbid-duplicated-anchors to true to avoid duplications of a same anchor",
   '(anchor (anchor_name) @match)', "a: &x 1\nb: &x 2\nc: *x\n", "a: &x 1\nb: &y 2\nc: *x\n",
-  "A reused anchor name silently rebinds later aliases.", sev="minor", cat="correctness", filters=[r"file.count_ge:2:&{text}(\s|$)"])
+  "A reused anchor name silently rebinds later aliases.", sev="minor", cat="correctness", filters=[r"file.count_ge:2:&{text}(\s|$)", r"ancestor.has_re:document:(?s)&{cap:match}\s.*&{cap:match}(\s|$)"])  # same document only (--- starts a new anchor scope)
 P("UNUSED-ANCHOR", "Anchor declared but never aliased", YL, "Set forbid-unused-anchors to true to avoid anchors being declared but not used",
   '(anchor (anchor_name) @match)', "a: &x 1\n", "a: &x 1\nb: *x\n", "Remove the unused anchor.", sev="info", cat="style",
   filters=[r"file.count_lt:1:\*{text}\b"])

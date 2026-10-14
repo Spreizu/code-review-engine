@@ -3,6 +3,149 @@
 pack: php
 pack_version: 2026.10.0
 rules:
+- id: PHP-QUAL-CALL-TIME-PASS-BY-REF
+  title: Call-time pass-by-reference
+  language: php
+  kind: anti-pattern
+  category: correctness
+  severity: critical
+  applies_to:
+    php: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((argument (reference_modifier)) @match)
+  message: The & belongs on the parameter in the function declaration, not at the call site (call-time pass-by-reference was removed).
+  source:
+    url: https://www.php.net/manual/en/language.references.pass.php
+    doc: Call-time pass-by-reference
+    doc_version: PHP 8.5
+    retrieved: '2026-10-09'
+    quote: There is no reference sign on a function call - only on function definitions. Function definitions alone are enough to correctly pass the argument by reference.
+  examples:
+    bad: |
+      <?php
+      foo(&$x);
+    good: |
+      <?php
+      function foo(&$x) {}
+      foo($x);
+  xref:
+  - sonar:php:S1998
+  status: active
+  rule_version: 1
+- id: PHP-QUAL-CATCH-THROWABLE
+  title: catch (Throwable) swallows Error
+  language: php
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    php: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((catch_clause type: (type_list (named_type (name) @t))) @match (#match? @t "^(Throwable|Error)$"))
+  message: 'Throwable includes Error (TypeError, ParseError, ...): catching it hides engine failures. Catch Exception (or a narrower type) unless you rethrow Error.'
+  ai_question: Is Error swallowed here (logged and ignored) rather than rethrown after cleanup?
+  source:
+    url: https://www.php.net/manual/en/class.throwable.php
+    doc: catch (Throwable) swallows Error
+    doc_version: PHP 8.5
+    retrieved: '2026-10-09'
+    quote: Throwable is the base interface for any object that can be thrown via a throw statement, including Error and Exception.
+  examples:
+    bad: |
+      <?php
+      try {
+          foo();
+      } catch (Throwable $e) {
+          log($e);
+      }
+    good: |
+      <?php
+      try {
+          foo();
+      } catch (RuntimeException $e) {
+          log($e);
+      }
+  xref:
+  - sonar:php:S5708
+  - sonar:php:S5632
+  status: active
+  rule_version: 1
+- id: PHP-QUAL-CONSTANT-AS-CONDITION
+  title: Bare constant used as an if/while condition
+  language: php
+  kind: anti-pattern
+  category: correctness
+  severity: minor
+  applies_to:
+    php: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((if_statement condition: (parenthesized_expression (name) @match)) (#match? @match "^[A-Z][A-Z0-9_]*$"))
+      ((while_statement condition: (parenthesized_expression (name) @match)) (#match? @match "^[A-Z][A-Z0-9_]*$"))
+    filters:
+    - cap.lacks_re:match:^(true|false|null|TRUE|FALSE|NULL)$
+  message: 'A named constant as the whole condition is fixed at compile time, so one branch is dead: use a variable, defined(), or an expression.'
+  source:
+    url: https://www.php.net/manual/en/language.constants.php
+    doc: Bare constant used as an if/while condition
+    doc_version: PHP 8.5
+    retrieved: '2026-10-09'
+    quote: A constant is an identifier (name) for a simple value. As the name suggests, that value cannot change during the execution of the script.
+  examples:
+    bad: |
+      <?php
+      if (DEBUG) {
+          log();
+      }
+    good: |
+      <?php
+      if ($debug) {
+          log();
+      }
+  xref:
+  - sonar:php:S5797
+  status: active
+  rule_version: 1
+- id: PHP-QUAL-CONSTANT-REDEFINED
+  title: define() called twice with the same name
+  language: php
+  kind: anti-pattern
+  category: correctness
+  severity: major
+  applies_to:
+    php: '*'
+  detection:
+    mode: deterministic
+    engine: tree-sitter
+    query: |
+      ((expression_statement (function_call_expression function: (name) @f arguments: (arguments (argument [(string) (encapsed_string)] @a)))) . (expression_statement (function_call_expression function: (name) @g arguments: (arguments (argument [(string) (encapsed_string)] @b)))) @match (#match? @f "(?i)^define$") (#eq? @f @g) (#eq? @a @b))
+  message: 'The second define() of the same name does nothing (and raises a notice): pick one value, or check defined() first.'
+  source:
+    url: https://www.php.net/manual/en/function.define.php
+    doc: define() called twice with the same name
+    doc_version: PHP 8.5
+    retrieved: '2026-10-09'
+    quote: define() will return false if the name is already defined, and emit an E_NOTICE.
+  examples:
+    bad: |
+      <?php
+      define('MAX', 10);
+      define('MAX', 20);
+    good: |
+      <?php
+      define('MAX', 10);
+  xref:
+  - sonar:php:S6344
+  status: active
+  rule_version: 1
 - id: PHP-QUAL-ERROR-SUPPRESSION
   title: '@ error suppression'
   language: php
@@ -120,6 +263,41 @@ rules:
     good: |
       <?php
       return;
+  status: active
+  rule_version: 1
+- id: PHP-QUAL-HARDCODED-URI
+  title: Hard-coded absolute URI
+  language: php
+  kind: best-practice
+  category: maintainability
+  severity: minor
+  applies_to:
+    php: '*'
+  detection:
+    mode: ai-confirm
+    engine: tree-sitter
+    query: |
+      ((string (string_content) @match) (#match? @match "(?i)^https?://[a-z0-9]"))
+      ((encapsed_string (string_content) @match) (#match? @match "(?i)^https?://[a-z0-9]"))
+    filters:
+    - node.lacks_re:(?i)example\\.(com|org|net)|localhost|127\\.0\\.0\\.1|schema\\.org|w3\\.org|php\\.net
+  message: An absolute URL baked into source has to change in every environment; take the origin from configuration.
+  ai_question: Is this a real deployment URL (API, asset host) rather than a test fixture, schema.org IRI or example.com documentation string?
+  source:
+    url: https://www.php.net/manual/en/language.types.string.php
+    doc: Hard-coded absolute URI
+    doc_version: PHP 8.5
+    retrieved: '2026-10-09'
+    quote: A string literal can be specified in four different ways.
+  examples:
+    bad: |
+      <?php
+      $url = 'https://api.pay.internal/v1/users';
+    good: |
+      <?php
+      $url = getenv('API_BASE') . '/v1/users';
+  xref:
+  - sonar:php:S1075
   status: active
   rule_version: 1
 - id: PHP-QUAL-LOOSE-NULL-COMPARE

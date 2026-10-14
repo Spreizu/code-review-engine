@@ -50,7 +50,8 @@ P("VET-ASSIGN", "Self-assignment", v("assign"), "check for useless assignments",
   "func f() {\n\tx = x\n}\n", "func f() {\n\tx = y\n}\n", "x = x has no effect (often a typo).", sev="major", cat="correctness", doc="go vet assign")
 P("VET-BOOLS", "Redundant or suspicious boolean expression", v("bools"), "check for common mistakes involving boolean operators",
   '(binary_expression left: (_) @a operator: ["||" "&&"] right: (_) @match (#eq? @a @match))', "var ok = a == b || a == b\n", "var ok = a == b || a == c\n",
-  "Both operands are identical.", sev="major", cat="correctness", doc="go vet bools")
+  "Both operands are identical.", sev="major", cat="correctness", doc="go vet bools",
+  filters=[r"cap.lacks_re:a:\(|<-"])  # calls and channel receives may yield different values each time
 P("VET-ATOMIC", "Result of atomic.Add assigned to its own operand", v("atomic"), "check for common mistakes using the sync/atomic package",
   '(assignment_statement left: (expression_list (identifier) @x) right: (expression_list (call_expression function: ' + sel("atomic", "AddInt32|AddInt64|AddUint32|AddUint64|AddUintptr") + ' arguments: (argument_list (unary_expression operand: (identifier) @y) (_)))) (#eq? @x @y)) @match',
   "func f() {\n\tx = atomic.AddInt64(&x, 1)\n}\n", "func f() {\n\tatomic.AddInt64(&x, 1)\n}\n", "The plain assignment races with the atomic update.",
@@ -126,7 +127,8 @@ P("REFLECT-HEADER", "reflect.SliceHeader/StringHeader are deprecated", PKG + "re
   "Use unsafe.Slice/SliceData/String/StringData (Go 1.20+).", sev="minor", kind="deprecation", cat="deprecation", applies={"go": ">=1.21"})
 P("X-NET-CONTEXT", "golang.org/x/net/context import", PKG + "golang.org/x/net/context", "Use the standard library context package instead.",
   '(import_spec path: (interpreted_string_literal) @match (#eq? @match "\\"golang.org/x/net/context\\""))', 'import "golang.org/x/net/context"\n',
-  'import "context"\n', "Use the standard context package.", sev="minor", kind="deprecation", cat="deprecation")
+  'import "context"\n', "Use the standard context package.", sev="minor", kind="deprecation", cat="deprecation",
+  applies={"go": ">=1.7"})
 P("NET-ERROR-TEMPORARY", "net.Error.Temporary is deprecated", PKG + "net#Error", "Temporary errors are not well-defined.",
   '(call_expression function: (selector_expression field: (field_identifier) @match (#eq? @match "Temporary")) arguments: (argument_list) @args (#eq? @args "()"))',
   "import \"net\"\n\nfunc f(ne net.Error) bool {\n\treturn ne.Temporary()\n}\n", "import \"net\"\n\nfunc f(ne net.Error) bool {\n\treturn ne.Timeout()\n}\n",
@@ -134,7 +136,7 @@ P("NET-ERROR-TEMPORARY", "net.Error.Temporary is deprecated", PKG + "net#Error",
 P("HTTP-CLOSENOTIFIER", "http.CloseNotifier is deprecated", PKG + "net/http#CloseNotifier", "the CloseNotifier interface predates Go's context package",
   '(qualified_type package: (package_identifier) @p (#eq? @p "http") name: (type_identifier) @match (#eq? @match "CloseNotifier"))',
   "func h(w http.ResponseWriter, r *http.Request) {\n\tcn := w.(http.CloseNotifier)\n\t_ = cn\n}\n", "func h(w http.ResponseWriter, r *http.Request) {\n\t<-r.Context().Done()\n}\n",
-  "Use Request.Context().", sev="minor", kind="deprecation", cat="deprecation")
+  "Use Request.Context().", sev="minor", kind="deprecation", cat="deprecation", applies={"go": ">=1.7"})
 P("SORT-STRINGS", "sort.Strings/Ints/Float64s (wrappers since Go 1.22)", PKG + "sort#Strings", "as of Go 1.22, this function simply calls slices.Sort",
   call("sort", "Strings|Ints|Float64s"), "func f(s []string) {\n\tsort.Strings(s)\n}\n", "func f(s []string) {\n\tslices.Sort(s)\n}\n",
   "Call slices.Sort directly.", sev="info", kind="modernization", cat="modernization", applies={"go": ">=1.22"})
@@ -179,15 +181,16 @@ M("SLICESCONTAINS", "Loop that is slices.Contains", "It replaces them with calls
 M("SLICESSORT", "sort.Slice with a plain < comparison", "sort.Slice(s, func(i, j int) bool { return s[i] < s[j] })",
   '(call_expression function: ' + sel("sort", "Slice") + ' arguments: (argument_list (identifier) (func_literal body: (block (statement_list (return_statement (expression_list (binary_expression left: (index_expression) operator: "<" right: (index_expression))))))))) @match',
   "func f() {\n\tsort.Slice(s, func(i, j int) bool { return s[i] < s[j] })\n}\n", "func f() {\n\tslices.Sort(s)\n}\n", "Use slices.Sort (Go 1.21).", "1.21")
-M("SORTSLICE-FUNC", "sort.Slice with a custom comparator", "The slicessort analyzer simplifies sorting slices",
+P("MOD-SORTSLICE-FUNC", "sort.Slice with a custom comparator", PKG + "sort#Slice", "the newer slices.SortFunc function is more ergonomic and runs faster",
   call("sort", "Slice|SliceStable", "(_) (func_literal)"), "func f() {\n\tsort.Slice(users, func(i, j int) bool { return users[i].Age < users[j].Age })\n}\n",
   "func f() {\n\tslices.SortFunc(users, func(a, b User) int { return cmp.Compare(a.Age, b.Age) })\n}\n",
-  "slices.SortFunc/SortStableFunc (Go 1.21) are type-safe and faster than reflection-based sort.Slice.", "1.21", filters=[r"node.lacks_re:return \w+\[\w+\] < \w+\[\w+\] \}"])
+  "slices.SortFunc/SortStableFunc (Go 1.21) are type-safe and faster than reflection-based sort.Slice.",
+  sev="info", kind="modernization", cat="modernization", applies={"go": ">=1.21"}, filters=[r"node.lacks_re:return \w+\[\w+\] < \w+\[\w+\] \}"])
 M("MAPSLOOP", "Map copy loop", "with a single call to a function from the `maps` package, added in Go 1.23",
   '(for_statement (range_clause left: (expression_list (identifier) @k (identifier) @v)) body: (block (statement_list . (assignment_statement left: (expression_list (index_expression index: (identifier) @k2)) right: (expression_list (identifier) @v2)) .)) (#eq? @k @k2) (#eq? @v @v2)) @match',
   "func f() {\n\tfor k, v := range src {\n\t\tdst[k] = v\n\t}\n}\n", "func f() {\n\tmaps.Copy(dst, src)\n}\n", "Use maps.Copy / maps.Clone / maps.Collect.", "1.23")
 M("STRINGSCUTPREFIX", "HasPrefix + TrimPrefix", "It replaces this two-step process with a single call to `strings.CutPrefix`, introduced in Go 1.20.",
-  '(if_statement condition: (call_expression function: (selector_expression operand: (identifier) @p (#match? @p "^(strings|bytes)$") field: (field_identifier) @f (#match? @f "^Has(Prefix|Suffix)$")) arguments: (argument_list) @args) consequence: (block) @b) @match',
+  '(if_statement !initializer condition: (call_expression function: (selector_expression operand: (identifier) @p (#match? @p "^(strings|bytes)$") field: (field_identifier) @f (#match? @f "^Has(Prefix|Suffix)$")) arguments: (argument_list) @args) consequence: (block) @b) @match',
   "func f() {\n\tif strings.HasPrefix(s, p) {\n\t\tuse(strings.TrimPrefix(s, p))\n\t}\n}\n",
   "func f() {\n\tif after, ok := strings.CutPrefix(s, p); ok {\n\t\tuse(after)\n\t}\n}\n", "Use strings.CutPrefix/CutSuffix (Go 1.20).", "1.20",
   filters=[r"cap.has_re:b:\b(strings|bytes)\.Trim(Prefix|Suffix){cap:args}"],
@@ -204,9 +207,16 @@ M("STRINGSBUILDER", "String concatenation in a loop", "replace += with strings.B
 M("FMTAPPENDF", "[]byte(fmt.Sprintf(...))", "The fmtappendf analyzer suggests replacing `[]byte(fmt.Sprintf(...))` with `fmt.Appendf(nil, ...)`.",
   '(type_conversion_expression type: (slice_type) operand: (call_expression function: ' + sel("fmt", "Sprintf|Sprint|Sprintln") + ')) @match',
   'var b = []byte(fmt.Sprintf("%d", n))\n', 'var b = fmt.Appendf(nil, "%d", n)\n', "fmt.Appendf avoids the intermediate string.", "1.19")
-M("TESTINGCONTEXT", "context.Background in a test", "testingcontext",
-  '(call_expression function: ' + sel("context", "Background|TODO") + ') @match', "func TestX(t *testing.T) {\n\tctx := context.Background()\n\trun(ctx)\n}\n",
-  "func TestX(t *testing.T) {\n\tctx := t.Context()\n\trun(ctx)\n}\n", "Use t.Context() (Go 1.24): cancelled when the test ends.", "1.24", files=["**/*_test.go"])
+M("TESTINGCONTEXT", "context.WithCancel + defer cancel in a test", "it replaces the manual creation of a cancellable context",
+  '(statement_list (short_var_declaration left: (expression_list . (identifier) . (identifier) @c .) right: (expression_list . (call_expression function: ' + sel("context", "WithCancel")
+  + ' arguments: (argument_list . (call_expression function: (selector_expression operand: (identifier) @p2 (#eq? @p2 "context") field: (field_identifier) @f2 (#match? @f2 "^(Background|TODO)$"))) .)) .)) @match . (defer_statement (call_expression function: (identifier) @d arguments: (argument_list) .)) (#eq? @c @d))',
+  "func TestX(t *testing.T) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tdefer cancel()\n\trun(ctx)\n}\n",
+  "func TestX(t *testing.T) {\n\tctx := t.Context()\n\trun(ctx)\n}\n", "Use t.Context() (Go 1.24): cancelled when the test ends.", "1.24", files=["**/*_test.go"],
+  # only in a function that has a *testing.T/B/F, and only when cancel is used for nothing but the defer
+  filters=[r"ancestor.has_re:function_declaration|method_declaration|func_literal:^[^{]*\*testing\.[TBF]\b", r"func.count_lt:3:(^|[^\w.]){cap:c}\b"],
+  fp=["func TestX(t *testing.T) {\n\tctx := context.Background()\n\trun(ctx)\n}\n",
+      "func TestMain(m *testing.M) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tdefer cancel()\n\trun(ctx)\n}\n",
+      "func TestX(t *testing.T) {\n\tctx, cancel := context.WithCancel(context.Background())\n\tdefer cancel()\n\tgo stop(cancel)\n\trun(ctx)\n}\n"])
 M("PLUSBUILD", "Obsolete // +build line next to //go:build", "The plusbuild analyzer suggests a fix to remove obsolete build tags of the form",
   '((comment) @match (#match? @match "^// ?[+]build "))', "//go:build linux\n// +build linux\n\npackage x\n", "//go:build linux\n\npackage x\n",
   "Delete the // +build line.", "1.18", filters=["file.has_re://go:build"])
@@ -226,13 +236,23 @@ M("SLICESBACKWARD", "Manual backward loop over a slice", "with the more readable
   "Use slices.Backward (Go 1.23).", "1.23")
 M("ATOMICTYPES", "sync/atomic functions on plain integers", "with the strongly typed atomic wrapper types introduced in Go1.19",
   call("atomic", "(Add|Load|Store|Swap|CompareAndSwap)(Int32|Int64|Uint32|Uint64|Uintptr|Pointer)"), "func f() {\n\tatomic.AddInt64(&n, 1)\n}\n",
-  "func f() {\n\tn.Add(1)\n}\n", "atomic.Int64 etc. prevent non-atomic access and fix 32-bit alignment.", "1.19")
+  "func f() {\n\tn.Add(1)\n}\n", "atomic.Int64 etc. prevent non-atomic access and fix 32-bit alignment.", "1.19",
+  # changing the type of an exported field/var breaks the API; a pointer conversion means the storage is another type
+  filters=[r"node.lacks_re:\(\s*\(\*|&(\w+\.)*[A-Z]\w*\s*[,)]"],
+  fp=["func (l *Logger) SetLevel(v Level) {\n\tatomic.StoreUint32((*uint32)(&l.level), uint32(v))\n}\n",
+      "func f(s *Stats) {\n\tatomic.AddInt64(&s.Count, 1)\n}\n"])
 M("WAITGROUPGO", "wg.Add(1) + go func(){ defer wg.Done() }", "waitgroupgo",
   '(statement_list (expression_statement (call_expression function: (selector_expression field: (field_identifier) @a (#eq? @a "Add")))) . (go_statement (call_expression function: (func_literal body: (block (statement_list . (defer_statement (call_expression function: (selector_expression field: (field_identifier) @d (#eq? @d "Done"))))))))) @match)',
   "func f() {\n\twg.Add(1)\n\tgo func() {\n\t\tdefer wg.Done()\n\t\twork()\n\t}()\n}\n", "func f() {\n\twg.Go(func() {\n\t\twork()\n\t})\n}\n", "Use wg.Go (Go 1.25).", "1.25")
 M("ERRORSASTYPE", "errors.As with a pre-declared target", "by using the less error-prone generic errors.AsType function, introduced in Go 1.26",
-  call("errors", "As", "(_) (unary_expression)"), "func f(err error) {\n\tvar pe *fs.PathError\n\tif errors.As(err, &pe) {\n\t\tuse(pe)\n\t}\n}\n",
-  "func f(err error) {\n\tif pe, ok := errors.AsType[*fs.PathError](err); ok {\n\t\tuse(pe)\n\t}\n}\n", "Use errors.AsType[T] (Go 1.26).", "1.26")
+  '((call_expression function: ' + sel("errors", "As") + ' arguments: (argument_list (_) (unary_expression operand: (identifier) @t))) @match)',
+  "func f(err error) {\n\tvar pe *fs.PathError\n\tif errors.As(err, &pe) {\n\t\tuse(pe)\n\t}\n}\n",
+  "func f(err error) {\n\tif pe, ok := errors.AsType[*fs.PathError](err); ok {\n\t\tuse(pe)\n\t}\n}\n", "Use errors.AsType[T] (Go 1.26).", "1.26",
+  # the fix needs `var t T` in this function and the call as the if condition (not negated, not assigned)
+  filters=[r"parentkind.has_re:if_statement:.", r"func.has_re:\bvar\s+{cap:t}\s+[^=\n]+\n"],
+  fp=["func f(err error) bool {\n\treturn errors.As(err, &MyErr{})\n}\n",
+      "func f(err error) {\n\tvar pe *fs.PathError\n\tif !errors.As(err, &pe) {\n\t\treturn\n\t}\n\tuse(pe)\n}\n",
+      "func f(err error, pe **fs.PathError) {\n\tif errors.As(err, pe) {\n\t}\n}\n"])
 M("REFLECTTYPEFOR", "reflect.TypeOf((*T)(nil)).Elem()", "This analyzer suggests fixes to replace uses of reflect.TypeOf(x) with reflect.TypeFor, introduced in go1.22",
   call("reflect", "TypeOf", "(call_expression arguments: (argument_list (nil)))"), "var t = reflect.TypeOf((*io.Reader)(nil)).Elem()\n", "var t = reflect.TypeFor[io.Reader]()\n",
   "Use reflect.TypeFor[T]() (Go 1.22).", "1.22")
@@ -243,7 +263,8 @@ M("NEWEXPR", "Helper returning &param (use new(expr))", "simplify code by using 
 P("TLS-INSECURE-SKIP-VERIFY", "TLS certificate verification disabled", PKG + "crypto/tls#Config", "In this mode, TLS is susceptible to machine-in-the-middle // attacks unless custom verification is used.",
   '(keyed_element key: (literal_element (identifier) @k (#eq? @k "InsecureSkipVerify")) value: (literal_element (true))) @match',
   "var c = &tls.Config{InsecureSkipVerify: true}\n", "var c = &tls.Config{MinVersion: tls.VersionTLS12}\n",
-  "Accepts any certificate: trivially MITM-able.", sev="critical", kind="security", cat="security")
+  "Accepts any certificate: trivially MITM-able.", sev="critical", kind="security", cat="security", xref=["gosec:G402"],
+  files=["!**/*_test.go"])  # tests against self-signed httptest/TLS servers skip verification by design
 P("TLS-OLD-VERSION", "TLS minimum version below 1.2", PKG + "crypto/tls#Config", "MinVersion contains the minimum TLS version that is acceptable.",
   '(keyed_element key: (literal_element (identifier) @k (#eq? @k "MinVersion")) value: (literal_element (selector_expression field: (field_identifier) @match (#match? @match "^(VersionTLS10|VersionTLS11|VersionSSL30)$"))))',
   "var c = &tls.Config{MinVersion: tls.VersionTLS10}\n", "var c = &tls.Config{MinVersion: tls.VersionTLS12}\n", "TLS 1.0/1.1 are deprecated (RFC 8996).",
@@ -258,7 +279,8 @@ for alg, path, needle in [("MD5", "crypto/md5", "MD5 is cryptographically broken
       mode="ai-confirm", ai=f"Is {alg} used here for a security purpose (passwords, signatures, tokens, integrity against attackers) rather than a non-security checksum/compat protocol?")
 P("DSA", "crypto/dsa (deprecated legacy algorithm)", PKG + "crypto/dsa", "DSA is a legacy algorithm",
   '(import_spec path: (interpreted_string_literal) @match (#eq? @match "\\"crypto/dsa\\""))', 'import "crypto/dsa"\n', 'import "crypto/ed25519"\n',
-  "Use Ed25519, ECDSA or RSA.", sev="major", kind="deprecation", cat="security")
+  "Use Ed25519, ECDSA or RSA.", sev="major", kind="deprecation", cat="security",
+  applies={"go": ">=1.16"})
 P("MATH-RAND-SECURITY", "math/rand used where crypto/rand may be needed", PKG + "math/rand", "For random numbers suitable for security-sensitive work, see the crypto/rand package.",
   '(call_expression function: (selector_expression operand: (identifier) @p (#eq? @p "rand") field: (field_identifier) @f (#match? @f "^(Int|Intn|Int63|Int31|Uint32|Uint64|Read|IntN|N|Text)$"))) @match',
   'import "math/rand"\n\nfunc token() int {\n\treturn rand.Int()\n}\n', 'import "crypto/rand"\n\nfunc token() string {\n\treturn rand.Text()\n}\n',
@@ -271,9 +293,14 @@ P("EXEC-SHELL", "Shell invoked with a dynamic command", PKG + "os/exec", "the os
   "Passing a constructed string to a shell enables command injection; call the program directly with separate args.",
   sev="critical", kind="security", cat="security")
 P("SQL-STRING-BUILD", "SQL built by string concatenation / Sprintf", "https://go.dev/doc/database/sql-injection", "by providing SQL parameter values as sql package function arguments",
-  '(call_expression function: (selector_expression field: (field_identifier) @f (#match? @f "^(Query|QueryRow|Exec|QueryContext|QueryRowContext|ExecContext|Prepare|PrepareContext)$")) arguments: (argument_list [(binary_expression operator: "+") (call_expression function: (selector_expression operand: (identifier) @x (#eq? @x "fmt") field: (field_identifier) @s (#eq? @s "Sprintf")))] @match))',
+  '(call_expression function: (selector_expression field: (field_identifier) @f (#match? @f "^(Query|QueryRow|Exec|QueryContext|QueryRowContext|ExecContext|Prepare|PrepareContext)$")) arguments: (argument_list . (binary_expression operator: "+") @match))\n(call_expression function: (selector_expression field: (field_identifier) @f (#match? @f "^(Query|QueryRow|Exec|QueryContext|QueryRowContext|ExecContext|Prepare|PrepareContext)$")) arguments: (argument_list . (call_expression function: (selector_expression operand: (identifier) @x field: (field_identifier) @s)) @match (#eq? @x "fmt") (#eq? @s "Sprintf")))\n(call_expression function: (selector_expression field: (field_identifier) @f (#match? @f "^(Query|QueryRow|Exec|QueryContext|QueryRowContext|ExecContext|Prepare|PrepareContext)$")) arguments: (argument_list . (_) @ctx . (binary_expression operator: "+") @match))\n(call_expression function: (selector_expression field: (field_identifier) @f (#match? @f "^(Query|QueryRow|Exec|QueryContext|QueryRowContext|ExecContext|Prepare|PrepareContext)$")) arguments: (argument_list . (_) @ctx . (call_expression function: (selector_expression operand: (identifier) @x field: (field_identifier) @s)) @match (#eq? @x "fmt") (#eq? @s "Sprintf")))',
   'func f(id string) {\n\tdb.Query("SELECT * FROM users WHERE id = " + id)\n}\n', 'func f(id string) {\n\tdb.Query("SELECT * FROM users WHERE id = ?", id)\n}\n',
-  "Use placeholders and pass values as arguments.", sev="critical", kind="security", cat="security", docv="go.dev/doc/database (2026)")
+  "Use placeholders and pass values as arguments.", sev="critical", kind="security", cat="security", docv="go.dev/doc/database (2026)",
+  xref=["gosec:G201", "gosec:G202"],
+  # the built string must be the query argument (first, or second after a ctx) and look like SQL
+  filters=[r"cap.lacks_re:ctx:^[\"`]", r"node.has_re:(?i)\b(select|insert|update|delete|create|drop|alter|truncate|where|from|into)\b"],
+  fp=['func f(i int) {\n\tdb.Exec("INSERT INTO blog (title) VALUES ($1);", fmt.Sprintf("post #%d", i))\n}\n',
+      'func f(addr string) {\n\tNew().Query("http://"+addr, cfg)\n}\n'])
 P("TEXT-TEMPLATE-HTML", "text/template used to render HTML", PKG + "html/template", "safe against code injection",
   '(import_spec path: (interpreted_string_literal) @match (#eq? @match "\\"text/template\\""))', 'import "text/template"\n\nconst page = "<html><body>{{.Name}}</body></html>"\n',
   'import "html/template"\n\nconst page = "<html><body>{{.Name}}</body></html>"\n', "text/template does no contextual escaping; use html/template for HTML.",
@@ -301,8 +328,13 @@ P("UNSAFE-IMPORT", "Package unsafe imported", PKG + "unsafe", "Package unsafe co
 # ---------------------------------------------------------------- errors & idioms
 P("ERR-COMPARE-EQ", "Error compared with == instead of errors.Is", PKG + "errors#Is", "Is reports whether any error in err's tree matches target.",
   '(binary_expression left: (identifier) @e (#match? @e "(?i)^err") operator: ["==" "!="] right: (selector_expression field: (field_identifier) @match (#match? @match "^(Err[A-Z]|EOF$)")))',
-  "func f() bool {\n\treturn err == sql.ErrNoRows\n}\n", "func f() bool {\n\treturn errors.Is(err, sql.ErrNoRows)\n}\n",
-  "== fails on wrapped errors; use errors.Is.", sev="minor", cat="errors")
+  "func f() bool {\n\treturn err == fs.ErrNotExist\n}\n", "func f() bool {\n\treturn errors.Is(err, fs.ErrNotExist)\n}\n",
+  "== fails on wrapped errors; use errors.Is.", sev="minor", cat="errors", xref=["errorlint:comparison"],
+  # sentinels the stdlib documents as returned unwrapped (io.Reader must return EOF itself; ListenAndServe
+  # returns ErrServerClosed; Scan returns ErrNoRows; ctx.Err returns Canceled/DeadlineExceeded) - errorlint allowlists these
+  filters=[r"parent.lacks_re:^(io\.(EOF|ErrUnexpectedEOF)|http\.Err\w+|sql\.(ErrNoRows|ErrTxDone|ErrConnDone)|context\.(Canceled|DeadlineExceeded))$"],
+  fp=["func f(r io.Reader) {\n\tif _, err := r.Read(b); err == io.EOF {\n\t}\n}\n",
+      "func f() {\n\tif err := srv.ListenAndServe(); err != http.ErrServerClosed {\n\t}\n}\n"])
 P("ERRORF-NO-WRAP", "fmt.Errorf formats an error without %w", PKG + "fmt#Errorf", "If the format specifier includes a %w verb with an error operand",
   call("fmt", "Errorf", '(interpreted_string_literal) @fmt (#not-match? @fmt "%w") (#match? @fmt "%[vs]") . (_)* (identifier) @e (#match? @e "^err$")', cap="@match"),
   'func f() error {\n\treturn fmt.Errorf("load: %v", err)\n}\n', 'func f() error {\n\treturn fmt.Errorf("load: %w", err)\n}\n',
@@ -351,15 +383,19 @@ P("VET-UNREACHABLE", "Unreachable code after return/panic", v("unreachable"), "c
   filters=[r"func.lacks_re:\bpanic\s*(:=|=[^=])"])
 P("CTX-WITHVALUE-STRING-KEY", "context.WithValue with a built-in key type", PKG + "context#WithValue",
   "should not be of type string or any other built-in type to avoid collisions between packages using context",
-  call("context", "WithValue", "(_) [(interpreted_string_literal) (raw_string_literal) (int_literal)]"),
+  call("context", "WithValue", ". (_) . [(interpreted_string_literal) (raw_string_literal) (int_literal)]"),
   'func f(ctx context.Context) context.Context {\n\treturn context.WithValue(ctx, "user", u)\n}\n',
   "type userKey struct{}\n\nfunc f(ctx context.Context) context.Context {\n\treturn context.WithValue(ctx, userKey{}, u)\n}\n",
-  "Use an unexported key type to avoid collisions.", sev="minor", cat="correctness")
+  "Use an unexported key type to avoid collisions.", sev="minor", cat="correctness", xref=["staticcheck:SA1029", "revive:context-keys-type"],
+  fp=['type k struct{ n string }\n\nfunc f(ctx context.Context) context.Context {\n\treturn context.WithValue(ctx, k{"id"}, "1")\n}\n'])
 P("CTX-IN-STRUCT", "context.Context stored in a struct", PKG + "context", "Do not store Contexts inside a struct type",
-  '(field_declaration type: (qualified_type package: (package_identifier) @p name: (type_identifier) @t) (#eq? @p "context") (#eq? @t "Context")) @match',
+  '(field_declaration name: (field_identifier) type: (qualified_type package: (package_identifier) @p name: (type_identifier) @t) (#eq? @p "context") (#eq? @t "Context")) @match',
   "type Worker struct {\n\tctx context.Context\n}\n", "type Worker struct{}\n\nfunc (w *Worker) Run(ctx context.Context) {}\n",
   "Pass the Context explicitly to each function that needs it.", sev="minor", cat="maintainability",
-  quote="Do not store Contexts inside a struct type; instead, pass a Context explicitly to each function that needs it.")
+  quote="Do not store Contexts inside a struct type; instead, pass a Context explicitly to each function that needs it.",
+  xref=["containedctx:containedctx"],
+  # an embedded Context makes the type itself a Context (wrapper), which the guidance does not cover
+  fp=["type valueCtx struct {\n\tcontext.Context\n\tv any\n}\n"])
 P("CTX-NOT-FIRST", "context.Context is not the first parameter", PKG + "context", "The Context should be the first parameter, typically named ctx",
   '(parameter_list (parameter_declaration) (parameter_declaration type: (qualified_type package: (package_identifier) @p name: (type_identifier) @t) (#eq? @p "context") (#eq? @t "Context")) @match)',
   "func Get(id string, ctx context.Context) error { return nil }\n", "func Get(ctx context.Context, id string) error { return nil }\n",
@@ -374,12 +410,20 @@ P("HTTP-BODY-NOT-CLOSED", "HTTP response body never closed", PKG + "net/http", "
   "func f() error {\n\tresp, err := http.Get(u)\n\tif err != nil {\n\t\treturn err\n\t}\n\tdefer resp.Body.Close()\n\treturn nil\n}\n",
   "Unclosed bodies leak connections and file descriptors.", sev="major", cat="resources", mode="ai-confirm",
   ai="Is the response returned/handed off to a caller that closes it? If not, this is a leak.",
-  fp=[{"code": "import \"net/http\"\n\nfunc FromCache(items []string, c Cache) int {\n\tn := 0\n\tfor _, it := range items {\n\t\tif _, ok := c.Get(it); ok {\n\t\t\tn++\n\t\t}\n\t}\n\treturn n\n}\n",
+  # handed off: returned to the caller, or passed to a close/drain helper
+  filters=[r"node.lacks_re:^func[^{]*\*http\.Response|\breturn\s+&?\w*[Rr]es(p|ponse)?\w*\s*(,|\n|$)|\b\w*([Cc]lose|[Dd]rain|[Dd]iscard)\w*\(\s*\w*[Rr]es(p|ponse)?\w*\s*[,)]"],
+  fp=["func Fetch(u string) (*http.Response, error) {\n\tresp, err := http.Get(u)\n\tif err != nil {\n\t\treturn nil, err\n\t}\n\treturn resp, nil\n}\n",
+      "func f(u string) error {\n\tresp, err := http.Get(u)\n\tif err != nil {\n\t\treturn err\n\t}\n\tdefer closeBody(resp)\n\treturn nil\n}\n",
+      {"code": "import \"net/http\"\n\nfunc FromCache(items []string, c Cache) int {\n\tn := 0\n\tfor _, it := range items {\n\t\tif _, ok := c.Get(it); ok {\n\t\t\tn++\n\t\t}\n\t}\n\treturn n\n}\n",
        "note": "self-scan: c.Get on a cache, not an HTTP client"}])
 P("ERROR-STRING-STYLE", "Capitalized or punctuated error string", CRC, "Error strings should not be capitalized (unless beginning with proper nouns or acronyms) or end with punctuation",
   '((call_expression function: (selector_expression operand: (identifier) @p field: (field_identifier) @f) arguments: (argument_list . (interpreted_string_literal) @s)) @match (#match? @p "^(errors|fmt)$") (#match? @f "^(New|Errorf)$") (#match? @s "^\\"([A-Z][a-z]|.*[.!:]\\"$)"))',
   'var errX = errors.New("Something failed.")\n', 'var errX = errors.New("something failed")\n', "Errors are usually wrapped into longer messages.",
-  sev="info", cat="style", docv="Go Code Review Comments")
+  sev="info", cat="style", docv="Go Code Review Comments", xref=["revive:error-strings", "staticcheck:ST1005"],
+  # starts with an identifier (CamelCase type/func name, Header-Name, call) and has no trailing punctuation
+  filters=[r'cap.lacks_re:s:^"([A-Z][a-z0-9]*[A-Z]\w*|[A-Z]\w*-[A-Z]\w*|[A-Z]\w*\()([^"\\]|\\.)*[^.!:"\\]"$'],
+  fp=['var e = errors.New("ResponseWriter does not implement Flusher")\n', 'var e = fmt.Errorf("If-Match header did not match")\n',
+      'var e = errors.New("EnsureRunning: config not active")\n'])
 P("RECEIVER-NAME-THIS", "Receiver named this/self/me", CRC, "Don't use generic names such as \"me\", \"this\" or \"self\"",
   '(method_declaration receiver: (parameter_list (parameter_declaration name: (identifier) @match (#match? @match "^(this|self|me)$"))))',
   "func (this *Server) Start() {}\n", "func (s *Server) Start() {}\n", "Use a short name reflecting the type.", sev="info", cat="style",
@@ -403,7 +447,7 @@ P("TEST-TEMPDIR", "os.MkdirTemp/ioutil.TempDir in a test (use t.TempDir)", PKG +
 P("OS-SEEK-CONSTANTS", "os.SEEK_SET/CUR/END (deprecated)", PKG + "os#pkg-constants", "Deprecated: Use io.SeekStart, io.SeekCurrent, and io.SeekEnd.",
   '(selector_expression operand: (identifier) @p field: (field_identifier) @match (#eq? @p "os") (#match? @match "^SEEK_(SET|CUR|END)$"))',
   "func f(fh *os.File) {\n\tfh.Seek(0, os.SEEK_SET)\n}\n", "func f(fh *os.File) {\n\tfh.Seek(0, io.SeekStart)\n}\n", "Use io.Seek* constants.", sev="minor", kind="deprecation",
-  cat="compatibility")
+  cat="compatibility", applies={"go": ">=1.7"})
 P("ELLIPTIC-LOW-LEVEL", "crypto/elliptic low-level functions (deprecated)", PKG + "crypto/elliptic", "Deprecated: for ECDH, use the GenerateKey methods of the crypto/ecdh package",
   call("elliptic", "GenerateKey|Marshal|Unmarshal|MarshalCompressed|UnmarshalCompressed"), "func f() {\n\tpriv, x, y, _ := elliptic.GenerateKey(elliptic.P256(), rand.Reader)\n\t_, _, _ = priv, x, y\n}\n",
   "func f() {\n\tkey, _ := ecdh.P256().GenerateKey(rand.Reader)\n\t_ = key\n}\n", "Use crypto/ecdh or crypto/ecdsa.", sev="minor", kind="deprecation", cat="security",
