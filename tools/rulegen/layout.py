@@ -21,13 +21,13 @@ PACKS_DIR = os.path.join(ROOT, "rules", "packs")
 THEMES = {
     "taint": "taint", "llm": "llm", "cert_java": "cert", "cert-java": "cert", "appsec": "appsec",
     "java-security": "appsec", "python-security": "appsec", "supply_chain": "supply-chain",
-    "supply-chain": "supply-chain", "cloud": "cloud", "ci": "ci", "maint": "maintainability",
+    "supply-chain": "supply-chain", "cloud": "cloud", "ci": "ci", "maint": "maintainability", "a11y": "accessibility",
 }
 # language -> pack for cross-cutting rules
 LANG_PACK = {
     "java": "java", "kotlin": "kotlin", "python": "python", "go": "go", "php": "php",
     "javascript": "javascript", "typescript": "typescript", "tsx": "typescript", "jsx": "javascript",
-    "hcl": "terraform", "dockerfile": "docker", "xml": "maven", "html": "html",
+    "hcl": "terraform", "dockerfile": "docker", "xml": "maven", "html": "html", "css": "css", "vue": "vue",
 }
 # origin pack -> pack (the legacy pack name is not a language/framework)
 ORIGIN_PACK = {"java-security": "java", "python-security": "python", "vue-vapor": "vue"}

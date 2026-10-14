@@ -65,7 +65,7 @@ class Pack:
     def __call__(self, id, title, url, needle, query, bad, good, msg, *, sev="minor", kind="anti-pattern", cat=None, applies=None,
                  lang=None, files=None, grammar=None, target=None, mode="deterministic", ai=None, doc=None, docv=None, quote=None,
                  filters=None, tags=None, fix=None, framework=None, xref=None, engine="tree-sitter", manifest=None,
-                 config=None, check=None, requires_dependency=None, fp=None, precision=None, requires_config=None, cwe=None, owasp=None, asvs=None,
+                 config=None, check=None, requires_dependency=None, fp=None, precision=None, requires_config=None, cwe=None, owasp=None, asvs=None, wcag=None,
                  params=None, match_kind=None):
         rid = f"{self.prefix}-{id}"
         if rid in self._ids:
@@ -78,7 +78,7 @@ class Pack:
                            query=query, target=target if target is not None else self.target, files=files if files is not None else self.files,
                            grammar=grammar or self.grammar, mode=mode, ai=ai, filters=filters, tags=tags, fix=fix, xref=xref,
                            engine=engine, manifest=manifest, config=config, check=check, requires_dependency=requires_dependency,
-                           fp=fp, precision=precision, requires_config=requires_config, cwe=cwe, owasp=owasp, asvs=asvs,
+                           fp=fp, precision=precision, requires_config=requires_config, cwe=cwe, owasp=owasp, asvs=asvs, wcag=wcag,
                            params=params, match_kind=match_kind))
         return self.R[-1]
 
@@ -94,7 +94,7 @@ SECRETS = [
      "AKIAIOSFODNN7EXAMPLE", "(^|[^A-Z0-9])(AKIA|ASIA)[0-9A-Z]{16}([^A-Z0-9]|$)", ("aws_access_key_id", "AKIAIOSFODNN7EXAMPLE"), ("aws_profile", "deploy"),
      "Long-term AWS access key committed: rotate it and load credentials from the environment/role instead.", "critical", "AWS IAM User Guide"),
     ("PRIVATE-KEY", "PEM private key committed", OWASP_SECRETS, OWASP_NEEDLE, "-----BEGIN ([A-Z]+ )?PRIVATE KEY-----",
-     ("key", "-----BEGIN RSA PRIVATE KEY-----"), ("key_file", "/run/secrets/tls.key"),
+     ("key", "-----BEGIN RSA PRIVATE KEY-----MIIEpAIBAAKCAQEAu1SU1L7VLPHCgcBIjt"), ("key_file", "/run/secrets/tls.key"),
      "Private key material committed to the repository: revoke it and mount it from a secret store.", "critical", "OWASP cheat sheet (2026)"),
     ("GITHUB-TOKEN", "GitHub token committed", "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-authentication-to-github",
      "ghp_", "(gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{22,})", ("token", "ghp_aBcDeFgHiJkLmNoPqRsTuVwXyZ0123456789"), ("token_env", "GITHUB_TOKEN"),
@@ -122,5 +122,10 @@ def secret_rules(P, node_alt, fmt, prefix=""):
     """Emit the shared secret-detection family for one string node pattern.
     node_alt: query fragment matching string nodes, e.g. '(string_content)'; fmt(key, value) renders an example."""
     for (id, title, url, needle, rx, bad, good, msg, sev, dv) in SECRETS:
+        extra = {}
+        if id == "PRIVATE-KEY":
+            # key material, not PEM-writing code (append("-----BEGIN PRIVATE KEY-----\\n")): base64 must follow the header
+            extra = dict(filters=[r'node.has_re:PRIVATE KEY-----([\s|"+]|\\[nr])*[A-Za-z0-9+/]{16}'],
+                         fp=[fmt("pem_header", "-----BEGIN PRIVATE KEY-----")])
         P(prefix + id, title, url, needle, f'({node_alt} @match (#match? @match "{rx}"))', fmt(*bad), fmt(*good), msg, sev=sev,
-          kind="security", cat="security", docv=dv)
+          kind="security", cat="security", docv=dv, **extra)

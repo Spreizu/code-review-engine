@@ -18,7 +18,7 @@ RETRIEVED = "2026-10-09"
 PACKS = ["java", "spring_boot", "javascript", "typescript", "vue", "nuxt",
          "json", "yaml", "package_json", "composer", "docker", "go", "python", "php", "kotlin", "gradle", "maven",
          "protobuf", "graphql", "terraform", "ytt", "angular", "react", "nuxt_ui", "payload", "vueuse",
-         "taint", "simplify_go", "simplify_python", "simplify_javascript", "simplify_java", "simplify_kotlin", "simplify_php", "android", "llm", "kubernetes", "appsec", "ci", "cloud", "cert_java", "supply_chain", "maint"]
+         "taint", "simplify_go", "simplify_python", "simplify_javascript", "simplify_java", "simplify_kotlin", "simplify_php", "android", "llm", "kubernetes", "appsec", "ci", "cloud", "cert_java", "supply_chain", "maint", "css", "a11y"]
 PACK_NAME = {p: p.replace("_", "-") for p in PACKS}
 
 
@@ -41,7 +41,7 @@ def rule(id, title, *, language, kind, category, severity, applies, message, url
          bad, good, query=None, mode="deterministic", engine="tree-sitter", ai=None, fix=None, rationale=None,
          filters=None, grammar=None, target=None, files=None, config=None, manifest=None, overrides=None,
          tags=None, framework=None, capture=None, requires_dependency=None, xref=None, check=None,
-         fp=None, precision=None, requires_config=None, status=None, status_reason=None, cwe=None, owasp=None, asvs=None,
+         fp=None, precision=None, requires_config=None, status=None, status_reason=None, cwe=None, owasp=None, asvs=None, wcag=None,
          params=None, match_kind=None):
     """params: {name: {default, from: ["tool:id.option"]}} thresholds the project's linter config may override;
     match_kind: "metric" for measured-threshold rules (see internal/rules/matchkind.go).
@@ -99,6 +99,8 @@ def rule(id, title, *, language, kind, category, severity, applies, message, url
         r["owasp"] = owasp
     if asvs:
         r["asvs"] = asvs
+    if wcag:
+        r["wcag"] = list(wcag)
     if precision:
         r["precision"] = precision
     if params:

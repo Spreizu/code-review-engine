@@ -16,7 +16,7 @@ import yaml
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PACKS = os.path.join(ROOT, "rules", "packs")
 PACK_CODE = {
-    "android": "ANDROID", "angular": "NG", "composer": "COMPOSER", "docker": "DOCKER", "github-actions": "GHA", "gitlab-ci": "GITLAB",
+    "android": "ANDROID", "angular": "NG", "composer": "COMPOSER", "css": "CSS", "docker": "DOCKER", "github-actions": "GHA", "gitlab-ci": "GITLAB",
     "go": "GO", "gradle": "GRADLE", "graphql": "GRAPHQL", "html": "HTML", "java": "JAVA", "javascript": "JS", "json": "JSON", "kotlin": "KT",
     "kubernetes": "KUBE", "maven": "MAVEN", "nuxt-ui": "NUXTUI", "nuxt": "NUXT", "package-json": "PKG", "payload": "PAYLOAD",
     "php": "PHP", "protobuf": "PROTO", "python": "PY", "react": "REACT", "spring-boot": "SB", "terraform": "TF", "typescript": "TS",
@@ -24,9 +24,9 @@ PACK_CODE = {
 }
 CAT_CODE = {
     "security": "SEC", "taint": "TAINT", "quality": "QUAL", "maintainability": "MAINT", "migration": "MIG", "modernization": "MOD",
-    "simplification": "SIMP", "cert": "CERT", "supply-chain": "SUPPLY", "cloud": "CLOUD", "llm": "LLM", "vapor": "VAPOR", "ci": "CI",
+    "simplification": "SIMP", "cert": "CERT", "supply-chain": "SUPPLY", "cloud": "CLOUD", "llm": "LLM", "vapor": "VAPOR", "ci": "CI", "accessibility": "A11Y",
 }
-THEME_TOKENS = {"SIMP", "TAINT", "APPSEC", "CERT", "LLM", "SC", "MAINT"}
+THEME_TOKENS = {"SIMP", "TAINT", "APPSEC", "CERT", "LLM", "SC", "MAINT", "A11Y"}
 
 
 def cat_code(topic):
