@@ -12,6 +12,9 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    ANDROID-SEC-CLEAR-FLAG-SECURE:
+        level: unproven
+        why: own examples only
     ANDROID-SEC-CLEARTEXT-TRAFFIC:
         level: measured
         corpus_hits: 6
@@ -47,6 +50,15 @@ rules:
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+    ANDROID-SEC-LOW-MIN-SDK:
+        level: unproven
+        why: own examples only
+    ANDROID-SEC-LOW-MIN-SDK-GROOVY:
+        level: unproven
+        why: own examples only
+    ANDROID-SEC-LOW-MIN-SDK-KTS:
+        level: unproven
+        why: own examples only
     ANDROID-SEC-NSC-CLEARTEXT:
         level: measured
         corpus_hits: 1
@@ -56,6 +68,9 @@ rules:
     ANDROID-SEC-NSC-USER-CA:
         level: unproven
         metamorphic: stable
+        why: own examples only
+    ANDROID-SEC-PASSWORD-NO-FLAG-SECURE:
+        level: unproven
         why: own examples only
     ANDROID-SEC-PREFS-PLAINTEXT-SECRET:
         level: measured
@@ -96,14 +111,16 @@ rules:
         metamorphic: stable
         why: own examples only
     COMPOSER-MOD-PHP-EOL:
-        level: unproven
+        level: proven
+        tp: 24
         corpus_hits: 24
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.862
     COMPOSER-MOD-PSR0-AUTOLOAD:
         level: unproven
         corpus_hits: 11
@@ -221,14 +238,235 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
-    DOCKER-MIG-COMPOSE-VERSION-OBSOLETE:
+    CSS-A11Y-FOCUS-OUTLINE-REMOVED:
         level: unproven
+        fn: 6
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-FOCUS-VISIBLE-OUTLINE-REMOVED:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-FONT-SIZE-VIEWPORT-ONLY:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-GENERATED-CONTENT-TEXT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-LINE-HEIGHT-BELOW-1-5:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-LOW-CONTRAST:
+        level: unproven
+        fn: 14
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-LOW-CONTRAST-ENHANCED:
+        level: unproven
+        fn: 2
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-ORIENTATION-LOCK:
+        level: unproven
+        why: own examples only
+    CSS-A11Y-OUTLINE-REMOVED-ON-CONTROLS:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-REDUCED-MOTION-MISSING:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-ROOT-FONT-SIZE-PX:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-SMALL-TARGET:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-TEXT-CLIPPED-FIXED-HEIGHT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-TEXT-DECORATION-BLINK:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-A11Y-TEXT-JUSTIFIED:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    CSS-QUAL-CALC-UNSPACED-OPERATOR:
+        level: proven
+        tp: 10
+        fn: 41
+        tn: 74
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.722
+    CSS-QUAL-DOUBLE-SLASH-COMMENT:
+        level: proven
+        tp: 7
+        tn: 3
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.646
+    CSS-QUAL-DUPLICATE-DECLARATION:
+        level: measured
+        tp: 3
+        fn: 26
+        tn: 11
+        metamorphic: stable
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.439
+    CSS-QUAL-DUPLICATE-FONT-FAMILY:
+        level: measured
+        tp: 3
+        fn: 3
+        tn: 5
+        metamorphic: stable
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.439
+    CSS-QUAL-DUPLICATE-KEYFRAME-SELECTOR:
+        level: unproven
+        why: own examples only
+    CSS-QUAL-DUPLICATE-SELECTOR:
+        level: proven
+        tp: 5
+        fn: 23
+        tn: 14
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.566
+    CSS-QUAL-EMPTY-RULE:
+        level: proven
+        tp: 8
+        fn: 5
+        tn: 16
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.676
+    CSS-QUAL-FONT-FAMILY-WITHOUT-GENERIC:
+        level: measured
+        tp: 4
+        fn: 8
+        tn: 46
+        metamorphic: stable
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.51
+    CSS-QUAL-GRADIENT-LEGACY-DIRECTION:
+        level: proven
+        tp: 8
+        fn: 18
+        tn: 36
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.676
+    CSS-QUAL-IMPORTANT:
+        level: unproven
+        tp: 2
+        fn: 1
+        tn: 1
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.342
+    CSS-QUAL-IMPORTANT-IN-KEYFRAMES:
+        level: measured
+        tp: 3
+        fn: 4
+        tn: 6
+        metamorphic: stable
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.439
+    CSS-QUAL-INVALID-HEX-COLOR:
+        level: measured
+        tp: 3
+        fn: 1
+        tn: 11
+        metamorphic: stable
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.439
+    CSS-QUAL-OVERRIDDEN-DECLARATION:
+        level: proven
+        tp: 27
+        fn: 2
+        tn: 11
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.875
+    CSS-QUAL-SHORTHAND-OVERRIDES-LONGHAND:
+        level: proven
+        tp: 17
+        fn: 3
+        tn: 12
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.816
+    CSS-QUAL-TOP-LEVEL-NESTING-SELECTOR:
+        level: unproven
+        why: own examples only
+    CSS-QUAL-UNKNOWN-AT-RULE:
+        level: unproven
+        tp: 1
+        tn: 31
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.207
+    CSS-QUAL-UNKNOWN-MEDIA-FEATURE:
+        level: unproven
+        why: own examples only
+    CSS-QUAL-UNKNOWN-PROPERTY:
+        level: proven
+        tp: 5
+        fn: 1
+        tn: 13
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.566
+    CSS-QUAL-UNKNOWN-PSEUDO:
+        level: proven
+        tp: 10
+        fn: 10
+        tn: 52
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.722
+    CSS-QUAL-UNKNOWN-TYPE-SELECTOR:
+        level: unproven
+        why: own examples only
+    CSS-QUAL-UNKNOWN-UNIT:
+        level: proven
+        tp: 19
+        fn: 10
+        tn: 73
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.832
+    CSS-QUAL-UNMATCHABLE-NTH:
+        level: unproven
+        why: own examples only
+    CSS-QUAL-UNNEEDED-VENDOR-PREFIX:
+        level: proven
+        tp: 6
+        fn: 9
+        tn: 10
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.61
+    DOCKER-MIG-COMPOSE-VERSION-OBSOLETE:
+        level: proven
+        tp: 16
         corpus_hits: 21
         corpus_repos: 10
         anomalies:
-            - oss-total>=15
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.806
     DOCKER-MIG-LEGACY-KEY-VALUE-FORMAT:
         level: unproven
         corpus_hits: 219
@@ -251,26 +489,28 @@ rules:
         metamorphic: stable
         why: own examples only
     DOCKER-MOD-COMPOSE-LINKS-LEGACY:
-        level: unproven
+        level: proven
+        tp: 18
         corpus_hits: 19
         corpus_repos: 2
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.824
     DOCKER-QUAL-ADD-LOCAL-FILE:
-        level: unproven
-        tp: 3
+        level: proven
+        tp: 18
         tn: 8
         corpus_hits: 22
         corpus_repos: 4
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.058
+        why: labelled external cases
+        wilson_lb: 0.824
     DOCKER-QUAL-APT-LISTS-NOT-REMOVED:
         level: unproven
         tn: 2
@@ -282,16 +522,16 @@ rules:
         metamorphic: stable
         why: corpus anomaly
     DOCKER-QUAL-APT-NO-INSTALL-RECOMMENDS:
-        level: unproven
-        tp: 2
+        level: proven
+        tp: 22
         tn: 2
         corpus_hits: 22
         corpus_repos: 9
         anomalies:
-            - oss-total>=15
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.025
+        why: labelled external cases
+        wilson_lb: 0.851
     DOCKER-QUAL-APT-UPDATE-ALONE:
         level: measured
         corpus_hits: 3
@@ -299,14 +539,16 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     DOCKER-QUAL-COMPOSE-CONTAINER-NAME:
-        level: unproven
+        level: proven
+        tp: 32
         corpus_hits: 39
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.893
     DOCKER-QUAL-COMPOSE-DEPENDS-ON-NO-HEALTH:
         level: unproven
         corpus_hits: 27
@@ -334,6 +576,9 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+    DOCKER-QUAL-CONSECUTIVE-RUN:
+        level: unproven
+        why: own examples only
     DOCKER-QUAL-CONSISTENT-INSTRUCTION-CASING:
         level: unproven
         metamorphic: stable
@@ -368,6 +613,9 @@ rules:
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+    DOCKER-QUAL-ENV-EQUALS-SPACING:
+        level: unproven
+        why: own examples only
     DOCKER-QUAL-EXPOSE-INVALID-FORMAT:
         level: measured
         fn: 2
@@ -426,6 +674,9 @@ rules:
         metamorphic: stable
         why: corpus anomaly
         wilson_lb: 0.007
+    DOCKER-QUAL-MALFORMED-EXEC-JSON:
+        level: unproven
+        why: own examples only
     DOCKER-QUAL-MULTIPLE-CMD:
         level: unproven
         tn: 1
@@ -450,6 +701,9 @@ rules:
             - files>=25%
         metamorphic: stable
         why: corpus anomaly
+    DOCKER-QUAL-PACKAGE-NONINTERACTIVE:
+        level: unproven
+        why: own examples only
     DOCKER-QUAL-PIPE-WITHOUT-PIPEFAIL:
         level: unproven
         corpus_hits: 93
@@ -759,6 +1013,7 @@ rules:
         why: corpus anomaly
     GO-MAINT-BOOLEAN-LITERAL-COMPARISON:
         level: unproven
+        tp: 5
         corpus_hits: 25
         corpus_repos: 7
         anomalies:
@@ -766,6 +1021,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.089
     GO-MAINT-BUSY-WAIT-LOOP:
         level: unproven
         metamorphic: stable
@@ -775,14 +1031,16 @@ rules:
         metamorphic: stable
         why: own examples only
     GO-MAINT-COLLAPSIBLE-IF:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 62
         corpus_repos: 13
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.22
     GO-MAINT-COMMENTED-OUT-CODE:
         level: unproven
         corpus_hits: 791
@@ -838,8 +1096,13 @@ rules:
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     GO-MAINT-HARDCODED-IP:
         level: unproven
+        corpus_hits: 370
+        corpus_repos: 8
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
-        why: own examples only
+        why: corpus anomaly
     GO-MAINT-IDENTICAL-OPERANDS:
         level: unproven
         fp: 2
@@ -864,13 +1127,16 @@ rules:
         why: own examples only
     GO-MAINT-TODO-COMMENT:
         level: unproven
+        tp: 20
+        fp: 3
         corpus_hits: 202
         corpus_repos: 18
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.87 < 0.90
+        wilson_lb: 0.064
     GO-MAINT-TOO-MANY-PARAMS:
         level: unproven
         metamorphic: stable
@@ -899,12 +1165,14 @@ rules:
         why: corpus hits below every anomaly threshold
     GO-MIG-IOUTIL:
         level: measured
+        tp: 15
         fp: 1
         tn: 15
         corpus_hits: 9
         corpus_repos: 5
         metamorphic: stable
-        why: corpus hits below every anomaly threshold
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.717
     GO-MIG-NET-ERROR-TEMPORARY:
         level: unproven
         metamorphic: stable
@@ -931,11 +1199,13 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     GO-MIG-VET-BUILDTAG:
-        level: unproven
+        level: proven
+        tp: 5
         fn: 14
         tn: 3
         metamorphic: stable
-        why: own examples only
+        why: labelled external cases
+        wilson_lb: 0.566
     GO-MIG-X-NET-CONTEXT:
         level: measured
         corpus_hits: 3
@@ -944,8 +1214,8 @@ rules:
         why: corpus hits below every anomaly threshold
     GO-MOD-ANY:
         level: unproven
-        tp: 2
-        fp: 1
+        tp: 26
+        fp: 5
         fn: 2
         corpus_hits: 472
         corpus_repos: 9
@@ -953,8 +1223,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.67 < 0.90
-        wilson_lb: 0.001
+        why: labelled precision 0.84 < 0.90
+        wilson_lb: 0.037
     GO-MOD-ATOMICTYPES:
         level: unproven
         fp: 15
@@ -969,7 +1239,7 @@ rules:
         why: labelled precision 0.00 < 0.90
     GO-MOD-BLOOP:
         level: unproven
-        tp: 7
+        tp: 27
         fp: 8
         tn: 1
         corpus_hits: 29
@@ -978,8 +1248,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.47 < 0.90
-        wilson_lb: 0.079
+        why: labelled precision 0.77 < 0.90
+        wilson_lb: 0.466
     GO-MOD-ERRORSASTYPE:
         level: unproven
         tp: 10
@@ -995,7 +1265,7 @@ rules:
         wilson_lb: 0.077
     GO-MOD-FMTAPPENDF:
         level: unproven
-        tp: 11
+        tp: 31
         fp: 6
         corpus_hits: 22
         corpus_repos: 2
@@ -1003,12 +1273,12 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.65 < 0.90
-        wilson_lb: 0.165
+        why: labelled precision 0.84 < 0.90
+        wilson_lb: 0.645
     GO-MOD-FORVAR:
         level: unproven
-        tp: 7
-        fp: 6
+        tp: 38
+        fp: 20
         fn: 3
         corpus_hits: 35
         corpus_repos: 3
@@ -1016,8 +1286,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.54 < 0.90
-        wilson_lb: 0.072
+        why: labelled precision 0.66 < 0.90
+        wilson_lb: 0.488
     GO-MOD-IMPORTCOMMENT:
         level: measured
         corpus_hits: 10
@@ -1064,14 +1334,14 @@ rules:
         metamorphic: stable
         why: own examples only
     GO-MOD-PLUSBUILD:
-        level: measured
-        fp: 1
+        level: unproven
+        fp: 6
         fn: 1
         tn: 1
         corpus_hits: 9
         corpus_repos: 4
         metamorphic: stable
-        why: corpus hits below every anomaly threshold
+        why: labelled precision 0.00 < 0.90
     GO-MOD-RAND-V2:
         level: measured
         corpus_hits: 12
@@ -1079,49 +1349,51 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     GO-MOD-RANGEINT:
-        level: unproven
-        tp: 10
+        level: measured
+        tp: 37
         fp: 4
         fn: 32
         tn: 1
         corpus_hits: 69
         corpus_repos: 9
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: labelled precision 0.71 < 0.90
-        wilson_lb: 0.067
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.344
     GO-MOD-REFLECT-PTR:
         level: measured
+        tp: 2
         corpus_hits: 10
         corpus_repos: 2
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+        wilson_lb: 0.057
     GO-MOD-REFLECTTYPEFOR:
-        level: unproven
-        tp: 6
+        level: proven
+        tp: 17
         fn: 14
         corpus_hits: 11
         corpus_repos: 1
         anomalies:
-            - repo>=10
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.173
+        why: labelled external cases
+        wilson_lb: 0.816
     GO-MOD-SET-FINALIZER:
         level: unproven
         metamorphic: stable
         why: own examples only
     GO-MOD-SLICESBACKWARD:
         level: unproven
-        tp: 20
+        tp: 23
         fp: 17
         corpus_hits: 12
         corpus_repos: 5
         metamorphic: stable
-        why: labelled precision 0.54 < 0.90
-        wilson_lb: 0.282
+        why: labelled precision 0.57 < 0.90
+        wilson_lb: 0.337
     GO-MOD-SLICESCLIP:
         level: unproven
         tp: 3
@@ -1150,17 +1422,19 @@ rules:
         why: labelled precision 0.50 < 0.90
         wilson_lb: 0.082
     GO-MOD-SORT-STRINGS:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 40
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.352
     GO-MOD-SORTSLICE-FUNC:
         level: unproven
-        tp: 2
+        tp: 20
         fp: 6
         fn: 2
         corpus_hits: 18
@@ -1168,8 +1442,8 @@ rules:
         anomalies:
             - oss-total>=15
         metamorphic: stable
-        why: labelled precision 0.25 < 0.90
-        wilson_lb: 0.021
+        why: labelled precision 0.77 < 0.90
+        wilson_lb: 0.579
     GO-MOD-STRINGSBUILDER:
         level: unproven
         tp: 10
@@ -1223,12 +1497,14 @@ rules:
         wilson_lb: 0.231
     GO-QUAL-CTX-IN-STRUCT:
         level: unproven
+        tp: 7
         corpus_hits: 17
         corpus_repos: 5
         anomalies:
             - oss-total>=15
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.216
     GO-QUAL-CTX-NIL:
         level: measured
         corpus_hits: 11
@@ -1243,6 +1519,7 @@ rules:
         why: corpus hits below every anomaly threshold
     GO-QUAL-CTX-WITHVALUE-STRING-KEY:
         level: unproven
+        tp: 4
         corpus_hits: 59
         corpus_repos: 7
         anomalies:
@@ -1250,6 +1527,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.027
     GO-QUAL-DEFER-IN-LOOP:
         level: measured
         corpus_hits: 13
@@ -1267,6 +1545,7 @@ rules:
         why: corpus anomaly
     GO-QUAL-ERROR-STRING-STYLE:
         level: unproven
+        tp: 14
         corpus_hits: 64
         corpus_repos: 12
         anomalies:
@@ -1274,8 +1553,10 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.137
     GO-QUAL-ERRORF-NO-WRAP:
         level: unproven
+        tp: 6
         corpus_hits: 459
         corpus_repos: 8
         anomalies:
@@ -1283,6 +1564,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.006
     GO-QUAL-HTTP-BODY-NOT-CLOSED:
         level: unproven
         corpus_hits: 79
@@ -1300,10 +1582,12 @@ rules:
         why: corpus hits below every anomaly threshold
     GO-QUAL-INITIALISM-CASE:
         level: measured
+        tp: 1
         corpus_hits: 11
         corpus_repos: 4
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+        wilson_lb: 0.018
     GO-QUAL-PACKAGE-NAME-GENERIC:
         level: measured
         corpus_hits: 4
@@ -1542,10 +1826,12 @@ rules:
         wilson_lb: 0.207
     GO-SEC-ATOI-NARROWING:
         level: measured
+        tp: 1
         corpus_hits: 14
         corpus_repos: 3
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+        wilson_lb: 0.013
     GO-SEC-CIPHER-UNAUTHENTICATED-MODE:
         level: unproven
         metamorphic: stable
@@ -1591,14 +1877,16 @@ rules:
         metamorphic: stable
         why: own examples only
     GO-SEC-HTTP-LISTEN-NO-TIMEOUTS:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 26
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.609
     GO-SEC-LOG-SECRET:
         level: unproven
         metamorphic: stable
@@ -1670,14 +1958,16 @@ rules:
         metamorphic: stable
         why: own examples only
     GO-SEC-UNSAFE-IMPORT:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 22
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.722
     GO-SEC-WEAK-CRYPTO-DES:
         level: unproven
         metamorphic: stable
@@ -2448,6 +2738,130 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+    HTML-A11Y-AMBIGUOUS-LINK-TEXT:
+        level: unproven
+        fn: 5
+        metamorphic: stable
+        why: own examples only
+    HTML-A11Y-ARIA-INVALID-ATTRIBUTE:
+        level: proven
+        tp: 8
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.676
+    HTML-A11Y-ARIA-INVALID-ROLE:
+        level: proven
+        tp: 13
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.772
+    HTML-A11Y-ARIA-LABEL-ON-GENERIC:
+        level: proven
+        tp: 7
+        fn: 88
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.646
+    HTML-A11Y-ARIA-REQUIRED-ATTRIBUTE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    HTML-A11Y-AUTOCOMPLETE-INVALID:
+        level: unproven
+        fn: 5
+        metamorphic: stable
+        why: own examples only
+    HTML-A11Y-BUTTON-WITHOUT-NAME:
+        level: proven
+        tp: 5
+        fn: 4
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.566
+    HTML-A11Y-CONTROL-WITHOUT-LABEL:
+        level: unproven
+        tp: 2
+        fn: 12
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.342
+    HTML-A11Y-DUPLICATE-ID:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    HTML-A11Y-EMPTY-HEADING:
+        level: unproven
+        tp: 2
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.342
+    HTML-A11Y-HEADING-SKIPPED-LEVEL:
+        level: unproven
+        tp: 1
+        fn: 1
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.207
+    HTML-A11Y-IMG-REDUNDANT-ALT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    HTML-A11Y-INPUT-IMAGE-WITHOUT-ALT:
+        level: measured
+        tp: 3
+        fn: 3
+        metamorphic: stable
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.439
+    HTML-A11Y-LANG-INVALID:
+        level: measured
+        tp: 3
+        fn: 1
+        metamorphic: stable
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.439
+    HTML-A11Y-MAIN-LANDMARK-MISSING:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    HTML-A11Y-MARQUEE-OR-BLINK:
+        level: unproven
+        tp: 1
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.207
+    HTML-A11Y-MOUSE-WITHOUT-KEYBOARD:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    HTML-A11Y-NESTED-INTERACTIVE:
+        level: unproven
+        fn: 5
+        metamorphic: stable
+        why: own examples only
+    HTML-A11Y-ROLE-IMG-WITHOUT-NAME:
+        level: unproven
+        tp: 2
+        fn: 2
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.342
+    HTML-A11Y-TABLE-WITHOUT-HEADERS:
+        level: unproven
+        fn: 2
+        metamorphic: stable
+        why: own examples only
+    HTML-A11Y-TH-INVALID-SCOPE:
+        level: unproven
+        tp: 1
+        fn: 2
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.207
+    HTML-A11Y-VIDEO-WITHOUT-CAPTIONS:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     HTML-MAINT-ACCESSKEY-ATTRIBUTE:
         level: unproven
         metamorphic: stable
@@ -2486,7 +2900,7 @@ rules:
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     HTML-MAINT-EMPTY-ANCHOR:
         level: unproven
-        corpus_hits: 2824
+        corpus_hits: 4292
         corpus_repos: 3
         anomalies:
             - oss-total>=15
@@ -2496,8 +2910,10 @@ rules:
         why: corpus anomaly
     HTML-MAINT-FIXME-COMMENT:
         level: unproven
+        corpus_hits: 1
+        corpus_repos: 1
         metamorphic: stable
-        why: own examples only
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     HTML-MAINT-FRAME-WITHOUT-TITLE:
         level: unproven
         corpus_hits: 12
@@ -2506,7 +2922,12 @@ rules:
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     HTML-MAINT-HANDLER-ON-STATIC-ELEMENT:
         level: unproven
+        corpus_hits: 11
+        corpus_repos: 2
         metamorphic: stable
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    HTML-MAINT-IDENTICAL-LINK-TEXT-DIFFERENT-HREF:
+        level: unproven
         why: own examples only
     HTML-MAINT-IMG-WITHOUT-ALT:
         level: unproven
@@ -2546,13 +2967,16 @@ rules:
             - oss-total>=15
         metamorphic: stable
         why: corpus anomaly
+    HTML-MAINT-OBJECT-AND-EMBED:
+        level: unproven
+        why: own examples only
     HTML-MAINT-OBJECT-WITHOUT-FALLBACK:
         level: unproven
         metamorphic: stable
         why: own examples only
     HTML-MAINT-OBSOLETE-ELEMENT:
         level: unproven
-        corpus_hits: 3241
+        corpus_hits: 10496
         corpus_repos: 7
         anomalies:
             - oss-total>=15
@@ -2570,7 +2994,7 @@ rules:
         why: corpus anomaly
     HTML-MAINT-POSITIVE-TABINDEX:
         level: unproven
-        corpus_hits: 2845
+        corpus_hits: 4313
         corpus_repos: 2
         anomalies:
             - oss-total>=15
@@ -2589,8 +3013,14 @@ rules:
         why: corpus anomaly
     HTML-MAINT-ROLE-WITHOUT-TABINDEX:
         level: unproven
+        corpus_hits: 4292
+        corpus_repos: 3
+        anomalies:
+            - oss-total>=15
+            - repo>=10
+            - files>=25%
         metamorphic: stable
-        why: own examples only
+        why: corpus anomaly
     HTML-MAINT-SCOPE-ON-NON-TH:
         level: unproven
         metamorphic: stable
@@ -2700,6 +3130,15 @@ rules:
         why: own examples only
     JAVA-MAINT-ASSERTTHROWS-SEVERAL-CALLS:
         level: unproven
+        corpus_hits: 453
+        corpus_repos: 6
+        anomalies:
+            - oss-total>=15
+            - repo>=10
+        metamorphic: stable
+        why: corpus anomaly
+    JAVA-MAINT-ATOMIC-EQUALS:
+        level: unproven
         metamorphic: stable
         why: own examples only
     JAVA-MAINT-BIT-OP-IDENTITY:
@@ -2712,6 +3151,19 @@ rules:
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    JAVA-MAINT-BOXED-BOOLEAN-CONDITION:
+        level: unproven
+        why: own examples only
+    JAVA-MAINT-BOXED-PARSE:
+        level: unproven
+        why: own examples only
+    JAVA-MAINT-BOXED-TOSTRING:
+        level: unproven
+        why: own examples only
+    JAVA-MAINT-BYTE-SIGN-EXTENSION-IN-SHIFT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-CASE-CONVERT-TO-COMPARE:
         level: unproven
         metamorphic: stable
@@ -2727,40 +3179,46 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     JAVA-MAINT-CATCH-THROWABLE:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 70
         corpus_repos: 10
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.199
     JAVA-MAINT-CLASS-NAMING:
         level: unproven
         metamorphic: stable
         why: own examples only
     JAVA-MAINT-CLONE-OVERRIDDEN:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 36
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.396
     JAVA-MAINT-COGNITIVE-COMPLEXITY:
         level: unproven
         metamorphic: stable
         why: own examples only
     JAVA-MAINT-COLLAPSIBLE-IF:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 664
         corpus_repos: 10
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.077
     JAVA-MAINT-COLLECTION-SELF-ARGUMENT:
         level: unproven
         corpus_hits: 12
@@ -2770,15 +3228,22 @@ rules:
         metamorphic: stable
         why: corpus anomaly
     JAVA-MAINT-COMMENTED-OUT-CODE:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 396
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 244 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.054
     JAVA-MAINT-COMPARETO-MIN-VALUE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-COMPARETO-OVERLOAD:
         level: unproven
         metamorphic: stable
         why: own examples only
@@ -2818,6 +3283,12 @@ rules:
         why: own examples only
     JAVA-MAINT-DANGLING-ELSE:
         level: unproven
+        corpus_hits: 29
+        corpus_repos: 1
+        metamorphic: stable
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    JAVA-MAINT-DATE-FIELD-OUT-OF-RANGE:
+        level: unproven
         metamorphic: stable
         why: own examples only
     JAVA-MAINT-DEEP-NESTING:
@@ -2830,6 +3301,10 @@ rules:
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    JAVA-MAINT-DOUBLE-CHECKED-LOCKING:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-DUPLICATE-BRANCH:
         level: unproven
         corpus_hits: 170
@@ -2854,23 +3329,32 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     JAVA-MAINT-EMPTY-CATCH:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 26
         corpus_repos: 2
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.579
     JAVA-MAINT-EMPTY-FUNCTION:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 281
         corpus_repos: 11
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 280 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.047
+    JAVA-MAINT-EMPTY-STATEMENT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-EMPTY-ZIP-ENTRY:
         level: unproven
         metamorphic: stable
@@ -2930,18 +3414,26 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     JAVA-MAINT-GENERIC-EXCEPTION-THROWN:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 60
         corpus_repos: 9
+        anomalies:
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.231
+    JAVA-MAINT-HARDCODED-IP:
+        level: unproven
+        fp: 20
+        corpus_hits: 38
+        corpus_repos: 3
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
-    JAVA-MAINT-HARDCODED-IP:
-        level: unproven
-        metamorphic: stable
-        why: own examples only
+        why: labelled precision 0.00 < 0.90
     JAVA-MAINT-HASNEXT-CALLS-NEXT:
         level: unproven
         metamorphic: stable
@@ -3063,18 +3555,31 @@ rules:
         why: own examples only
     JAVA-MAINT-LOG-AND-RETHROW:
         level: unproven
+        corpus_hits: 1
+        corpus_repos: 1
         metamorphic: stable
-        why: own examples only
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     JAVA-MAINT-LOG-ARGUMENT-CONCATENATION:
         level: unproven
+        tp: 5
+        fp: 15
         corpus_hits: 56
         corpus_repos: 5
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.25 < 0.90
+        wilson_lb: 0.039
     JAVA-MAINT-LONG-FUNCTION:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-LOOP-LIST-REPLACE-ALL:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-LOOP-MULTIPLE-JUMPS:
         level: unproven
         metamorphic: stable
         why: own examples only
@@ -3119,13 +3624,15 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-MAINT-NESTED-TERNARY:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 23
         corpus_repos: 7
         anomalies:
-            - oss-total>=15
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.722
     JAVA-MAINT-NEW-FOR-GETCLASS:
         level: unproven
         corpus_hits: 14
@@ -3172,6 +3679,10 @@ rules:
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    JAVA-MAINT-PREPARED-STATEMENT-PARAM-SET-TWICE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-PROD-TEST-ASSERTIONS:
         level: unproven
         metamorphic: stable
@@ -3184,9 +3695,16 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    JAVA-MAINT-RECORD-ACCESSOR-IN-COMPACT-CONSTRUCTOR:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-RECORD-SERIALVERSIONUID-ZERO:
         level: unproven
         metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-REDUNDANT-CAST:
+        level: unproven
         why: own examples only
     JAVA-MAINT-REDUNDANT-PARENTHESES:
         level: unproven
@@ -3194,6 +3712,14 @@ rules:
         corpus_repos: 2
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    JAVA-MAINT-REFLECTION-ON-SOURCE-ANNOTATION:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-REPEATABLE-ANNOTATION-WRAPPED:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-REPEATED-UNARY:
         level: unproven
         corpus_hits: 1
@@ -3202,8 +3728,13 @@ rules:
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     JAVA-MAINT-RESTRICTED-IDENTIFIER:
         level: unproven
+        corpus_hits: 44
+        corpus_repos: 5
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
-        why: own examples only
+        why: corpus anomaly
     JAVA-MAINT-RESULTSET-ISLAST:
         level: unproven
         metamorphic: stable
@@ -3260,8 +3791,13 @@ rules:
         why: own examples only
     JAVA-MAINT-SET-ACCESSIBLE:
         level: unproven
+        corpus_hits: 57
+        corpus_repos: 7
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
-        why: own examples only
+        why: corpus anomaly
     JAVA-MAINT-SET-OF-DUPLICATES:
         level: unproven
         metamorphic: stable
@@ -3276,13 +3812,16 @@ rules:
         why: own examples only
     JAVA-MAINT-SIZE-INSTEAD-OF-ISEMPTY:
         level: unproven
+        tp: 24
+        fp: 4
         corpus_hits: 93
         corpus_repos: 7
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.86 < 0.90
+        wilson_lb: 0.186
     JAVA-MAINT-SLEEP-HOLDING-LOCK:
         level: unproven
         metamorphic: stable
@@ -3353,12 +3892,20 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    JAVA-MAINT-STREAM-READ-RESULT-IGNORED:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-STRING-CONCAT-IN-LOOP:
         level: unproven
         corpus_hits: 5
         corpus_repos: 3
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    JAVA-MAINT-STRING-EQUALS-BUILDER:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-STRING-OP-NO-EFFECT:
         level: unproven
         corpus_hits: 3
@@ -3383,15 +3930,30 @@ rules:
         metamorphic: stable
         why: labelled external cases
         wilson_lb: 0.646
-    JAVA-MAINT-SWITCH-WITHOUT-DEFAULT:
+    JAVA-MAINT-SWITCH-TOO-FEW-CASES:
         level: unproven
+        metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-SWITCH-WITHOUT-DEFAULT:
+        level: proven
+        tp: 20
         corpus_hits: 48
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 48 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.288
+    JAVA-MAINT-SYNC-ON-NON-FINAL-FIELD:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-SYNC-ON-VALUE-BASED:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-SYNCHRONIZED-ON-LOCK-OBJECT:
         level: unproven
         metamorphic: stable
@@ -3401,14 +3963,16 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-MAINT-SYSTEM-OUT-LOGGING:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 1085
         corpus_repos: 9
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.282
     JAVA-MAINT-TEST-CLASS-WITHOUT-TESTS:
         level: unproven
         corpus_hits: 4
@@ -3439,29 +4003,37 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-MAINT-THREADGROUP-USED:
-        level: unproven
+        level: proven
+        tp: 16
         corpus_hits: 16
         corpus_repos: 2
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.806
     JAVA-MAINT-THROW-IN-FINALLY:
         level: unproven
         corpus_hits: 59
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
-    JAVA-MAINT-TODO-COMMENT:
+    JAVA-MAINT-TIMEZONE-INVALID-ID:
         level: unproven
+        metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-TODO-COMMENT:
+        level: proven
+        tp: 20
         corpus_hits: 204
         corpus_repos: 11
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.068
     JAVA-MAINT-TOO-MANY-PARAMS:
         level: unproven
         metamorphic: stable
@@ -3484,48 +4056,67 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
-    JAVA-MAINT-UNUSED-IMPORT:
+    JAVA-MAINT-UNSYNCHRONIZED-GETTER:
         level: unproven
+        metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-UNUSED-IMPORT:
+        level: proven
+        tp: 20
         corpus_hits: 509
         corpus_repos: 9
         anomalies:
-            - oss-total>=15
-            - repo>=10
-            - files>=25%
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
+            - 'files>=25% (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.026
     JAVA-MAINT-UNUSED-LOCAL:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 764
         corpus_repos: 13
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 112 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.119
     JAVA-MAINT-UNUSED-PARAMETER:
         level: unproven
+        tp: 13
+        fp: 1
         corpus_hits: 933
         corpus_repos: 4
         anomalies:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.685
     JAVA-MAINT-UNUSED-PRIVATE-FIELD:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 33
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 33 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.437
     JAVA-MAINT-UNUSED-PRIVATE-METHOD:
         level: unproven
         corpus_hits: 4
         corpus_repos: 4
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    JAVA-MAINT-URL-EQUALS-HASHCODE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-USELESS-BIT-OPERATION:
         level: unproven
         metamorphic: stable
@@ -3557,7 +4148,15 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    JAVA-MAINT-WAIT-ON-CONDITION:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-MAINT-WAIT-ON-THREAD:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JAVA-MAINT-WAIT-WITH-SEVERAL-LOCKS:
         level: unproven
         metamorphic: stable
         why: own examples only
@@ -3694,14 +4293,16 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     JAVA-MIG-LOC-001:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 24
         corpus_repos: 2
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.641
     JAVA-MIG-REM-ACTIVATION-001:
         level: unproven
         metamorphic: stable
@@ -3768,14 +4369,16 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-MIG-URL-001:
-        level: unproven
+        level: proven
+        tp: 23
         corpus_hits: 27
         corpus_repos: 4
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.798
     JAVA-MIG-VBC-001:
         level: measured
         corpus_hits: 1
@@ -3784,22 +4387,28 @@ rules:
         why: corpus hits below every anomaly threshold
     JAVA-MOD-COMPACT-MAIN-001:
         level: unproven
+        fp: 17
         corpus_hits: 51
         corpus_repos: 5
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
-    JAVA-MOD-COR-REQUIRENONNULL-001:
+        why: labelled precision 0.00 < 0.90
+    JAVA-MOD-COR-DATEUTILS-TRUNCATE-001:
         level: unproven
+        why: own examples only
+    JAVA-MOD-COR-REQUIRENONNULL-001:
+        level: proven
+        tp: 20
         corpus_hits: 34
         corpus_repos: 4
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.422
     JAVA-MOD-COR-REQUIRENONNULLELSE-001:
         level: measured
         corpus_hits: 14
@@ -3818,19 +4427,21 @@ rules:
         why: corpus hits below every anomaly threshold
     JAVA-MOD-PAT-001:
         level: measured
+        fp: 1
         corpus_hits: 7
         corpus_repos: 2
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     JAVA-MOD-PAT-002:
         level: unproven
+        fp: 20
         corpus_hits: 59
         corpus_repos: 3
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.00 < 0.90
     JAVA-MOD-REC-001:
         level: unproven
         corpus_hits: 92
@@ -3849,14 +4460,17 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-MOD-STREAM-TOLIST-001:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 34
         corpus_repos: 4
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 31 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.469
     JAVA-MOD-SV-001:
         level: unproven
         metamorphic: stable
@@ -3937,6 +4551,9 @@ rules:
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+    JAVA-QUAL-COR-ABSTRACT-PUBLIC-CTOR-001:
+        level: unproven
+        why: own examples only
     JAVA-QUAL-COR-ARRAYS-ASLIST-PRIM-001:
         level: unproven
         metamorphic: stable
@@ -3952,6 +4569,9 @@ rules:
     JAVA-QUAL-COR-BOXED-EQ-001:
         level: unproven
         metamorphic: stable
+        why: own examples only
+    JAVA-QUAL-COR-CALENDAR-GETTIME-MUTATE-001:
+        level: unproven
         why: own examples only
     JAVA-QUAL-COR-COLLECTIONS-EMPTY-001:
         level: measured
@@ -3970,24 +4590,34 @@ rules:
         why: corpus anomaly
     JAVA-QUAL-COR-EQUALS-HASHCODE-001:
         level: unproven
+        fp: 20
         corpus_hits: 40
         corpus_repos: 2
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.00 < 0.90
     JAVA-QUAL-COR-GETBYTES-CHARSET-001:
-        level: unproven
+        level: proven
+        tp: 15
         corpus_hits: 908
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 15 of 15 OSS hits labelled, 0 FP (TP 15)'
+        promoted: true
+        wilson_lb: 0.796
+    JAVA-QUAL-COR-HARDCODED-URI-001:
+        level: unproven
+        why: own examples only
     JAVA-QUAL-COR-LIST-OF-NULL-001:
         level: unproven
         metamorphic: stable
+        why: own examples only
+    JAVA-QUAL-COR-MAIN-SIGNATURE-001:
+        level: unproven
         why: own examples only
     JAVA-QUAL-COR-NAN-EQ-001:
         level: unproven
@@ -4015,6 +4645,9 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    JAVA-QUAL-COR-RETURN-CONSTANT-001:
+        level: unproven
+        why: own examples only
     JAVA-QUAL-COR-STRING-EQ-001:
         level: measured
         corpus_hits: 1
@@ -4028,14 +4661,23 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     JAVA-QUAL-COR-TOLOWER-LOCALE-001:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 94
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 64 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.212
+    JAVA-QUAL-COR-UNUSED-LABEL-001:
+        level: unproven
+        why: own examples only
+    JAVA-QUAL-COR-WRITEOBJECT-SYNC-001:
+        level: unproven
+        why: own examples only
     JAVA-QUAL-MOD-STACK-001:
         level: unproven
         metamorphic: stable
@@ -4071,14 +4713,17 @@ rules:
         metamorphic: stable
         why: corpus anomaly
     JAVA-QUAL-OPT-002:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 805
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 681 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.019
     JAVA-QUAL-RES-BUFFEREDREADER-001:
         level: measured
         corpus_hits: 8
@@ -4229,13 +4874,10 @@ rules:
         why: own examples only
     JAVA-SEC-CMD-001:
         level: unproven
-        tp: 28
-        fp: 10
         corpus_hits: 38
         corpus_repos: 1
         metamorphic: stable
-        why: labelled precision 0.74 < 0.90
-        wilson_lb: 0.58
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     JAVA-SEC-CONTENT-DISPOSITION-CONCAT:
         level: unproven
         metamorphic: stable
@@ -4245,21 +4887,17 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-SEC-COOKIE-SECURE-001:
-        level: proven
-        tp: 36
+        level: measured
         corpus_hits: 36
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.904
+        why: corpus hits below every anomaly threshold
     JAVA-SEC-COOKIE-SECURE-002:
-        level: proven
-        tp: 33
+        level: measured
         corpus_hits: 35
         corpus_repos: 2
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.896
+        why: corpus hits below every anomaly threshold
     JAVA-SEC-CORS-WILDCARD-001:
         level: unproven
         metamorphic: stable
@@ -4310,6 +4948,9 @@ rules:
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+    JAVA-SEC-IDOR-FIND-BY-ID:
+        level: unproven
+        why: own examples only
     JAVA-SEC-JAXP-FSP-001:
         level: measured
         corpus_hits: 15
@@ -4355,16 +4996,17 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-SEC-PRINTSTACK-001:
-        level: unproven
+        level: proven
+        tp: 19
         corpus_hits: 27
         corpus_repos: 9
         anomalies:
-            - oss-total>=15
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.832
     JAVA-SEC-RANDOM-001:
         level: unproven
-        tp: 193
         fp: 6
         corpus_hits: 238
         corpus_repos: 10
@@ -4372,8 +5014,7 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.798
+        why: labelled precision 0.00 < 0.90
     JAVA-SEC-REGEX-INJECTION:
         level: unproven
         metamorphic: stable
@@ -4456,29 +5097,27 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     JAVA-SEC-TRUST-BOUNDARY-001:
-        level: proven
-        tp: 45
+        level: measured
         corpus_hits: 45
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.921
+        why: corpus hits below every anomaly threshold
     JAVA-SEC-WEAK-CIPHER-001:
-        level: proven
-        tp: 97
+        level: measured
         corpus_hits: 97
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.962
+        why: corpus hits below every anomaly threshold
     JAVA-SEC-WEAK-HASH-001:
-        level: proven
-        tp: 89
+        level: measured
         corpus_hits: 114
         corpus_repos: 2
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.959
+        why: corpus hits below every anomaly threshold
+    JAVA-SEC-WEAK-HASH-SECURITY-CONTEXT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JAVA-SEC-WEAK-TLS-001:
         level: unproven
         metamorphic: stable
@@ -4492,14 +5131,12 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-SEC-XSS-WRITER-001:
-        level: proven
-        tp: 183
+        level: measured
         fp: 1
         corpus_hits: 184
         corpus_repos: 2
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.97
+        why: corpus hits below every anomaly threshold
     JAVA-SEC-XXE-DOCUMENTBUILDER-001:
         level: measured
         corpus_hits: 12
@@ -4580,14 +5217,16 @@ rules:
         metamorphic: n/a
         why: own examples only
     JAVA-SIMP-LOOP-ANYMATCH:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 50
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.282
     JAVA-SIMP-LOOP-CONTAINS:
         level: measured
         corpus_hits: 9
@@ -4605,35 +5244,27 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-TAINT-CMDI:
-        level: proven
-        tp: 115
+        level: measured
         corpus_hits: 115
         corpus_repos: 1
         metamorphic: stable
-        why: 'labelled external cases: TP 115, FP 0, unlabelled hits (OSS, other benchmark category) 0'
-        promoted: true
-        wilson_lb: 0.968
+        why: corpus hits below every anomaly threshold
     JAVA-TAINT-CODE:
         level: unproven
         metamorphic: stable
         why: own examples only
     JAVA-TAINT-LDAP:
-        level: proven
-        tp: 24
+        level: measured
         corpus_hits: 24
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.862
+        why: corpus hits below every anomaly threshold
     JAVA-TAINT-PATH:
-        level: proven
-        tp: 118
+        level: measured
         corpus_hits: 159
         corpus_repos: 2
         metamorphic: stable
-        why: 'labelled external cases: TP 118, FP 0, unlabelled hits (OSS, other benchmark category) 0'
-        promoted: true
-        wilson_lb: 0.968
+        why: corpus hits below every anomaly threshold
     JAVA-TAINT-REDIRECT:
         level: unproven
         metamorphic: stable
@@ -4647,14 +5278,11 @@ rules:
         metamorphic: stable
         why: own examples only
     JAVA-TAINT-SQLI:
-        level: proven
-        tp: 255
+        level: measured
         corpus_hits: 258
         corpus_repos: 2
         metamorphic: stable
-        why: 'labelled external cases: TP 255, FP 0, unlabelled hits (OSS, other benchmark category) 0'
-        promoted: true
-        wilson_lb: 0.985
+        why: corpus hits below every anomaly threshold
     JAVA-TAINT-SSRF:
         level: measured
         corpus_hits: 313
@@ -4662,31 +5290,144 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     JAVA-TAINT-TRUST:
-        level: proven
-        tp: 72
+        level: measured
         corpus_hits: 72
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.949
+        why: corpus hits below every anomaly threshold
     JAVA-TAINT-XPATH:
-        level: proven
-        tp: 14
+        level: measured
         corpus_hits: 14
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.785
+        why: corpus hits below every anomaly threshold
     JAVA-TAINT-XSS:
-        level: proven
-        tp: 220
+        level: measured
         fp: 1
         corpus_hits: 221
         corpus_repos: 2
         metamorphic: stable
-        why: 'labelled external cases: TP 220, FP 1, unlabelled hits (OSS, other benchmark category) 0'
-        promoted: true
-        wilson_lb: 0.975
+        why: corpus hits below every anomaly threshold
+    JS-A11Y-AMBIGUOUS-LINK-TEXT:
+        level: proven
+        tp: 8
+        fn: 17
+        tn: 5
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.676
+    JS-A11Y-ARIA-INVALID-ATTRIBUTE:
+        level: measured
+        tp: 3
+        tn: 8
+        metamorphic: stable
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.439
+    JS-A11Y-ARIA-INVALID-ROLE:
+        level: measured
+        tp: 3
+        fn: 9
+        tn: 12
+        metamorphic: stable
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.439
+    JS-A11Y-ARIA-LABEL-ON-GENERIC:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-ARIA-REQUIRED-ATTRIBUTE:
+        level: proven
+        tp: 16
+        fn: 1
+        tn: 13
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.806
+    JS-A11Y-AUTOCOMPLETE-INVALID:
+        level: unproven
+        tp: 2
+        fn: 2
+        tn: 18
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.342
+    JS-A11Y-AUTOPLAY-WITH-SOUND:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-BUTTON-WITHOUT-NAME:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-CONTROL-WITHOUT-LABEL:
+        level: unproven
+        tp: 1
+        tn: 2
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.207
+    JS-A11Y-DUPLICATE-ID:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-EMPTY-HEADING:
+        level: unproven
+        tp: 2
+        fn: 2
+        tn: 15
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.342
+    JS-A11Y-HEADING-SKIPPED-LEVEL:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-IMG-REDUNDANT-ALT:
+        level: proven
+        tp: 13
+        fn: 6
+        tn: 31
+        metamorphic: stable
+        why: labelled external cases
+        wilson_lb: 0.772
+    JS-A11Y-INPUT-IMAGE-WITHOUT-ALT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-LANG-INVALID:
+        level: unproven
+        fn: 3
+        tn: 12
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-MOUSE-WITHOUT-KEYBOARD:
+        level: unproven
+        tp: 1
+        fn: 5
+        tn: 20
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.207
+    JS-A11Y-NESTED-INTERACTIVE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-OBJECT-WITHOUT-ALTERNATIVE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-ROLE-IMG-WITHOUT-NAME:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-TABLE-WITHOUT-HEADERS:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-A11Y-TH-INVALID-SCOPE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JS-LLM-NO-MAX-TOKENS:
         level: unproven
         metamorphic: stable
@@ -4727,11 +5468,19 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    JS-MAINT-ARRAY-STRING-INDEX:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JS-MAINT-ASSERT-SAME-ARGUMENT:
         level: unproven
         metamorphic: stable
         why: own examples only
     JS-MAINT-AUTOFOCUS-ATTRIBUTE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-MAINT-AWAIT-NON-PROMISE:
         level: unproven
         metamorphic: stable
         why: own examples only
@@ -4742,6 +5491,12 @@ rules:
     JS-MAINT-BITWISE-TRUNCATION:
         level: unproven
         metamorphic: stable
+        why: own examples only
+    JS-MAINT-BOOLEAN-SELECTOR-PARAM:
+        level: unproven
+        why: own examples only
+    JS-MAINT-CALL-NON-CALLABLE:
+        level: unproven
         why: own examples only
     JS-MAINT-CASE-WITH-COMMA-OR-OR:
         level: unproven
@@ -4770,6 +5525,9 @@ rules:
     JS-MAINT-CONCAT-SPREAD-FLATTEN:
         level: unproven
         metamorphic: stable
+        why: own examples only
+    JS-MAINT-CONSECUTIVE-PUSH:
+        level: unproven
         why: own examples only
     JS-MAINT-CYCLOMATIC-COMPLEXITY:
         level: unproven
@@ -4825,6 +5583,9 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    JS-MAINT-FOR-OF-PRIMITIVE:
+        level: unproven
+        why: own examples only
     JS-MAINT-FOR-UPDATE-OTHER-VARIABLE:
         level: unproven
         metamorphic: stable
@@ -4871,6 +5632,13 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    JS-MAINT-IN-ON-PRIMITIVE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-MAINT-INDEXOF-INCLUDES:
+        level: unproven
+        why: own examples only
     JS-MAINT-INDEXOF-POSITIVE-CHECK:
         level: unproven
         metamorphic: stable
@@ -4878,6 +5646,9 @@ rules:
     JS-MAINT-INFINITE-LOOP:
         level: unproven
         metamorphic: stable
+        why: own examples only
+    JS-MAINT-INNER-FUNCTION-DECLARATION:
+        level: unproven
         why: own examples only
     JS-MAINT-JSX-COMMENT-AS-TEXT:
         level: unproven
@@ -4926,6 +5697,9 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    JS-MAINT-OBJECT-DEFAULT-PARAM:
+        level: unproven
+        why: own examples only
     JS-MAINT-OVERWRITTEN-ELEMENT:
         level: unproven
         metamorphic: stable
@@ -4933,6 +5707,12 @@ rules:
     JS-MAINT-POSITIVE-TABINDEX:
         level: unproven
         metamorphic: stable
+        why: own examples only
+    JS-MAINT-PROCESS-BINDING:
+        level: unproven
+        why: own examples only
+    JS-MAINT-PROTOTYPE-POLYFILL:
+        level: unproven
         why: own examples only
     JS-MAINT-REACT-ISMOUNTED:
         level: unproven
@@ -4958,6 +5738,9 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    JS-MAINT-ROLE-WITHOUT-TABINDEX:
+        level: unproven
+        why: own examples only
     JS-MAINT-SCOPE-ON-NON-TH:
         level: unproven
         metamorphic: stable
@@ -4967,6 +5750,10 @@ rules:
         metamorphic: stable
         why: own examples only
     JS-MAINT-SIZE-COMPARED-TO-NEGATIVE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    JS-MAINT-STRICT-EQUALITY-DISSIMILAR-TYPES:
         level: unproven
         metamorphic: stable
         why: own examples only
@@ -5133,6 +5920,7 @@ rules:
         why: corpus hits below every anomaly threshold
     JS-MIG-WEB-KEYCODE-001:
         level: unproven
+        tp: 5
         corpus_hits: 150
         corpus_repos: 7
         anomalies:
@@ -5140,6 +5928,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.056
     JS-MIG-WEB-MUTATION-EVENTS-001:
         level: unproven
         metamorphic: stable
@@ -5170,6 +5959,7 @@ rules:
         why: corpus hits below every anomaly threshold
     JS-MOD-AT-001:
         level: unproven
+        fp: 1
         corpus_hits: 139
         corpus_repos: 22
         anomalies:
@@ -5178,14 +5968,16 @@ rules:
         metamorphic: stable
         why: corpus anomaly
     JS-MOD-HASOWN-001:
-        level: unproven
+        level: proven
+        tp: 47
         corpus_hits: 140
         corpus_repos: 12
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.317
     JS-MOD-JSON-CLONE-001:
         level: unproven
         corpus_hits: 31
@@ -5194,6 +5986,10 @@ rules:
             - oss-total>=15
         metamorphic: stable
         why: corpus anomaly
+    JS-MOD-JSON-CLONE-REACTIVE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     JS-MOD-NULLISH-001:
         level: unproven
         corpus_hits: 250
@@ -5248,7 +6044,7 @@ rules:
         wilson_lb: 0.816
     JS-QUAL-AWAIT-LOOP-001:
         level: unproven
-        tp: 3
+        tp: 13
         fn: 3
         tn: 19
         corpus_hits: 190
@@ -5258,7 +6054,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
-        wilson_lb: 0.005
+        wilson_lb: 0.041
     JS-QUAL-CAMELCASE:
         level: unproven
         tp: 1
@@ -5276,6 +6072,9 @@ rules:
         metamorphic: stable
         why: labelled external cases (below proven volume)
         wilson_lb: 0.667
+    JS-QUAL-CONSTRUCTOR-SUPER:
+        level: unproven
+        why: own examples only
     JS-QUAL-CURLY:
         level: unproven
         tp: 5
@@ -5425,13 +6224,13 @@ rules:
         wilson_lb: 0.207
     JS-QUAL-NO-CASE-DECLARATIONS:
         level: proven
-        tp: 9
+        tp: 10
         tn: 6
         corpus_hits: 14
         corpus_repos: 5
         metamorphic: stable
         why: labelled external cases
-        wilson_lb: 0.222
+        wilson_lb: 0.256
     JS-QUAL-NO-CLASS-ASSIGN:
         level: unproven
         tp: 2
@@ -5449,7 +6248,7 @@ rules:
         wilson_lb: 0.796
     JS-QUAL-NO-COND-ASSIGN:
         level: unproven
-        tp: 3
+        tp: 5
         fn: 4
         tn: 13
         corpus_hits: 65
@@ -5458,20 +6257,20 @@ rules:
             - oss-total>=15
         metamorphic: stable
         why: corpus anomaly
-        wilson_lb: 0.058
+        wilson_lb: 0.125
     JS-QUAL-NO-CONSOLE:
-        level: unproven
-        tp: 13
+        level: proven
+        tp: 55
         fn: 3
         tn: 2
         corpus_hits: 44
         corpus_repos: 2
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.138
+        why: labelled external cases
+        wilson_lb: 0.881
     JS-QUAL-NO-CONST-ASSIGN:
         level: measured
         tp: 4
@@ -5570,7 +6369,8 @@ rules:
         wilson_lb: 0.741
     JS-QUAL-NO-DUPLICATE-IMPORTS:
         level: unproven
-        tp: 7
+        tp: 26
+        fp: 11
         tn: 15
         corpus_hits: 1106
         corpus_repos: 16
@@ -5578,8 +6378,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.003
+        why: labelled precision 0.70 < 0.90
+        wilson_lb: 0.016
     JS-QUAL-NO-ELSE-RETURN:
         level: proven
         tp: 59
@@ -5589,7 +6389,8 @@ rules:
         wilson_lb: 0.939
     JS-QUAL-NO-EMPTY:
         level: unproven
-        tp: 5
+        tp: 24
+        fp: 1
         fn: 4
         tn: 21
         corpus_hits: 379
@@ -5599,7 +6400,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
-        wilson_lb: 0.007
+        wilson_lb: 0.051
     JS-QUAL-NO-EMPTY-CHARACTER-CLASS:
         level: unproven
         tp: 17
@@ -5760,12 +6561,12 @@ rules:
         wilson_lb: 0.061
     JS-QUAL-NO-LOSS-OF-PRECISION:
         level: measured
-        tp: 3
+        tp: 4
         fn: 19
         tn: 88
         metamorphic: stable
         why: labelled external cases (below proven volume)
-        wilson_lb: 0.439
+        wilson_lb: 0.51
     JS-QUAL-NO-MULTI-ASSIGN:
         level: proven
         tp: 12
@@ -5866,20 +6667,21 @@ rules:
         why: own examples only
         wilson_lb: 0.342
     JS-QUAL-NO-PROMISE-EXECUTOR-RETURN:
-        level: unproven
-        tp: 14
+        level: proven
+        tp: 34
         tn: 61
         corpus_hits: 24
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.234
+        why: labelled external cases
+        wilson_lb: 0.759
     JS-QUAL-NO-PROTOTYPE-BUILTINS:
         level: unproven
-        tp: 13
+        tp: 70
+        fp: 2
         fn: 6
         tn: 27
         corpus_hits: 136
@@ -5889,7 +6691,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
-        wilson_lb: 0.062
+        wilson_lb: 0.472
     JS-QUAL-NO-REGEX-SPACES:
         level: unproven
         tp: 15
@@ -5910,17 +6712,18 @@ rules:
         wilson_lb: 0.741
     JS-QUAL-NO-SELF-ASSIGN:
         level: proven
-        tp: 19
+        tp: 20
         fn: 4
         tn: 26
         corpus_hits: 9
         corpus_repos: 5
         metamorphic: stable
         why: labelled external cases
-        wilson_lb: 0.566
+        wilson_lb: 0.609
     JS-QUAL-NO-SELF-COMPARE:
         level: unproven
-        tp: 14
+        tp: 33
+        fp: 1
         fn: 1
         tn: 6
         corpus_hits: 81
@@ -5930,7 +6733,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
-        wilson_lb: 0.102
+        wilson_lb: 0.295
     JS-QUAL-NO-SEQUENCES:
         level: measured
         tp: 4
@@ -5976,6 +6779,9 @@ rules:
         metamorphic: stable
         why: labelled external cases
         wilson_lb: 0.216
+    JS-QUAL-NO-THIS-BEFORE-SUPER:
+        level: unproven
+        why: own examples only
     JS-QUAL-NO-UNASSIGNED-VARS:
         level: unproven
         tp: 2
@@ -6256,13 +7062,13 @@ rules:
         wilson_lb: 0.255
     JS-QUAL-PROMISE-EXEC-001:
         level: measured
-        tp: 2
+        tp: 3
         tn: 2
         corpus_hits: 4
         corpus_repos: 1
         metamorphic: stable
-        why: corpus hits below every anomaly threshold
-        wilson_lb: 0.097
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.188
     JS-QUAL-REQUIRE-ATOMIC-UPDATES:
         level: proven
         tp: 10
@@ -6352,6 +7158,7 @@ rules:
         why: corpus hits below every anomaly threshold
     JS-QUAL-WEB-SORT-DEFAULT-001:
         level: unproven
+        tp: 2
         corpus_hits: 127
         corpus_repos: 22
         anomalies:
@@ -6359,6 +7166,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.005
     JS-QUAL-WITH-001:
         level: measured
         corpus_hits: 2
@@ -6401,24 +7209,26 @@ rules:
         metamorphic: stable
         why: own examples only
     JS-SEC-EVAL-001:
-        level: measured
-        tp: 3
+        level: proven
+        tp: 6
         fn: 10
         tn: 45
         corpus_hits: 14
         corpus_repos: 4
         metamorphic: stable
-        why: labelled external cases (below proven volume)
-        wilson_lb: 0.097
+        why: labelled external cases
+        wilson_lb: 0.28
     JS-SEC-EXPRESS-POWERED-BY:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 46
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.309
     JS-SEC-FAIL-OPEN-CATCH:
         level: unproven
         metamorphic: stable
@@ -6459,6 +7269,9 @@ rules:
     JS-SEC-HTTP-TRACE-ROUTE:
         level: unproven
         metamorphic: stable
+        why: own examples only
+    JS-SEC-IDOR-FIND-BY-ID:
+        level: unproven
         why: own examples only
     JS-SEC-IMPLIED-EVAL-001:
         level: measured
@@ -6509,24 +7322,24 @@ rules:
         why: corpus hits below every anomaly threshold
     JS-SEC-NO-NEW-FUNC:
         level: unproven
-        tp: 4
+        tp: 5
         fp: 3
         fn: 6
         tn: 8
         corpus_hits: 18
         corpus_repos: 8
         metamorphic: stable
-        why: labelled precision 0.57 < 0.90
-        wilson_lb: 0.077
+        why: labelled precision 0.62 < 0.90
+        wilson_lb: 0.106
     JS-SEC-NO-SCRIPT-URL:
         level: measured
-        tp: 2
+        tp: 3
         tn: 6
         corpus_hits: 5
         corpus_repos: 1
         metamorphic: stable
-        why: corpus hits below every anomaly threshold
-        wilson_lb: 0.342
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.439
     JS-SEC-NODE-BUFFER-CTOR-001:
         level: measured
         corpus_hits: 10
@@ -7003,13 +7816,16 @@ rules:
         why: own examples only
     KT-MAINT-COMMENTED-OUT-CODE:
         level: unproven
+        tp: 29
+        fp: 7
         corpus_hits: 520
         corpus_repos: 8
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.81 < 0.90
+        wilson_lb: 0.039
     KT-MAINT-COMPLEX-CONDITION:
         level: unproven
         metamorphic: stable
@@ -7034,13 +7850,16 @@ rules:
         why: own examples only
     KT-MAINT-DUPLICATE-BRANCH:
         level: unproven
+        tp: 11
+        fp: 10
         corpus_hits: 25
         corpus_repos: 6
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.52 < 0.90
+        wilson_lb: 0.267
     KT-MAINT-DUPLICATE-CONDITION:
         level: unproven
         metamorphic: stable
@@ -7057,12 +7876,20 @@ rules:
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     KT-MAINT-FILE-STATUS-IGNORED:
         level: unproven
+        fp: 1
+        corpus_hits: 52
+        corpus_repos: 5
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
-        why: own examples only
+        why: corpus anomaly
     KT-MAINT-FIND-COMPARED-TO-NULL:
         level: unproven
+        corpus_hits: 3
+        corpus_repos: 2
         metamorphic: stable
-        why: own examples only
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     KT-MAINT-FIXME-COMMENT:
         level: unproven
         metamorphic: stable
@@ -7073,21 +7900,33 @@ rules:
         why: own examples only
     KT-MAINT-HARDCODED-IP:
         level: unproven
+        corpus_hits: 117
+        corpus_repos: 2
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
-        why: own examples only
+        why: corpus anomaly
     KT-MAINT-IDENTICAL-OPERANDS:
         level: unproven
         metamorphic: stable
         why: own examples only
     KT-MAINT-INDEX-NOT-NULL-ASSERTED:
         level: unproven
+        tp: 13
+        fp: 7
         corpus_hits: 189
         corpus_repos: 6
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.65 < 0.90
+        wilson_lb: 0.041
+    KT-MAINT-INDEXED-ACCESS-OPERATOR:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     KT-MAINT-JDBC-ZERO-INDEX:
         level: unproven
         metamorphic: stable
@@ -7147,14 +7986,16 @@ rules:
         metamorphic: stable
         why: own examples only
     KT-MAINT-TODO-COMMENT:
-        level: unproven
+        level: proven
+        tp: 21
         corpus_hits: 165
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.085
     KT-MAINT-TOO-MANY-PARAMS:
         level: unproven
         metamorphic: stable
@@ -7169,22 +8010,28 @@ rules:
         why: own examples only
     KT-MAINT-UNUSED-IMPORT:
         level: unproven
+        tp: 28
+        fp: 12
         corpus_hits: 414
         corpus_repos: 7
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.70 < 0.90
+        wilson_lb: 0.049
     KT-MAINT-UNUSED-LOCAL:
         level: unproven
+        tp: 28
+        fp: 13
         corpus_hits: 415
         corpus_repos: 8
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.68 < 0.90
+        wilson_lb: 0.047
     KT-MAINT-UNUSED-PARAMETER:
         level: unproven
         corpus_hits: 5
@@ -7335,13 +8182,16 @@ rules:
         why: own examples only
     KT-MOD-KOTLINX-DATETIME-INSTANT:
         level: unproven
+        tp: 14
+        fp: 6
         corpus_hits: 26
         corpus_repos: 3
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.70 < 0.90
+        wilson_lb: 0.355
     KT-MOD-MEASURE-TIME-MILLIS:
         level: measured
         corpus_hits: 1
@@ -7366,13 +8216,16 @@ rules:
         why: own examples only
     KT-QUAL-ARRAYLIST-CTOR:
         level: unproven
+        tp: 15
+        fp: 5
         corpus_hits: 84
         corpus_repos: 8
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.75 < 0.90
+        wilson_lb: 0.114
     KT-QUAL-ASYNC-AWAIT-IMMEDIATE:
         level: unproven
         metamorphic: stable
@@ -7390,13 +8243,15 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     KT-QUAL-CLASS-NAMING:
-        level: unproven
+        level: proven
+        tp: 14
         corpus_hits: 14
         corpus_repos: 1
         anomalies:
-            - repo>=10
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.785
     KT-QUAL-CONST-NAMING:
         level: measured
         corpus_hits: 8
@@ -7405,13 +8260,16 @@ rules:
         why: corpus hits below every anomaly threshold
     KT-QUAL-DEPRECATED-NO-REPLACEWITH:
         level: unproven
+        tp: 13
+        fp: 7
         corpus_hits: 134
         corpus_repos: 7
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.65 < 0.90
+        wilson_lb: 0.058
     KT-QUAL-DISPATCHERS-MAIN-BLOCKING:
         level: measured
         corpus_hits: 1
@@ -7430,13 +8288,16 @@ rules:
         why: own examples only
     KT-QUAL-EMPTY-CATCH:
         level: unproven
+        tp: 1
+        fp: 19
         corpus_hits: 32
         corpus_repos: 6
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.05 < 0.90
+        wilson_lb: 0.006
     KT-QUAL-EQUALS-EMPTY:
         level: unproven
         metamorphic: stable
@@ -7459,22 +8320,31 @@ rules:
         why: corpus hits below every anomaly threshold
     KT-QUAL-FUNCTION-NAMING:
         level: unproven
+        tp: 11
+        fp: 30
         corpus_hits: 141
         corpus_repos: 5
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.27 < 0.90
+        wilson_lb: 0.044
+    KT-QUAL-GETTER-SETTER-PROPERTY:
+        level: unproven
+        why: own examples only
     KT-QUAL-GLOBALSCOPE:
         level: unproven
+        tp: 1
+        fp: 19
         corpus_hits: 20
         corpus_repos: 3
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.05 < 0.90
+        wilson_lb: 0.009
     KT-QUAL-JOB-PASSED-TO-BUILDER:
         level: unproven
         metamorphic: stable
@@ -7485,6 +8355,9 @@ rules:
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+    KT-QUAL-LIFT-RETURN:
+        level: unproven
+        why: own examples only
     KT-QUAL-MAP-FLATTEN:
         level: measured
         corpus_hits: 2
@@ -7493,26 +8366,31 @@ rules:
         why: corpus hits below every anomaly threshold
     KT-QUAL-MUTABLE-COLLECTION-API:
         level: unproven
+        tp: 5
+        fp: 15
         corpus_hits: 39
         corpus_repos: 6
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.25 < 0.90
+        wilson_lb: 0.061
     KT-QUAL-NEW-THREAD-CONTEXT-LEAK:
         level: unproven
         metamorphic: stable
         why: own examples only
     KT-QUAL-NOT-NULL-ASSERTION:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 641
         corpus_repos: 10
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.021
     KT-QUAL-NULL-OR-EMPTY:
         level: measured
         corpus_hits: 1
@@ -7521,6 +8399,8 @@ rules:
         why: corpus hits below every anomaly threshold
     KT-QUAL-PRINTLN-LOGGING:
         level: unproven
+        tp: 20
+        fp: 1
         corpus_hits: 41
         corpus_repos: 4
         anomalies:
@@ -7528,6 +8408,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.343
     KT-QUAL-RUNBLOCKING-IN-SUSPEND:
         level: unproven
         metamorphic: stable
@@ -7548,22 +8429,28 @@ rules:
         why: own examples only
     KT-QUAL-STRING-CONCAT:
         level: unproven
+        tp: 11
+        fp: 11
         corpus_hits: 78
         corpus_repos: 7
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.50 < 0.90
+        wilson_lb: 0.081
     KT-QUAL-TEMPLATE-BRACES:
         level: unproven
+        tp: 15
+        fp: 7
         corpus_hits: 67
         corpus_repos: 7
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.68 < 0.90
+        wilson_lb: 0.141
     KT-QUAL-THREAD-SLEEP-IN-COROUTINE:
         level: measured
         corpus_hits: 1
@@ -7578,6 +8465,8 @@ rules:
         why: corpus hits below every anomaly threshold
     KT-QUAL-TRY-FINALLY-CLOSE:
         level: unproven
+        tp: 18
+        fp: 2
         corpus_hits: 29
         corpus_repos: 5
         anomalies:
@@ -7585,42 +8474,55 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.44
     KT-QUAL-UNIT-RETURN:
         level: unproven
+        tp: 1
+        fp: 19
         corpus_hits: 179
         corpus_repos: 7
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.05 < 0.90
+        wilson_lb: 0.001
     KT-QUAL-UNSAFE-CAST:
         level: unproven
+        tp: 16
+        fp: 4
         corpus_hits: 92
         corpus_repos: 5
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.80 < 0.90
+        wilson_lb: 0.11
     KT-QUAL-VAR-NEVER-REASSIGNED:
         level: unproven
+        tp: 25
+        fp: 21
         corpus_hits: 974
         corpus_repos: 9
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.54 < 0.90
+        wilson_lb: 0.017
     KT-QUAL-WHEN-SUBJECT-ELSE:
         level: unproven
+        tp: 16
+        fp: 6
         corpus_hits: 123
         corpus_repos: 9
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.73 < 0.90
+        wilson_lb: 0.08
     KT-SEC-AWS-ACCESS-KEY:
         level: unproven
         metamorphic: stable
@@ -7711,13 +8613,16 @@ rules:
         why: own examples only
     KT-SEC-PRIVATE-KEY:
         level: unproven
+        tp: 16
+        fp: 2
         corpus_hits: 18
         corpus_repos: 2
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.89 < 0.90
+        wilson_lb: 0.672
     KT-SEC-RUNTIME-EXEC-TEMPLATE:
         level: unproven
         metamorphic: stable
@@ -7736,13 +8641,14 @@ rules:
         why: own examples only
     KT-SEC-SQL-TEMPLATE:
         level: unproven
+        fp: 20
         corpus_hits: 25
         corpus_repos: 1
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.00 < 0.90
     KT-SEC-STACKTRACE-TO-RESPONSE:
         level: unproven
         metamorphic: stable
@@ -7759,12 +8665,15 @@ rules:
         why: corpus hits below every anomaly threshold
     KT-SEC-TRUST-ALL:
         level: unproven
+        tp: 2
+        fp: 12
         corpus_hits: 14
         corpus_repos: 2
         anomalies:
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.14 < 0.90
+        wilson_lb: 0.04
     KT-SEC-URL-CREDENTIALS:
         level: unproven
         metamorphic: stable
@@ -7795,13 +8704,16 @@ rules:
         why: own examples only
     KT-SIMP-IDX-DUPLICATE-HELPER:
         level: unproven
+        tp: 13
+        fp: 7
         corpus_hits: 57
         corpus_repos: 5
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: n/a
-        why: corpus anomaly
+        why: labelled precision 0.65 < 0.90
+        wilson_lb: 0.138
     KT-SIMP-IDX-LIMIT-NOTE-INCOMPLETE:
         level: unproven
         metamorphic: n/a
@@ -7836,13 +8748,16 @@ rules:
         why: own examples only
     KT-SIMP-LOOP-SUMOF:
         level: unproven
+        tp: 6
+        fp: 13
         corpus_hits: 19
         corpus_repos: 3
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.32 < 0.90
+        wilson_lb: 0.154
     KT-TAINT-CMDI:
         level: unproven
         metamorphic: stable
@@ -7967,14 +8882,16 @@ rules:
         metamorphic: stable
         why: corpus anomaly
     KUBE-SEC-IMAGE-LATEST:
-        level: unproven
+        level: proven
+        tp: 40
         corpus_hits: 44
         corpus_repos: 4
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.912
     KUBE-SEC-IMAGE-UNTAGGED:
         level: unproven
         corpus_hits: 140
@@ -7995,14 +8912,16 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     KUBE-SEC-PRIVILEGED:
-        level: unproven
+        level: proven
+        tp: 34
         corpus_hits: 40
         corpus_repos: 3
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.898
     KUBE-SEC-PROC-MOUNT-UNMASKED:
         level: unproven
         metamorphic: stable
@@ -9642,23 +10561,28 @@ rules:
         metamorphic: stable
         why: own examples only
     PHP-MAINT-COLLAPSIBLE-IF:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 53
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.276
     PHP-MAINT-COMMENTED-OUT-CODE:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 31
         corpus_repos: 4
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 22 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.722
     PHP-MAINT-COMPLEX-CONDITION:
         level: unproven
         metamorphic: stable
@@ -9700,27 +10624,34 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PHP-MAINT-EMPTY-CATCH:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 34
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.422
     PHP-MAINT-EMPTY-FUNCTION:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 135
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 135 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.098
     PHP-MAINT-EMPTY-STATEMENT:
         level: unproven
+        corpus_hits: 7
+        corpus_repos: 2
         metamorphic: stable
-        why: own examples only
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PHP-MAINT-EXCEPTION-NOT-THROWN:
         level: unproven
         metamorphic: stable
@@ -9747,17 +10678,25 @@ rules:
         why: own examples only
     PHP-MAINT-GENERIC-EXCEPTION-THROWN:
         level: unproven
+        tp: 6
+        fp: 15
         corpus_hits: 67
         corpus_repos: 5
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.29 < 0.90
+        wilson_lb: 0.055
     PHP-MAINT-HARDCODED-IP:
         level: unproven
+        corpus_hits: 354
+        corpus_repos: 4
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
-        why: own examples only
+        why: corpus anomaly
     PHP-MAINT-IDENTICAL-OPERANDS:
         level: unproven
         metamorphic: stable
@@ -9770,13 +10709,20 @@ rules:
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PHP-MAINT-IMMEDIATELY-RETURNED-VARIABLE:
         level: unproven
+        tp: 23
+        fp: 4
         corpus_hits: 53
         corpus_repos: 6
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.85 < 0.90
+        wilson_lb: 0.492
+    PHP-MAINT-INCONSISTENT-RETURN:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     PHP-MAINT-LOCAL-NAMING:
         level: unproven
         metamorphic: stable
@@ -9799,22 +10745,26 @@ rules:
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PHP-MAINT-NESTED-TERNARY:
         level: unproven
+        tp: 20
+        fp: 3
         corpus_hits: 79
         corpus_repos: 5
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.87 < 0.90
+        wilson_lb: 0.579
     PHP-MAINT-OBJECT-CREATED-AND-DROPPED:
         level: unproven
+        fp: 20
         corpus_hits: 94
         corpus_repos: 6
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.00 < 0.90
     PHP-MAINT-OPTIONAL-BEFORE-REQUIRED-PARAM:
         level: unproven
         metamorphic: stable
@@ -9857,8 +10807,13 @@ rules:
         why: own examples only
     PHP-MAINT-SET-ACCESSIBLE:
         level: unproven
+        corpus_hits: 131
+        corpus_repos: 4
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
-        why: own examples only
+        why: corpus anomaly
     PHP-MAINT-SIZE-COMPARED-TO-NEGATIVE:
         level: unproven
         metamorphic: stable
@@ -9869,45 +10824,55 @@ rules:
         why: own examples only
     PHP-MAINT-SWITCH-FALLTHROUGH:
         level: unproven
-        corpus_hits: 1
-        corpus_repos: 1
         metamorphic: stable
-        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
-    PHP-MAINT-SWITCH-WITHOUT-DEFAULT:
+        why: own examples only
+    PHP-MAINT-SWITCH-TOO-FEW-CASES:
         level: unproven
+        metamorphic: stable
+        why: own examples only
+    PHP-MAINT-SWITCH-WITHOUT-DEFAULT:
+        level: proven
+        tp: 19
         corpus_hits: 28
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 19 of 19 OSS hits labelled, 0 FP (TP 19)'
+        promoted: true
+        wilson_lb: 0.832
     PHP-MAINT-TEST-CLASS-NAME:
         level: unproven
         metamorphic: stable
         why: own examples only
     PHP-MAINT-TEST-WITHOUT-ASSERTION:
         level: unproven
+        tp: 15
+        fp: 5
         corpus_hits: 71
         corpus_repos: 6
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.75 < 0.90
+        wilson_lb: 0.132
     PHP-MAINT-THIS-IN-STATIC:
         level: unproven
         metamorphic: stable
         why: own examples only
     PHP-MAINT-TODO-COMMENT:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 52
         corpus_repos: 4
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.295
     PHP-MAINT-TOO-MANY-PARAMS:
         level: unproven
         metamorphic: stable
@@ -9921,14 +10886,17 @@ rules:
         metamorphic: stable
         why: own examples only
     PHP-MAINT-UNUSED-LOCAL:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 24
         corpus_repos: 4
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 24 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.641
     PHP-MAINT-UNUSED-PARAMETER:
         level: unproven
         corpus_hits: 12
@@ -9959,14 +10927,20 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
         wilson_lb: 0.342
+    PHP-MAINT-VOID-RESULT-USED:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     PHP-MIG-ASSERT-OPTIONS:
         level: unproven
         metamorphic: stable
         why: own examples only
     PHP-MIG-BACKTICK-OPERATOR:
         level: unproven
+        tp: 1
         metamorphic: stable
         why: own examples only
+        wilson_lb: 0.207
     PHP-MIG-CASE-INSENSITIVE-CONSTANT-73:
         level: unproven
         metamorphic: stable
@@ -10015,12 +10989,13 @@ rules:
         why: own examples only
     PHP-MIG-IMPLICIT-NULLABLE:
         level: unproven
+        fp: 10
         corpus_hits: 13
         corpus_repos: 2
         anomalies:
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.00 < 0.90
     PHP-MIG-LCG-VALUE:
         level: unproven
         metamorphic: stable
@@ -10053,12 +11028,13 @@ rules:
         why: own examples only
     PHP-MIG-REFLECTION-GETCLASS:
         level: unproven
+        fp: 13
         corpus_hits: 13
         corpus_repos: 1
         anomalies:
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.00 < 0.90
     PHP-MIG-REMOVED-ASSERT-STRING:
         level: unproven
         metamorphic: stable
@@ -10196,14 +11172,17 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     PHP-MOD-CONSTRUCTOR-PROMOTION:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 38
         corpus_repos: 4
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 35 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.409
     PHP-MOD-ENUM:
         level: unproven
         metamorphic: stable
@@ -10240,6 +11219,8 @@ rules:
         why: corpus hits below every anomaly threshold
     PHP-MOD-OVERRIDE-ATTRIBUTE:
         level: unproven
+        tp: 9
+        fp: 12
         corpus_hits: 2029
         corpus_repos: 2
         anomalies:
@@ -10247,22 +11228,28 @@ rules:
             - repo>=10
             - files>=25%
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.43 < 0.90
+        wilson_lb: 0.002
     PHP-MOD-PASSWORD-HASH:
         level: unproven
         metamorphic: stable
         why: own examples only
     PHP-MOD-RANDOM-INT:
         level: unproven
+        tp: 14
+        fp: 4
         corpus_hits: 24
         corpus_repos: 3
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.78 < 0.90
+        wilson_lb: 0.548
     PHP-MOD-READONLY-PROPERTY:
         level: unproven
+        tp: 27
+        fp: 12
         corpus_hits: 436
         corpus_repos: 3
         anomalies:
@@ -10270,49 +11257,73 @@ rules:
             - repo>=10
             - files>=25%
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.69 < 0.90
+        wilson_lb: 0.043
     PHP-MOD-SHORT-ARRAY:
         level: unproven
+        tp: 14
+        fp: 6
         corpus_hits: 430
         corpus_repos: 4
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.70 < 0.90
+        wilson_lb: 0.106
     PHP-MOD-SHORT-LIST:
-        level: unproven
+        level: proven
+        tp: 17
         corpus_hits: 18
         corpus_repos: 2
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.816
     PHP-MOD-STR-CONTAINS:
         level: unproven
+        tp: 11
+        fp: 7
         corpus_hits: 35
         corpus_repos: 3
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.61 < 0.90
+        wilson_lb: 0.386
     PHP-MOD-STR-STARTS-WITH:
         level: measured
         corpus_hits: 1
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+    PHP-QUAL-CALL-TIME-PASS-BY-REF:
+        level: unproven
+        why: own examples only
+    PHP-QUAL-CATCH-THROWABLE:
+        level: unproven
+        why: own examples only
+    PHP-QUAL-CONSTANT-AS-CONDITION:
+        level: unproven
+        why: own examples only
+    PHP-QUAL-CONSTANT-REDEFINED:
+        level: unproven
+        why: own examples only
     PHP-QUAL-ERROR-SUPPRESSION:
         level: unproven
+        tp: 13
+        fp: 7
         corpus_hits: 184
         corpus_repos: 7
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.65 < 0.90
+        wilson_lb: 0.047
     PHP-QUAL-EXIT-IN-LIBRARY:
         level: measured
         corpus_hits: 4
@@ -10331,6 +11342,9 @@ rules:
         corpus_repos: 2
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+    PHP-QUAL-HARDCODED-URI:
+        level: unproven
+        why: own examples only
     PHP-QUAL-LOOSE-NULL-COMPARE:
         level: measured
         corpus_hits: 5
@@ -10339,6 +11353,8 @@ rules:
         why: corpus hits below every anomaly threshold
     PHP-QUAL-STRICT-TYPES-MISSING:
         level: unproven
+        tp: 16
+        fp: 4
         corpus_hits: 608
         corpus_repos: 8
         anomalies:
@@ -10346,7 +11362,8 @@ rules:
             - repo>=10
             - files>=25%
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.80 < 0.90
+        wilson_lb: 0.021
     PHP-QUAL-VAR-PROPERTY:
         level: unproven
         metamorphic: stable
@@ -10401,48 +11418,58 @@ rules:
         why: own examples only
     PHP-SEC-GITHUB-TOKEN:
         level: unproven
+        fp: 18
         corpus_hits: 18
         corpus_repos: 1
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.00 < 0.90
     PHP-SEC-HARDCODED-SECRET:
         level: unproven
         metamorphic: stable
         why: own examples only
     PHP-SEC-HASH-COMPARE:
         level: unproven
+        tp: 11
+        fp: 9
         corpus_hits: 44
         corpus_repos: 4
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.55 < 0.90
+        wilson_lb: 0.186
     PHP-SEC-IN-ARRAY-LOOSE:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 73
         corpus_repos: 7
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 64 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.212
     PHP-SEC-INCLUDE-INPUT:
         level: unproven
         metamorphic: stable
         why: own examples only
     PHP-SEC-JSON-DECODE-NO-THROW:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 57
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 38 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.373
     PHP-SEC-JWT-LITERAL:
         level: measured
         corpus_hits: 1
@@ -10485,12 +11512,15 @@ rules:
         why: own examples only
     PHP-SEC-SHELL-INJECTION:
         level: unproven
+        tp: 12
+        fp: 5
         corpus_hits: 26
         corpus_repos: 5
         anomalies:
             - oss-total>=15
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.71 < 0.90
+        wilson_lb: 0.469
     PHP-SEC-SLACK-TOKEN:
         level: unproven
         metamorphic: stable
@@ -10537,13 +11567,16 @@ rules:
         why: own examples only
     PHP-SIMP-IDX-DUPLICATE-HELPER:
         level: unproven
+        tp: 15
+        fp: 5
         corpus_hits: 48
         corpus_repos: 6
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: n/a
-        why: corpus anomaly
+        why: labelled precision 0.75 < 0.90
+        wilson_lb: 0.204
     PHP-SIMP-IDX-LIMIT-NOTE-INCOMPLETE:
         level: unproven
         metamorphic: n/a
@@ -10677,13 +11710,15 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     PKG-MOD-ENGINES-EOL-NODE:
-        level: unproven
+        level: proven
+        tp: 17
         corpus_hits: 18
         corpus_repos: 9
         anomalies:
-            - oss-total>=15
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.816
     PKG-QUAL-DEP-DUPLICATED:
         level: measured
         corpus_hits: 2
@@ -10703,14 +11738,16 @@ rules:
         metamorphic: stable
         why: own examples only
     PKG-QUAL-DEP-LATEST-TAG:
-        level: unproven
+        level: proven
+        tp: 30
         corpus_hits: 30
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.886
     PKG-QUAL-DEP-LOCAL-PATH:
         level: measured
         corpus_hits: 2
@@ -10719,6 +11756,7 @@ rules:
         why: corpus hits below every anomaly threshold
     PKG-QUAL-DEP-STAR:
         level: unproven
+        tp: 16
         corpus_hits: 23
         corpus_repos: 4
         anomalies:
@@ -10726,6 +11764,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.491
     PKG-QUAL-DEVTOOL-IN-DEPENDENCIES:
         level: unproven
         corpus_hits: 172
@@ -10750,13 +11789,15 @@ rules:
         metamorphic: stable
         why: own examples only
     PKG-QUAL-INSTALL-SCRIPT:
-        level: unproven
+        level: proven
+        tp: 18
         corpus_hits: 19
         corpus_repos: 12
         anomalies:
-            - oss-total>=15
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.824
     PKG-QUAL-MAIN-AND-EXPORTS-DIVERGE:
         level: unproven
         corpus_hits: 52
@@ -11107,14 +12148,17 @@ rules:
         metamorphic: stable
         why: own examples only
     PY-LLM-NO-MAX-TOKENS:
-        level: unproven
+        level: measured
+        tp: 19
+        fp: 2
         corpus_hits: 19
         corpus_repos: 1
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.711
     PY-LLM-OUTPUT-TO-EXEC:
         level: unproven
         metamorphic: stable
@@ -11158,19 +12202,23 @@ rules:
         metamorphic: stable
         why: own examples only
         wilson_lb: 0.207
-    PY-MAINT-ANY-ALL-LIST-COMPREHENSION:
+    PY-MAINT-ANNOTATION-MISMATCH:
         level: unproven
-        tp: 3
+        metamorphic: stable
+        why: own examples only
+    PY-MAINT-ANY-ALL-LIST-COMPREHENSION:
+        level: measured
+        tp: 25
         fp: 2
         fn: 7
         corpus_hits: 19
         corpus_repos: 3
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: labelled precision 0.60 < 0.90
-        wilson_lb: 0.043
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.766
     PY-MAINT-ASSERT-SAME-ARGUMENT:
         level: unproven
         metamorphic: stable
@@ -11181,7 +12229,19 @@ rules:
         why: own examples only
     PY-MAINT-ASYNC-TIMEOUT-PARAMETER:
         level: unproven
+        corpus_hits: 362
+        corpus_repos: 6
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
+        why: corpus anomaly
+    PY-MAINT-ASYNC-WITHOUT-AWAIT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    PY-MAINT-AWAIT-NON-AWAITABLE:
+        level: unproven
         why: own examples only
     PY-MAINT-BARE-RAISE-IN-FINALLY:
         level: unproven
@@ -11202,14 +12262,14 @@ rules:
         wilson_lb: 0.772
     PY-MAINT-BLOCKING-OPEN-IN-ASYNC:
         level: unproven
-        tp: 6
+        tp: 7
         fp: 1
         fn: 5
         corpus_hits: 2
         corpus_repos: 2
         metamorphic: stable
-        why: labelled precision 0.86 < 0.90
-        wilson_lb: 0.354
+        why: labelled precision 0.88 < 0.90
+        wilson_lb: 0.453
     PY-MAINT-BLOCKING-SLEEP-IN-ASYNC:
         level: unproven
         tp: 1
@@ -11224,6 +12284,10 @@ rules:
         why: labelled external cases
         wilson_lb: 0.676
     PY-MAINT-BS4-NO-PARSER:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    PY-MAINT-CALL-NON-CALLABLE:
         level: unproven
         metamorphic: stable
         why: own examples only
@@ -11334,6 +12398,13 @@ rules:
         wilson_lb: 0.439
     PY-MAINT-DICT-LOOKUP-IN-KEY-LOOP:
         level: unproven
+        corpus_hits: 14
+        corpus_repos: 6
+        metamorphic: stable
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    PY-MAINT-DICT-UNPACK-NON-MAPPING:
+        level: unproven
+        fp: 1
         metamorphic: stable
         why: own examples only
     PY-MAINT-DOUBLE-NOT:
@@ -11361,14 +12432,17 @@ rules:
         metamorphic: stable
         why: corpus anomaly
     PY-MAINT-EMPTY-FUNCTION:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 511
         corpus_repos: 19
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 506 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.026
     PY-MAINT-EXCEPT-BOOLEAN-EXPRESSION:
         level: unproven
         fn: 2
@@ -11415,14 +12489,17 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PY-MAINT-FLOAT-EQUALITY:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 303
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 303 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.043
     PY-MAINT-FROMKEYS-MUTABLE-VALUE:
         level: unproven
         tp: 8
@@ -11445,11 +12522,16 @@ rules:
         wilson_lb: 0.51
     PY-MAINT-HARDCODED-IP:
         level: unproven
+        corpus_hits: 133
+        corpus_repos: 10
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
-        why: own examples only
+        why: corpus anomaly
     PY-MAINT-IDENTICAL-OPERANDS:
         level: unproven
-        tp: 5
+        tp: 14
         fn: 7
         corpus_hits: 36
         corpus_repos: 3
@@ -11458,7 +12540,11 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
-        wilson_lb: 0.053
+        wilson_lb: 0.216
+    PY-MAINT-IDENTITY-DISSIMILAR-TYPES:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     PY-MAINT-IDENTITY-WITH-NEW-OBJECT:
         level: unproven
         metamorphic: stable
@@ -11479,19 +12565,28 @@ rules:
         wilson_lb: 0.444
     PY-MAINT-IMPLICIT-CONCAT-IN-COLLECTION:
         level: unproven
+        fp: 1
         corpus_hits: 7
         corpus_repos: 4
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
+    PY-MAINT-IN-NON-CONTAINER:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    PY-MAINT-INCOMPATIBLE-ADDITION:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     PY-MAINT-INIT-RETURNS-VALUE:
         level: unproven
-        tp: 2
+        tp: 4
         fp: 1
         corpus_hits: 1
         corpus_repos: 1
         metamorphic: stable
-        why: labelled precision 0.67 < 0.90
-        wilson_lb: 0.15
+        why: labelled precision 0.80 < 0.90
+        wilson_lb: 0.376
     PY-MAINT-INPUT-IN-ASYNC:
         level: unproven
         corpus_hits: 2
@@ -11504,24 +12599,26 @@ rules:
         why: own examples only
     PY-MAINT-ITEMS-HALF-UNUSED:
         level: unproven
+        corpus_hits: 3
+        corpus_repos: 2
         metamorphic: stable
-        why: own examples only
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PY-MAINT-ITER-RETURNS-NON-ITERATOR:
         level: unproven
         metamorphic: stable
         why: own examples only
     PY-MAINT-LIST-FOR-FIRST-ITEM:
-        level: unproven
-        tp: 8
+        level: proven
+        tp: 31
         fn: 12
         corpus_hits: 23
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.137
+        why: labelled external cases
+        wilson_lb: 0.89
     PY-MAINT-LOCAL-NAMING:
         level: unproven
         tp: 10
@@ -11548,15 +12645,15 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PY-MAINT-LRU-CACHE-ON-METHOD:
-        level: unproven
-        tp: 8
+        level: measured
+        tp: 15
         fp: 1
         fn: 1
         corpus_hits: 7
         corpus_repos: 1
         metamorphic: stable
-        why: labelled precision 0.89 < 0.90
-        wilson_lb: 0.28
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.717
     PY-MAINT-MAGIC-NUMBER:
         level: unproven
         fn: 8
@@ -11570,14 +12667,17 @@ rules:
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PY-MAINT-METHOD-FIRST-PARAM-NOT-SELF:
         level: unproven
+        tp: 11
         corpus_hits: 23
         corpus_repos: 7
         anomalies:
             - oss-total>=15
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.307
     PY-MAINT-METHOD-WITHOUT-SELF:
         level: unproven
+        tp: 1
         corpus_hits: 43
         corpus_repos: 4
         anomalies:
@@ -11585,6 +12685,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.004
     PY-MAINT-MOCK-MISSPELLED-ASSERT:
         level: unproven
         tp: 2
@@ -11605,14 +12706,16 @@ rules:
         why: own examples only
         wilson_lb: 0.342
     PY-MAINT-NEEDLESS-PASS:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 118
         corpus_repos: 13
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.114
     PY-MAINT-NEGATED-EQUALITY:
         level: unproven
         tp: 3
@@ -11631,14 +12734,16 @@ rules:
         why: labelled precision 0.83 < 0.90
         wilson_lb: 0.267
     PY-MAINT-NESTED-TERNARY:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 33
         corpus_repos: 9
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.437
     PY-MAINT-NO-CONTENT-WITH-BODY:
         level: unproven
         corpus_hits: 1
@@ -11681,14 +12786,16 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PY-MAINT-PARAMETER-REASSIGNED:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 83
         corpus_repos: 3
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.162
     PY-MAINT-PREFIX-INCREMENT:
         level: measured
         tp: 3
@@ -11735,10 +12842,17 @@ rules:
         why: own examples only
     PY-MAINT-RAISES-SEVERAL-CALLS:
         level: unproven
+        fp: 4
+        corpus_hits: 669
+        corpus_repos: 15
+        anomalies:
+            - oss-total>=15
+            - repo>=10
         metamorphic: stable
-        why: own examples only
+        why: labelled precision 0.00 < 0.90
     PY-MAINT-REDUNDANT-PARENTHESES:
         level: unproven
+        tp: 1
         corpus_hits: 339
         corpus_repos: 2
         anomalies:
@@ -11746,6 +12860,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.001
     PY-MAINT-RETURN-BOOLEAN-IF:
         level: proven
         tp: 6
@@ -11753,6 +12868,10 @@ rules:
         metamorphic: stable
         why: labelled external cases
         wilson_lb: 0.61
+    PY-MAINT-RETURN-HINT-MISMATCH:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     PY-MAINT-RETURNS-SAME-VALUE:
         level: unproven
         corpus_hits: 10
@@ -11814,13 +12933,16 @@ rules:
         why: metamorphic variants change the result
     PY-MAINT-STOPITERATION-IN-GENERATOR:
         level: measured
-        tp: 12
+        tp: 16
         fp: 1
         corpus_hits: 4
         corpus_repos: 1
         metamorphic: stable
         why: labelled external cases (below proven volume)
-        wilson_lb: 0.469
+        wilson_lb: 0.73
+    PY-MAINT-SUBSCRIPT-NON-CONTAINER:
+        level: unproven
+        why: own examples only
     PY-MAINT-SUM-CONCATENATES-LISTS:
         level: proven
         tp: 6
@@ -11845,6 +12967,10 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
         wilson_lb: 0.15
+    PY-MAINT-TEMPLATE-STRING-CONCAT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     PY-MAINT-TF-GATHER-VALIDATE-INDICES:
         level: unproven
         metamorphic: stable
@@ -11876,6 +13002,7 @@ rules:
         why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PY-MAINT-UNREACHABLE-CODE:
         level: unproven
+        tp: 2
         corpus_hits: 199
         corpus_repos: 10
         anomalies:
@@ -11883,18 +13010,24 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
-    PY-MAINT-UNUSED-LOCAL:
+        wilson_lb: 0.007
+    PY-MAINT-UNREAD-PRIVATE-ATTRIBUTE:
         level: unproven
-        tp: 22
+        metamorphic: stable
+        why: own examples only
+    PY-MAINT-UNUSED-LOCAL:
+        level: proven
+        tp: 415
         fn: 29
         corpus_hits: 1189
         corpus_repos: 18
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.015
+        why: 'sampled corpus review: 393 of 949 OSS hits labelled, 0 FP (TP 415)'
+        promoted: true
+        wilson_lb: 0.397
     PY-MAINT-UNUSED-PRIVATE-METHOD:
         level: unproven
         corpus_hits: 2
@@ -11933,10 +13066,12 @@ rules:
         why: corpus hits below every anomaly threshold
     PY-MIG-LOGGING-WARN:
         level: measured
+        tp: 2
         corpus_hits: 2
         corpus_repos: 1
         metamorphic: stable
         why: corpus hits below every anomaly threshold
+        wilson_lb: 0.342
     PY-MIG-REMOVED-ARRAY-TOSTRING:
         level: unproven
         metamorphic: stable
@@ -11975,8 +13110,10 @@ rules:
         why: own examples only
     PY-MIG-REMOVED-COLLECTIONS-ABC-ALIASES:
         level: unproven
+        tp: 1
         metamorphic: stable
         why: own examples only
+        wilson_lb: 0.207
     PY-MIG-REMOVED-CONFIGPARSER-LEGACY:
         level: unproven
         metamorphic: stable
@@ -12149,16 +13286,16 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     PY-QUAL-ASSERT-FALSE:
-        level: unproven
-        tp: 2
+        level: proven
+        tp: 23
         corpus_hits: 22
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.023
+        why: labelled external cases
+        wilson_lb: 0.798
     PY-QUAL-ASSERT-TUPLE:
         level: measured
         tp: 3
@@ -12166,48 +13303,48 @@ rules:
         why: labelled external cases (below proven volume)
         wilson_lb: 0.439
     PY-QUAL-BARE-EXCEPT:
-        level: unproven
-        tp: 3
+        level: proven
+        tp: 413
         corpus_hits: 409
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.037
+        why: labelled external cases
+        wilson_lb: 0.991
     PY-QUAL-BOOL-COMPARISON:
-        level: unproven
-        tp: 8
+        level: proven
+        tp: 30
         fn: 4
         corpus_hits: 45
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.108
+        why: labelled external cases
+        wilson_lb: 0.617
     PY-QUAL-CACHED-METHOD:
-        level: unproven
-        tp: 8
+        level: measured
+        tp: 15
         fp: 1
         fn: 1
         corpus_hits: 7
         corpus_repos: 1
         metamorphic: stable
-        why: labelled precision 0.89 < 0.90
-        wilson_lb: 0.28
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.717
     PY-QUAL-CALLABLE-HASATTR:
         level: unproven
-        tp: 5
+        tp: 9
         fp: 4
         fn: 3
         metamorphic: stable
-        why: labelled precision 0.56 < 0.90
-        wilson_lb: 0.267
+        why: labelled precision 0.69 < 0.90
+        wilson_lb: 0.424
     PY-QUAL-DATETIME-NOW-NAIVE:
         level: unproven
-        tp: 7
+        tp: 27
         fp: 6
         fn: 3
         corpus_hits: 67
@@ -12216,8 +13353,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.54 < 0.90
-        wilson_lb: 0.052
+        why: labelled precision 0.82 < 0.90
+        wilson_lb: 0.294
     PY-QUAL-DEBUGGER-LEFT:
         level: unproven
         tp: 2
@@ -12237,39 +13374,39 @@ rules:
         metamorphic: stable
         why: own examples only
     PY-QUAL-FSTRING-NO-PLACEHOLDER:
-        level: unproven
-        tp: 15
+        level: proven
+        tp: 126
         fn: 2
         corpus_hits: 323
         corpus_repos: 18
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.034
+        why: labelled external cases
+        wilson_lb: 0.403
     PY-QUAL-GETATTR-CONSTANT:
-        level: unproven
-        tp: 17
+        level: measured
+        tp: 40
         fp: 3
         fn: 3
         corpus_hits: 22
         corpus_repos: 7
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: labelled precision 0.85 < 0.90
-        wilson_lb: 0.27
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.814
     PY-QUAL-IMPORT-STAR:
-        level: unproven
-        tp: 2
+        level: measured
+        tp: 36
         fp: 3
         corpus_hits: 7
         corpus_repos: 4
         metamorphic: stable
-        why: labelled precision 0.40 < 0.90
-        wilson_lb: 0.082
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.797
     PY-QUAL-IN-DICT-KEYS:
         level: measured
         tp: 13
@@ -12278,24 +13415,29 @@ rules:
         metamorphic: stable
         why: labelled external cases (below proven volume)
         wilson_lb: 0.685
+    PY-QUAL-INDEX-RETURNS-NON-INT:
+        level: unproven
+        why: own examples only
     PY-QUAL-IS-LITERAL:
         level: proven
-        tp: 8
+        tp: 10
         fn: 3
         corpus_hits: 2
         corpus_repos: 1
         metamorphic: stable
         why: labelled external cases
-        wilson_lb: 0.49
+        wilson_lb: 0.722
     PY-QUAL-LOGGING-FSTRING:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 227
         corpus_repos: 8
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.059
     PY-QUAL-LOOP-VAR-CLOSURE:
         level: unproven
         tp: 2
@@ -12304,42 +13446,45 @@ rules:
         why: own examples only
         wilson_lb: 0.342
     PY-QUAL-MUTABLE-DEFAULT:
-        level: unproven
-        tp: 43
+        level: proven
+        tp: 78
         fp: 2
         fn: 9
         corpus_hits: 43
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.392
+        why: labelled external cases
+        wilson_lb: 0.815
     PY-QUAL-NONE-COMPARISON:
-        level: unproven
-        tp: 5
+        level: measured
+        tp: 17
         fp: 1
         fn: 4
         corpus_hits: 19
         corpus_repos: 4
         anomalies:
-            - repo>=10
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: labelled precision 0.83 < 0.90
-        wilson_lb: 0.125
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.742
     PY-QUAL-OPEN-NO-ENCODING:
-        level: unproven
-        tp: 11
+        level: proven
+        tp: 31
         fn: 11
         corpus_hits: 370
         corpus_repos: 20
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.03
+        why: labelled external cases
+        wilson_lb: 0.108
+    PY-QUAL-ORDERING-WITHOUT-EQ:
+        level: unproven
+        why: own examples only
     PY-QUAL-RAISE-NOTIMPLEMENTED:
         level: measured
         tp: 3
@@ -12347,26 +13492,29 @@ rules:
         why: labelled external cases (below proven volume)
         wilson_lb: 0.439
     PY-QUAL-RAISE-WITHOUT-FROM:
-        level: unproven
-        tp: 2
+        level: proven
+        tp: 22
         fn: 11
         corpus_hits: 299
         corpus_repos: 9
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.002
+        why: 'sampled corpus review: 20 of 298 OSS hits labelled, 0 FP (TP 22)'
+        promoted: true
+        wilson_lb: 0.049
     PY-QUAL-REQUESTS-NO-TIMEOUT:
-        level: unproven
+        level: proven
+        tp: 18
         corpus_hits: 26
         corpus_repos: 6
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.824
     PY-QUAL-STRIP-MULTICHAR:
         level: measured
         tp: 3
@@ -12378,7 +13526,7 @@ rules:
         wilson_lb: 0.231
     PY-QUAL-TRY-EXCEPT-PASS:
         level: unproven
-        tp: 2
+        tp: 17
         fp: 1
         corpus_hits: 452
         corpus_repos: 20
@@ -12386,34 +13534,37 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.67 < 0.90
-        wilson_lb: 0.001
+        why: corpus anomaly
+        wilson_lb: 0.024
     PY-QUAL-TYPE-COMPARISON:
         level: proven
-        tp: 13
+        tp: 16
         fn: 2
         corpus_hits: 7
         corpus_repos: 4
         metamorphic: stable
         why: labelled external cases
-        wilson_lb: 0.433
+        wilson_lb: 0.584
     PY-QUAL-USELESS-COMPARISON:
         level: proven
-        tp: 5
+        tp: 16
         corpus_hits: 11
         corpus_repos: 3
         metamorphic: stable
         why: labelled external cases
-        wilson_lb: 0.142
+        wilson_lb: 0.806
     PY-QUAL-ZIP-WITHOUT-STRICT:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 32
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 20 of 32 OSS hits labelled, 0 FP (TP 20)'
+        promoted: true
+        wilson_lb: 0.453
     PY-SEC-ACCESS-THEN-OPEN:
         level: unproven
         metamorphic: stable
@@ -12440,16 +13591,16 @@ rules:
         metamorphic: stable
         why: own examples only
     PY-SEC-BIND-ALL-INTERFACES:
-        level: unproven
+        level: measured
         tp: 34
         fp: 3
         corpus_hits: 31
         corpus_repos: 7
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases (below proven volume)
         wilson_lb: 0.787
     PY-SEC-CHMOD-WORLD-WRITABLE:
         level: unproven
@@ -12461,14 +13612,12 @@ rules:
         why: own examples only
     PY-SEC-COOKIE-INSECURE:
         level: unproven
-        tp: 24
         corpus_hits: 73
         corpus_repos: 11
         anomalies:
             - oss-total>=15
         metamorphic: stable
         why: corpus anomaly
-        wilson_lb: 0.314
     PY-SEC-COOKIE-WITHOUT-HOST-PREFIX:
         level: unproven
         corpus_hits: 5
@@ -12518,16 +13667,15 @@ rules:
         why: own examples only
     PY-SEC-EVAL:
         level: unproven
-        tp: 20
-        fp: 4
+        tp: 3
         fn: 2
         corpus_hits: 45
         corpus_repos: 9
         anomalies:
             - oss-total>=15
         metamorphic: stable
-        why: labelled precision 0.83 < 0.90
-        wilson_lb: 0.325
+        why: corpus anomaly
+        wilson_lb: 0.055
     PY-SEC-FAIL-OPEN-EXCEPT:
         level: unproven
         metamorphic: stable
@@ -12561,39 +13709,40 @@ rules:
         why: own examples only
     PY-SEC-HARDCODED-PASSWORD:
         level: proven
-        tp: 14
+        tp: 15
         fn: 21
         corpus_hits: 15
         corpus_repos: 6
         metamorphic: stable
         why: labelled external cases
-        wilson_lb: 0.371
+        wilson_lb: 0.407
     PY-SEC-HARDCODED-TMP:
-        level: unproven
-        tp: 6
+        level: proven
+        tp: 26
         corpus_hits: 20
         corpus_repos: 3
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.11
+        why: labelled external cases
+        wilson_lb: 0.871
     PY-SEC-HASH-WEAK:
         level: proven
-        tp: 38
+        tp: 7
         fn: 18
         corpus_hits: 44
         corpus_repos: 5
         metamorphic: stable
         why: labelled external cases
-        wilson_lb: 0.733
+        wilson_lb: 0.646
     PY-SEC-HEADER-FROM-REQUEST:
         level: unproven
         metamorphic: stable
         why: own examples only
     PY-SEC-HMAC-COMPARE:
         level: unproven
+        fp: 2
         corpus_hits: 159
         corpus_repos: 13
         anomalies:
@@ -12671,16 +13820,13 @@ rules:
         why: corpus hits below every anomaly threshold
     PY-SEC-PICKLE-LOADS:
         level: unproven
-        tp: 13
-        fp: 7
         corpus_hits: 103
         corpus_repos: 13
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.65 < 0.90
-        wilson_lb: 0.077
+        why: corpus anomaly
     PY-SEC-PRIVATE-KEY:
         level: measured
         corpus_hits: 8
@@ -12693,14 +13839,12 @@ rules:
         metamorphic: stable
         why: own examples only
     PY-SEC-RANDOM-SESSION-VALUE:
-        level: proven
-        tp: 99
+        level: unproven
         fp: 3
         corpus_hits: 102
         corpus_repos: 4
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.917
+        why: labelled precision 0.00 < 0.90
     PY-SEC-REGEX-INJECTION:
         level: unproven
         metamorphic: stable
@@ -12755,14 +13899,11 @@ rules:
         metamorphic: stable
         why: own examples only
     PY-SEC-SUBPROCESS-SHELL:
-        level: unproven
-        tp: 7
-        fp: 1
+        level: measured
         corpus_hits: 14
         corpus_repos: 5
         metamorphic: stable
-        why: labelled precision 0.88 < 0.90
-        wilson_lb: 0.32
+        why: corpus hits below every anomaly threshold
     PY-SEC-TAR-EXTRACT-NO-FILTER:
         level: unproven
         metamorphic: stable
@@ -12823,13 +13964,10 @@ rules:
         why: own examples only
     PY-SEC-XML-UNTRUSTED:
         level: unproven
-        tp: 8
-        fp: 20
         corpus_hits: 88
         corpus_repos: 4
         metamorphic: stable
-        why: labelled precision 0.29 < 0.90
-        wilson_lb: 0.047
+        why: corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)
     PY-SEC-XPATH-INJECTION:
         level: measured
         corpus_hits: 4
@@ -12837,14 +13975,11 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     PY-SEC-YAML-LOAD-UNSAFE:
-        level: unproven
-        tp: 5
-        fp: 5
+        level: measured
         corpus_hits: 20
         corpus_repos: 4
         metamorphic: stable
-        why: labelled precision 0.50 < 0.90
-        wilson_lb: 0.125
+        why: corpus hits below every anomaly threshold
     PY-SEC-ZIPFILE-EXTRACT-UNTRUSTED:
         level: measured
         corpus_hits: 1
@@ -12877,6 +14012,7 @@ rules:
         why: own examples only
     PY-SIMP-IDX-DUPLICATE-HELPER:
         level: unproven
+        fp: 1
         corpus_hits: 310
         corpus_repos: 16
         anomalies:
@@ -12945,45 +14081,39 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     PY-TAINT-CMDI:
-        level: proven
-        tp: 13
+        level: measured
         corpus_hits: 14
         corpus_repos: 2
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.772
+        why: corpus hits below every anomaly threshold
     PY-TAINT-CODE:
-        level: proven
-        tp: 20
+        level: measured
+        tp: 2
         corpus_hits: 22
         corpus_repos: 2
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.839
+        why: corpus hits below every anomaly threshold
+        wilson_lb: 0.342
     PY-TAINT-LDAP:
-        level: proven
-        tp: 16
+        level: measured
         corpus_hits: 16
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.806
+        why: corpus hits below every anomaly threshold
     PY-TAINT-PATH:
-        level: proven
-        tp: 65
+        level: measured
+        tp: 1
         corpus_hits: 66
         corpus_repos: 2
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.944
+        why: corpus hits below every anomaly threshold
+        wilson_lb: 0.207
     PY-TAINT-REDIRECT:
-        level: proven
-        tp: 13
+        level: measured
         corpus_hits: 13
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.772
+        why: corpus hits below every anomaly threshold
     PY-TAINT-REGEX:
         level: unproven
         metamorphic: stable
@@ -12993,13 +14123,11 @@ rules:
         metamorphic: stable
         why: own examples only
     PY-TAINT-SQLI:
-        level: proven
-        tp: 5
+        level: measured
         corpus_hits: 7
         corpus_repos: 2
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.566
+        why: corpus hits below every anomaly threshold
     PY-TAINT-SSRF:
         level: measured
         corpus_hits: 1
@@ -13007,30 +14135,24 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     PY-TAINT-TRUST:
-        level: proven
-        tp: 18
+        level: measured
         corpus_hits: 18
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.824
+        why: corpus hits below every anomaly threshold
     PY-TAINT-XPATH:
-        level: proven
-        tp: 51
+        level: measured
         corpus_hits: 51
         corpus_repos: 1
         metamorphic: stable
-        why: labelled external cases
-        wilson_lb: 0.93
+        why: corpus hits below every anomaly threshold
     PY-TAINT-XSS:
-        level: measured
-        tp: 31
+        level: unproven
         fp: 3
         corpus_hits: 79
         corpus_repos: 5
         metamorphic: stable
-        why: labelled external cases (below proven volume)
-        wilson_lb: 0.309
+        why: labelled precision 0.00 < 0.90
     REACT-MIG-CREATE-FACTORY:
         level: unproven
         metamorphic: stable
@@ -14915,29 +16037,35 @@ rules:
         metamorphic: stable
         why: corpus anomaly
     TF-MIG-DEPRECATED-INTERPOLATION:
-        level: unproven
+        level: proven
+        tp: 28
         corpus_hits: 37
         corpus_repos: 2
         anomalies:
-            - repo>=10
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.879
     TF-MIG-DEPRECATED-LOOKUP:
-        level: unproven
+        level: proven
+        tp: 12
         corpus_hits: 12
         corpus_repos: 1
         anomalies:
-            - repo>=10
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.758
     TF-MIG-LEGACY-SPLAT:
-        level: unproven
+        level: proven
+        tp: 16
         corpus_hits: 12
         corpus_repos: 1
         anomalies:
-            - repo>=10
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.806
     TF-MIG-LIST-MAP-FUNCTIONS:
         level: unproven
         metamorphic: stable
@@ -15203,6 +16331,10 @@ rules:
         level: unproven
         metamorphic: stable
         why: own examples only
+    TS-MAINT-ASYNC-WITHOUT-AWAIT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
     TS-MAINT-ENUM-MIXED-INITIALIZERS:
         level: unproven
         metamorphic: stable
@@ -15212,6 +16344,10 @@ rules:
         metamorphic: stable
         why: own examples only
     TS-MAINT-PUBLIC-STATIC-MUTABLE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    TS-MAINT-VOID-RESULT-USED:
         level: unproven
         metamorphic: stable
         why: own examples only
@@ -15336,18 +16472,18 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     TS-QUAL-ANY-001:
-        level: unproven
-        tp: 6
+        level: proven
+        tp: 33
         fn: 39
         tn: 30
         corpus_hits: 983
         corpus_repos: 12
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.003
+        why: labelled external cases
+        wilson_lb: 0.026
     TS-QUAL-ARRAY-TYPE:
         level: proven
         tp: 32
@@ -15357,7 +16493,8 @@ rules:
         wilson_lb: 0.893
     TS-QUAL-BAN-TS-COMMENT-NOCHECK:
         level: unproven
-        tp: 3
+        tp: 25
+        fp: 3
         fn: 4
         tn: 21
         corpus_hits: 89
@@ -15366,8 +16503,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.011
+        why: labelled precision 0.89 < 0.90
+        wilson_lb: 0.191
     TS-QUAL-BAN-TSLINT-COMMENT:
         level: measured
         tp: 4
@@ -15383,16 +16520,20 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     TS-QUAL-CALLBACK-ANY-001:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 274
         corpus_repos: 14
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.048
     TS-QUAL-CATCH-ANY-001:
         level: unproven
+        tp: 21
+        fp: 1
         fn: 26
         tn: 31
         corpus_hits: 32
@@ -15402,6 +16543,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.501
     TS-QUAL-CFG-ALLOWUNREACHABLE-001:
         level: unproven
         metamorphic: stable
@@ -15437,14 +16579,16 @@ rules:
         metamorphic: stable
         why: corpus anomaly
     TS-QUAL-CFG-NOIMPLICITANY-FALSE-001:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 38
         corpus_repos: 2
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.373
     TS-QUAL-CFG-NOIMPLICITOVERRIDE-001:
         level: unproven
         corpus_hits: 549
@@ -15502,14 +16646,16 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     TS-QUAL-CFG-STRICTPROPERTYINIT-FALSE-001:
-        level: unproven
+        level: proven
+        tp: 20
         corpus_hits: 44
         corpus_repos: 2
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.317
     TS-QUAL-CFG-USEUNKNOWNINCATCH-FALSE-001:
         level: measured
         corpus_hits: 2
@@ -15549,17 +16695,20 @@ rules:
         why: own examples only
         wilson_lb: 0.342
     TS-QUAL-CONST-ENUM-001:
-        level: unproven
+        level: proven
+        tp: 11
         corpus_hits: 11
         corpus_repos: 1
         anomalies:
-            - repo>=10
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: 'sampled corpus review: 11 of 11 OSS hits labelled, 0 FP (TP 11)'
+        promoted: true
+        wilson_lb: 0.741
     TS-QUAL-DEFAULT-PARAM-LAST:
         level: unproven
-        tp: 45
-        fp: 3
+        tp: 62
+        fp: 14
         tn: 39
         corpus_hits: 51
         corpus_repos: 8
@@ -15567,8 +16716,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.36
+        why: labelled precision 0.82 < 0.90
+        wilson_lb: 0.528
     TS-QUAL-EXPLICIT-FUNCTION-RETURN-TYPE:
         level: unproven
         fn: 6
@@ -15594,16 +16743,19 @@ rules:
         wilson_lb: 0.699
     TS-QUAL-NAMESPACE-001:
         level: unproven
+        tp: 14
+        fp: 15
         corpus_hits: 37
         corpus_repos: 12
         anomalies:
             - oss-total>=15
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.48 < 0.90
+        wilson_lb: 0.248
     TS-QUAL-NO-ARRAY-DELETE:
         level: unproven
-        tp: 16
-        fp: 3
+        tp: 17
+        fp: 22
         fn: 6
         tn: 6
         corpus_hits: 60
@@ -15612,8 +16764,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.84 < 0.90
-        wilson_lb: 0.136
+        why: labelled precision 0.44 < 0.90
+        wilson_lb: 0.147
     TS-QUAL-NO-CONFUSING-NON-NULL-ASSERTION:
         level: proven
         tp: 5
@@ -15645,32 +16797,32 @@ rules:
         why: labelled precision 0.87 < 0.90
         wilson_lb: 0.703
     TS-QUAL-NO-DYNAMIC-DELETE:
-        level: unproven
-        tp: 4
+        level: proven
+        tp: 24
         fn: 6
         tn: 11
         corpus_hits: 68
         corpus_repos: 10
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.023
+        why: labelled external cases
+        wilson_lb: 0.254
     TS-QUAL-NO-EMPTY-OBJECT-TYPE:
-        level: unproven
-        tp: 19
+        level: proven
+        tp: 40
         fp: 1
         fn: 3
         tn: 5
         corpus_hits: 208
         corpus_repos: 9
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.054
+        why: labelled external cases
+        wilson_lb: 0.132
     TS-QUAL-NO-EXTRA-NON-NULL-ASSERTION:
         level: unproven
         tp: 2
@@ -15688,23 +16840,24 @@ rules:
         why: own examples only
         wilson_lb: 0.342
     TS-QUAL-NO-FLOATING-PROMISES:
-        level: unproven
-        tp: 9
+        level: proven
+        tp: 36
         fp: 1
         fn: 57
         tn: 39
         corpus_hits: 221
         corpus_repos: 13
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.04
+        why: 'sampled corpus review: 27 of 111 OSS hits labelled, 0 FP (TP 36)'
+        promoted: true
+        wilson_lb: 0.223
     TS-QUAL-NO-IMPORT-TYPE-SIDE-EFFECTS:
         level: unproven
-        tp: 2
-        fp: 1
+        tp: 33
+        fp: 8
         fn: 2
         tn: 10
         corpus_hits: 244
@@ -15713,8 +16866,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.67 < 0.90
-        wilson_lb: 0.007
+        why: labelled precision 0.80 < 0.90
+        wilson_lb: 0.32
     TS-QUAL-NO-INFERRABLE-TYPES:
         level: measured
         tp: 4
@@ -15725,8 +16878,8 @@ rules:
         wilson_lb: 0.51
     TS-QUAL-NO-INVALID-VOID-TYPE:
         level: unproven
-        tp: 11
-        fp: 16
+        tp: 36
+        fp: 26
         fn: 23
         tn: 19
         corpus_hits: 157
@@ -15735,8 +16888,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.41 < 0.90
-        wilson_lb: 0.034
+        why: labelled precision 0.58 < 0.90
+        wilson_lb: 0.145
     TS-QUAL-NO-MISUSED-NEW:
         level: unproven
         tp: 2
@@ -15765,19 +16918,19 @@ rules:
         wilson_lb: 0.567
     TS-QUAL-NO-NON-NULL-ASSERTED-OPTIONAL-CHAIN:
         level: unproven
-        tp: 3
+        tp: 4
         fp: 2
         fn: 7
         tn: 11
         corpus_hits: 7
         corpus_repos: 4
         metamorphic: stable
-        why: labelled precision 0.60 < 0.90
-        wilson_lb: 0.089
+        why: labelled precision 0.67 < 0.90
+        wilson_lb: 0.138
     TS-QUAL-NO-REDUNDANT-TYPE-CONSTITUENTS:
         level: unproven
-        tp: 8
-        fp: 9
+        tp: 41
+        fp: 13
         fn: 41
         tn: 46
         corpus_hits: 98
@@ -15786,31 +16939,31 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.47 < 0.90
-        wilson_lb: 0.036
+        why: labelled precision 0.76 < 0.90
+        wilson_lb: 0.277
     TS-QUAL-NO-REQUIRE-IMPORTS:
-        level: unproven
-        tp: 7
+        level: proven
+        tp: 33
         fn: 2
         tn: 8
         corpus_hits: 58
         corpus_repos: 5
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.072
+        why: labelled external cases
+        wilson_lb: 0.547
     TS-QUAL-NO-THIS-ALIAS:
-        level: measured
-        tp: 2
+        level: proven
+        tp: 9
         fn: 1
         tn: 2
         corpus_hits: 9
         corpus_repos: 1
         metamorphic: stable
-        why: corpus hits below every anomaly threshold
-        wilson_lb: 0.051
+        why: labelled external cases
+        wilson_lb: 0.523
     TS-QUAL-NO-UNNECESSARY-BOOLEAN-LITERAL-COMPARE:
         level: unproven
         tp: 16
@@ -15853,18 +17006,18 @@ rules:
         why: own examples only
         wilson_lb: 0.342
     TS-QUAL-NO-UNSAFE-FUNCTION-TYPE:
-        level: unproven
-        tp: 1
+        level: proven
+        tp: 22
         fn: 4
         tn: 3
         corpus_hits: 136
         corpus_repos: 7
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.001
+        why: labelled external cases
+        wilson_lb: 0.109
     TS-QUAL-NO-UNSAFE-TYPE-ASSERTION:
         level: unproven
         fn: 62
@@ -15872,28 +17025,29 @@ rules:
         metamorphic: stable
         why: own examples only
     TS-QUAL-NONNULL-001:
-        level: unproven
-        tp: 22
+        level: measured
+        tp: 99
+        fp: 6
         tn: 6
         corpus_hits: 3180
         corpus_repos: 20
         anomalies:
-            - oss-total>=15
-            - repo>=10
-            - files>=25%
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
+            - 'files>=25% (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.005
+        why: labelled external cases (below proven volume)
+        wilson_lb: 0.025
     TS-QUAL-ONLY-THROW-ERROR:
-        level: measured
-        tp: 4
+        level: proven
+        tp: 7
         fn: 30
         tn: 32
         corpus_hits: 7
         corpus_repos: 4
         metamorphic: stable
-        why: labelled external cases (below proven volume)
-        wilson_lb: 0.152
+        why: labelled external cases
+        wilson_lb: 0.354
     TS-QUAL-PREFER-AS-CONST:
         level: proven
         tp: 6
@@ -15960,6 +17114,8 @@ rules:
         wilson_lb: 0.193
     TS-QUAL-PREFER-NULLISH-COALESCING:
         level: unproven
+        tp: 18
+        fp: 2
         fn: 66
         tn: 63
         corpus_hits: 181
@@ -15969,6 +17125,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.067
     TS-QUAL-PREFER-REDUCE-TYPE-PARAMETER:
         level: unproven
         tp: 10
@@ -15980,8 +17137,8 @@ rules:
         wilson_lb: 0.317
     TS-QUAL-PREFER-REGEXP-EXEC:
         level: unproven
-        tp: 3
-        fp: 2
+        tp: 28
+        fp: 4
         fn: 9
         tn: 23
         corpus_hits: 108
@@ -15990,8 +17147,8 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.60 < 0.90
-        wilson_lb: 0.011
+        why: labelled precision 0.88 < 0.90
+        wilson_lb: 0.22
     TS-QUAL-PREFER-STRING-STARTS-ENDS-WITH:
         level: unproven
         tp: 11
@@ -16012,8 +17169,8 @@ rules:
         wilson_lb: 0.061
     TS-QUAL-TSIGNORE-001:
         level: unproven
-        tp: 4
-        fp: 5
+        tp: 72
+        fp: 6
         fn: 3
         tn: 16
         corpus_hits: 238
@@ -16022,21 +17179,181 @@ rules:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: labelled precision 0.44 < 0.90
-        wilson_lb: 0.006
+        why: corpus anomaly
+        wilson_lb: 0.238
     TS-QUAL-USE-UNKNOWN-IN-CATCH-CALLBACK-VARIABLE:
-        level: unproven
-        tp: 5
+        level: proven
+        tp: 25
         fn: 21
         tn: 31
         corpus_hits: 82
         corpus_repos: 11
         anomalies:
-            - oss-total>=15
-            - repo>=10
+            - 'oss-total>=15 (waived: sampled review, 0 FP)'
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
-        wilson_lb: 0.025
+        why: labelled external cases
+        wilson_lb: 0.205
+    VUE-A11Y-AMBIGUOUS-LINK-TEXT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-ARIA-INVALID-ATTRIBUTE:
+        level: unproven
+        tp: 1
+        tn: 1
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.207
+    VUE-A11Y-ARIA-INVALID-ROLE:
+        level: unproven
+        tp: 1
+        fn: 1
+        tn: 4
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.207
+    VUE-A11Y-ARIA-LABEL-ON-GENERIC:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-ARIA-REQUIRED-ATTRIBUTE:
+        level: unproven
+        fn: 3
+        tn: 4
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-AUTOCOMPLETE-INVALID:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-AUTOPLAY-WITH-SOUND:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-BUTTON-WITHOUT-NAME:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-CLICK-WITHOUT-KEYBOARD:
+        level: unproven
+        fn: 11
+        tn: 22
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-CONTROL-WITHOUT-LABEL:
+        level: unproven
+        tp: 2
+        fn: 5
+        tn: 15
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.342
+    VUE-A11Y-DUPLICATE-ID:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-EMPTY-HEADING:
+        level: unproven
+        fn: 4
+        tn: 6
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-HEADING-SKIPPED-LEVEL:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-IFRAME-WITHOUT-TITLE:
+        level: unproven
+        fn: 3
+        tn: 2
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-IMG-REDUNDANT-ALT:
+        level: unproven
+        fn: 6
+        tn: 10
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-IMG-WITHOUT-ALT:
+        level: unproven
+        fn: 6
+        tn: 10
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-INPUT-IMAGE-WITHOUT-ALT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-LANG-INVALID:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-LINK-WITHOUT-NAME:
+        level: unproven
+        fn: 2
+        tn: 10
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-MARQUEE-OR-BLINK:
+        level: unproven
+        tp: 2
+        tn: 1
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.342
+    VUE-A11Y-MOUSE-WITHOUT-KEYBOARD:
+        level: unproven
+        fn: 4
+        tn: 3
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-NESTED-INTERACTIVE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-NUXTUI-LINK-COMPONENT-WITHOUT-NAME:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-NUXTUI-NUXT-IMG-WITHOUT-ALT:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-NUXTUI-UBUTTON-ICON-WITHOUT-LABEL:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-OBJECT-WITHOUT-ALTERNATIVE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-POSITIVE-TABINDEX:
+        level: unproven
+        tp: 2
+        fn: 1
+        tn: 4
+        metamorphic: stable
+        why: own examples only
+        wilson_lb: 0.342
+    VUE-A11Y-ROLE-IMG-WITHOUT-NAME:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-TABLE-WITHOUT-HEADERS:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-TH-INVALID-SCOPE:
+        level: unproven
+        metamorphic: stable
+        why: own examples only
+    VUE-A11Y-VIDEO-WITHOUT-CAPTIONS:
+        level: unproven
+        fn: 17
+        tn: 21
+        metamorphic: stable
+        why: own examples only
     VUE-MIG-CHILDREN-001:
         level: unproven
         metamorphic: stable
@@ -16958,28 +18275,33 @@ rules:
         metamorphic: stable
         why: corpus hits below every anomaly threshold
     YAML-QUAL-DOCUMENT-START:
-        level: unproven
+        level: proven
+        tp: 11
         corpus_hits: 11
         corpus_repos: 1
         anomalies:
-            - repo>=10
+            - 'repo>=10 (waived: sampled review, 0 FP)'
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled external cases
+        wilson_lb: 0.741
     YAML-QUAL-DUPLICATE-ANCHOR:
         level: unproven
+        fp: 18
         corpus_hits: 18
         corpus_repos: 1
         anomalies:
             - oss-total>=15
             - repo>=10
         metamorphic: stable
-        why: corpus anomaly
+        why: labelled precision 0.00 < 0.90
     YAML-QUAL-DUPLICATE-KEY:
-        level: measured
+        level: proven
+        tp: 5
         corpus_hits: 8
         corpus_repos: 2
         metamorphic: stable
-        why: corpus hits below every anomaly threshold
+        why: labelled external cases
+        wilson_lb: 0.306
     YAML-QUAL-DUPLICATE-KEY-FLOW:
         level: unproven
         metamorphic: stable
@@ -17059,6 +18381,7 @@ rules:
         why: own examples only
     YAML-QUAL-TRAILING-SPACES:
         level: unproven
+        tp: 2
         corpus_hits: 55
         corpus_repos: 13
         anomalies:
@@ -17066,6 +18389,7 @@ rules:
             - repo>=10
         metamorphic: stable
         why: corpus anomaly
+        wilson_lb: 0.01
     YAML-QUAL-TRUTHY:
         level: measured
         corpus_hits: 12

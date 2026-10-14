@@ -163,6 +163,134 @@
   "status": "stable",
   "variants": 1
  },
+ "CSS-A11Y-FOCUS-OUTLINE-REMOVED": {
+  "status": "stable",
+  "variants": 2
+ },
+ "CSS-A11Y-FOCUS-VISIBLE-OUTLINE-REMOVED": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-FONT-SIZE-VIEWPORT-ONLY": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-GENERATED-CONTENT-TEXT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-LINE-HEIGHT-BELOW-1-5": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-LOW-CONTRAST": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-LOW-CONTRAST-ENHANCED": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-OUTLINE-REMOVED-ON-CONTROLS": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-REDUCED-MOTION-MISSING": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-ROOT-FONT-SIZE-PX": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-SMALL-TARGET": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-TEXT-CLIPPED-FIXED-HEIGHT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-TEXT-DECORATION-BLINK": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-A11Y-TEXT-JUSTIFIED": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-CALC-UNSPACED-OPERATOR": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-DOUBLE-SLASH-COMMENT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-DUPLICATE-DECLARATION": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-DUPLICATE-FONT-FAMILY": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-DUPLICATE-SELECTOR": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-EMPTY-RULE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-FONT-FAMILY-WITHOUT-GENERIC": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-GRADIENT-LEGACY-DIRECTION": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-IMPORTANT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-IMPORTANT-IN-KEYFRAMES": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-INVALID-HEX-COLOR": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-OVERRIDDEN-DECLARATION": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-SHORTHAND-OVERRIDES-LONGHAND": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-UNKNOWN-AT-RULE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-UNKNOWN-PROPERTY": {
+  "status": "stable",
+  "variants": 3
+ },
+ "CSS-QUAL-UNKNOWN-PSEUDO": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-UNKNOWN-UNIT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "CSS-QUAL-UNNEEDED-VENDOR-PREFIX": {
+  "status": "stable",
+  "variants": 1
+ },
  "DOCKER-MIG-COMPOSE-VERSION-OBSOLETE": {
   "status": "stable",
   "variants": 2
@@ -1619,6 +1747,94 @@
   "status": "stable",
   "variants": 2
  },
+ "HTML-A11Y-AMBIGUOUS-LINK-TEXT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-ARIA-INVALID-ATTRIBUTE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-ARIA-INVALID-ROLE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-ARIA-LABEL-ON-GENERIC": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-ARIA-REQUIRED-ATTRIBUTE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-AUTOCOMPLETE-INVALID": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-BUTTON-WITHOUT-NAME": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-CONTROL-WITHOUT-LABEL": {
+  "status": "stable",
+  "variants": 2
+ },
+ "HTML-A11Y-DUPLICATE-ID": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-EMPTY-HEADING": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-HEADING-SKIPPED-LEVEL": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-IMG-REDUNDANT-ALT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-INPUT-IMAGE-WITHOUT-ALT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-LANG-INVALID": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-MAIN-LANDMARK-MISSING": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-MARQUEE-OR-BLINK": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-MOUSE-WITHOUT-KEYBOARD": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-NESTED-INTERACTIVE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-ROLE-IMG-WITHOUT-NAME": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-TABLE-WITHOUT-HEADERS": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-TH-INVALID-SCOPE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "HTML-A11Y-VIDEO-WITHOUT-CAPTIONS": {
+  "status": "stable",
+  "variants": 1
+ },
  "HTML-MAINT-ACCESSKEY-ATTRIBUTE": {
   "status": "stable",
   "variants": 1
@@ -1649,7 +1865,7 @@
  },
  "HTML-MAINT-EMPTY-ANCHOR": {
   "status": "stable",
-  "variants": 1
+  "variants": 2
  },
  "HTML-MAINT-FIXME-COMMENT": {
   "status": "stable",
@@ -1657,7 +1873,7 @@
  },
  "HTML-MAINT-FRAME-WITHOUT-TITLE": {
   "status": "stable",
-  "variants": 1
+  "variants": 2
  },
  "HTML-MAINT-HANDLER-ON-STATIC-ELEMENT": {
   "status": "stable",
@@ -1665,7 +1881,7 @@
  },
  "HTML-MAINT-IMG-WITHOUT-ALT": {
   "status": "stable",
-  "variants": 1
+  "variants": 2
  },
  "HTML-MAINT-LEGEND-OUTSIDE-FIELDSET": {
   "status": "stable",
@@ -1705,7 +1921,7 @@
  },
  "HTML-MAINT-ROLE-WITHOUT-TABINDEX": {
   "status": "stable",
-  "variants": 1
+  "variants": 2
  },
  "HTML-MAINT-SCOPE-ON-NON-TH": {
   "status": "stable",
@@ -1717,7 +1933,7 @@
  },
  "HTML-MAINT-TH-WITHOUT-SCOPE-OR-ID": {
   "status": "stable",
-  "variants": 1
+  "variants": 2
  },
  "HTML-MAINT-VIEWPORT-BLOCKS-ZOOM": {
   "status": "stable",
@@ -1795,11 +2011,19 @@
   "status": "stable",
   "variants": 2
  },
+ "JAVA-MAINT-ATOMIC-EQUALS": {
+  "status": "stable",
+  "variants": 4
+ },
  "JAVA-MAINT-BIT-OP-IDENTITY": {
   "status": "stable",
   "variants": 2
  },
  "JAVA-MAINT-BOOLEAN-LITERAL-COMPARISON": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JAVA-MAINT-BYTE-SIGN-EXTENSION-IN-SHIFT": {
   "status": "stable",
   "variants": 2
  },
@@ -1847,6 +2071,10 @@
   "status": "stable",
   "variants": 2
  },
+ "JAVA-MAINT-COMPARETO-OVERLOAD": {
+  "status": "stable",
+  "variants": 3
+ },
  "JAVA-MAINT-COMPARETO-SPECIFIC-VALUE": {
   "status": "stable",
   "variants": 2
@@ -1883,6 +2111,10 @@
   "status": "stable",
   "variants": 2
  },
+ "JAVA-MAINT-DATE-FIELD-OUT-OF-RANGE": {
+  "status": "stable",
+  "variants": 2
+ },
  "JAVA-MAINT-DEEP-NESTING": {
   "status": "stable",
   "variants": 2
@@ -1890,6 +2122,10 @@
  "JAVA-MAINT-DEFAULT-NOT-LAST": {
   "status": "stable",
   "variants": 2
+ },
+ "JAVA-MAINT-DOUBLE-CHECKED-LOCKING": {
+  "status": "stable",
+  "variants": 3
  },
  "JAVA-MAINT-DUPLICATE-BRANCH": {
   "status": "stable",
@@ -1914,6 +2150,10 @@
  "JAVA-MAINT-EMPTY-FUNCTION": {
   "status": "stable",
   "variants": 6
+ },
+ "JAVA-MAINT-EMPTY-STATEMENT": {
+  "status": "stable",
+  "variants": 2
  },
  "JAVA-MAINT-EMPTY-ZIP-ENTRY": {
   "status": "stable",
@@ -2071,6 +2311,14 @@
   "status": "stable",
   "variants": 2
  },
+ "JAVA-MAINT-LOOP-LIST-REPLACE-ALL": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JAVA-MAINT-LOOP-MULTIPLE-JUMPS": {
+  "status": "stable",
+  "variants": 2
+ },
  "JAVA-MAINT-LOOP-NEVER-RUNS": {
   "status": "stable",
   "variants": 2
@@ -2133,13 +2381,17 @@
  },
  "JAVA-MAINT-OVERWRITTEN-ELEMENT": {
   "status": "stable",
-  "variants": 2
+  "variants": 4
  },
  "JAVA-MAINT-PARAMETER-REASSIGNED": {
   "status": "stable",
   "variants": 6
  },
  "JAVA-MAINT-PREPARE-STATEMENT-IN-LOOP": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JAVA-MAINT-PREPARED-STATEMENT-PARAM-SET-TWICE": {
   "status": "stable",
   "variants": 2
  },
@@ -2155,11 +2407,23 @@
   "status": "stable",
   "variants": 4
  },
+ "JAVA-MAINT-RECORD-ACCESSOR-IN-COMPACT-CONSTRUCTOR": {
+  "status": "stable",
+  "variants": 3
+ },
  "JAVA-MAINT-RECORD-SERIALVERSIONUID-ZERO": {
   "status": "stable",
   "variants": 3
  },
  "JAVA-MAINT-REDUNDANT-PARENTHESES": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JAVA-MAINT-REFLECTION-ON-SOURCE-ANNOTATION": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JAVA-MAINT-REPEATABLE-ANNOTATION-WRAPPED": {
   "status": "stable",
   "variants": 2
  },
@@ -2307,7 +2571,15 @@
   "status": "stable",
   "variants": 2
  },
+ "JAVA-MAINT-STREAM-READ-RESULT-IGNORED": {
+  "status": "stable",
+  "variants": 2
+ },
  "JAVA-MAINT-STRING-CONCAT-IN-LOOP": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JAVA-MAINT-STRING-EQUALS-BUILDER": {
   "status": "stable",
   "variants": 2
  },
@@ -2327,9 +2599,21 @@
   "status": "stable",
   "variants": 6
  },
+ "JAVA-MAINT-SWITCH-TOO-FEW-CASES": {
+  "status": "stable",
+  "variants": 2
+ },
  "JAVA-MAINT-SWITCH-WITHOUT-DEFAULT": {
   "status": "stable",
   "variants": 4
+ },
+ "JAVA-MAINT-SYNC-ON-NON-FINAL-FIELD": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JAVA-MAINT-SYNC-ON-VALUE-BASED": {
+  "status": "stable",
+  "variants": 2
  },
  "JAVA-MAINT-SYNCHRONIZED-ON-LOCK-OBJECT": {
   "status": "stable",
@@ -2374,6 +2658,10 @@
   "status": "stable",
   "variants": 4
  },
+ "JAVA-MAINT-TIMEZONE-INVALID-ID": {
+  "status": "stable",
+  "variants": 2
+ },
  "JAVA-MAINT-TODO-COMMENT": {
   "status": "stable",
   "variants": 4
@@ -2398,6 +2686,10 @@
   "status": "stable",
   "variants": 2
  },
+ "JAVA-MAINT-UNSYNCHRONIZED-GETTER": {
+  "status": "stable",
+  "variants": 2
+ },
  "JAVA-MAINT-UNUSED-IMPORT": {
   "status": "stable",
   "variants": 4
@@ -2417,6 +2709,10 @@
  "JAVA-MAINT-UNUSED-PRIVATE-METHOD": {
   "status": "stable",
   "variants": 6
+ },
+ "JAVA-MAINT-URL-EQUALS-HASHCODE": {
+  "status": "stable",
+  "variants": 4
  },
  "JAVA-MAINT-USELESS-BIT-OPERATION": {
   "status": "stable",
@@ -2442,7 +2738,15 @@
   "status": "stable",
   "variants": 2
  },
+ "JAVA-MAINT-WAIT-ON-CONDITION": {
+  "status": "stable",
+  "variants": 2
+ },
  "JAVA-MAINT-WAIT-ON-THREAD": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JAVA-MAINT-WAIT-WITH-SEVERAL-LOCKS": {
   "status": "stable",
   "variants": 2
  },
@@ -3046,6 +3350,10 @@
   "status": "stable",
   "variants": 3
  },
+ "JAVA-SEC-RANDOM-SECURITY-CONTEXT": {
+  "status": "stable",
+  "variants": 3
+ },
  "JAVA-SEC-REGEX-INJECTION": {
   "status": "stable",
   "variants": 2
@@ -3096,7 +3404,7 @@
  },
  "JAVA-SEC-STATIC-DATEFORMAT": {
   "status": "stable",
-  "variants": 3
+  "variants": 6
  },
  "JAVA-SEC-STATIC-IV": {
   "status": "stable",
@@ -3119,6 +3427,10 @@
   "variants": 2
  },
  "JAVA-SEC-WEAK-HASH-001": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JAVA-SEC-WEAK-HASH-SECURITY-CONTEXT": {
   "status": "stable",
   "variants": 2
  },
@@ -3266,6 +3578,90 @@
   "status": "stable",
   "variants": 2
  },
+ "JS-A11Y-AMBIGUOUS-LINK-TEXT": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-ARIA-INVALID-ATTRIBUTE": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-ARIA-INVALID-ROLE": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-ARIA-LABEL-ON-GENERIC": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-ARIA-REQUIRED-ATTRIBUTE": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-AUTOCOMPLETE-INVALID": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-AUTOPLAY-WITH-SOUND": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-BUTTON-WITHOUT-NAME": {
+  "status": "stable",
+  "variants": 6
+ },
+ "JS-A11Y-CONTROL-WITHOUT-LABEL": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-DUPLICATE-ID": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-EMPTY-HEADING": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-HEADING-SKIPPED-LEVEL": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-IMG-REDUNDANT-ALT": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-INPUT-IMAGE-WITHOUT-ALT": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-LANG-INVALID": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-MOUSE-WITHOUT-KEYBOARD": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-NESTED-INTERACTIVE": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-OBJECT-WITHOUT-ALTERNATIVE": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-ROLE-IMG-WITHOUT-NAME": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-TABLE-WITHOUT-HEADERS": {
+  "status": "stable",
+  "variants": 3
+ },
+ "JS-A11Y-TH-INVALID-SCOPE": {
+  "status": "stable",
+  "variants": 3
+ },
  "JS-LLM-NO-MAX-TOKENS": {
   "status": "stable",
   "variants": 2
@@ -3306,11 +3702,19 @@
   "status": "stable",
   "variants": 2
  },
+ "JS-MAINT-ARRAY-STRING-INDEX": {
+  "status": "stable",
+  "variants": 2
+ },
  "JS-MAINT-ASSERT-SAME-ARGUMENT": {
   "status": "stable",
   "variants": 2
  },
  "JS-MAINT-AUTOFOCUS-ATTRIBUTE": {
+  "status": "stable",
+  "variants": 2
+ },
+ "JS-MAINT-AWAIT-NON-PROMISE": {
   "status": "stable",
   "variants": 2
  },
@@ -3442,6 +3846,10 @@
   "status": "stable",
   "variants": 2
  },
+ "JS-MAINT-IN-ON-PRIMITIVE": {
+  "status": "stable",
+  "variants": 3
+ },
  "JS-MAINT-INDEXOF-POSITIVE-CHECK": {
   "status": "stable",
   "variants": 2
@@ -3537,6 +3945,10 @@
  "JS-MAINT-SIZE-COMPARED-TO-NEGATIVE": {
   "status": "stable",
   "variants": 2
+ },
+ "JS-MAINT-STRICT-EQUALITY-DISSIMILAR-TYPES": {
+  "status": "stable",
+  "variants": 3
  },
  "JS-MAINT-STRICT-RESERVED-IDENTIFIER": {
   "status": "stable",
@@ -3707,6 +4119,10 @@
   "variants": 2
  },
  "JS-MOD-JSON-CLONE-001": {
+  "status": "stable",
+  "variants": 15
+ },
+ "JS-MOD-JSON-CLONE-REACTIVE": {
   "status": "stable",
   "variants": 3
  },
@@ -3888,7 +4304,7 @@
  },
  "JS-QUAL-NO-DUPLICATE-IMPORTS": {
   "status": "stable",
-  "variants": 2
+  "variants": 12
  },
  "JS-QUAL-NO-ELSE-RETURN": {
   "status": "stable",
@@ -4821,6 +5237,10 @@
  "KT-MAINT-INDEX-NOT-NULL-ASSERTED": {
   "status": "stable",
   "variants": 3
+ },
+ "KT-MAINT-INDEXED-ACCESS-OPERATOR": {
+  "status": "stable",
+  "variants": 2
  },
  "KT-MAINT-JDBC-ZERO-INDEX": {
   "status": "stable",
@@ -7082,6 +7502,10 @@
   "status": "stable",
   "variants": 1
  },
+ "PHP-MAINT-INCONSISTENT-RETURN": {
+  "status": "stable",
+  "variants": 2
+ },
  "PHP-MAINT-LOCAL-NAMING": {
   "status": "stable",
   "variants": 1
@@ -7158,6 +7582,10 @@
   "status": "stable",
   "variants": 3
  },
+ "PHP-MAINT-SWITCH-TOO-FEW-CASES": {
+  "status": "stable",
+  "variants": 2
+ },
  "PHP-MAINT-SWITCH-WITHOUT-DEFAULT": {
   "status": "stable",
   "variants": 1
@@ -7211,6 +7639,10 @@
   "variants": 1
  },
  "PHP-MAINT-VARIABLE-VARIABLE": {
+  "status": "stable",
+  "variants": 2
+ },
+ "PHP-MAINT-VOID-RESULT-USED": {
   "status": "stable",
   "variants": 2
  },
@@ -8102,6 +8534,10 @@
   "status": "stable",
   "variants": 2
  },
+ "PY-MAINT-ANNOTATION-MISMATCH": {
+  "status": "stable",
+  "variants": 2
+ },
  "PY-MAINT-ANY-ALL-LIST-COMPREHENSION": {
   "status": "stable",
   "variants": 2
@@ -8115,6 +8551,10 @@
   "variants": 3
  },
  "PY-MAINT-ASYNC-TIMEOUT-PARAMETER": {
+  "status": "stable",
+  "variants": 3
+ },
+ "PY-MAINT-ASYNC-WITHOUT-AWAIT": {
   "status": "stable",
   "variants": 3
  },
@@ -8143,6 +8583,10 @@
   "variants": 3
  },
  "PY-MAINT-BS4-NO-PARSER": {
+  "status": "stable",
+  "variants": 3
+ },
+ "PY-MAINT-CALL-NON-CALLABLE": {
   "status": "stable",
   "variants": 3
  },
@@ -8213,6 +8657,10 @@
  "PY-MAINT-DICT-LOOKUP-IN-KEY-LOOP": {
   "status": "stable",
   "variants": 2
+ },
+ "PY-MAINT-DICT-UNPACK-NON-MAPPING": {
+  "status": "stable",
+  "variants": 3
  },
  "PY-MAINT-DOUBLE-NOT": {
   "status": "stable",
@@ -8290,19 +8738,31 @@
   "status": "stable",
   "variants": 6
  },
+ "PY-MAINT-IDENTITY-DISSIMILAR-TYPES": {
+  "status": "stable",
+  "variants": 3
+ },
  "PY-MAINT-IDENTITY-WITH-NEW-OBJECT": {
   "status": "stable",
   "variants": 3
  },
  "PY-MAINT-IGNORED-RESULT": {
   "status": "stable",
-  "variants": 2
+  "variants": 4
  },
  "PY-MAINT-IMMEDIATELY-RETURNED-VARIABLE": {
   "status": "stable",
   "variants": 3
  },
  "PY-MAINT-IMPLICIT-CONCAT-IN-COLLECTION": {
+  "status": "stable",
+  "variants": 3
+ },
+ "PY-MAINT-IN-NON-CONTAINER": {
+  "status": "stable",
+  "variants": 2
+ },
+ "PY-MAINT-INCOMPATIBLE-ADDITION": {
   "status": "stable",
   "variants": 3
  },
@@ -8420,7 +8880,7 @@
  },
  "PY-MAINT-OVERWRITTEN-ELEMENT": {
   "status": "stable",
-  "variants": 2
+  "variants": 4
  },
  "PY-MAINT-PARAMETER-REASSIGNED": {
   "status": "stable",
@@ -8469,6 +8929,10 @@
  "PY-MAINT-RETURN-BOOLEAN-IF": {
   "status": "stable",
   "variants": 2
+ },
+ "PY-MAINT-RETURN-HINT-MISMATCH": {
+  "status": "stable",
+  "variants": 3
  },
  "PY-MAINT-RETURNS-SAME-VALUE": {
   "status": "stable",
@@ -8529,6 +8993,10 @@
   "status": "stable",
   "variants": 2
  },
+ "PY-MAINT-TEMPLATE-STRING-CONCAT": {
+  "status": "stable",
+  "variants": 3
+ },
  "PY-MAINT-TF-GATHER-VALIDATE-INDICES": {
   "status": "stable",
   "variants": 3
@@ -8552,6 +9020,10 @@
  "PY-MAINT-UNREACHABLE-CODE": {
   "status": "stable",
   "variants": 4
+ },
+ "PY-MAINT-UNREAD-PRIVATE-ATTRIBUTE": {
+  "status": "stable",
+  "variants": 3
  },
  "PY-MAINT-UNUSED-LOCAL": {
   "status": "stable",
@@ -9014,6 +9486,10 @@
   "variants": 10
  },
  "PY-SEC-HASH-WEAK": {
+  "status": "stable",
+  "variants": 2
+ },
+ "PY-SEC-HASH-WEAK-SECURITY-CONTEXT": {
   "status": "stable",
   "variants": 2
  },
@@ -11296,6 +11772,10 @@
   "status": "stable",
   "variants": 1
  },
+ "TS-MAINT-ASYNC-WITHOUT-AWAIT": {
+  "status": "stable",
+  "variants": 3
+ },
  "TS-MAINT-ENUM-MIXED-INITIALIZERS": {
   "status": "stable",
   "variants": 3
@@ -11305,6 +11785,10 @@
   "variants": 3
  },
  "TS-MAINT-PUBLIC-STATIC-MUTABLE": {
+  "status": "stable",
+  "variants": 3
+ },
+ "TS-MAINT-VOID-RESULT-USED": {
   "status": "stable",
   "variants": 3
  },
@@ -11707,6 +12191,130 @@
  "TS-QUAL-USE-UNKNOWN-IN-CATCH-CALLBACK-VARIABLE": {
   "status": "stable",
   "variants": 2
+ },
+ "VUE-A11Y-AMBIGUOUS-LINK-TEXT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-ARIA-INVALID-ATTRIBUTE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-ARIA-INVALID-ROLE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-ARIA-LABEL-ON-GENERIC": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-ARIA-REQUIRED-ATTRIBUTE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-AUTOCOMPLETE-INVALID": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-AUTOPLAY-WITH-SOUND": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-BUTTON-WITHOUT-NAME": {
+  "status": "stable",
+  "variants": 2
+ },
+ "VUE-A11Y-CLICK-WITHOUT-KEYBOARD": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-CONTROL-WITHOUT-LABEL": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-DUPLICATE-ID": {
+  "status": "stable",
+  "variants": 2
+ },
+ "VUE-A11Y-EMPTY-HEADING": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-HEADING-SKIPPED-LEVEL": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-IFRAME-WITHOUT-TITLE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-IMG-REDUNDANT-ALT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-IMG-WITHOUT-ALT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-INPUT-IMAGE-WITHOUT-ALT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-LANG-INVALID": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-LINK-WITHOUT-NAME": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-MARQUEE-OR-BLINK": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-MOUSE-WITHOUT-KEYBOARD": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-NESTED-INTERACTIVE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-NUXTUI-LINK-COMPONENT-WITHOUT-NAME": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-NUXTUI-NUXT-IMG-WITHOUT-ALT": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-NUXTUI-UBUTTON-ICON-WITHOUT-LABEL": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-OBJECT-WITHOUT-ALTERNATIVE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-POSITIVE-TABINDEX": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-ROLE-IMG-WITHOUT-NAME": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-TABLE-WITHOUT-HEADERS": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-TH-INVALID-SCOPE": {
+  "status": "stable",
+  "variants": 1
+ },
+ "VUE-A11Y-VIDEO-WITHOUT-CAPTIONS": {
+  "status": "stable",
+  "variants": 1
  },
  "VUE-MIG-CHILDREN-001": {
   "status": "stable",

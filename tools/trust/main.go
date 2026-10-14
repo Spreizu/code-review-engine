@@ -11,12 +11,13 @@
 //   - corpus: tools/corpus/results/<label>/*.json (pinned OSS repos and benchmark apps), with the
 //     same anomaly thresholds as `corpus summarize` (volume, per-repo concentration, file share),
 //     computed on OSS repos only (vulnerable apps are expected to light up);
+//   - inline linter suppressions and real-linter agreement (results/<label>/suppressions.json,
+//     agree.json): matching locations count as labelled true positives;
+//   - lint autofix-commit differential (results/<label>/autofix.json) and security fixdiff.json;
 //   - metamorphic variants (semantics-preserving rewrites of examples.bad/good/regressions):
 //     blank-line padding, an unrelated leading comment, consistent identifier renaming. A rule is
 //     unstable when a variant of a must-match example stops matching or a must-not-match variant
 //     starts matching.
-//
-// Not automated yet (see PLAN.md): fix-commit differential and AI-generated adversarial near-misses.
 package main
 
 import (
@@ -66,7 +67,7 @@ func load() []*rules.Rule {
 
 func main() {
 	if len(os.Args) < 2 {
-		die(fmt.Errorf("usage: trust classify|metamorphic|compute"))
+		die(fmt.Errorf("usage: trust classify|metamorphic|compute|gated"))
 	}
 	switch os.Args[1] {
 	case "metamorphic":
@@ -75,6 +76,8 @@ func main() {
 		compute(os.Args[2:])
 	case "classify":
 		classify()
+	case "gated":
+		gated(os.Args[2:])
 	default:
 		die(fmt.Errorf("unknown subcommand %q", os.Args[1]))
 	}
@@ -427,7 +430,7 @@ func compute(args []string) {
 	// A label counts only while the current run still produces that hit: a false positive fixed
 	// at its root (the rule no longer matches; the case is a regression example) stops counting
 	// against the rule, and a true positive the rule lost stops counting for it.
-	labelled, labelledTP := map[string]int{}, map[string]int{}
+	labelled, labelledTP, labelledFP := map[string]int{}, map[string]int{}, map[string]int{}
 	stale := 0
 	for id, hs := range lbl.Rules {
 		f := lab[id]
@@ -443,6 +446,7 @@ func compute(args []string) {
 				labelledTP[id]++
 			case "fp":
 				f.FP++
+				labelledFP[id]++
 			default:
 				continue
 			}
@@ -451,6 +455,67 @@ func compute(args []string) {
 		lab[id] = f
 	}
 	fmt.Printf("labels: %d no longer produced by the current run (fixed or lost), not counted\n", stale)
+	taken := map[string]bool{}
+	for id, hs := range lbl.Rules {
+		for _, h := range hs {
+			taken[fmt.Sprintf("%s|%s|%s|%d", id, h.Repo, h.Path, h.Line)] = true
+		}
+	}
+	// Inline linter suppressions and real-linter agreement (tools/corpus suppressions / agree).
+	ingestSpots := func(file, countKey string) {
+		b, err := os.ReadFile(filepath.Join("tools/corpus/results", *label, file))
+		if err != nil {
+			return
+		}
+		var wrap struct {
+			Rules map[string]struct {
+				TP    int `json:"tp"`
+				Both  int `json:"both"`
+				Spots []struct {
+					Repo, Path string
+					Line       int
+				} `json:"spots"`
+			} `json:"rules"`
+		}
+		if json.Unmarshal(b, &wrap) != nil || wrap.Rules == nil {
+			return
+		}
+		n := 0
+		for id, v := range wrap.Rules {
+			f := lab[id]
+			f.Rule = id
+			for _, h := range v.Spots {
+				k := fmt.Sprintf("%s|%s|%s|%d", id, h.Repo, h.Path, h.Line)
+				if taken[k] || !present[k] {
+					continue
+				}
+				taken[k] = true
+				f.TP++
+				labelledTP[id]++
+				labelled[id]++
+				n++
+			}
+			lab[id] = f
+		}
+		fmt.Printf("%s: %d labelled TPs (deduped against labels.yaml and the other miners)\n", countKey, n)
+	}
+	ingestSpots("suppressions.json", "suppressions")
+	ingestSpots("agree.json", "agree")
+	// Lint autofix-commit differential: any rule (not only security). Style churn on an
+	// explicit lint-fix commit is evidence, unlike mixed security-fix commits.
+	var af map[string]struct{ Fixed, Introduced int }
+	if b, err := os.ReadFile(filepath.Join("tools/corpus/results", *label, "autofix.json")); err == nil {
+		die(json.Unmarshal(b, &af))
+	}
+	for id, v := range af {
+		f := lab[id]
+		f.Rule, f.TP, f.FP = id, f.TP+v.Fixed, f.FP+v.Introduced
+		lab[id] = f
+		if v.Fixed > 0 {
+			labelledTP[id] += v.Fixed
+			labelled[id] += v.Fixed
+		}
+	}
 	meta := map[string]MetaResult{}
 	if b, err := os.ReadFile(metaPath); err == nil {
 		die(json.Unmarshal(b, &meta))
@@ -465,7 +530,7 @@ func compute(args []string) {
 			}
 		}
 	}
-	held := 0
+	held, waived, sampledPromo := 0, 0, 0
 	out := map[string]*rules.Trust{}
 	for _, r := range all {
 		t := &rules.Trust{}
@@ -491,26 +556,41 @@ func compute(args []string) {
 		}
 		stable := m.Status != "unstable"
 		labOK := t.Labelled() && t.Precision() >= rules.TrustGate
+		// Volume anomalies (oss-total, per-repo, file share) say a pattern is common, not that it is
+		// wrong. They stop blocking once a stratified sample of the corpus hits (min(OSS hits, 20),
+		// tools/corpus/labels.yaml) has been reviewed with no false positive.
+		anomalous := len(t.Anomalies) > 0
+		sampled := false
+		if c := cs[r.ID]; c != nil && c.oss > 0 && labelled[r.ID] >= min(c.oss, sampleWaive) && labelledFP[r.ID] == 0 && labOK && stable {
+			sampled = true
+		}
+		if anomalous && sampled {
+			anomalous = false
+			waived++
+			for i := range t.Anomalies {
+				t.Anomalies[i] += " (waived: sampled review, 0 FP)"
+			}
+		}
 		switch {
 		case r.Shadow():
 			t.Level, t.Why = rules.TrustQuarantined, "status: shadow"
-		case t.TP >= rules.TrustProvenTP && t.Precision() >= rules.TrustProvenPrecision && stable && len(t.Anomalies) == 0:
+		case t.TP >= rules.TrustProvenTP && t.Precision() >= rules.TrustProvenPrecision && stable && !anomalous:
 			t.Level, t.Why = rules.TrustProven, "labelled external cases"
 		case !stable:
 			t.Level, t.Why = rules.TrustUnproven, "metamorphic variants change the result"
 		case t.Labelled() && !labOK:
 			t.Level, t.Why = rules.TrustUnproven, fmt.Sprintf("labelled precision %.2f < %.2f", t.Precision(), rules.TrustGate)
-		case labOK && len(t.Anomalies) == 0:
+		case labOK && !anomalous:
 			t.Level, t.Why = rules.TrustMeasured, "labelled external cases (below proven volume)"
-		case t.CorpusHits > 0 && len(t.Anomalies) == 0 && !grandfathered[r.ID]:
+		case t.CorpusHits > 0 && !anomalous && !grandfathered[r.ID]:
 			// Guard: silence of the anomaly flags is not evidence of precision on its own. A rule
 			// newly reaching this branch stays unproven (ai-confirm) until a sample of its corpus
 			// hits is reviewed in tools/corpus/labels.yaml (it then takes the labelled branch).
 			held++
 			t.Level, t.Why = rules.TrustUnproven, "corpus hits below every anomaly threshold, awaiting a sampled hit review (tools/corpus/labels.yaml)"
-		case t.CorpusHits > 0 && len(t.Anomalies) == 0:
+		case t.CorpusHits > 0 && !anomalous:
 			t.Level, t.Why = rules.TrustMeasured, "corpus hits below every anomaly threshold"
-		case len(t.Anomalies) > 0:
+		case anomalous:
 			t.Level, t.Why = rules.TrustUnproven, "corpus anomaly"
 		default:
 			t.Level, t.Why = rules.TrustUnproven, "own examples only"
@@ -531,9 +611,17 @@ func compute(args []string) {
 		// commits, triaged corpus hits); a taint rule needs the source-to-sink flow by construction.
 		realTP := t.FixFixed + labelledTP[r.ID]
 		realOK := r.Detection.Engine == "taint" || realTP >= rules.TrustProvenTP
-		if r.Detection.Mode == "ai-confirm" && !r.Shadow() && stable && len(t.Anomalies) == 0 && realOK && t.WilsonLB >= rules.TrustPromoteLB {
+		if r.Detection.Mode == "ai-confirm" && r.Precision != "low" && !r.Shadow() && stable && !anomalous && realOK && t.WilsonLB >= rules.TrustPromoteLB {
 			t.Promoted = true
 			t.Level, t.Why = rules.TrustProven, fmt.Sprintf("labelled external cases: TP %d, FP %d, unlabelled hits (OSS, other benchmark category) %d", t.TP, t.FP, unl)
+		}
+		// A declared precision: low rule keeps its AI confirmation (rulecheck requires it) whatever the labels say.
+		// A declared ai-confirm rule whose stratified corpus sample is all true positives (and that
+		// has enough real-code TPs) reports directly; unsampled hits are not counted as FPs here.
+		if !t.Promoted && r.Detection.Mode == "ai-confirm" && r.Precision != "low" && !r.Shadow() && sampled && realOK && t.Precision() >= rules.TrustProvenPrecision {
+			t.Promoted = true
+			sampledPromo++
+			t.Level, t.Why = rules.TrustProven, fmt.Sprintf("sampled corpus review: %d of %d OSS hits labelled, 0 FP (TP %d)", labelled[r.ID], cs[r.ID].oss, t.TP)
 		}
 		out[r.ID] = t
 	}
@@ -643,6 +731,10 @@ func compute(args []string) {
 	die(os.WriteFile(report, []byte(md.String()), 0o644))
 	fmt.Printf("promoted: %d\n", len(prom))
 	fmt.Printf("guard: %d rules with corpus-silence-only evidence held unproven pending sampled review\n", held)
+	fmt.Printf("waiver: %d rules with volume anomalies cleared by a sampled review (0 FP); %d ai-confirm rules promoted on a sampled review\n", waived, sampledPromo)
 	fmt.Printf("trust: proven=%d measured=%d unproven=%d quarantined=%d (deterministic demoted: %d; exact-api %d, of which unproven reporting directly %d) -> %s, %s\n",
 		tot.proven, tot.measured, tot.unproven, tot.quarantined, tot.demoted, tot.exact, tot.exactDirect, trustPath, report)
 }
+
+// sampleWaive: labelled corpus hits that lift a volume anomaly on an exact-match rule.
+const sampleWaive = 20

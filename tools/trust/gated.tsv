@@ -1,0 +1,64 @@
+JAVA-QUAL-COR-ENUM-ORDINAL-001	ordinal() has legitimate uses (bit sets, ordinal serialization); intent not decidable
+JAVA-QUAL-MOD-STRINGBUFFER-001	StringBuffer often required by APIs/type adapters (Matcher.appendReplacement pre-9, legacy signatures)
+JAVA-QUAL-OPT-001	Optional parameters are idiomatic in framework-bound methods (JAX-RS, Jackson)
+JAVA-QUAL-RES-JDBC-001	needs ownership/close-flow analysis (pools, JdbcTemplate, returned resources)
+JAVA-QUAL-VT-002	only an issue when the code runs on virtual threads and blocks
+JAVA-SEC-DESER-001	hotspot: depends on where the serialized data comes from
+JAVA-SEC-SERIAL-FILTER-002	hotspot: depends on where the serialized data comes from
+JAVA-SEC-RANDOM-001	depends on whether the value is security-sensitive
+JAVA-SIMP-IDX-DUPLICATE-HELPER	similar bodies are often deliberate overrides/variants
+PY-MAINT-CONTEXTMANAGER-WITHOUT-FINALLY	needs judgment whether post-yield code is cleanup (with/ExitStack already guard it)
+PY-SEC-BIND-ALL-INTERFACES	hotspot: container/server entrypoints must bind 0.0.0.0
+PY-SEC-DJANGO-CSRF-EXEMPT	hotspot: exempt views receiving external POSTs (IdP callbacks, webhooks) are legitimate
+PY-SEC-EVAL	hotspot: config loaders/REPLs exec trusted code; needs data-origin analysis
+PY-SEC-JINJA-AUTOESCAPE-FALSE	hotspot: Environment() for non-HTML output (YAML/INI/code generation) correctly omits autoescape
+PY-SEC-PICKLE-LOADS	hotspot: depends on data origin (local caches vs network); round-trips now excluded
+PY-SEC-TIMING-COMPARE	needs to know whether either operand is attacker-supplied
+GO-QUAL-ERRORF-NO-WRAP	intent: hiding the cause may be deliberate API; err may be a recover() value, not an error
+PY-SIMP-IDX-DUPLICATE-HELPER	cross-file duplicate detection; consolidation is a design call
+GO-SIMP-IDX-DUPLICATE-HELPER	cross-file duplicate detection; consolidation is a design call
+GO-QUAL-VET-COMPOSITES	needs the imported type kind (struct vs slice/map: net.IP, bson.D, MatcherSets); no cross-package types
+GO-QUAL-PANIC-FOR-ERRORS	registration/init-time panics are a deliberate API (echo v4 routes, favicon config)
+GO-QUAL-PANIC-IN-INIT-ERR	ignoring Atoi/Getwd/Hostname errors with a zero default is usually deliberate
+GO-SEC-SQL-STRING-BUILD	hotspot: table/identifier interpolation from config cannot be parameterized; needs taint source
+GO-SIMP-IDX-GLOBAL-LOCK-NO-LIMIT-NOTE	scalability advisory: registry/init-time locks are cold; needs workload knowledge
+GO-SIMP-IDX-NESTED-LOOP-NO-LIMIT-NOTE	scalability advisory: O(n*m) matters only when n,m are unbounded; needs domain knowledge
+JS-MOD-JSON-CLONE-001	JSON round-trip is often deliberate normalisation (drops undefined/functions, applies toJSON); structuredClone differs
+JS-MOD-NULLISH-001	|| vs ?? differ for "", 0, false, NaN (PORT || 3000, Number(x) || 1); needs types and intent
+JS-MOD-OPTCHAIN-001	a && a.b returns the falsy a in value contexts; ES5-targeted sources (lodash, jQuery plugins) cannot use ?.
+JS-QUAL-AWAIT-LOOP-001	sequential awaits are often required (ordering, stream backpressure, sleep/retry, test steps)
+JS-QUAL-WEB-FETCH-OK-001	tests assert status via expect/headers, data: URLs and benchmarks never fail; checking needs dataflow to the use
+JS-QUAL-WEB-SORT-DEFAULT-001	resolver keeps no element type: Object.keys()/string lists sort correctly; numeric arrays need element types
+JS-SEC-INNERHTML-001	hotspot: whether the value is sanitised/trusted (markdown renderers, templates) needs dataflow
+JS-SEC-NODE-CHILD-EXEC-INJECTION-001	remaining hits are maintainer scripts with repo-controlled values; needs taint source
+JS-SEC-WEB-MATH-RANDOM-SECURITY-001	hotspot: nearly all uses are UI/test jitter; security relevance depends on the use of the value
+JS-SIMP-IDX-MIDDLE-MAN	design advisory: Nest/MVC controllers forwarding to services are the intended layering
+JS-SIMP-IDX-DUPLICATE-HELPER	cross-file duplicate detection; consolidation is a design call
+TS-MOD-CFG-DECORATORS-001	Nest/Angular/TypeORM still require legacy decorators; needs dependency knowledge
+TS-MOD-SATISFIES-001	satisfies only fits when the literal fully conforms ({} as T placeholders, mocks); needs the type checker
+TS-QUAL-PREFER-NULLISH-COALESCING	needs the left operand type to be nullable (type-aware in typescript-eslint); 2/20 sampled on non-nullable operands
+KT-MAINT-INDEX-NOT-NULL-ASSERTED	receiver must be a Map (detekt MapGetWithNotNullAssertionOperator is type-resolved); 7/20 sampled on arrays/SavedStateHandle/Headers
+KT-MOD-KOTLINX-DATETIME-INSTANT	libraries on kotlinx-datetime -0.6.x-compat keep the old Instant deliberately; needs a dependency-version gate (6/20 sampled)
+KT-QUAL-DEPRECATED-NO-REPLACEWITH	ReplaceWith only applies when a replacement exists; overrides of Java-deprecated members and removals have none (7/20 sampled)
+KT-QUAL-ARRAYLIST-CTOR	no official recommendation; HashSet/HashMap differ from mutableSetOf/mutableMapOf (Linked*), concrete type may be required (5/20 sampled)
+KT-QUAL-MUTABLE-COLLECTION-API	whether callers are meant to mutate a returned collection is a design decision (OkHttpClient.Builder.interceptors()); structural FPs fixed, 15/20
+KT-QUAL-TRY-FINALLY-CLOSE	use{} needs a Closeable scoped to the block; conditional/lazy close and multi-step cleanup in finally are not convertible (2/20 sampled)
+KT-QUAL-UNSAFE-CAST	whether the cast target is guaranteed needs data-flow (typed futures, own invariants); 4/20 sampled on known types
+KT-QUAL-WHEN-SUBJECT-ELSE	exhaustive when over enum/sealed/Boolean subjects needs no else and is compiler-checked; needs subject types (4/20 sampled)
+KT-SIMP-IDX-DUPLICATE-HELPER	per-platform source sets (expect/actual) and parallel jdbc/r2dbc modules duplicate by design (7/20 sampled)
+PHP-MAINT-TEST-WITHOUT-ASSERTION	assertions often live in helpers, callbacks or mock expectations defined elsewhere; needs call-graph (5/20 sampled)
+PHP-MOD-OVERRIDE-ATTRIBUTE	needs the parent class/interface method set; private, new and test methods do not override (11/20 sampled)
+PHP-MOD-RANDOM-INT	rand()/mt_rand() are not deprecated; random_int matters only for security-sensitive values (4/20 sampled on sampling/test names)
+PHP-MOD-SHORT-ARRAY	style choice (some standards mandate array()); composer's loader keeps PHP 5.3 syntax deliberately (6/20 sampled)
+PHP-MOD-SHORT-LIST	list() is not deprecated; style preference only
+PHP-QUAL-ERROR-SUPPRESSION	@ with an explicit return-value check is the documented way to handle filesystem/socket warnings (7/20 sampled)
+PHP-QUAL-STRICT-TYPES-MISSING	project policy; templates/scripts/generated fixtures without typed calls gain nothing (4/20 sampled)
+PHP-SEC-GITHUB-TOKEN	all sampled hits are synthetic tokens in test fixtures; needs placeholder/test-fixture recognition (18/18)
+PHP-SEC-HASH-COMPARE	name-based (token/hash/signature ===); most are null/empty/CLI-token checks, needs secret data-flow (9/20)
+PHP-SEC-SHELL-INJECTION	needs taint: commands built from internal state (stty mode) are not injectable (5/17)
+PHP-SIMP-IDX-DUPLICATE-HELPER	parallel adapter versions (PhpseclibV2/V3) and fixtures duplicate by design (5/20)
+JAVA-MAINT-ASSERTTHROWS-SEVERAL-CALLS	extra calls in the lambda are mostly argument construction or setup (new X(), reader helpers); which call is meant to throw is not decidable statically
+JAVA-MAINT-RESTRICTED-IDENTIFIER	var/record/permits are legal variable and parameter names (JLS 3.9 restricts them only as type identifiers); readability only, intent not decidable
+JAVA-MAINT-SET-ACCESSIBLE	security hotspot: reflection libraries (gson, jackson, mybatis) and tests need setAccessible by design; needs human review, not a defect
+JAVA-MAINT-TEST-WITHOUT-ASSERTION	no-exception tests, fuzz regressions and assertion helpers (Guava EqualsTester, log fixtures) are deliberate; intent not decidable
+JAVA-MOD-REC-001	converting public API value classes (DataSize, Duration, ErrorMessage) to records renames accessors and changes the serialized form; intent not decidable
