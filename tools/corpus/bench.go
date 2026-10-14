@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -330,7 +331,7 @@ func vulnApps(out *strings.Builder, repos []Repo, label string) {
 		for c, ms := range chal {
 			hr, hc := false, false
 			for _, m := range ms {
-				// ponytail: markers x findings of one app (a few thousand pairs); a dev-tool report.
+				// markers x findings of one app (a few thousand pairs): fine for a dev-tool report.
 				for _, f := range fs {
 					if f.Kind != "security" || f.Location.Path != m.file || m.line < f.Location.StartLine-2 || m.line > f.Location.EndLine+2 {
 						continue
@@ -357,4 +358,116 @@ func vulnApps(out *strings.Builder, repos []Repo, label string) {
 			r.Name, len(chal), hitRev, 100*ratio(hitRev, len(chal)), hitCand, 100*ratio(hitCand, len(chal)), strings.Join(missed, ", "))
 	}
 	out.WriteString(marked.String())
+	documentedVulns(out, repos, label)
+}
+
+// Documented vulnerability lists. DVWA ships every vulnerability module at levels low/medium/high
+// (vulnerable by design) and impossible (the documented secure version); WebGoat lessons each
+// teach one documented weakness. A level/lesson counts as found when a security finding with one
+// of the module's CWEs lies in it; a finding of those CWEs in an impossible level is a false positive.
+var dvwaCWE = map[string][]string{
+	"sqli": {"89"}, "sqli_blind": {"89"}, "exec": {"78", "77"}, "fi": {"98", "22", "73"},
+	"xss_r": {"79"}, "xss_s": {"79"}, "xss_d": {"79"}, "open_redirect": {"601"}, "upload": {"434"},
+	"csrf": {"352"}, "weak_id": {"330", "340", "384"}, "brute": {"307"}, "cryptography": {"327", "328", "326"},
+	"javascript": {"602", "95"}, "csp": {"693", "79"}, "bac": {"285", "639", "862"}, "authbypass": {"285", "862"},
+}
+
+var webgoatCWE = map[string][]string{
+	"sqlinjection": {"89"}, "pathtraversal": {"22"}, "xss": {"79"}, "xxe": {"611"}, "ssrf": {"918"},
+	"deserialization": {"502"}, "jwt": {"345", "347", "327", "798"}, "cryptography": {"327", "328", "798"},
+	"csrf": {"352"}, "idor": {"639"}, "missingac": {"285", "862"}, "vulnerablecomponents": {"502", "1035"},
+	"spoofcookie": {"565", "327"}, "hijacksession": {"330", "384"}, "insecurelogin": {"319"},
+	"passwordreset": {"640"}, "commandinjection": {"78"}, "openredirect": {"601"}, "passwordstorage": {"916", "328"},
+}
+
+func hasCWE(f rawFinding, want []string) bool {
+	for _, c := range f.CWE {
+		if slices.Contains(want, strings.TrimPrefix(c, "CWE-")) {
+			return true
+		}
+	}
+	return false
+}
+
+func documentedVulns(out *strings.Builder, repos []Repo, label string) {
+	for _, r := range repos {
+		if r.Name != "DVWA" && r.Name != "WebGoat" {
+			continue
+		}
+		fs, err := readRaw(label, r.Name)
+		if err != nil {
+			continue
+		}
+		type tally struct{ rev, cand, n int }
+		score := func(prefix string, want []string) (rev, cand bool) {
+			for _, f := range fs {
+				if f.Kind != "security" || !strings.HasPrefix(f.Location.Path, prefix) || !hasCWE(f, want) {
+					continue
+				}
+				switch f.Status {
+				case "confirmed", "ai_confirmed":
+					rev, cand = true, true
+				case "pending_ai":
+					cand = true
+				}
+			}
+			return
+		}
+		if r.Name == "DVWA" {
+			var vul, fp tally
+			var missed, fps []string
+			mods := slices.Sorted(maps.Keys(dvwaCWE))
+			for _, m := range mods {
+				for _, lvl := range []string{"low", "medium", "high", "impossible"} {
+					p := "vulnerabilities/" + m + "/source/" + lvl + "."
+					if _, err := os.Stat(filepath.Join(cacheDir(r), p+"php")); err != nil {
+						if _, err := os.Stat(filepath.Join(cacheDir(r), p+"js")); err != nil {
+							continue
+						}
+					}
+					rv, cd := score(p, dvwaCWE[m])
+					t := &vul
+					if lvl == "impossible" {
+						t = &fp
+					}
+					t.n++
+					if rv {
+						t.rev++
+					}
+					if cd {
+						t.cand++
+					}
+					if lvl != "impossible" && !cd {
+						missed = append(missed, m+"/"+lvl)
+					}
+					if lvl == "impossible" && cd {
+						fps = append(fps, m)
+					}
+				}
+			}
+			fmt.Fprintf(out, "\n## DVWA documented modules\n\n%d vulnerable levels (low/medium/high): found on the review list %d (%.0f%%), as candidates %d (%.0f%%). %d impossible (secure) levels flagged: review %d, candidates %d (%s). Missed: %s\n",
+				vul.n, vul.rev, 100*ratio(vul.rev, vul.n), vul.cand, 100*ratio(vul.cand, vul.n), fp.n, fp.rev, fp.cand, strings.Join(fps, ", "), strings.Join(missed, ", "))
+		} else {
+			var t tally
+			var missed []string
+			for _, l := range slices.Sorted(maps.Keys(webgoatCWE)) {
+				p := "src/main/java/org/owasp/webgoat/lessons/" + l + "/"
+				if _, err := os.Stat(filepath.Join(cacheDir(r), p)); err != nil {
+					continue
+				}
+				rv, cd := score(p, webgoatCWE[l])
+				t.n++
+				if rv {
+					t.rev++
+				}
+				if cd {
+					t.cand++
+				} else {
+					missed = append(missed, l)
+				}
+			}
+			fmt.Fprintf(out, "\n## WebGoat documented lessons\n\n%d lessons with a code-level weakness: found on the review list %d (%.0f%%), as candidates %d (%.0f%%). Missed: %s\n",
+				t.n, t.rev, 100*ratio(t.rev, t.n), t.cand, 100*ratio(t.cand, t.n), strings.Join(missed, ", "))
+		}
+	}
 }

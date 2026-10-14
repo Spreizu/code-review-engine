@@ -9,6 +9,9 @@
 //	go run ./tools/corpus summarize -label after      # results/after/report.md (+ flags)
 //	go run ./tools/corpus diff before after           # per-pack and per-rule deltas
 //	go run ./tools/corpus sample -label after -rule ID -n 10   # findings to triage
+//	go run ./tools/corpus suppressions -label after  # inline linter disables as labelled TPs
+//	go run ./tools/corpus autofix -label after -crev BIN  # lint autofix-commit differential
+//	go run ./tools/corpus agree -label after         # real linters vs crev on the same files
 package main
 
 import (
@@ -27,6 +30,7 @@ import (
 
 	"gopkg.in/yaml.v3"
 
+	"github.com/elmo/code-review-engine/internal/findings"
 	"github.com/elmo/code-review-engine/internal/rules"
 )
 
@@ -73,7 +77,7 @@ func die(err error) {
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, "usage: corpus fetch|run|summarize|diff|sample|fixtures|bench [flags]")
+		fmt.Fprintln(os.Stderr, "usage: corpus fetch|run|summarize|diff|sample|fixtures|bench|fixdiff|suppressions|autofix|agree [flags]")
 		os.Exit(2)
 	}
 	switch os.Args[1] {
@@ -97,6 +101,12 @@ func main() {
 		fixdiff(os.Args[2:])
 	case "slow":
 		slow(os.Args[2:])
+	case "suppressions":
+		suppressions(os.Args[2:])
+	case "autofix":
+		autofix(os.Args[2:])
+	case "agree":
+		agree(os.Args[2:])
 	default:
 		die(fmt.Errorf("unknown command %q", os.Args[1]))
 	}
@@ -191,13 +201,14 @@ func selected(c Corpus, only, kind string) []Repo {
 
 // Hit is the compact per-finding record kept in results (the raw report stays in raw/).
 type Hit struct {
-	Rule     string `json:"rule"`
-	Pack     string `json:"pack"`
-	Status   string `json:"status"`
-	Severity string `json:"severity"`
-	Path     string `json:"path"`
-	Line     int    `json:"line"`
-	Snippet  string `json:"snippet,omitempty"`
+	Rule         string                 `json:"rule"`
+	Pack         string                 `json:"pack"`
+	Status       string                 `json:"status"`
+	Severity     string                 `json:"severity"`
+	Path         string                 `json:"path"`
+	Line         int                    `json:"line"`
+	Snippet      string                 `json:"snippet,omitempty"`
+	SuppressedBy *findings.SuppressedBy `json:"suppressed_by,omitempty"`
 }
 
 type RepoResult struct {
@@ -298,11 +309,12 @@ func scanRepo(bin string, r Repo, packs string, shadow bool, rawPath string, pac
 	os.WriteFile(rawPath, b, 0o644)
 	var rep struct {
 		Findings []struct {
-			RuleID   string `json:"rule_id"`
-			Status   string `json:"status"`
-			Severity string `json:"severity"`
-			Snippet  string `json:"snippet"`
-			Location struct {
+			RuleID       string                 `json:"rule_id"`
+			Status       string                 `json:"status"`
+			Severity     string                 `json:"severity"`
+			Snippet      string                 `json:"snippet"`
+			SuppressedBy *findings.SuppressedBy `json:"suppressed_by"`
+			Location     struct {
 				Path string `json:"path"`
 				Line int    `json:"start_line"`
 			} `json:"location"`
@@ -321,7 +333,7 @@ func scanRepo(bin string, r Repo, packs string, shadow bool, rawPath string, pac
 			sn = sn[:160]
 		}
 		res.Hits = append(res.Hits, Hit{Rule: f.RuleID, Pack: cmp.Or(pack[f.RuleID], "?"), Status: f.Status, Severity: f.Severity,
-			Path: f.Location.Path, Line: f.Location.Line, Snippet: sn})
+			Path: f.Location.Path, Line: f.Location.Line, Snippet: sn, SuppressedBy: f.SuppressedBy})
 	}
 	return res
 }
@@ -336,7 +348,9 @@ func loadResults(label string) []RepoResult {
 		var r RepoResult
 		b, err := os.ReadFile(f)
 		die(err)
-		die(json.Unmarshal(b, &r))
+		if json.Unmarshal(b, &r) != nil || r.Repo == "" {
+			continue // suppressions.json, fixdiff.json, agree.json, ...
+		}
 		out = append(out, r)
 	}
 	return out

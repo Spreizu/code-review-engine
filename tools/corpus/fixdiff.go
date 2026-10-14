@@ -44,10 +44,22 @@ func ghGet(url, cache string) ([]byte, error) {
 	}
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Set("User-Agent", "crev-corpus-fixdiff")
+	req.Header.Set("Accept", "application/vnd.github+json")
 	if t := os.Getenv("GITHUB_TOKEN"); t != "" && strings.Contains(url, "api.github.com") {
 		req.Header.Set("Authorization", "Bearer "+t)
 	}
-	resp, err := (&http.Client{Timeout: 60 * time.Second}).Do(req)
+	resp, err := (&http.Client{
+		Timeout: 60 * time.Second,
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			if len(via) >= 10 {
+				return fmt.Errorf("too many redirects")
+			}
+			if t := os.Getenv("GITHUB_TOKEN"); t != "" && strings.Contains(req.URL.Host, "api.github.com") {
+				req.Header.Set("Authorization", "Bearer "+t)
+			}
+			return nil
+		},
+	}).Do(req)
 	if err != nil {
 		return nil, err
 	}

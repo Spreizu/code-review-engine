@@ -26,6 +26,9 @@ go run ./tools/corpus run -label after  -crev /tmp/crev-after
 go run ./tools/corpus summarize -label after              # results/after/report.md, flags
 go run ./tools/corpus diff before after                   # per-pack / per-rule deltas
 go run ./tools/corpus sample -label after -rule GO-XYZ -n 12   # triage set, round-robin over repos
+go run ./tools/corpus suppressions -label after              # inline disables ∩ crev hits → labelled TPs
+go run ./tools/corpus autofix -label after -crev BIN         # lint autofix-commit parent vs fix
+go run ./tools/corpus agree -label after                     # oxlint/ruff/hadolint/yamllint vs crev
 ```
 
 Scans run with `--ai off`, so the counts are:
@@ -51,3 +54,16 @@ Scans run with `--ai off`, so the counts are:
    shows no unexplained hits.
 6. **Re-run and commit.** Re-run `run` / `diff` and commit the spec, pack and governance changes
    together.
+
+## Extra labelled evidence
+
+Inline linter suppressions (`eslint-disable-next-line`, `# noqa`, `//nolint`, `@SuppressWarnings`,
+`@phpstan-ignore`, …) mark a real issue the author chose to keep. `suppressions` joins those comments
+in the clones with crev hits from `run`; a matching location is a true positive for trust compute.
+Reporting still honours the comment.
+
+`autofix` mines lint auto-fix commits (message matches `eslint --fix`, `ruff --fix`, `gofmt`,
+`lint:fix`, …) from clone history and GitHub search, then scans the parent vs the fix like `fixdiff`.
+`agree` runs oxlint, ruff, hadolint and yamllint when they are on PATH and counts same-line
+agreement (mapped through `xref` `tool:id`) as true positives. crev-only and linter-only spots are
+listed, not scored as FP/FN.

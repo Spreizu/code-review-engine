@@ -40,6 +40,8 @@ type fcase struct {
 	Lines  []int  `json:"lines,omitempty"` // line-level: expected diagnostic lines (empty = none)
 	Line   bool   `json:"line_level,omitempty"`
 	Env    string `json:"env,omitempty"` // case depends on an environment crev does not model (old ecmaVersion, globals, inline directives)
+	// Scope: line-level cases that label only some elements (axe fixtures): hits elsewhere are not scored.
+	Scope []int `json:"scope,omitempty"`
 }
 
 type fresult struct {
@@ -221,6 +223,7 @@ func evaluate(r *rules.Rule, cases []fcase, root string, latest map[string]strin
 	rule.Detection.RequiresConfig = nil // fixtures model a project that runs the linter
 	rule.OptIn = false
 	rule.Status = "active"
+	engine.SkipFixtureData = false // linter suites keep their cases in testdata/
 	rep, err := engine.Scan(engine.Options{Root: root, Rules: []*rules.Rule{&rule}, Latest: latest})
 	if err != nil {
 		res.Unsupported = "scan error: " + err.Error()
@@ -268,7 +271,14 @@ func evaluate(r *rules.Rule, cases []fcase, root string, latest map[string]strin
 			want[l] = true
 		}
 		near := func(m map[int]bool, l int) bool { return m[l] || m[l-1] || m[l+1] }
+		scope := map[int]bool{}
+		for _, l := range c.Scope {
+			scope[l] = true
+		}
 		for l := range h {
+			if len(scope) > 0 && !scope[l] {
+				continue // unlabelled element
+			}
 			if near(want, l) {
 				res.TP++
 			} else {
@@ -316,6 +326,9 @@ func b2i(b bool) int {
 }
 
 func extract(ruleID, tool, id string) (cases []fcase, skipped int, why string) {
+	if c, s, w, ok := a11yExtract(ruleID, tool, id); ok {
+		return c, s, w
+	}
 	switch tool {
 	case "eslint":
 		return ruleTester(filepath.Join(fxRoot, "eslint/tests/lib/rules", id+".js"), "snippet.js")
@@ -730,6 +743,8 @@ func dedupe(l []int) []int {
 
 // ---- go/analysis and staticcheck testdata: `// want` lines ----
 
+var wantOffset = regexp.MustCompile(`// want \+(\d+) `)
+
 func goWant(td string) ([]fcase, int, string) {
 	var cases []fcase
 	filepath.WalkDir(td, func(p string, d os.DirEntry, err error) error {
@@ -747,7 +762,10 @@ func goWant(td string) ([]fcase, int, string) {
 		sc.Buffer(make([]byte, 1<<20), 1<<20)
 		for n := 1; sc.Scan(); n++ {
 			t := sc.Text()
-			if strings.Contains(t, "// want ") || strings.Contains(t, "/* want ") {
+			if m := wantOffset.FindStringSubmatch(t); m != nil { // "// want +3 ..." marks a later line
+				off, _ := strconv.Atoi(m[1])
+				lines = append(lines, n+off)
+			} else if strings.Contains(t, "// want ") || strings.Contains(t, "/* want ") || strings.Contains(t, "//@ diag(") {
 				lines = append(lines, n)
 			}
 			b.WriteString(t + "\n")

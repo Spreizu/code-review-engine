@@ -1,5 +1,529 @@
 [
  {
+  "rule": "CSS-A11Y-FOCUS-OUTLINE-REMOVED",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "axe:focus-order-semantics",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 6,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/focus-order-semantics:10",
+   "axe-core/test/integration/rules/focus-order-semantics:11",
+   "axe-core/test/integration/rules/focus-order-semantics:25",
+   "axe-core/test/integration/rules/focus-order-semantics:26",
+   "axe-core/test/integration/rules/focus-order-semantics:27",
+   "axe-core/test/integration/rules/focus-order-semantics:28"
+  ]
+ },
+ {
+  "rule": "CSS-A11Y-FOCUS-VISIBLE-OUTLINE-REMOVED",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "stylelint:a11y/no-outline-none",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite not found"
+ },
+ {
+  "rule": "CSS-A11Y-FONT-SIZE-VIEWPORT-ONLY",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "stylelint:a11y/font-size-is-readable",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite not found"
+ },
+ {
+  "rule": "CSS-A11Y-LOW-CONTRAST",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "axe:color-contrast",
+  "cases": 1,
+  "skipped": 1,
+  "tp": 0,
+  "fn": 14,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/color-contrast:60",
+   "axe-core/test/integration/rules/color-contrast:63",
+   "axe-core/test/integration/rules/color-contrast:74",
+   "axe-core/test/integration/rules/color-contrast:357",
+   "axe-core/test/integration/rules/color-contrast:360",
+   "axe-core/test/integration/rules/color-contrast:461",
+   "axe-core/test/integration/rules/color-contrast:583",
+   "axe-core/test/integration/rules/color-contrast:68",
+   "axe-core/test/integration/rules/color-contrast:404",
+   "axe-core/test/integration/rules/color-contrast:416",
+   "axe-core/test/integration/rules/color-contrast:519",
+   "axe-core/test/integration/rules/color-contrast:532",
+   "axe-core/test/integration/rules/color-contrast:298",
+   "axe-core/test/integration/rules/color-contrast:33"
+  ]
+ },
+ {
+  "rule": "CSS-A11Y-LOW-CONTRAST-ENHANCED",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "axe:color-contrast-enhanced",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 2,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/color-contrast-enhanced:10",
+   "axe-core/test/integration/rules/color-contrast-enhanced:17"
+  ]
+ },
+ {
+  "rule": "CSS-A11Y-OUTLINE-REMOVED-ON-CONTROLS",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "stylelint:a11y/no-outline-none",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite not found"
+ },
+ {
+  "rule": "CSS-A11Y-REDUCED-MOTION-MISSING",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "stylelint:a11y/media-prefers-reduced-motion",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite not found"
+ },
+ {
+  "rule": "CSS-QUAL-CALC-UNSPACED-OPERATOR",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:function-calc-no-unspaced-operator",
+  "cases": 125,
+  "skipped": 0,
+  "tp": 10,
+  "fn": 41,
+  "fp": 0,
+  "tn": 74,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:362",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:384",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:406",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:428",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:450",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:464",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:478",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:491",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:504",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:517",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:530",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:543",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:556",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:569",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:582",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:595",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:608",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:622",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:636",
+   "stylelint/lib/rules/function-calc-no-unspaced-operator/__tests__/index.mjs:649"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-DOUBLE-SLASH-COMMENT",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:no-invalid-double-slash-comments",
+  "cases": 11,
+  "skipped": 0,
+  "tp": 7,
+  "fn": 0,
+  "fp": 0,
+  "tn": 3,
+  "env_dependent_mismatch": 1
+ },
+ {
+  "rule": "CSS-QUAL-DUPLICATE-DECLARATION",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:declaration-block-no-duplicate-properties",
+  "cases": 40,
+  "skipped": 0,
+  "tp": 3,
+  "fn": 26,
+  "fp": 0,
+  "tn": 11,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:51",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:60",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:69",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:78",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:87",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:96",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:147",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:156",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:165",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:175",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:185",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:195",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:205",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:215",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:224",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:233",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:242",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:251",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:260",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:269"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-DUPLICATE-FONT-FAMILY",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:font-family-no-duplicate-names",
+  "cases": 11,
+  "skipped": 0,
+  "tp": 3,
+  "fn": 3,
+  "fp": 0,
+  "tn": 5,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/font-family-no-duplicate-names/__tests__/index.mjs:43",
+   "stylelint/lib/rules/font-family-no-duplicate-names/__tests__/index.mjs:59",
+   "stylelint/lib/rules/font-family-no-duplicate-names/__tests__/index.mjs:67"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-DUPLICATE-SELECTOR",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:no-duplicate-selectors",
+  "cases": 43,
+  "skipped": 0,
+  "tp": 5,
+  "fn": 23,
+  "fp": 0,
+  "tn": 14,
+  "env_dependent_mismatch": 1,
+  "fn_origins": [
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:90",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:103",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:116",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:129",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:142",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:155",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:168",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:188",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:230",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:243",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:269",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:282",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:316",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:357",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:383",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:396",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:409",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:418",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:478",
+   "stylelint/lib/rules/no-duplicate-selectors/__tests__/index.mjs:486"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-EMPTY-RULE",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:block-no-empty",
+  "cases": 30,
+  "skipped": 0,
+  "tp": 8,
+  "fn": 5,
+  "fp": 0,
+  "tn": 16,
+  "env_dependent_mismatch": 1,
+  "fn_origins": [
+   "stylelint/lib/rules/block-no-empty/__tests__/index.mjs:116",
+   "stylelint/lib/rules/block-no-empty/__tests__/index.mjs:124",
+   "stylelint/lib/rules/block-no-empty/__tests__/index.mjs:132",
+   "stylelint/lib/rules/block-no-empty/__tests__/index.mjs:140",
+   "stylelint/lib/rules/block-no-empty/__tests__/index.mjs:156"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-FONT-FAMILY-WITHOUT-GENERIC",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:font-family-no-missing-generic-family-keyword",
+  "cases": 58,
+  "skipped": 0,
+  "tp": 4,
+  "fn": 8,
+  "fp": 0,
+  "tn": 46,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/font-family-no-missing-generic-family-keyword/__tests__/index.mjs:181",
+   "stylelint/lib/rules/font-family-no-missing-generic-family-keyword/__tests__/index.mjs:189",
+   "stylelint/lib/rules/font-family-no-missing-generic-family-keyword/__tests__/index.mjs:197",
+   "stylelint/lib/rules/font-family-no-missing-generic-family-keyword/__tests__/index.mjs:205",
+   "stylelint/lib/rules/font-family-no-missing-generic-family-keyword/__tests__/index.mjs:213",
+   "stylelint/lib/rules/font-family-no-missing-generic-family-keyword/__tests__/index.mjs:221",
+   "stylelint/lib/rules/font-family-no-missing-generic-family-keyword/__tests__/index.mjs:229",
+   "stylelint/lib/rules/font-family-no-missing-generic-family-keyword/__tests__/index.mjs:237"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-GRADIENT-LEGACY-DIRECTION",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:function-linear-gradient-no-nonstandard-direction",
+  "cases": 62,
+  "skipped": 0,
+  "tp": 8,
+  "fn": 18,
+  "fp": 0,
+  "tn": 36,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:185",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:193",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:201",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:209",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:217",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:227",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:235",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:243",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:251",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:259",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:267",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:275",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:283",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:291",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:299",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:307",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:315",
+   "stylelint/lib/rules/function-linear-gradient-no-nonstandard-direction/__tests__/index.mjs:323"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-IMPORTANT",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "stylelint:declaration-no-important",
+  "cases": 4,
+  "skipped": 0,
+  "tp": 2,
+  "fn": 1,
+  "fp": 0,
+  "tn": 1,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/declaration-no-important/__tests__/index.mjs:25"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-IMPORTANT-IN-KEYFRAMES",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:keyframe-declaration-no-important",
+  "cases": 13,
+  "skipped": 0,
+  "tp": 3,
+  "fn": 4,
+  "fp": 0,
+  "tn": 6,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/keyframe-declaration-no-important/__tests__/index.mjs:48",
+   "stylelint/lib/rules/keyframe-declaration-no-important/__tests__/index.mjs:66",
+   "stylelint/lib/rules/keyframe-declaration-no-important/__tests__/index.mjs:75",
+   "stylelint/lib/rules/keyframe-declaration-no-important/__tests__/index.mjs:84"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-INVALID-HEX-COLOR",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:color-no-invalid-hex",
+  "cases": 15,
+  "skipped": 0,
+  "tp": 3,
+  "fn": 1,
+  "fp": 0,
+  "tn": 11,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/color-no-invalid-hex/__tests__/index.mjs:68"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-OVERRIDDEN-DECLARATION",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "stylelint:declaration-block-no-duplicate-properties",
+  "cases": 40,
+  "skipped": 0,
+  "tp": 27,
+  "fn": 2,
+  "fp": 0,
+  "tn": 11,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:105",
+   "stylelint/lib/rules/declaration-block-no-duplicate-properties/__tests__/index.mjs:328"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-SHORTHAND-OVERRIDES-LONGHAND",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:declaration-block-no-shorthand-property-overrides",
+  "cases": 32,
+  "skipped": 0,
+  "tp": 17,
+  "fn": 3,
+  "fp": 0,
+  "tn": 12,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/declaration-block-no-shorthand-property-overrides/__tests__/index.mjs:164",
+   "stylelint/lib/rules/declaration-block-no-shorthand-property-overrides/__tests__/index.mjs:172",
+   "stylelint/lib/rules/declaration-block-no-shorthand-property-overrides/__tests__/index.mjs:206"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-UNKNOWN-AT-RULE",
+  "pack": "css",
+  "mode": "ai-confirm",
+  "xref": "stylelint:at-rule-no-unknown",
+  "cases": 32,
+  "skipped": 0,
+  "tp": 1,
+  "fn": 0,
+  "fp": 0,
+  "tn": 31,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "CSS-QUAL-UNKNOWN-PROPERTY",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:property-no-unknown",
+  "cases": 19,
+  "skipped": 0,
+  "tp": 5,
+  "fn": 1,
+  "fp": 0,
+  "tn": 13,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/property-no-unknown/__tests__/index.mjs:92"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-UNKNOWN-PSEUDO",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:selector-pseudo-class-no-unknown",
+  "cases": 73,
+  "skipped": 0,
+  "tp": 10,
+  "fn": 10,
+  "fp": 0,
+  "tn": 52,
+  "env_dependent_mismatch": 1,
+  "fn_origins": [
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:277",
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:286",
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:295",
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:304",
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:312",
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:320",
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:328",
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:336",
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:344",
+   "stylelint/lib/rules/selector-pseudo-class-no-unknown/__tests__/index.mjs:396"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-UNKNOWN-UNIT",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:unit-no-unknown",
+  "cases": 102,
+  "skipped": 0,
+  "tp": 19,
+  "fn": 10,
+  "fp": 0,
+  "tn": 73,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:334",
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:410",
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:428",
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:437",
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:446",
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:455",
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:464",
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:473",
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:489",
+   "stylelint/lib/rules/unit-no-unknown/__tests__/index.mjs:498"
+  ]
+ },
+ {
+  "rule": "CSS-QUAL-UNNEEDED-VENDOR-PREFIX",
+  "pack": "css",
+  "mode": "deterministic",
+  "xref": "stylelint:property-no-vendor-prefix",
+  "cases": 25,
+  "skipped": 0,
+  "tp": 6,
+  "fn": 9,
+  "fp": 0,
+  "tn": 10,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "stylelint/lib/rules/property-no-vendor-prefix/__tests__/index.mjs:52",
+   "stylelint/lib/rules/property-no-vendor-prefix/__tests__/index.mjs:66",
+   "stylelint/lib/rules/property-no-vendor-prefix/__tests__/index.mjs:80",
+   "stylelint/lib/rules/property-no-vendor-prefix/__tests__/index.mjs:93",
+   "stylelint/lib/rules/property-no-vendor-prefix/__tests__/index.mjs:106",
+   "stylelint/lib/rules/property-no-vendor-prefix/__tests__/index.mjs:119",
+   "stylelint/lib/rules/property-no-vendor-prefix/__tests__/index.mjs:132",
+   "stylelint/lib/rules/property-no-vendor-prefix/__tests__/index.mjs:158",
+   "stylelint/lib/rules/property-no-vendor-prefix/__tests__/index.mjs:171"
+  ]
+ },
+ {
   "rule": "DOCKER-MIG-MAINTAINER-DEPRECATED",
   "pack": "docker",
   "mode": "deterministic",
@@ -247,8 +771,8 @@
   "tn": 3,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "go-tools/staticcheck/sa4000/testdata/go1.0/CheckLhsRhsIdentical/CheckLhsRhsIdentical.go:48",
-   "go-tools/staticcheck/sa4000/testdata/go1.0/CheckLhsRhsIdentical/CheckLhsRhsIdentical.go:51"
+   "go-tools/staticcheck/sa4000/testdata/go1.0/CheckLhsRhsIdentical/CheckLhsRhsIdentical.go:51",
+   "go-tools/staticcheck/sa4000/testdata/go1.0/CheckLhsRhsIdentical/CheckLhsRhsIdentical.go:48"
   ]
  },
  {
@@ -293,10 +817,10 @@
   "tn": 3,
   "env_dependent_mismatch": 0,
   "fn_origins": [
+   "x-tools/go/analysis/passes/buildtag/testdata/src/a/buildtag.go:7",
    "x-tools/go/analysis/passes/buildtag/testdata/src/a/buildtag.go:11",
    "x-tools/go/analysis/passes/buildtag/testdata/src/a/buildtag.go:13",
    "x-tools/go/analysis/passes/buildtag/testdata/src/a/buildtag.go:18",
-   "x-tools/go/analysis/passes/buildtag/testdata/src/a/buildtag.go:7",
    "x-tools/go/analysis/passes/buildtag/testdata/src/a/buildtag2.go:9",
    "x-tools/go/analysis/passes/buildtag/testdata/src/a/buildtag2.go:12",
    "x-tools/go/analysis/passes/buildtag/testdata/src/a/buildtag3.go:5",
@@ -342,17 +866,17 @@
   "tn": 1,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:47",
-   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:50",
-   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:64",
-   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:65",
    "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:69",
-   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:26",
    "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:37",
    "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:42",
+   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:47",
    "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:55",
    "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:63",
    "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:20",
+   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:26",
+   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:50",
+   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:64",
+   "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/atomic.go:65",
    "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/go118/atomic_go118.go:10",
    "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/ignored/atomic.go:11",
    "x-tools/go/analysis/passes/modernize/testdata/src/atomictypes/ignored/atomic_ignored.go:9",
@@ -379,14 +903,14 @@
   "tn": 1,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:53",
-   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:149",
-   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:106",
-   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:131",
    "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:115",
    "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:138",
+   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:53",
+   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:106",
    "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:140",
-   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:155"
+   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:155",
+   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:131",
+   "x-tools/go/analysis/passes/modernize/testdata/src/bloop/bloop_test.go:149"
   ]
  },
  {
@@ -402,11 +926,11 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/errorsastype/errorsastype.go:44",
-   "x-tools/go/analysis/passes/modernize/testdata/src/errorsastype/errorsastype.go:99",
    "x-tools/go/analysis/passes/modernize/testdata/src/errorsastype/errorsastype.go:11",
    "x-tools/go/analysis/passes/modernize/testdata/src/errorsastype/errorsastype.go:38",
-   "x-tools/go/analysis/passes/modernize/testdata/src/errorsastype/errorsastype.go:90"
+   "x-tools/go/analysis/passes/modernize/testdata/src/errorsastype/errorsastype.go:90",
+   "x-tools/go/analysis/passes/modernize/testdata/src/errorsastype/errorsastype.go:99",
+   "x-tools/go/analysis/passes/modernize/testdata/src/errorsastype/errorsastype.go:44"
   ],
   "fn_origins": [
    "x-tools/go/analysis/passes/modernize/testdata/src/errorsastype/dotimport/a.go:10"
@@ -425,12 +949,12 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
+   "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:55",
+   "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:50",
+   "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:56",
    "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:51",
    "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:52",
-   "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:55",
-   "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:53",
-   "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:56",
-   "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:50"
+   "x-tools/go/analysis/passes/modernize/testdata/src/fmtappendf/fmtappendf.go:53"
   ]
  },
  {
@@ -446,12 +970,12 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:57",
-   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:67",
-   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:61",
-   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:62",
    "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:49",
-   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:53"
+   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:53",
+   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:61",
+   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:67",
+   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:57",
+   "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:62"
   ],
   "fn_origins": [
    "x-tools/go/analysis/passes/modernize/testdata/src/forvar/forvar.go:26",
@@ -486,38 +1010,38 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:249",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:260",
    "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:264",
    "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:270",
    "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:191",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:213",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:234",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:241",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:249",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:255",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:260",
    "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:220",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:227"
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:227",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:241",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:255",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:213",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:234"
   ],
   "fn_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:141",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:20",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:71",
    "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:85",
    "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:94",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:120",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:173",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:60",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:107",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:31",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:76",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:152",
    "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:164",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:181",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:39",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:31",
    "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:51",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:71",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:76",
    "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:131",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop_dot.go:12",
-   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop_dot.go:22"
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:152",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:173",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:141",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:181",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:20",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:39",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:107",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:120",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop.go:60",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop_dot.go:22",
+   "x-tools/go/analysis/passes/modernize/testdata/src/mapsloop/mapsloop_dot.go:12"
   ]
  },
  {
@@ -537,6 +1061,7 @@
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/minmax.go:145"
   ],
   "fn_origins": [
+   "x-tools/go/analysis/passes/modernize/testdata/src/minmax/minmax.go:6",
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/minmax.go:16",
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/minmax.go:24",
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/minmax.go:32",
@@ -544,12 +1069,11 @@
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/minmax.go:57",
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/minmax.go:92",
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/minmax.go:135",
-   "x-tools/go/analysis/passes/modernize/testdata/src/minmax/minmax.go:6",
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/nonstrict/nonstrict.go:4",
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/nonstrict/nonstrict.go:13",
    "x-tools/go/analysis/passes/modernize/testdata/src/minmax/parametersideeffect/parametersideeffect.go:27",
-   "x-tools/go/analysis/passes/modernize/testdata/src/minmax/userdefined/userdefined.go:24",
-   "x-tools/go/analysis/passes/modernize/testdata/src/minmax/userdefined/userdefined.go:33"
+   "x-tools/go/analysis/passes/modernize/testdata/src/minmax/userdefined/userdefined.go:33",
+   "x-tools/go/analysis/passes/modernize/testdata/src/minmax/userdefined/userdefined.go:24"
   ]
  },
  {
@@ -565,15 +1089,15 @@
   "tn": 1,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:29",
-   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:32",
-   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:26",
    "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:27",
-   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:30",
+   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:28",
    "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:33",
+   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:26",
+   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:29",
+   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:30",
+   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:32",
    "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:34",
-   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:24",
-   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:28"
+   "x-tools/go/analysis/passes/modernize/testdata/src/newexpr/newexpr.go:24"
   ]
  },
  {
@@ -628,32 +1152,32 @@
   "tn": 1,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:136",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:139",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:207",
    "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:129",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:207"
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:139",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:136"
   ],
   "fn_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:190",
    "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:241",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:234",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:306",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:343",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:31",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:16",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:353",
    "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:22",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:34",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:37",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:220",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:245",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:290",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:62",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:286",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:348",
    "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:25",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:31",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:34",
    "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:40",
    "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:95",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:188",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:348",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:353",
-   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:28"
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:245",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:16",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:37",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:46",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:220",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:244",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:290",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:273",
+   "x-tools/go/analysis/passes/modernize/testdata/src/rangeint/rangeint.go:377"
   ]
  },
  {
@@ -669,20 +1193,20 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:40",
-   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:44",
    "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:46",
-   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:47",
    "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:48",
    "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:61",
-   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:63",
    "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:64",
-   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:65",
    "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:31",
-   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:41",
-   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:45",
+   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:47",
    "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:57",
-   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:62"
+   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:44",
+   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:45",
+   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:62",
+   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:63",
+   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:40",
+   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:41",
+   "x-tools/go/analysis/passes/modernize/testdata/src/reflecttypefor/reflecttypefor.go:65"
   ]
  },
  {
@@ -698,23 +1222,23 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:118",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:182",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:388",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:163",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:202",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:276",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:171",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:220",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:234",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:388",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:91",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:97",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:182",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:276",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:298",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:234",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:241",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:248",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:84",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:97",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:171",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:191",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:213",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:163",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:241",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:298"
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:220",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:118",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesbackward/slicesbackward.go:213"
   ]
  },
  {
@@ -730,10 +1254,10 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesclip/slicesclip.go:12",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicesclip/slicesclip.go:37",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicesclip/slicesclip.go:42",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicesclip/slicesclip.go:45"
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesclip/slicesclip.go:45",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicesclip/slicesclip.go:12"
   ],
   "fn_origins": [
    "x-tools/go/analysis/passes/modernize/testdata/src/slicesclip/slicesclip.go:20"
@@ -752,19 +1276,19 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:133",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:28",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:47",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:58",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:83",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:103",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:211",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:133",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:222",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:246",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:19",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:37",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:58",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:47",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:72",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:83",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:112"
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:112",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:211",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicescontains/slicescontains.go:246"
   ]
  },
  {
@@ -801,10 +1325,10 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicessort/slicessort.go:36",
-   "x-tools/go/analysis/passes/modernize/testdata/src/slicessort/slicessort.go:40",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicessort/slicessort.go:48",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicessort/slicessort.go:52",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicessort/slicessort.go:36",
+   "x-tools/go/analysis/passes/modernize/testdata/src/slicessort/slicessort.go:40",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicessort/slicessort_dot.go:17",
    "x-tools/go/analysis/passes/modernize/testdata/src/slicessort/slicessort_dot.go:25"
   ],
@@ -829,17 +1353,17 @@
    "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:152",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:66",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:115",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder_test.go:8",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder_test.go:7"
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder_test.go:7",
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder_test.go:8"
   ],
   "fn_origins": [
    "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:162",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:185",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:201",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:209",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:100",
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:185",
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:209",
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:217",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:193",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:217"
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringsbuilder/stringsbuilder.go:201"
   ]
  },
  {
@@ -860,14 +1384,14 @@
   "fn_origins": [
    "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/bytescutprefix/bytescutprefix_dot.go:11",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/bytescutprefix/bytescutprefix_dot.go:16",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:104",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:114",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:155",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:119",
-   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:101",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:107",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:110",
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:104",
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:114",
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:101",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:152",
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:155",
+   "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix.go:119",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix_dot.go:35",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix_dot.go:38",
    "x-tools/go/analysis/passes/modernize/testdata/src/stringscutprefix/stringscutprefix_dot.go:9",
@@ -908,13 +1432,13 @@
   "tn": 1,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:15",
    "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:33",
-   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:41",
-   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:101",
-   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:32",
    "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:61",
-   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:89"
+   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:89",
+   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:101",
+   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:15",
+   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:32",
+   "x-tools/go/analysis/passes/modernize/testdata/src/testingcontext/testingcontext_test.go:41"
   ]
  },
  {
@@ -933,17 +1457,17 @@
    "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:125"
   ],
   "fn_origins": [
-   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:84",
+   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:111",
+   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:41",
+   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:54",
+   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:63",
+   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:73",
+   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:35",
+   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:47",
    "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:235",
+   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:84",
    "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:242",
    "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:250",
-   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:54",
-   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:73",
-   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:47",
-   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:35",
-   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:41",
-   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:63",
-   "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup.go:111",
    "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup_alias.go:17",
    "x-tools/go/analysis/passes/modernize/testdata/src/waitgroupgo/waitgroup_dot.go:18"
   ]
@@ -961,8 +1485,8 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/appends/testdata/src/b/b.go:17",
-   "x-tools/go/analysis/passes/appends/testdata/src/b/b.go:22"
+   "x-tools/go/analysis/passes/appends/testdata/src/b/b.go:22",
+   "x-tools/go/analysis/passes/appends/testdata/src/b/b.go:17"
   ]
  },
  {
@@ -978,27 +1502,27 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:37",
-   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:39",
+   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:63",
+   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:70",
    "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:40",
    "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:61",
-   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:63",
    "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:62",
-   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:70",
    "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:66",
-   "x-tools/go/analysis/passes/assign/testdata/src/typeparams/typeparams.go:28",
+   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:37",
+   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:39",
    "x-tools/go/analysis/passes/assign/testdata/src/typeparams/typeparams.go:25",
-   "x-tools/go/analysis/passes/assign/testdata/src/typeparams/typeparams.go:27"
+   "x-tools/go/analysis/passes/assign/testdata/src/typeparams/typeparams.go:27",
+   "x-tools/go/analysis/passes/assign/testdata/src/typeparams/typeparams.go:28"
   ],
   "fn_origins": [
+   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:31",
+   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:32",
+   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:26",
    "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:29",
    "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:30",
-   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:31",
-   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:34",
-   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:25",
-   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:32",
    "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:33",
-   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:26"
+   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:25",
+   "x-tools/go/analysis/passes/assign/testdata/src/a/a.go:34"
   ]
  },
  {
@@ -1017,15 +1541,15 @@
    "x-tools/go/analysis/passes/atomic/testdata/src/a/a.go:62"
   ],
   "fn_origins": [
+   "x-tools/go/analysis/passes/atomic/testdata/src/a/a.go:23",
    "x-tools/go/analysis/passes/atomic/testdata/src/a/a.go:26",
-   "x-tools/go/analysis/passes/atomic/testdata/src/a/a.go:31",
    "x-tools/go/analysis/passes/atomic/testdata/src/a/a.go:36",
+   "x-tools/go/analysis/passes/atomic/testdata/src/a/a.go:31",
    "x-tools/go/analysis/passes/atomic/testdata/src/a/a.go:40",
    "x-tools/go/analysis/passes/atomic/testdata/src/a/a.go:50",
-   "x-tools/go/analysis/passes/atomic/testdata/src/a/a.go:23",
+   "x-tools/go/analysis/passes/atomic/testdata/src/typeparams/typeparams.go:19",
    "x-tools/go/analysis/passes/atomic/testdata/src/typeparams/typeparams.go:20",
-   "x-tools/go/analysis/passes/atomic/testdata/src/typeparams/typeparams.go:30",
-   "x-tools/go/analysis/passes/atomic/testdata/src/typeparams/typeparams.go:19"
+   "x-tools/go/analysis/passes/atomic/testdata/src/typeparams/typeparams.go:30"
   ]
  },
  {
@@ -1041,30 +1565,30 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:89",
    "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:21",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:89",
    "x-tools/go/analysis/passes/bools/testdata/src/typeparams/typeparams.go:25"
   ],
   "fn_origins": [
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:76",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:62",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:68",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:103",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:118",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:130",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:64",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:74",
    "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:128",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:106",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:94",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:102",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:104",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:51",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:55",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:68",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:75",
    "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:101",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:54",
    "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:110",
-   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:112",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:65",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:74",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:76",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:94",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:103",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:108",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:130",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:131",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:64",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:102",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:118",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:54",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:62",
+   "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:104",
    "x-tools/go/analysis/passes/bools/testdata/src/a/a.go:120"
   ]
  },
@@ -1081,12 +1605,12 @@
   "tn": 3,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:110",
-   "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:127",
-   "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:142",
    "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:145",
+   "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:110",
    "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:123",
-   "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:100"
+   "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:142",
+   "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:100",
+   "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:127"
   ],
   "fn_origins": [
    "x-tools/go/analysis/passes/composite/testdata/src/a/a.go:91",
@@ -1108,24 +1632,24 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
+   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:46",
+   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:36",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:38",
-   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:39",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:40",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:42",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:43",
-   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:46",
-   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:36",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:37",
+   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:39",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/a/a.go:41",
+   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:42",
+   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:45",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:46",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:49",
+   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:39",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:40",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:41",
-   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:42",
    "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:43",
-   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:44",
-   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:45",
-   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:39"
+   "x-tools/go/analysis/passes/deepequalerrors/testdata/src/typeparams/typeparams.go:44"
   ]
  },
  {
@@ -1197,8 +1721,8 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/httpresponse/testdata/src/typeparams/typeparams.go:49",
-   "x-tools/go/analysis/passes/httpresponse/testdata/src/typeparams/typeparams.go:39"
+   "x-tools/go/analysis/passes/httpresponse/testdata/src/typeparams/typeparams.go:39",
+   "x-tools/go/analysis/passes/httpresponse/testdata/src/typeparams/typeparams.go:49"
   ]
  },
  {
@@ -1214,26 +1738,26 @@
   "tn": 2,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:234",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:125",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:146",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:239",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:23",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:87",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:94",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:109",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:158",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:170",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:190",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:191",
    "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:22",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:29",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:28",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:87",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:99",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:142",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:154",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:190",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:204",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:34",
    "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:63",
    "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:69",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:99",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:121",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:158",
    "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:166",
-   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:199"
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:199",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:234",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:239",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:23",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:39",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:121",
+   "x-tools/go/analysis/passes/loopclosure/testdata/src/a/a.go:191"
   ]
  },
  {
@@ -1249,26 +1773,26 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:130",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:27",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:116",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:24",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:44",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:82",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:119",
    "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:146",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:39",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:74",
    "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:151",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:20",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:24",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:130",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:82",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:27",
    "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:31",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:35",
    "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:54",
    "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:58",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:35",
    "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:103",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:116",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:119",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:20",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:39",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:44",
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/a/a.go:74",
    "x-tools/go/analysis/passes/lostcancel/testdata/src/b/b.go:19",
    "x-tools/go/analysis/passes/lostcancel/testdata/src/b/b.go:24",
-   "x-tools/go/analysis/passes/lostcancel/testdata/src/typeparams/typeparams.go:22"
+   "x-tools/go/analysis/passes/lostcancel/testdata/src/typeparams/typeparams.go:75"
   ]
  },
  {
@@ -1288,26 +1812,26 @@
    "x-tools/go/analysis/passes/printf/testdata/src/nonconst/nonconst.go:23"
   ],
   "fn_origins": [
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:913",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:183",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:186",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:581",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:911",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:146",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:225",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:272",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:316",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:624",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:920",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:332",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:191",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:236",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:304",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:626",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:628",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:992",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:122",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:256",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:330",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:599",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:645",
    "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:1011",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:405",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:466",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:492",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:133",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:148",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:153",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:249",
-   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:302"
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:144",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:158",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:311",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:470",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:912",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:124",
+   "x-tools/go/analysis/passes/printf/testdata/src/a/a.go:184"
   ]
  },
  {
@@ -1343,22 +1867,22 @@
   "tn": 3,
   "env_dependent_mismatch": 0,
   "fn_origins": [
+   "x-tools/go/analysis/passes/stringintconv/testdata/src/a/a.go:38",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/a/a.go:39",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/a/a.go:40",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/a/a.go:41",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/a/a.go:34",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/a/a.go:37",
-   "x-tools/go/analysis/passes/stringintconv/testdata/src/a/a.go:38",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fix.go:9",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixdot.go:11",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixnamed.go:11",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixtarget.go:12",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixtarget.go:17",
+   "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:30",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:15",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:18",
-   "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:19",
+   "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:20",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:21",
-   "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:30",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:33",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:14",
    "x-tools/go/analysis/passes/stringintconv/testdata/src/fix/fixwide.go:16",
@@ -1378,26 +1902,26 @@
   "tn": 1,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:156",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:283",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:361",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:305",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:171",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:201",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:220",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:59",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:485",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:149",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:291",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:316",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:384",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:186",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:343",
    "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:356",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:428",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:292",
    "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:64",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:222",
-   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:436"
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:149",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:156",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:428",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:316",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:220",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:396",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:291",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:329",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:361",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:485",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:144",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:201",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:436",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:305",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:283",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:384",
+   "x-tools/go/analysis/passes/testinggoroutine/testdata/src/a/a.go:393"
   ]
  },
  {
@@ -1433,19 +1957,19 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "x-tools/go/analysis/passes/unmarshal/testdata/src/typeparams/typeparams.go:15",
-   "x-tools/go/analysis/passes/unmarshal/testdata/src/typeparams/typeparams.go:10"
+   "x-tools/go/analysis/passes/unmarshal/testdata/src/typeparams/typeparams.go:10",
+   "x-tools/go/analysis/passes/unmarshal/testdata/src/typeparams/typeparams.go:15"
   ],
   "fn_origins": [
-   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:28",
-   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:32",
    "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:41",
-   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:60",
+   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:43",
+   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:45",
    "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:26",
    "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:39",
-   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:45",
-   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:43",
    "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:59",
+   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:28",
+   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:60",
+   "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:32",
    "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:47",
    "x-tools/go/analysis/passes/unmarshal/testdata/src/a/a.go:49"
   ]
@@ -1463,26 +1987,26 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:393",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1118",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1520",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:2040",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:649",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:712",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1533",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1934",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:426",
    "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:584",
    "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:600",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:818",
    "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1274",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1467",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:278",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:625",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1087",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1315",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:165",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:34",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1457",
    "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:436",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:881",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1640",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1665",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:2017",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:271",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:964",
-   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1367"
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:195",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:314",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:464",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:724",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1118",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1259",
+   "x-tools/go/analysis/passes/unreachable/testdata/src/a/a.go:1661"
   ]
  },
  {
@@ -1502,16 +2026,16 @@
   ],
   "fn_origins": [
    "x-tools/go/analysis/passes/unusedresult/testdata/src/a/a.go:31",
+   "x-tools/go/analysis/passes/unusedresult/testdata/src/a/a.go:22",
+   "x-tools/go/analysis/passes/unusedresult/testdata/src/a/a.go:25",
    "x-tools/go/analysis/passes/unusedresult/testdata/src/a/a.go:36",
    "x-tools/go/analysis/passes/unusedresult/testdata/src/a/a.go:46",
    "x-tools/go/analysis/passes/unusedresult/testdata/src/a/a.go:30",
-   "x-tools/go/analysis/passes/unusedresult/testdata/src/a/a.go:22",
-   "x-tools/go/analysis/passes/unusedresult/testdata/src/a/a.go:25",
-   "x-tools/go/analysis/passes/unusedresult/testdata/src/typeparams/typeparams.go:21",
    "x-tools/go/analysis/passes/unusedresult/testdata/src/typeparams/typeparams.go:24",
+   "x-tools/go/analysis/passes/unusedresult/testdata/src/typeparams/typeparams.go:29",
    "x-tools/go/analysis/passes/unusedresult/testdata/src/typeparams/typeparams.go:33",
    "x-tools/go/analysis/passes/unusedresult/testdata/src/typeparams/typeparams.go:37",
-   "x-tools/go/analysis/passes/unusedresult/testdata/src/typeparams/typeparams.go:29"
+   "x-tools/go/analysis/passes/unusedresult/testdata/src/typeparams/typeparams.go:21"
   ]
  },
  {
@@ -1886,6 +2410,713 @@
   "fn_origins": [
    "graphql-eslint/packages/plugin/src/rules/naming-convention/index.test.ts:529"
   ]
+ },
+ {
+  "rule": "HTML-A11Y-AMBIGUOUS-LINK-TEXT",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:link-name",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 5,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/link-name:16",
+   "axe-core/test/integration/rules/link-name:17",
+   "axe-core/test/integration/rules/link-name:18",
+   "axe-core/test/integration/rules/link-name:19",
+   "axe-core/test/integration/rules/link-name:20"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-ARIA-INVALID-ATTRIBUTE",
+  "pack": "html",
+  "mode": "deterministic",
+  "xref": "axe:aria-valid-attr",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 8,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "HTML-A11Y-ARIA-INVALID-ROLE",
+  "pack": "html",
+  "mode": "deterministic",
+  "xref": "axe:aria-roles",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 13,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "HTML-A11Y-ARIA-LABEL-ON-GENERIC",
+  "pack": "html",
+  "mode": "deterministic",
+  "xref": "axe:aria-prohibited-attr",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 7,
+  "fn": 88,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/aria-prohibited-attr:141",
+   "axe-core/test/integration/rules/aria-prohibited-attr:34",
+   "axe-core/test/integration/rules/aria-prohibited-attr:54",
+   "axe-core/test/integration/rules/aria-prohibited-attr:83",
+   "axe-core/test/integration/rules/aria-prohibited-attr:118",
+   "axe-core/test/integration/rules/aria-prohibited-attr:121",
+   "axe-core/test/integration/rules/aria-prohibited-attr:136",
+   "axe-core/test/integration/rules/aria-prohibited-attr:140",
+   "axe-core/test/integration/rules/aria-prohibited-attr:82",
+   "axe-core/test/integration/rules/aria-prohibited-attr:30",
+   "axe-core/test/integration/rules/aria-prohibited-attr:32",
+   "axe-core/test/integration/rules/aria-prohibited-attr:43",
+   "axe-core/test/integration/rules/aria-prohibited-attr:50",
+   "axe-core/test/integration/rules/aria-prohibited-attr:108",
+   "axe-core/test/integration/rules/aria-prohibited-attr:137",
+   "axe-core/test/integration/rules/aria-prohibited-attr:36",
+   "axe-core/test/integration/rules/aria-prohibited-attr:42",
+   "axe-core/test/integration/rules/aria-prohibited-attr:65",
+   "axe-core/test/integration/rules/aria-prohibited-attr:72",
+   "axe-core/test/integration/rules/aria-prohibited-attr:75"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-ARIA-REQUIRED-ATTRIBUTE",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:aria-required-attr",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite not found"
+ },
+ {
+  "rule": "HTML-A11Y-AUTOCOMPLETE-INVALID",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:autocomplete-valid",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 5,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/autocomplete-valid:25",
+   "axe-core/test/integration/rules/autocomplete-valid:28",
+   "axe-core/test/integration/rules/autocomplete-valid:31",
+   "axe-core/test/integration/rules/autocomplete-valid:34",
+   "axe-core/test/integration/rules/autocomplete-valid:22"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-BUTTON-WITHOUT-NAME",
+  "pack": "html",
+  "mode": "deterministic",
+  "xref": "axe:button-name",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 5,
+  "fn": 4,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/button-name:10",
+   "axe-core/test/integration/rules/button-name:20",
+   "axe-core/test/integration/rules/button-name:12",
+   "axe-core/test/integration/rules/button-name:13"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-CONTROL-WITHOUT-LABEL",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:label",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 2,
+  "fn": 12,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/label:85",
+   "axe-core/test/integration/rules/label:22",
+   "axe-core/test/integration/rules/label:25",
+   "axe-core/test/integration/rules/label:68",
+   "axe-core/test/integration/rules/label:73",
+   "axe-core/test/integration/rules/label:93",
+   "axe-core/test/integration/rules/label:23",
+   "axe-core/test/integration/rules/label:24",
+   "axe-core/test/integration/rules/label:28",
+   "axe-core/test/integration/rules/label:36",
+   "axe-core/test/integration/rules/label:69",
+   "axe-core/test/integration/rules/label:71"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-DUPLICATE-ID",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:duplicate-id",
+  "cases": 1,
+  "skipped": 2,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "HTML-A11Y-EMPTY-HEADING",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:empty-heading",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 2,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "HTML-A11Y-HEADING-SKIPPED-LEVEL",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:heading-order",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 1,
+  "fn": 1,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/heading-order:19"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-IMG-REDUNDANT-ALT",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "jsx-a11y:img-redundant-alt",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "HTML-A11Y-INPUT-IMAGE-WITHOUT-ALT",
+  "pack": "html",
+  "mode": "deterministic",
+  "xref": "axe:input-image-alt",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 3,
+  "fn": 3,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/input-image-alt:16",
+   "axe-core/test/integration/rules/input-image-alt:21",
+   "axe-core/test/integration/rules/input-image-alt:13"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-LANG-INVALID",
+  "pack": "html",
+  "mode": "deterministic",
+  "xref": "axe:valid-lang",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 3,
+  "fn": 1,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/valid-lang:28"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-MAIN-LANDMARK-MISSING",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:landmark-one-main",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite not found"
+ },
+ {
+  "rule": "HTML-A11Y-MARQUEE-OR-BLINK",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:marquee",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 1,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "HTML-A11Y-MOUSE-WITHOUT-KEYBOARD",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "jsx-a11y:mouse-events-have-key-events",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "HTML-A11Y-NESTED-INTERACTIVE",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:nested-interactive",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 5,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/nested-interactive:24",
+   "axe-core/test/integration/rules/nested-interactive:15",
+   "axe-core/test/integration/rules/nested-interactive:16",
+   "axe-core/test/integration/rules/nested-interactive:19",
+   "axe-core/test/integration/rules/nested-interactive:21"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-ROLE-IMG-WITHOUT-NAME",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:role-img-alt",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 2,
+  "fn": 2,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/role-img-alt:17",
+   "axe-core/test/integration/rules/role-img-alt:18"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-TABLE-WITHOUT-HEADERS",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:td-has-header",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 2,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/td-has-header:171",
+   "axe-core/test/integration/rules/td-has-header:198"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-TH-INVALID-SCOPE",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:scope-attr-valid",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 1,
+  "fn": 2,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "axe-core/test/integration/rules/scope-attr-valid:14",
+   "axe-core/test/integration/rules/scope-attr-valid:26"
+  ]
+ },
+ {
+  "rule": "HTML-A11Y-VIDEO-WITHOUT-CAPTIONS",
+  "pack": "html",
+  "mode": "ai-confirm",
+  "xref": "axe:video-caption",
+  "cases": 1,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "JS-A11Y-AMBIGUOUS-LINK-TEXT",
+  "pack": "javascript",
+  "mode": "deterministic",
+  "xref": "jsx-a11y:anchor-ambiguous-text",
+  "cases": 30,
+  "skipped": 9,
+  "tp": 8,
+  "fn": 17,
+  "fp": 0,
+  "tn": 5,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:78",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:80",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:81",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:83",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:84",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:86",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:87",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:88",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:89",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:90",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:91",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:92",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:93",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:94",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:95",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:97",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/anchor-ambiguous-text-test.js:98"
+  ]
+ },
+ {
+  "rule": "JS-A11Y-ARIA-INVALID-ATTRIBUTE",
+  "pack": "javascript",
+  "mode": "deterministic",
+  "xref": "jsx-a11y:aria-props",
+  "cases": 11,
+  "skipped": 0,
+  "tp": 3,
+  "fn": 0,
+  "fp": 0,
+  "tn": 8,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "JS-A11Y-ARIA-INVALID-ROLE",
+  "pack": "javascript",
+  "mode": "deterministic",
+  "xref": "jsx-a11y:aria-role",
+  "cases": 24,
+  "skipped": 12,
+  "tp": 3,
+  "fn": 9,
+  "fp": 0,
+  "tn": 12,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/aria-role-test.js:95",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/aria-role-test.js:96",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/aria-role-test.js:97",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/aria-role-test.js:98",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/aria-role-test.js:99",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/aria-role-test.js:100",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/aria-role-test.js:102",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/aria-role-test.js:103",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/aria-role-test.js:104"
+  ]
+ },
+ {
+  "rule": "JS-A11Y-ARIA-LABEL-ON-GENERIC",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:aria-prohibited-attr",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "JS-A11Y-ARIA-REQUIRED-ATTRIBUTE",
+  "pack": "javascript",
+  "mode": "deterministic",
+  "xref": "jsx-a11y:role-has-required-aria-props",
+  "cases": 30,
+  "skipped": 2,
+  "tp": 16,
+  "fn": 1,
+  "fp": 0,
+  "tn": 13,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/role-has-required-aria-props-test.js:127"
+  ]
+ },
+ {
+  "rule": "JS-A11Y-AUTOCOMPLETE-INVALID",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "jsx-a11y:autocomplete-valid",
+  "cases": 22,
+  "skipped": 4,
+  "tp": 2,
+  "fn": 2,
+  "fp": 0,
+  "tn": 18,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/autocomplete-valid-test.js:70",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/autocomplete-valid-test.js:73"
+  ]
+ },
+ {
+  "rule": "JS-A11Y-AUTOPLAY-WITH-SOUND",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:no-autoplay-audio",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "JS-A11Y-BUTTON-WITHOUT-NAME",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:button-name",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "JS-A11Y-CONTROL-WITHOUT-LABEL",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "jsx-a11y:control-has-associated-label",
+  "cases": 3,
+  "skipped": 0,
+  "tp": 1,
+  "fn": 0,
+  "fp": 0,
+  "tn": 2,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "JS-A11Y-DUPLICATE-ID",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:duplicate-id",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "JS-A11Y-EMPTY-HEADING",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "jsx-a11y:heading-has-content",
+  "cases": 19,
+  "skipped": 13,
+  "tp": 2,
+  "fn": 2,
+  "fp": 0,
+  "tn": 15,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/heading-has-content-test.js:72",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/heading-has-content-test.js:73"
+  ]
+ },
+ {
+  "rule": "JS-A11Y-HEADING-SKIPPED-LEVEL",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:heading-order",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "JS-A11Y-IMG-REDUNDANT-ALT",
+  "pack": "javascript",
+  "mode": "deterministic",
+  "xref": "jsx-a11y:img-redundant-alt",
+  "cases": 50,
+  "skipped": 9,
+  "tp": 13,
+  "fn": 6,
+  "fp": 0,
+  "tn": 31,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/img-redundant-alt-test.js:102",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/img-redundant-alt-test.js:106",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/img-redundant-alt-test.js:110",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/img-redundant-alt-test.js:114",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/img-redundant-alt-test.js:118",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/img-redundant-alt-test.js:122"
+  ]
+ },
+ {
+  "rule": "JS-A11Y-INPUT-IMAGE-WITHOUT-ALT",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:input-image-alt",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "JS-A11Y-LANG-INVALID",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "jsx-a11y:lang",
+  "cases": 15,
+  "skipped": 4,
+  "tp": 0,
+  "fn": 3,
+  "fp": 0,
+  "tn": 12,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/lang-test.js:53",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/lang-test.js:54",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/lang-test.js:55"
+  ]
+ },
+ {
+  "rule": "JS-A11Y-MOUSE-WITHOUT-KEYBOARD",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "jsx-a11y:mouse-events-have-key-events",
+  "cases": 26,
+  "skipped": 13,
+  "tp": 1,
+  "fn": 5,
+  "fp": 0,
+  "tn": 20,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/mouse-events-have-key-events-test.js:101",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/mouse-events-have-key-events-test.js:102",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/mouse-events-have-key-events-test.js:106",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/mouse-events-have-key-events-test.js:110",
+   "eslint-plugin-jsx-a11y/__tests__/src/rules/mouse-events-have-key-events-test.js:114"
+  ]
+ },
+ {
+  "rule": "JS-A11Y-NESTED-INTERACTIVE",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:nested-interactive",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "JS-A11Y-ROLE-IMG-WITHOUT-NAME",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:role-img-alt",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "JS-A11Y-TABLE-WITHOUT-HEADERS",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:td-has-header",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "JS-A11Y-TH-INVALID-SCOPE",
+  "pack": "javascript",
+  "mode": "ai-confirm",
+  "xref": "axe:scope-attr-valid",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
  },
  {
   "rule": "JS-MAINT-CYCLOMATIC-COMPLEXITY",
@@ -4955,17 +6186,17 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:23",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:68"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:68",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:23"
   ],
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:7",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:9",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:28",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:49",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:50",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:28",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:39",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:4"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:50",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:4",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:7",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C419.py:9"
   ]
  },
  {
@@ -4981,16 +6212,16 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:42",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:44",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:45",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:47",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:24",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:53",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:43",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:46",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:8",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:44",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:16",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:24"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:42",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:43",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:45",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:46",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:47",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC210.py:8"
   ]
  },
  {
@@ -5009,11 +6240,11 @@
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC230.py:78"
   ],
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC230.py:59",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC230.py:36",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC230.py:41",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC230.py:45",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC230.py:53",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC230.py:59"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC230.py:41",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC230.py:45"
   ]
  },
  {
@@ -5042,22 +6273,22 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:43",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:54",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:55",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:68",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:83",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:46",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:61",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:63",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:64",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:65",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:82",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:46",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:62",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:64",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:81",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:29",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:66",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:67",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:81",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:82",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:43",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:62",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:29"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:68",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_async/ASYNC22x.py:83"
   ]
  },
  {
@@ -5076,11 +6307,11 @@
    "ruff/crates/ruff_linter/resources/test/fixtures/tryceratops/TRY203.py:86"
   ],
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/tryceratops/TRY203.py:50",
    "ruff/crates/ruff_linter/resources/test/fixtures/tryceratops/TRY203.py:58",
    "ruff/crates/ruff_linter/resources/test/fixtures/tryceratops/TRY203.py:66",
-   "ruff/crates/ruff_linter/resources/test/fixtures/tryceratops/TRY203.py:25",
    "ruff/crates/ruff_linter/resources/test/fixtures/tryceratops/TRY203.py:18",
-   "ruff/crates/ruff_linter/resources/test/fixtures/tryceratops/TRY203.py:50"
+   "ruff/crates/ruff_linter/resources/test/fixtures/tryceratops/TRY203.py:25"
   ]
  },
  {
@@ -5117,8 +6348,8 @@
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM102.py:39"
   ],
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM102.py:15",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM102.py:165"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM102.py:165",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM102.py:15"
   ]
  },
  {
@@ -5134,22 +6365,22 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:54",
    "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:8",
-   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:85",
-   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:54"
+   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:85"
   ],
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:26",
    "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:32",
-   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:33",
-   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:37",
+   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:35",
    "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:47",
    "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:27",
-   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:38",
+   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:33",
    "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:34",
    "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:36",
-   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:78",
-   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:35"
+   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:37",
+   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:26",
+   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:38",
+   "ruff/crates/ruff_linter/resources/test/fixtures/eradicate/ERA001.py:78"
   ]
  },
  {
@@ -5209,13 +6440,13 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:89",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:93",
    "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:113",
    "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:85",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:127",
    "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:123",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:7"
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:7",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:89",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:93",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF026.py:127"
   ]
  },
  {
@@ -5236,10 +6467,10 @@
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C420.py:86"
   ],
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C420.py:54",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C420.py:38",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C420.py:46",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C420.py:59",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C420.py:46",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C420.py:54",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C420_1.py:1"
   ]
  },
@@ -5256,11 +6487,11 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B035.py:23",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B035.py:25",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B035.py:21",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B035.py:23",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B035.py:22",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B035.py:24"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B035.py:24",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B035.py:25"
   ]
  },
  {
@@ -5276,19 +6507,19 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:43",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:69",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:71",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:138",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:144",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:67",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:132",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:148",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:154",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:122",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:2",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:7",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:43",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:118"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:118",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:132",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:154",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:67",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:122",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM114.py:148"
   ]
  },
  {
@@ -5321,31 +6552,31 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:99",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:135",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:29",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:133",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:37",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:78",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:67",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:131",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:49",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:38",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:59",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:98",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:67",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:90",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:49",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:58",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:68",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:48",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:89",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:28",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:48",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:131",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:29",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:79",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:90"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:98",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:99",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:68",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:78",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:135",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:59",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:89",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:133",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:37"
   ],
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:104",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:120",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:112",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:127",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:104",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:112",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/useless_exception_statement.py:137"
   ]
  },
@@ -5392,10 +6623,10 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N802.py:53",
    "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N802.py:81",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N802.py:48",
    "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N802.py:92",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N802.py:48",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N802.py:53",
    "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N802.py:103"
   ]
  },
@@ -5425,13 +6656,13 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:24",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:2",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:4",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:16",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:18",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:20",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:22",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:24",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:2"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/comparison_with_itself.py:22"
   ]
  },
  {
@@ -5447,17 +6678,17 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:415",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:440",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:450",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:461",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:432",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:461"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:450",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:415",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:440"
   ],
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:463",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:321",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:359",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:458"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:458",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_return/RET504.py:463"
   ]
  },
  {
@@ -5489,18 +6720,18 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:43",
    "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:29",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:45",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:50",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:63",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:31",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:44",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:62",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:30",
    "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:35",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:62",
    "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:42",
-   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:61"
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:63",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:30",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:43",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:44",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:45",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:61",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:31",
+   "ruff/crates/ruff_linter/resources/test/fixtures/ruff/RUF015.py:50"
   ]
  },
  {
@@ -5516,20 +6747,20 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:17",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:26",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:48",
    "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:22",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:20",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:16",
    "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:24",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:49"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:26",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:49",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:16",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:17",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:20",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:48"
   ],
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:69",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:71",
    "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:65",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:67"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:67",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:71",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pep8_naming/N806.py:69"
   ]
  },
  {
@@ -5580,14 +6811,14 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:47",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:50",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:53",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:56",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:59",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:80",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:86",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:5",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:47",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:50",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:53"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/magic_value_comparison.py:5"
   ]
  },
  {
@@ -5611,21 +6842,21 @@
   ],
   "fn_origins": [
    "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:39",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:40",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:44",
    "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:7",
    "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:10",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:11",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:12",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:37",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:9",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:38",
    "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:42",
    "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:43",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:11",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:37",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:38",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:41",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:45",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:40",
    "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:8",
    "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:36",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:9",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:12"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:41",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:44",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pygrep_hooks/PGH005_0.py:45"
   ]
  },
  {
@@ -5641,19 +6872,19 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:15",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:19",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:23",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:35",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:31",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:59",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:39",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:47",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:53",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:98",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:11",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:60",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:99"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:98",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:99",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:11",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:31",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:35",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:39",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:53",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:15",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/nan_comparison.py:59"
   ]
  },
  {
@@ -5690,26 +6921,26 @@
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:115"
   ],
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:93",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:98",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:120",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:163",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:52",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:71",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:98",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:137",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:178",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:173",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:180",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:16",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:21",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:58",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:67",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:71",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:36",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:137",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:168",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:11",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:52",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:59",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:75",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:103",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:158",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:173",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:11",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:59",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:67",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:93",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:168",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:36",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:58"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/redefined_loop_name.py:178"
   ]
  },
  {
@@ -5731,8 +6962,8 @@
   "fn_origins": [
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/bad_open_mode.py:32",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/bad_open_mode.py:34",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/bad_open_mode.py:37",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/bad_open_mode.py:33"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/bad_open_mode.py:33",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/bad_open_mode.py:37"
   ]
  },
  {
@@ -5761,17 +6992,17 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:129",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:159",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:117",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:153",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:21",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:104",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:111",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:123",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:135",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:117",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:129",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:141",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:147",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:135"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:153",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM103.py:123"
   ]
  },
  {
@@ -5804,26 +7035,26 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:27",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:7",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:8",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:13",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:15",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:24",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:26",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:28",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:12",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:16",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:18",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:21",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:6",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:9",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:10",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:11",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:14",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:19",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:20",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:22",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:14",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:15",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:18",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:19",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:25",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:27",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:8",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:12",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:17",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:21",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:28",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:7",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:10"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/self_assigning_variable.py:25"
   ]
  },
  {
@@ -5839,25 +7070,25 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:18",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:37",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:5",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:14",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:44",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:2",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:3",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:13",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:15",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:16",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:27",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:4",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:6",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:12",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:17",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:19",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:25",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:27",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:44",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:16",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:19",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:26",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:28",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:13",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:15",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:2",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:3",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:5",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:12",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:17",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:18",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:37",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:14",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:4",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:6",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_comprehensions/C414.py:7"
   ]
  },
@@ -5950,12 +7181,12 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/too_many_arguments.py:70",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/too_many_arguments.py:29",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/too_many_arguments.py:17",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/too_many_arguments.py:58",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/too_many_arguments.py:66",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/too_many_arguments.py:25",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/too_many_arguments.py:29"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/too_many_arguments.py:70",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/too_many_arguments.py:25"
   ]
  },
  {
@@ -5984,26 +7215,26 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:122",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:3",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:79",
    "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:115",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:168",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:26",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:85",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:122",
    "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:127",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:174",
    "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:182",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:26",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:79",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:85",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:168",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:3",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_0.py:174",
    "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_1.py:6",
    "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_1.py:16",
    "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_1.py:24",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:21",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:121",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:27",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:173",
    "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:106",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:155",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:45",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:77"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:121",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:139",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:133",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:21",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F841_3.py:27"
   ]
  },
  {
@@ -6173,22 +7404,22 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:146",
    "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:149",
+   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:160",
+   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:21",
+   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:158",
+   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:14",
    "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:154",
    "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:162",
    "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:183",
-   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:25",
-   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:160",
-   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:205",
-   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:14",
    "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:193",
+   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:205",
    "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:212",
    "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:7",
+   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:25",
    "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:29",
-   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:158",
-   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:190",
-   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:21",
-   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:146"
+   "ruff/crates/ruff_linter/resources/test/fixtures/refurb/FURB188.py:190"
   ]
  },
  {
@@ -6341,10 +7572,10 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E712.py:8",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E712.py:28",
    "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E712.py:11",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E712.py:22"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E712.py:22",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E712.py:8",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E712.py:28"
   ]
  },
  {
@@ -6380,14 +7611,14 @@
   "env_dependent_mismatch": 0,
   "fp_origins": [
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:58",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:59",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:60",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:59",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:63"
   ],
   "fn_origins": [
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:12",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:14",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:5",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:12"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B004.py:5"
   ]
  },
  {
@@ -6403,17 +7634,17 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:21",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:39",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:22",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:36",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:37",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:38"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:38",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:21",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:22"
   ],
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:10",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:13",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:7",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:13"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_datetimez/DTZ005.py:10"
   ]
  },
  {
@@ -6429,26 +7660,26 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:25",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:24",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:33",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:5",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:7",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:11",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:22",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:15",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:20",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:38",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:42",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:3",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:6",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:10",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:11",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:14",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:20",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:24",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:19",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:35",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:3",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:7",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:9",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:15",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:12",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:21",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:25",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:40",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:43"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:43",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:5",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_debugger/T100.py:6"
   ]
  },
  {
@@ -6481,8 +7712,8 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F541.py:37",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F541.py:38"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F541.py:38",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F541.py:37"
   ]
  },
  {
@@ -6499,8 +7730,8 @@
   "env_dependent_mismatch": 0,
   "fp_origins": [
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B009_B010.py:15",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B009_B010.py:61",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B009_B010.py:16"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B009_B010.py:16",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B009_B010.py:61"
   ],
   "fn_origins": [
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B009_B010.py:80",
@@ -6544,10 +7775,10 @@
   "fn_origins": [
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM118.py:55",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM118.py:26",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM118.py:19",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM118.py:28",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM118.py:30",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM118.py:32"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM118.py:32",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_simplify/SIM118.py:19"
   ]
  },
  {
@@ -6564,8 +7795,8 @@
   "env_dependent_mismatch": 0,
   "fn_origins": [
    "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F632.py:4",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F632.py:34",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F632.py:7"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F632.py:7",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pyflakes/F632.py:34"
   ]
  },
  {
@@ -6595,26 +7826,26 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:42",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:51",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:52",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:61",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:119",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:120",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:16",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:31",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:53",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:118",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:171",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:31",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:42",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:119",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:121",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:174",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:16",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:28",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:29",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:50",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:52",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:82",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:118",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:53",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:61",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:68",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:117",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:28",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:30",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:82",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:121"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B023.py:51"
   ]
  },
  {
@@ -6630,19 +7861,19 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fp_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:269",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:268"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:268",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:269"
   ],
   "fn_origins": [
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_9.py:17",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:85",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:102",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:97",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:106",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:110",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:93",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:97",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:102",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:282",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:89"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:85",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:89",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B006_B008.py:93"
   ]
  },
  {
@@ -6680,17 +7911,17 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:11",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:14",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:79",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:96",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:10",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:77",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:105",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:11",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:78",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:96",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:12",
    "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:13",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:80",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:78"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:79",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:14",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:77",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:105",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pylint/unspecified_encoding.py:80"
   ]
  },
  {
@@ -6719,17 +7950,17 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:88",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:20",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:65",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:10",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:73",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:79",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:81",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:87",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:88",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:97",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:10",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:11",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:63"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:20",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:63",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:65",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B904.py:81"
   ]
  },
  {
@@ -6745,12 +7976,12 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:13",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:7",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:19",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:22",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:24",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:25",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:7"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:13",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:22",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bugbear/B005.py:24"
   ]
  },
  {
@@ -6782,8 +8013,8 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E721.py:144",
-   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E721.py:140"
+   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E721.py:140",
+   "ruff/crates/ruff_linter/resources/test/fixtures/pycodestyle/E721.py:144"
   ]
  },
  {
@@ -6877,26 +8108,26 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:27",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:29",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:56",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:28",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:30",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:31",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:33",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:53",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:55",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:58",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:60",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:66",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:27",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:30",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:29",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:57",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:28",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:34",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:35",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:49",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:52",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:54",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:60",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:32",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:55",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:57",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:58",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:63",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:49",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:51"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:35",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:51",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:56",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S105.py:63"
   ]
  },
  {
@@ -6925,24 +8156,24 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:11",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:18",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:23",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:10",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:22",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:24",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:29",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:51",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:7",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:8",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:9",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:13",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:27",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:8",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:20",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:25",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:28",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:22",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:27",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:12",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:14",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:10"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:18",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:20",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:28",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:11",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S324.py:23"
   ]
  },
  {
@@ -6974,15 +8205,15 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:15",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:16",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:18",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:10",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:12",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:13",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:17",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:18",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:13",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:14",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:16",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:10",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:11",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:14"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:12",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S311.py:15"
   ]
  },
  {
@@ -6998,26 +8229,26 @@
   "tn": 0,
   "env_dependent_mismatch": 0,
   "fn_origins": [
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:6",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:8",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:34",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:180",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:4",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:5",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:27",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:48",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:2",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:3",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:14",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:41",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:69",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:160",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:19",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:140",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:37",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:102",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:36",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:55",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:98",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:25",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:28",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:32",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:39",
    "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:111",
-   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:21"
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:130",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:3",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:12",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:69",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:102",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:180",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:6",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:77",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:31",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:48",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:164",
+   "ruff/crates/ruff_linter/resources/test/fixtures/flake8_bandit/S608.py:22"
   ]
  },
  {
@@ -8647,6 +9878,457 @@
    "typescript-eslint/packages/eslint-plugin/tests/rules/ban-ts-comment.test.ts:1174",
    "typescript-eslint/packages/eslint-plugin/tests/rules/ban-ts-comment.test.ts:1187",
    "typescript-eslint/packages/eslint-plugin/tests/rules/ban-ts-comment.test.ts:1293"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-AMBIGUOUS-LINK-TEXT",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:link-name",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-ARIA-INVALID-ATTRIBUTE",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:aria-props",
+  "cases": 2,
+  "skipped": 0,
+  "tp": 1,
+  "fn": 0,
+  "fp": 0,
+  "tn": 1,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "VUE-A11Y-ARIA-INVALID-ROLE",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:aria-role",
+  "cases": 6,
+  "skipped": 1,
+  "tp": 1,
+  "fn": 1,
+  "fp": 0,
+  "tn": 4,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/aria-role.test.ts:15"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-ARIA-LABEL-ON-GENERIC",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:aria-prohibited-attr",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-ARIA-REQUIRED-ATTRIBUTE",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:role-has-required-aria-props",
+  "cases": 7,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 3,
+  "fp": 0,
+  "tn": 4,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/role-has-required-aria-props.test.ts:12",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/role-has-required-aria-props.test.ts:21",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/role-has-required-aria-props.test.ts:30"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-AUTOCOMPLETE-INVALID",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:autocomplete-valid",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-AUTOPLAY-WITH-SOUND",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:no-autoplay-audio",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-BUTTON-WITHOUT-NAME",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:button-name",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-CLICK-WITHOUT-KEYBOARD",
+  "pack": "vue",
+  "mode": "deterministic",
+  "xref": "vuejs-accessibility:click-events-have-key-events",
+  "cases": 33,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 11,
+  "fp": 0,
+  "tn": 22,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:30",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:31",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:32",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:33",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:34",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:35",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:36",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:37",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:38",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:39",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/click-events-have-key-events.test.ts:40"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-CONTROL-WITHOUT-LABEL",
+  "pack": "vue",
+  "mode": "deterministic",
+  "xref": "vuejs-accessibility:form-control-has-label",
+  "cases": 22,
+  "skipped": 2,
+  "tp": 2,
+  "fn": 5,
+  "fp": 0,
+  "tn": 15,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/form-control-has-label.test.ts:60",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/form-control-has-label.test.ts:61",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/form-control-has-label.test.ts:62",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/form-control-has-label.test.ts:63",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/form-control-has-label.test.ts:64"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-DUPLICATE-ID",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:duplicate-id",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-EMPTY-HEADING",
+  "pack": "vue",
+  "mode": "deterministic",
+  "xref": "vuejs-accessibility:heading-has-content",
+  "cases": 10,
+  "skipped": 4,
+  "tp": 0,
+  "fn": 4,
+  "fp": 0,
+  "tn": 6,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/heading-has-content.test.ts:26",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/heading-has-content.test.ts:27",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/heading-has-content.test.ts:28",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/heading-has-content.test.ts:29"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-HEADING-SKIPPED-LEVEL",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:heading-order",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-IFRAME-WITHOUT-TITLE",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:iframe-has-title",
+  "cases": 5,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 3,
+  "fp": 0,
+  "tn": 2,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/iframe-has-title.test.ts:6",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/iframe-has-title.test.ts:6",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/iframe-has-title.test.ts:6"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-IMG-REDUNDANT-ALT",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:alt-text",
+  "cases": 16,
+  "skipped": 2,
+  "tp": 0,
+  "fn": 6,
+  "fp": 0,
+  "tn": 10,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:18",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:22",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:26",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:30",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:34",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:38"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-IMG-WITHOUT-ALT",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:alt-text",
+  "cases": 16,
+  "skipped": 2,
+  "tp": 0,
+  "fn": 6,
+  "fp": 0,
+  "tn": 10,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:18",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:22",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:26",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:30",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:34",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/alt-text.test.ts:38"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-INPUT-IMAGE-WITHOUT-ALT",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:input-image-alt",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-LANG-INVALID",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:valid-lang",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-LINK-WITHOUT-NAME",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:anchor-has-content",
+  "cases": 12,
+  "skipped": 4,
+  "tp": 0,
+  "fn": 2,
+  "fp": 0,
+  "tn": 10,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/anchor-has-content.test.ts:30",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/anchor-has-content.test.ts:36"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-MARQUEE-OR-BLINK",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:no-distracting-elements",
+  "cases": 3,
+  "skipped": 1,
+  "tp": 2,
+  "fn": 0,
+  "fp": 0,
+  "tn": 1,
+  "env_dependent_mismatch": 0
+ },
+ {
+  "rule": "VUE-A11Y-MOUSE-WITHOUT-KEYBOARD",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:mouse-events-have-key-events",
+  "cases": 7,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 4,
+  "fp": 0,
+  "tn": 3,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/mouse-events-have-key-events.test.ts:11",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/mouse-events-have-key-events.test.ts:15",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/mouse-events-have-key-events.test.ts:19",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/mouse-events-have-key-events.test.ts:23"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-NESTED-INTERACTIVE",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:nested-interactive",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-POSITIVE-TABINDEX",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:tabindex-no-positive",
+  "cases": 7,
+  "skipped": 0,
+  "tp": 2,
+  "fn": 1,
+  "fp": 0,
+  "tn": 4,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/tabindex-no-positive.test.ts:14"
+  ]
+ },
+ {
+  "rule": "VUE-A11Y-ROLE-IMG-WITHOUT-NAME",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:role-img-alt",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-TABLE-WITHOUT-HEADERS",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:td-has-header",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-TH-INVALID-SCOPE",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "axe:scope-attr-valid",
+  "cases": 0,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 0,
+  "fp": 0,
+  "tn": 0,
+  "env_dependent_mismatch": 0,
+  "unsupported": "suite written for another syntax"
+ },
+ {
+  "rule": "VUE-A11Y-VIDEO-WITHOUT-CAPTIONS",
+  "pack": "vue",
+  "mode": "ai-confirm",
+  "xref": "vuejs-accessibility:media-has-caption",
+  "cases": 38,
+  "skipped": 0,
+  "tp": 0,
+  "fn": 17,
+  "fp": 0,
+  "tn": 21,
+  "env_dependent_mismatch": 0,
+  "fn_origins": [
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:67",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:68",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:69",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:70",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:71",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:72",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:77",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:82",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:83",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:84",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:85",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:90",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:95",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:100",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:105",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:110",
+   "eslint-plugin-vuejs-accessibility/src/rules/__tests__/media-has-caption.test.ts:115"
   ]
  },
  {

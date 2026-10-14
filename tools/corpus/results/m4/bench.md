@@ -57,4 +57,12 @@ Flagged = finding with matching CWE family in the test file. TPR = TP/(TP+FN), F
 
 ## juice-shop marked challenges
 
-36 challenges with vuln-line markers; hit on the review list 1 (3%), as candidates 7 (19%). Missed: adminSectionChallenge, changeProductChallenge, chatbotGreedyInjectionChallenge, chatbotPromptInjecti, chatbotPromptInjectionChallenge, dbSchemaChallenge, exposedMetricsChallenge, forgedReviewChallenge, loginAdminChallenge, loginBenderChallenge, loginJimChallenge, nftMintChallenge, nftUnlockChallenge, noSqlReviewsChallenge, redirectChallenge, redirectCryptoCurrencyChallenge, registerAdminChallenge, resetPasswordBenderChallenge, resetPasswordBjoernChallenge, resetPasswordBjoernOwaspChallenge, resetPasswordJimChallenge, resetPasswordMortyChallenge, resetPasswordUvoginChallenge, scoreBoardChallenge, tokenSaleChallenge, unionSqlInjectionChallenge, weakPasswordChallenge, web3SandboxChallenge, web3WalletChallenge
+36 challenges with vuln-line markers; hit on the review list 1 (3%), as candidates 7 (19%). Missed: adminSectionChallenge, changeProductChallenge, chatbotGreedyInjectionChallenge, chatbotPromptInjectionChallenge, dbSchemaChallenge, exposedMetricsChallenge, forgedReviewChallenge, loginAdminChallenge, loginBenderChallenge, loginJimChallenge, nftMintChallenge, nftUnlockChallenge, noSqlReviewsChallenge, redirectChallenge, redirectCryptoCurrencyChallenge, registerAdminChallenge, resetPasswordBenderChallenge, resetPasswordBjoernChallenge, resetPasswordBjoernOwaspChallenge, resetPasswordJimChallenge, resetPasswordMortyChallenge, resetPasswordUvoginChallenge, scoreBoardChallenge, tokenSaleChallenge, unionSql, unionSqlInjectionChallenge, weakPasswordChallenge, web3SandboxChallenge, web3WalletChallenge
+
+## WebGoat documented lessons
+
+19 lessons with a code-level weakness: found on the review list 2 (11%), as candidates 6 (32%). Missed: commandinjection, csrf, idor, insecurelogin, missingac, openredirect, passwordreset, passwordstorage, spoofcookie, ssrf, vulnerablecomponents, xss, xxe
+
+## DVWA documented modules
+
+51 vulnerable levels (low/medium/high): found on the review list 1 (2%), as candidates 12 (24%). 17 impossible (secure) levels flagged: review 0, candidates 2 (csp, exec). Missed: authbypass/low, authbypass/medium, authbypass/high, bac/low, bac/medium, bac/high, brute/low, brute/medium, brute/high, cryptography/low, cryptography/medium, cryptography/high, csp/low, csp/medium, csrf/low, csrf/medium, csrf/high, fi/low, fi/medium, fi/high, javascript/low, javascript/medium, sqli/medium, sqli/high, upload/low, upload/medium, upload/high, weak_id/low, weak_id/medium, weak_id/high, xss_d/low, xss_d/medium, xss_d/high, xss_r/low, xss_r/medium, xss_r/high, xss_s/low, xss_s/medium, xss_s/high
