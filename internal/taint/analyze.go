@@ -38,6 +38,10 @@ type analyzer struct {
 	srcFn      map[*N]bool
 	cands      []cand
 	paramReach map[[3]uint32]bool
+	// cross-file summaries (project.go): onlyParam >= 0 taints just that parameter
+	onlyParam int
+	ext       *Index
+	path      string
 }
 
 type cand struct {
@@ -62,12 +66,21 @@ func Analyze(root *N, src []byte, family string, l *Lang) []Hit {
 
 // AnalyzeFull is Analyze plus the clean sinks (see Result).
 func AnalyzeFull(root *N, src []byte, family string, l *Lang) Result {
+	return AnalyzeFullAt(root, src, family, "", l)
+}
+
+// AnalyzeFullAt is AnalyzeFull for the file at path (slash path relative to the scan root), which
+// also follows calls into functions of other files of the project index (SetProject).
+func AnalyzeFullAt(root *N, src []byte, family, path string, l *Lang) Result {
 	sx := langs[family]
 	if sx == nil || l == nil || root == nil {
 		return Result{}
 	}
 	a := &analyzer{sx: sx, l: l, fam: family, src: src, file: string(src), summ: map[string]summary{}, seen: map[[3]uint32]bool{},
-		srcFn: map[*N]bool{}, paramReach: map[[3]uint32]bool{}}
+		srcFn: map[*N]bool{}, paramReach: map[[3]uint32]bool{}, onlyParam: -1, path: path}
+	if path != "" {
+		a.ext = currentProject()
+	}
 	var fns []*N
 	var collect func(n *N)
 	collect = func(n *N) {
@@ -143,20 +156,21 @@ func (a *analyzer) run(f *N, taintParams, collect bool) val {
 		}
 		return a.ret
 	}
-	route := a.l.routeParams != nil && a.decor != "" && a.l.routeParams.MatchString(a.decor)
-	for _, p := range a.params(f) {
+	route := a.l.routeParams != nil && a.decor != "" && a.l.routeParams.MatchString(a.decor) ||
+		a.decor != "" && a.l.guarded(a.l.guardedRoutes, a.decor, a.file)
+	for pi, p := range a.params(f) {
 		ptxt := p.text(a.src)
 		if prev := prevNamed(p); prev != nil && (prev.Kind == "parameter_modifiers" || prev.Kind == "annotation") {
 			ptxt = prev.text(a.src) + " " + ptxt
 		}
-		src := a.l.paramSources != nil && a.l.paramSources.MatchString(ptxt)
+		src := a.l.paramSources != nil && a.l.paramSources.MatchString(ptxt) || a.l.guarded(a.l.guardedParams, ptxt, a.file)
 		if route && !regexp.MustCompile(`Depends\(|:\s*(Request|Response|Session|BackgroundTasks)\b|^(self|cls)$`).MatchString(ptxt) {
 			src = true
 		}
 		if src && collect && a.phase == 0 {
 			a.srcFn[f] = true
 		}
-		if taintParams || src {
+		if taintParams && (a.onlyParam < 0 || pi == a.onlyParam) || src && a.onlyParam < 0 {
 			why := fmt.Sprintf("line %d: parameter %s", p.Row+1, strings.TrimSpace(firstLine(ptxt)))
 			for _, id := range a.paramNames(p) {
 				e.vars[id] = val{all, why}
@@ -495,6 +509,7 @@ func (a *analyzer) ifStmt(n *N, e *env) {
 	base := e
 	var out *env
 	var guards, allowed []string
+	var numeric []numTarget
 	decided := false
 	for _, ar := range arms {
 		if ar.cond != nil {
@@ -509,6 +524,9 @@ func (a *analyzer) ifStmt(n *N, e *env) {
 			for _, g := range a.allowVars(ar.cond, true, b) { // `if host in ALLOWED: fetch(url)`
 				b.clearBits(g, urlMask)
 			}
+			for _, g := range a.numericVars(ar.cond, true, b) { // `if (is_numeric($o[0]) && ...)`
+				g.clear(b)
+			}
 		}
 		if ar.body != nil {
 			a.walk(ar.body, b)
@@ -516,6 +534,7 @@ func (a *analyzer) ifStmt(n *N, e *env) {
 		if b.dead && ar.cond != nil {
 			guards = append(guards, a.guardVars(ar.cond)...)
 			allowed = append(allowed, a.allowVars(ar.cond, false, base)...)
+			numeric = append(numeric, a.numericVars(ar.cond, false, base)...)
 		}
 		out = merge(out, b)
 		if ok && c.truthy() {
@@ -538,6 +557,9 @@ func (a *analyzer) ifStmt(n *N, e *env) {
 		}
 		for _, g := range allowed { // `if host not in ALLOWED: abort()` - URL checked against an allow-list
 			out.clearBits(g, urlMask)
+		}
+		for _, g := range numeric { // `if not x.isdigit(): return`
+			g.clear(out)
 		}
 	}
 	*e = *out
@@ -1247,6 +1269,93 @@ func (a *analyzer) allowVars(cond *N, want bool, e *env) []string {
 				names(key)
 			}
 			return
+		}
+	}
+	visit(cond, true)
+	return out
+}
+
+// numericCalls test that a value is a number; a value that passed such a check carries no
+// injection payload.
+var numericCalls = regexp.MustCompile(`^(is_numeric|ctype_digit|is_int|is_float|Number\.isInteger|Number\.isSafeInteger|Number\.isFinite|StringUtils\.isNumeric|NumberUtils\.isDigits|NumberUtils\.isCreatable)$|(^|\.)(isdigit|isnumeric|isdecimal)$`)
+
+type numTarget struct {
+	name   string
+	key    string
+	hasKey bool
+}
+
+func (g numTarget) clear(e *env) {
+	if !g.hasKey {
+		if _, ok := e.vars[g.name]; ok {
+			e.vars[g.name] = val{}
+		}
+		return
+	}
+	m := e.keys[g.name]
+	if m == nil {
+		m = map[string]val{}
+		e.keys[g.name] = m
+	}
+	m[g.key] = val{}
+}
+
+// numericVars lists the variables / constant-index elements a condition proves numeric when it
+// evaluates to want (conjuncts when true, negated disjuncts when false).
+func (a *analyzer) numericVars(cond *N, want bool, e *env) []numTarget {
+	var out []numTarget
+	target := func(x *N) {
+		for x != nil && x.Kind == "parenthesized_expression" || x != nil && (x.Kind == "argument" || x.Kind == "value_argument") && len(x.NamedKids()) == 1 {
+			x = x.NamedKids()[0]
+		}
+		if x == nil {
+			return
+		}
+		if a.sx.idents[x.Kind] || x.Kind == "variable_name" {
+			out = append(out, numTarget{name: norm(x.text(a.src))})
+			return
+		}
+		if x.Kind == "subscript_expression" || x.Kind == "subscript" || x.Kind == "element_reference" || x.Kind == "index_expression" {
+			if obj, key := a.subscriptParts(x); obj != nil && key != nil {
+				if k, ok := a.constEval(key, e); ok {
+					out = append(out, numTarget{name: norm(obj.text(a.src)), key: keyStr(k), hasKey: true})
+				}
+			}
+		}
+	}
+	var visit func(n *N, pol bool)
+	visit = func(n *N, pol bool) {
+		txt := n.text(a.src)
+		switch {
+		case n.Kind == "parenthesized_expression":
+			for _, k := range n.NamedKids() {
+				visit(k, pol)
+			}
+		case n.Kind == "not_operator" || (n.Kind == "unary_expression" || n.Kind == "prefix_expression" || n.Kind == "unary_op_expression") && strings.HasPrefix(txt, "!"):
+			if nk := n.NamedKids(); len(nk) > 0 {
+				visit(nk[len(nk)-1], !pol)
+			}
+		case n.Kind == "boolean_operator" || n.Kind == "binary_expression" || n.Kind == "conjunction_expression" || n.Kind == "disjunction_expression":
+			op := n.op(a.src)
+			if (op == "and" || op == "&&") && pol == want || (op == "or" || op == "||") && pol != want {
+				for _, k := range n.NamedKids() {
+					visit(k, pol)
+				}
+			}
+		case a.sx.calls[n.Kind] && pol == want:
+			callee, recv, args, _ := a.callParts(n)
+			if !numericCalls.MatchString(callee) {
+				return
+			}
+			if strings.HasSuffix(callee, "isdigit") || strings.HasSuffix(callee, "isnumeric") || strings.HasSuffix(callee, "isdecimal") {
+				if recv != nil && len(args) == 0 {
+					target(recv)
+				}
+				return
+			}
+			if len(args) == 1 {
+				target(args[0])
+			}
 		}
 	}
 	visit(cond, true)

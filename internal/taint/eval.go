@@ -118,6 +118,9 @@ func (a *analyzer) eval(n *N, e *env) val {
 			op = n.op(a.src)
 		}
 		v := a.evalKids(n, e)
+		if a.fam == "javascript" && (op == "||" || op == "&&") {
+			return v // JS logical operators yield an operand (req.body.email || ''), not a boolean
+		}
 		if cmpOps[op] || n.Kind == "comparison_expression" || n.Kind == "equality_expression" || n.Kind == "conjunction_expression" || n.Kind == "disjunction_expression" {
 			return val{}
 		}
@@ -189,6 +192,11 @@ func (a *analyzer) eval(n *N, e *env) val {
 		}
 		return a.evalKidsNoField(n, e, "field", "name", "property")
 	case sx.strings[n.Kind]:
+		if a.fam == "python" || a.fam == "javascript" {
+			if v, ok := a.queryOnlyString(n, e); ok {
+				return v
+			}
+		}
 		v := a.evalKids(n, e)
 		if a.fam == "kotlin" { // the Kotlin grammar splits "$name" templates into plain string_content nodes
 			for _, m := range ktTemplate.FindAllStringSubmatch(n.text(a.src), -1) {
@@ -556,20 +564,31 @@ func (a *analyzer) call(n *N, e *env) val {
 			}
 		}
 	}
-	// 3. sanitizers
-	// every matching sanitizer applies (re.escape is both an "escape" and a regex escaper)
-	var smask T
-	sanitized := false
-	for _, s := range a.l.sanitizers {
-		if s.re.MatchString(callee) {
-			smask |= s.mask
-			sanitized = true
-		}
+	localSum, hasLocal := a.summ[m]
+	if hasLocal && !a.local(recv) {
+		hasLocal = false
 	}
-	if sanitized {
-		v := au.or(rv).or(ku)
-		v.t &^= smask
-		return v
+	fs := (*FuncSummary)(nil)
+	if !hasLocal {
+		fs = a.extSummary(m, recv, args, kwargs)
+	}
+	// 3. sanitizers
+	// every matching sanitizer applies (re.escape is both an "escape" and a regex escaper).
+	// A summarised helper wins: repo.find is not str.find.
+	if fs == nil && !hasLocal {
+		var smask T
+		sanitized := false
+		for _, s := range a.l.sanitizers {
+			if s.re.MatchString(callee) {
+				smask |= s.mask
+				sanitized = true
+			}
+		}
+		if sanitized {
+			v := au.or(rv).or(ku)
+			v.t &^= smask
+			return v
+		}
 	}
 	// 4. containers with literal keys / indexes
 	if recv != nil && (a.sx.idents[recv.Kind] || a.sx.members[recv.Kind] && !strings.Contains(recv.text(a.src), "(")) {
@@ -653,13 +672,48 @@ func (a *analyzer) call(n *N, e *env) val {
 			rv = e.container(name)
 		}
 	}
-	// 5. same-file summaries
-	if s, ok := a.summ[m]; ok && a.local(recv) {
+	// 4b. cross-file summaries: a function of another file that this call provably names
+	if fs != nil {
+		argv := func(i int) val {
+			if i < len(avs) {
+				return avs[i]
+			}
+			for _, k := range kwargs {
+				if nm := k.F("name"); nm != nil && i < len(fs.Params) && nm.text(a.src) == fs.Params[i] {
+					return a.eval(k, e)
+				}
+			}
+			return val{}
+		}
+		if a.collect {
+			for i, mask := range fs.ParamSinks {
+				v := argv(i)
+				if hit := v.t & mask; hit != 0 {
+					for b, cls := range Classes {
+						if hit&(1<<b) != 0 {
+							a.hit(sink{class: 1 << b, name: cls}, n, callee+" -> "+fs.SinkName[i]+" in "+fs.Path, v)
+						}
+					}
+				}
+			}
+		}
 		v := au.or(ku)
-		v.t &= s.withParams
-		if s.own != 0 {
-			v = v.or(val{s.own, a.why(n)})
-			if s.own != 0 && a.collect && a.phase == 0 {
+		v.t &= fs.WithParams
+		if fs.Own != 0 {
+			v = v.or(val{fs.Own, a.why(n)})
+			if a.collect && a.phase == 0 {
+				a.srcFn[a.cur] = true
+			}
+		}
+		return v
+	}
+	// 5. same-file summaries
+	if hasLocal {
+		v := au.or(ku)
+		v.t &= localSum.withParams
+		if localSum.own != 0 {
+			v = v.or(val{localSum.own, a.why(n)})
+			if a.collect && a.phase == 0 {
 				a.srcFn[a.cur] = true
 			}
 		}
@@ -678,6 +732,23 @@ func (a *analyzer) call(n *N, e *env) val {
 		}
 	}
 	return au.or(rv).or(ku)
+}
+
+func (a *analyzer) extSummary(name string, recv *N, args, kwargs []*N) *FuncSummary {
+	if a.ext == nil {
+		return nil
+	}
+	rt := ""
+	if recv != nil {
+		rt = recv.text(a.src)
+	}
+	var kwn []string
+	for _, k := range kwargs {
+		if nm := k.F("name"); nm != nil {
+			kwn = append(kwn, nm.text(a.src))
+		}
+	}
+	return a.ext.lookup(a.fam, name, rt, a.path, a.file, len(args), kwn)
 }
 
 func (a *analyzer) local(recv *N) bool {
@@ -903,4 +974,38 @@ func binop(op string, l, r cv) (cv, bool) {
 		}
 	}
 	return cv{}, false
+}
+
+var urlBits = classBit("redirect") | classBit("ssrf")
+
+// queryOnlyString: in an f-string / template literal whose part before the first literal "?" or
+// "#" carries no attacker data, later interpolations only fill the query or fragment: they cannot
+// change the scheme, host or path, so they carry no redirect/SSRF taint.
+func (a *analyzer) queryOnlyString(n *N, e *env) (val, bool) {
+	var v val
+	inQuery, interp := false, false
+	for _, k := range n.Kids {
+		if !k.Named {
+			continue
+		}
+		if strings.Contains(k.Kind, "interpolation") || strings.Contains(k.Kind, "substitution") {
+			interp = true
+			x := a.eval(k, e)
+			if inQuery {
+				x.t &^= urlBits
+				if x.t == 0 {
+					x.why = ""
+				}
+			}
+			v = v.or(x)
+			continue
+		}
+		if !inQuery && strings.ContainsAny(k.text(a.src), "?#") && v.t&urlBits == 0 {
+			inQuery = true
+		}
+	}
+	if !interp {
+		return val{}, false
+	}
+	return v, true
 }

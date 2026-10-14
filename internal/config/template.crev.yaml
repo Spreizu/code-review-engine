@@ -2,7 +2,7 @@
 # CI gate: exit code 1 only when a gating finding is critical (decision 2026-10-09).
 # Everything else is still reported (text/JSON/SARIF/MD); lower fail_on to tighten.
 fail_on: critical
-# packs: [go, react, ...]   # empty/omitted = all 26 packs; applies_to + file kinds decide what runs
+# packs: [go, react, ...]   # empty/omitted = all 32 packs; applies_to + file kinds decide what runs
 # User rules layered over the catalog by id (add/patch/replace/disable); check with `crev rules validate`.
 custom_rules: [.crev/rules]
 
@@ -51,6 +51,11 @@ skip_generated: true        # --include-generated
 # hadolint ignore, tflint-ignore, ...) suppresses the equivalent crev rule. Suppressed findings stay
 # in JSON/SARIF and are listed with --show-suppressed. Having a linter installed never hides anything.
 respect_project_config: true # --no-project-config
+# Type resolver: basic (per file, default) | full (cross-file class/function index prepass) | off
+# types: basic
+# Cross-file taint: function summaries of every file so a call into another file's helper carries
+# that helper's sinks and return taint (default on).
+# cross_file_taint: true
 ignore: []                  # extra globs, e.g. ["**/legacy/**", "docs/**/*.json"]
 rules: {}                   # e.g. { SB-QUAL-INJ-001: { severity: info }, JS-QUAL-VAR-001: { enabled: false } }
 # Rule trust (rules/data/trust.yaml): rules without external evidence (labelled linter suites,

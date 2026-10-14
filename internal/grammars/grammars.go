@@ -11,6 +11,7 @@ import (
 	tsxml "github.com/tree-sitter-grammars/tree-sitter-xml/bindings/go"
 	tsyaml "github.com/tree-sitter-grammars/tree-sitter-yaml/bindings/go"
 	ts "github.com/tree-sitter/go-tree-sitter"
+	tscss "github.com/tree-sitter/tree-sitter-css/bindings/go"
 	tsgo "github.com/tree-sitter/tree-sitter-go/bindings/go"
 	tshtml "github.com/tree-sitter/tree-sitter-html/bindings/go"
 	tsjava "github.com/tree-sitter/tree-sitter-java/bindings/go"
@@ -28,7 +29,7 @@ import (
 
 // Names lists every grammar id Get understands.
 var Names = []string{"java", "javascript", "typescript", "tsx", "vue", "go", "python", "php", "kotlin", "groovy",
-	"json", "yaml", "xml", "hcl", "dockerfile", "proto", "graphql", "html"}
+	"json", "yaml", "xml", "hcl", "dockerfile", "proto", "graphql", "html", "css"}
 
 // Get returns the language for an id.
 func Get(id string) *ts.Language {
@@ -67,6 +68,8 @@ func Get(id string) *ts.Language {
 		return ts.NewLanguage(proto.Language())
 	case "graphql":
 		return ts.NewLanguage(graphql.Language())
+	case "css", "scss", "less":
+		return ts.NewLanguage(tscss.Language()) // official CSS grammar; SCSS/Less files parse their CSS subset
 	case "html":
 		return ts.NewLanguage(tshtml.Language()) // Angular external templates (control-flow blocks parse as text)
 	}

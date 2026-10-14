@@ -1,0 +1,147 @@
+# Framework models for taint-lite (internal/taint): per framework, where request data enters
+# (sources, framework-bound parameters, route decorators) and framework-specific sinks/sanitizers.
+# Each model is merged into its language block of taint.yaml; every source, param source, route
+# decorator and sink of a model only applies in files matching `imports`, so a look-alike name in
+# code that does not use the framework is never a source. Names come from the cited official docs.
+frameworks:
+  - name: javalin
+    language: java
+    doc: https://javalin.io/documentation
+    imports: 'io\.javalin\b'
+    sources:
+      - re: '^(ctx|context)\.(queryParam|queryParams|queryParamMap|pathParam|formParam|formParams|formParamMap|header|cookie|body|bodyAsBytes|bodyAsClass|uploadedFile|uploadedFiles|queryString)\(\)$'
+    sinks:
+      xss:
+        - {callee: '^(ctx|context)\.html$', args: [0]}
+  - name: javalin
+    language: kotlin
+    doc: https://javalin.io/documentation
+    imports: 'io\.javalin\b'
+    sources:
+      - re: '^(ctx|context)\.(queryParam|queryParams|queryParamMap|pathParam|formParam|formParams|formParamMap|header|cookie|body|bodyAsBytes|bodyAsClass|uploadedFile|uploadedFiles|queryString)\(\)$'
+    sinks:
+      xss:
+        - {callee: '^(ctx|context)\.html$', args: [0]}
+  - name: quarkus-rest
+    language: java
+    doc: https://quarkus.io/guides/rest
+    imports: 'org\.jboss\.resteasy\.reactive\b'
+    param_sources: ['@(RestQuery|RestPath|RestForm|RestHeader|RestCookie|RestMatrix)\b']
+  - name: quarkus-rest
+    language: kotlin
+    doc: https://quarkus.io/guides/rest
+    imports: 'org\.jboss\.resteasy\.reactive\b'
+    param_sources: ['@(RestQuery|RestPath|RestForm|RestHeader|RestCookie|RestMatrix)\b']
+  - name: spring-webflux-functional
+    language: java
+    doc: https://docs.spring.io/spring-framework/reference/web/webflux-functional.html
+    imports: 'org\.springframework\.web\.reactive\.function\.server\b'
+    sources:
+      - re: '^\w*([Rr]equest|req)\.(pathVariable|pathVariables|bodyToMono|bodyToFlux|formData|multipartData)\(\)$'
+  - name: spring-webflux-functional
+    language: kotlin
+    doc: https://docs.spring.io/spring-framework/reference/web/webflux-functional.html
+    imports: 'org\.springframework\.web\.reactive\.function\.server\b'
+    sources:
+      - re: '^\w*([Rr]equest|req)\.(pathVariable|pathVariables|bodyToMono|bodyToFlux|formData|multipartData|awaitBody|awaitFormData)\(\)$'
+  - name: aiohttp-server
+    language: python
+    doc: https://docs.aiohttp.org/en/stable/web_reference.html
+    imports: '(?m)^\s*(from aiohttp import ([\w ]+, *)*web\b|from aiohttp\.web import|import aiohttp\.web)'
+    sources:
+      - re: '^request\.(match_info|query|rel_url\.query|post\(\)|json\(\)|text\(\)|read\(\)|cookies|headers|content|multipart\(\))'
+  - name: falcon
+    language: python
+    doc: https://falcon.readthedocs.io/en/stable/api/request_and_response_wsgi.html
+    imports: '(?m)^\s*(import falcon|from falcon\b)'
+    sources:
+      - re: '^req\.(get_param\w*|get_media|get_header|get_cookie_values)\(\)$'
+      - re: '^req\.(params|media|bounded_stream|stream|cookies|query_string|headers)\b'
+  - name: nestjs
+    language: javascript
+    doc: https://docs.nestjs.com/controllers
+    imports: '@nestjs/common'
+    param_sources: ['@(Query|Param|Body|Headers)\(']
+  - name: hapi
+    language: javascript
+    doc: https://github.com/hapijs/hapi/blob/master/API.md
+    imports: '@hapi/hapi'
+    sources:
+      - re: '^(request|req)\.(payload|state)\b'
+  - name: fiber
+    language: go
+    doc: https://docs.gofiber.io/api/ctx
+    imports: 'gofiber/fiber'
+    sources:
+      - re: '^(c|ctx)\.(Query|Queries|Params|AllParams|FormValue|Body|BodyRaw|Cookies|Get|FormFile|MultipartForm|OriginalURL)\(\)$'
+    sinks:
+      path:
+        - {callee: '^(c|ctx)\.(SendFile|Download)$', args: [0]}
+      redirect:
+        - {callee: '^(c|ctx)\.Redirect\(\)\.To$', args: [0]}
+  - name: chi
+    language: go
+    doc: https://pkg.go.dev/github.com/go-chi/chi/v5
+    imports: 'go-chi/chi'
+    sources:
+      - re: '^chi\.URLParam\(\)$'
+  - name: psr-7
+    language: php
+    doc: https://www.php-fig.org/psr/psr-7/
+    imports: 'Psr\\Http\\Message\\|Slim\\'
+    sources:
+      - re: '^\$(request|req)\.(getQueryParams|getParsedBody|getCookieParams|getUploadedFiles|getBody)\(\)'
+  - name: codeigniter4
+    language: php
+    doc: https://codeigniter.com/user_guide/incoming/incomingrequest.html
+    imports: 'CodeIgniter\\'
+    sources:
+      - re: '^(\$this\.request|\$request)\.(getGet|getPost|getVar|getJSON|getJsonVar|getRawInput|getRawInputVar|getCookie|getGetPost|getPostGet|getHeaderLine|getFile|getFiles)\(\)$'
+  - name: symfony-http-foundation
+    language: php
+    doc: https://symfony.com/doc/current/components/http_foundation.html
+    imports: 'Symfony\\Component\\HttpFoundation\\'
+    sources:
+      - re: '^\$request\.(getContent|toArray|getPayload\(\)\.(get|all))\(\)$'
+  - name: micronaut
+    language: java
+    doc: https://docs.micronaut.io/latest/guide/#binding
+    imports: 'io\.micronaut\b'
+    param_sources: ['@(QueryValue|PathVariable|Header|CookieValue|Body|Part)\b']
+  - name: micronaut
+    language: kotlin
+    doc: https://docs.micronaut.io/latest/guide/#binding
+    imports: 'io\.micronaut\b'
+    param_sources: ['@(QueryValue|PathVariable|Header|CookieValue|Body|Part)\b']
+  - name: vertx-web
+    language: java
+    doc: https://vertx.io/docs/vertx-web/java/#_handling_requests
+    imports: 'io\.vertx\.(ext\.web|core)\b'
+    sources:
+      - re: '^\w*(ctx|context|routingContext|rc)\.(pathParam|queryParams|queryParam|formAttributes|getBodyAsString|body|fileUploads)\(\)$'
+      - re: '^\w*(ctx|context|routingContext|rc)\.request\(\)\.(getParam|getHeader|getCookie|params|uri|path|query|absoluteURI)\(\)$'
+  - name: vertx-web
+    language: kotlin
+    doc: https://vertx.io/docs/vertx-web/java/#_handling_requests
+    imports: 'io\.vertx\.(ext\.web|core)\b'
+    sources:
+      - re: '^\w*(ctx|context|routingContext|rc)\.(pathParam|queryParams|queryParam|formAttributes|getBodyAsString|body|fileUploads)\(\)$'
+      - re: '^\w*(ctx|context|routingContext|rc)\.request\(\)\.(getParam|getHeader|getCookie|params|uri|path|query|absoluteURI)\(\)$'
+  - name: sparkjava
+    language: java
+    doc: https://sparkjava.com/documentation#query-params
+    imports: '(?m)^\s*import\s+spark\.'
+    sources:
+      - re: '^\w*(req|request)\.(queryParams|queryMap|params|body|headers|cookie|uri|url|ip|host|contentType|raw)\(\)$'
+  - name: http4k
+    language: kotlin
+    doc: https://www.http4k.org/guide/howto/server_as_a_function/
+    imports: 'org\.http4k\b'
+    sources:
+      - re: '^\w*(request|req)\.(query|queries|header|cookie|bodyString|form|uri)\(\)$'
+  - name: play-java
+    language: java
+    doc: https://www.playframework.com/documentation/latest/JavaActions
+    imports: '(?m)^\s*import\s+play\.(mvc|api)\b'
+    sources:
+      - re: '^\w*(request|req)\.(queryString|queryParams|body|header|cookie|uri|path|host|remoteAddress|getQueryString|getHeader|getCookie|getUri|getPath)\(\)$'

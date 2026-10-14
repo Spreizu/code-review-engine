@@ -454,6 +454,7 @@ func writeOutputs(e *env, rep *findings.Report, format string, outputs []string,
 func cmdScan(args []string) error {
 	fs := flag.NewFlagSet("scan", flag.ContinueOnError)
 	format := fs.String("format", "text", "text|json|sarif|md")
+	typeMode := fs.String("types", "", "type resolver: basic (per file, default), full (cross-file index prepass) or off (default from .crev.yaml types)")
 	var outputs multi
 	fs.Var(&outputs, "output", "[fmt=]FILE, repeatable")
 	failOn := fs.String("fail-on", "", "info|minor|major|critical|none (default from .crev.yaml: critical)")
@@ -510,7 +511,16 @@ func cmdScan(args []string) error {
 	opts := engine.Options{Scope: sc, Root: e.root, Rules: e.all, Ignore: e.cfg.Ignore, Latest: e.latest(), Disabled: map[string]bool{}, Severity: map[string]string{},
 		NoGitignore: *noGitignore || !config.On(e.cfg.Gitignore), NoDefaultExcludes: *noDefaultExcludes || !config.On(e.cfg.DefaultExcludes),
 		IncludeGenerated: *includeGenerated || !config.On(e.cfg.SkipGenerated), RespectProjectConfig: !*noProjectConfig && config.On(e.cfg.RespectProjectConfig),
-		IncludeShadow: true, Shadow: e.feedbackShadow(), Enabled: map[string]bool{}}
+		IncludeShadow: true, Shadow: e.feedbackShadow(), Enabled: map[string]bool{}, TypeMode: e.cfg.Types,
+		NoCrossFileTaint: e.cfg.CrossFileTaint != nil && !*e.cfg.CrossFileTaint}
+	if *typeMode != "" {
+		opts.TypeMode = *typeMode
+	}
+	switch opts.TypeMode {
+	case "", "basic", "full", "off":
+	default:
+		return fail(2, "--types: want basic, full or off, got %q", opts.TypeMode)
+	}
 	for id, s := range e.cfg.Rules {
 		if s.Enabled != nil && !*s.Enabled {
 			opts.Disabled[id] = true

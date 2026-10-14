@@ -2,7 +2,6 @@ package projcfg
 
 import (
 	"fmt"
-	"maps"
 	"regexp"
 	"slices"
 	"strings"
@@ -21,12 +20,35 @@ type inlineSup struct {
 // FileInline holds the suppressions found in one file.
 type FileInline struct{ sups []inlineSup }
 
+// Inline is one suppression comment/annotation and the 1-based line range it covers.
+type Inline struct {
+	Tools []string // xref tools covered
+	IDs   []string // nil = every rule of those tools
+	From  int
+	To    int
+	Line  int
+	Text  string
+	Crev  bool
+}
+
+// All lists the suppressions ParseInline found (order is source order).
+func (fi *FileInline) All() []Inline {
+	if fi == nil {
+		return nil
+	}
+	out := make([]Inline, len(fi.sups))
+	for i, s := range fi.sups {
+		out[i] = Inline{Tools: s.tools, IDs: s.ids, From: s.from, To: s.to, Line: s.line, Text: s.text, Crev: s.crev}
+	}
+	return out
+}
+
 var eslintFamily = []string{"eslint", "typescript-eslint", "eslint-plugin-vue", "graphql-eslint", "react-hooks", "angular-eslint", "react",
 	"oxlint", "unicorn", "jsx-a11y", "import", "jest", "vitest", "promise", "node", "nextjs", "jsdoc", "react-perf"}
 var jvmTools = []string{"checkstyle", "pmd", "errorprone", "spotbugs", "detekt", "ktlint"}
 
 var (
-	reESLint      = regexp.MustCompile(`(?:es|ox)lint-(disable-next-line|disable-line|disable|enable)\b([^*\n]*?)(?:\s--.*?)?\s*(?:\*/|$)`)
+	reESLint      = regexp.MustCompile(`(?:es|ox|style)lint-(disable-next-line|disable-line|disable|enable)\b([^*\n]*?)(?:\s--.*?)?\s*(?:\*/|$)`)
 	reNolint      = regexp.MustCompile(`//\s?nolint(?::([\w,-]+))?`)
 	reLintIgnore  = regexp.MustCompile(`//lint:(ignore|file-ignore)\s+([\w,]+)`)
 	reNosec       = regexp.MustCompile(`#\s?nosec\b((?:\s+[GB]\d+)*)`)
@@ -114,6 +136,7 @@ func ParseInline(rel string, src []byte) *FileInline {
 	type open struct {
 		ids  []string
 		line int
+		fam  []string
 	}
 	eslintOpen := map[string]open{} // "" = all
 	phpcsOpen := map[string]open{}
@@ -126,29 +149,40 @@ func ParseInline(rel string, src []byte) *FileInline {
 		// ESLint
 		for _, m := range reESLint.FindAllStringSubmatch(l, -1) {
 			ids := fields(m[2])
+			fam, pre := eslintFamily, ""
+			if strings.HasPrefix(m[0], "stylelint-") {
+				fam, pre = []string{"stylelint"}, "s:" // own open-region keys
+			}
 			if strings.HasPrefix(m[0], "oxlint-") {
 				ids = oxlintInlineIDs(ids)
 			}
 			switch m[1] {
 			case "disable-next-line":
-				add(eslintFamily, nilIfEmpty(ids), i+1, i+1, i, m[0])
+				add(fam, nilIfEmpty(ids), i+1, i+1, i, m[0])
 			case "disable-line":
-				add(eslintFamily, nilIfEmpty(ids), i, i, i, m[0])
+				add(fam, nilIfEmpty(ids), i, i, i, m[0])
 			case "disable":
 				if len(ids) == 0 {
-					eslintOpen[""] = open{nil, i}
+					eslintOpen[pre] = open{nil, i, fam}
 				}
 				for _, id := range ids {
-					eslintOpen[id] = open{[]string{id}, i}
+					eslintOpen[pre+id] = open{[]string{id}, i, fam}
 				}
 			case "enable":
-				keys := ids
+				var keys []string
+				for _, id := range ids {
+					keys = append(keys, pre+id)
+				}
 				if len(ids) == 0 {
-					keys = slices.Collect(maps.Keys(eslintOpen))
+					for k, o := range eslintOpen {
+						if o.fam[0] == fam[0] {
+							keys = append(keys, k)
+						}
+					}
 				}
 				for _, k := range keys {
 					if o, ok := eslintOpen[k]; ok {
-						add(eslintFamily, o.ids, o.line, i, o.line, "eslint-disable "+k)
+						add(o.fam, o.ids, o.line, i, o.line, "lint-disable "+k)
 						delete(eslintOpen, k)
 					}
 				}
@@ -264,7 +298,7 @@ func ParseInline(rel string, src []byte) *FileInline {
 				add([]string{"phpcs"}, nilIfEmpty(ids), from, to, i, m[0])
 			case "disable":
 				k := strings.Join(ids, ",")
-				phpcsOpen[k] = open{nilIfEmpty(ids), i}
+				phpcsOpen[k] = open{nilIfEmpty(ids), i, nil}
 			case "enable":
 				for k, o := range phpcsOpen {
 					add([]string{"phpcs"}, o.ids, o.line, i, o.line, "phpcs:disable "+k)
@@ -353,7 +387,7 @@ func ParseInline(rel string, src []byte) *FileInline {
 				from, to := nextOrSame(i)
 				add([]string{"yamllint"}, nilIfEmpty(ids), from, to, i, m[0])
 			case "disable":
-				yamlOpen[strings.Join(ids, ",")] = open{nilIfEmpty(ids), i}
+				yamlOpen[strings.Join(ids, ",")] = open{nilIfEmpty(ids), i, nil}
 			case "enable":
 				for k, o := range yamlOpen {
 					add([]string{"yamllint"}, o.ids, o.line, i, o.line, "yamllint disable "+k)
@@ -387,7 +421,7 @@ func ParseInline(rel string, src []byte) *FileInline {
 		}
 	}
 	for k, o := range eslintOpen {
-		add(eslintFamily, o.ids, o.line, n-1, o.line, "eslint-disable "+k)
+		add(o.fam, o.ids, o.line, n-1, o.line, "lint-disable "+k)
 	}
 	for k, o := range phpcsOpen {
 		add([]string{"phpcs"}, o.ids, o.line, n-1, o.line, "phpcs:disable "+k)

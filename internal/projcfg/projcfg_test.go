@@ -3,6 +3,7 @@ package projcfg
 import (
 	"os"
 	"path/filepath"
+	"slices"
 	"testing"
 )
 
@@ -209,6 +210,10 @@ func TestInline(t *testing.T) {
 			t.Errorf("%s: suppressed=%v want %v (%+v)", c.name, got != nil, c.want, got)
 		}
 	}
+	all := ParseInline("a.js", []byte("// eslint-disable-next-line no-eval -- legacy\neval(x)\n")).All()
+	if len(all) != 1 || all[0].Crev || all[0].From != 2 || all[0].To != 2 || !slices.Contains(all[0].IDs, "no-eval") {
+		t.Fatalf("All: %+v", all)
+	}
 }
 
 func TestCheckRespectsConfigOff(t *testing.T) {
@@ -260,5 +265,23 @@ func TestThresholdParams(t *testing.T) {
 		if toString(v) != toString(want) {
 			t.Errorf("%s = %v, want %v (errors %v)", from, v, want, s.Errors)
 		}
+	}
+}
+
+func TestStylelintConfig(t *testing.T) {
+	dir := t.TempDir()
+	files := write(t, dir, map[string]string{
+		"package.json":             `{"name":"x","eslintConfig":{"rules":{"no-var":"error"}},"stylelint":{"rules":{"declaration-no-important":true}}}`,
+		"web/stylelint.config.mjs": "export default { extends: 'stylelint-config-standard', rules: { 'block-no-empty': null } };\n",
+	})
+	s := Discover(dir, files)
+	if !s.Enables([]string{"stylelint:declaration-no-important"}, "a.css") || !s.Enables([]string{"eslint:no-var"}, "a.js") {
+		t.Fatal("package.json: both tools must be read")
+	}
+	if !s.Enables([]string{"stylelint:property-no-vendor-prefix"}, "web/a.css") {
+		t.Fatal("extends stylelint-config-standard")
+	}
+	if d := s.Decide([]string{"stylelint:block-no-empty"}, "web/a.css"); d == nil || !d.Off {
+		t.Fatal("null turns a rule off")
 	}
 }

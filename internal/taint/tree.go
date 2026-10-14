@@ -1,14 +1,15 @@
-// Package taint is crev's intra-procedural "taint-lite" engine: it follows values from
-// attacker-controlled sources (request parameters, headers, cookies, bodies, superglobals) through
-// local assignments, string building, containers and same-file helper functions to injection sinks
-// (SQL, OS command, file path, LDAP, HTML output, outbound URL, redirect), on the tree-sitter tree.
+// Package taint is crev's "taint-lite" engine: it follows values from attacker-controlled sources
+// (request parameters, headers, cookies, bodies, superglobals) through local assignments, string
+// building, containers and helper functions to injection sinks (SQL, OS command, file path, LDAP,
+// HTML output, outbound URL, redirect), on the tree-sitter tree.
 //
 // It is deliberately small: one function at a time, names not types, one pass per loop body, no
 // aliasing. Precision aids that are cheap on a syntax tree are implemented: branch merging,
 // constant folding of conditions/ternaries/switches, literal-key map and literal-index list
-// tracking, class-specific sanitizers and same-file function summaries (does the return value
-// depend on the parameters, and which sanitizers does it apply). Sources, sinks and sanitizers
-// are data (rules/data/taint.yaml); rules select a vulnerability class (detection.config.class).
+// tracking, class-specific sanitizers, same-file function summaries, and a conservative cross-file
+// index (imported functions and class/instance methods when the call names exactly one candidate).
+// Sources, sinks and sanitizers are data (rules/data/taint.yaml plus import-guarded models in
+// rules/data/frameworks.yaml); rules select a vulnerability class (detection.config.class).
 // Findings are ai-confirm by default: the AI step sees the flow as evidence.
 package taint
 

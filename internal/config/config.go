@@ -90,6 +90,11 @@ type Config struct {
 	// eslint/golangci/ruff/... => crev equivalent suppressed) and inline disable comments.
 	// Default true. crev-ignore comments are honoured either way.
 	RespectProjectConfig *bool `yaml:"respect_project_config"`
+	// Types selects the type resolver: basic (default, per file), full (cross-file index built in a
+	// prepass; slower on large repos) or off.
+	Types string `yaml:"types"`
+	// CrossFileTaint: false turns off the cross-file taint prepass (default on).
+	CrossFileTaint *bool `yaml:"cross_file_taint"`
 	// Runs: per-scan history under <state_dir>/runs (see internal/runs).
 	Runs Runs `yaml:"runs"`
 	AI   AI   `yaml:"ai"`
@@ -280,6 +285,11 @@ func (c Config) Validate() error {
 	}
 	if strings.HasPrefix(strings.TrimSpace(c.AI.APIKeyEnv), "sk-") {
 		return fmt.Errorf("ai.api_key_env must be the NAME of an environment variable, not a key")
+	}
+	switch c.Types {
+	case "", "basic", "full", "off":
+	default:
+		return fmt.Errorf("types: %q (want basic|full|off)", c.Types)
 	}
 	return nil
 }

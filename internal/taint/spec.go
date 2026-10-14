@@ -58,6 +58,9 @@ type rawLang struct {
 	Sanitizers     map[string][]string  `yaml:"sanitizers"`
 	Sinks          map[string][]rawSink `yaml:"sinks"`
 	Mutators       string               `yaml:"mutators"`
+	// framework param_sources / route_params, each only in files matching the framework imports
+	guardedParams []rawSource
+	guardedRoutes []rawSource
 }
 
 type rawSource struct {
@@ -67,6 +70,75 @@ type rawSource struct {
 
 type rawSpec struct {
 	Languages map[string]rawLang `yaml:"languages"`
+}
+
+// rawFramework is one framework model from data/frameworks.yaml: request sources, parameter
+// binding, sanitizers and sinks of that framework, merged into its language block. Sources and
+// sinks without their own file guard only apply in files matching Imports.
+type rawFramework struct {
+	Name     string `yaml:"name"`
+	Language string `yaml:"language"`
+	Doc      string `yaml:"doc"`
+	Imports  string `yaml:"imports"`
+	rawLang  `yaml:",inline"`
+}
+
+type rawFrameworks struct {
+	Frameworks []rawFramework `yaml:"frameworks"`
+}
+
+// mergeFrameworks folds framework models into the language blocks of a spec document.
+func mergeFrameworks(raw *rawSpec, fw []byte) error {
+	var f rawFrameworks
+	if err := yaml.Unmarshal(fw, &f); err != nil {
+		return err
+	}
+	for _, m := range f.Frameworks {
+		l, ok := raw.Languages[m.Language]
+		if !ok {
+			return fmt.Errorf("framework %s: unknown language %q", m.Name, m.Language)
+		}
+		if m.Imports == "" || m.Doc == "" {
+			return fmt.Errorf("framework %s: needs imports and doc", m.Name)
+		}
+		for _, s := range m.Sources {
+			if s.File == "" {
+				s.File = m.Imports
+			}
+			l.Sources = append(l.Sources, s)
+		}
+		for _, p := range m.ParamSources {
+			l.guardedParams = append(l.guardedParams, rawSource{p, m.Imports})
+		}
+		if m.RouteParams != "" {
+			l.guardedRoutes = append(l.guardedRoutes, rawSource{m.RouteParams, m.Imports})
+		}
+		if m.ContextSources != "" {
+			if l.ContextSources != "" {
+				l.ContextSources += "|"
+			}
+			l.ContextSources += m.ContextSources
+		}
+		for c, xs := range m.Sanitizers {
+			if l.Sanitizers == nil {
+				l.Sanitizers = map[string][]string{}
+			}
+			l.Sanitizers[c] = append(l.Sanitizers[c], xs...)
+		}
+		for c, xs := range m.Sinks {
+			if l.Sinks == nil {
+				l.Sinks = map[string][]rawSink{}
+			}
+			for _, k := range xs {
+				if k.File == "" {
+					k.File = m.Imports
+				}
+				l.Sinks[c] = append(l.Sinks[c], k)
+			}
+		}
+		raw.Languages[m.Language] = l
+	}
+	return nil
 }
 
 type sink struct {
@@ -103,6 +175,18 @@ type Lang struct {
 	sinks        []sink
 	mutators     *regexp.Regexp
 	context      *regexp.Regexp
+	// framework-model param sources and route decorators, guarded by file
+	guardedParams []source
+	guardedRoutes []source
+}
+
+func (l *Lang) guarded(xs []source, text, file string) bool {
+	for _, s := range xs {
+		if s.re.MatchString(text) && (s.file == nil || s.file.MatchString(file)) {
+			return true
+		}
+	}
+	return false
 }
 
 var (
@@ -126,7 +210,12 @@ func Spec(family string) (*Lang, error) {
 			specErr = err
 			return
 		}
-		spec, specErr = Compile(b)
+		fw, err := catalog.FS.ReadFile("data/frameworks.yaml")
+		if err != nil {
+			specErr = err
+			return
+		}
+		spec, specErr = Compile(b, fw)
 	})
 	if specErr != nil {
 		return nil, specErr
@@ -134,11 +223,16 @@ func Spec(family string) (*Lang, error) {
 	return spec[family], nil
 }
 
-// Compile parses a taint spec document.
-func Compile(b []byte) (map[string]*Lang, error) {
+// Compile parses a taint spec document, merged with optional framework model documents.
+func Compile(b []byte, frameworks ...[]byte) (map[string]*Lang, error) {
 	var raw rawSpec
 	if err := yaml.Unmarshal(b, &raw); err != nil {
 		return nil, err
+	}
+	for _, fw := range frameworks {
+		if err := mergeFrameworks(&raw, fw); err != nil {
+			return nil, err
+		}
 	}
 	out := map[string]*Lang{}
 	for name, rl := range raw.Languages {
@@ -155,6 +249,22 @@ func Compile(b []byte) (map[string]*Lang, error) {
 				return nil, bad("source file", err)
 			}
 			l.sources = append(l.sources, source{r, f})
+		}
+		for _, g := range []struct {
+			src []rawSource
+			dst *[]source
+		}{{rl.guardedParams, &l.guardedParams}, {rl.guardedRoutes, &l.guardedRoutes}} {
+			for _, x := range g.src {
+				r, err := re(x.Re)
+				if err != nil {
+					return nil, bad("framework param/route", err)
+				}
+				f, err := re(x.File)
+				if err != nil {
+					return nil, bad("framework imports", err)
+				}
+				*g.dst = append(*g.dst, source{r, f})
+			}
 		}
 		if len(rl.ParamSources) > 0 {
 			pat := ""

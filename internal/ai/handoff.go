@@ -107,7 +107,7 @@ type BuildOptions struct {
 var langByExt = map[string]string{".java": "java", ".js": "js", ".mjs": "js", ".cjs": "js", ".jsx": "jsx", ".ts": "ts", ".mts": "ts", ".cts": "ts", ".tsx": "tsx", ".vue": "vue",
 	".properties": "properties", ".yml": "yaml", ".yaml": "yaml", ".json": "json", ".xml": "xml", ".gradle": "gradle", ".kts": "kotlin",
 	".kt": "kotlin", ".go": "go", ".py": "python", ".pyi": "python", ".php": "php", ".phtml": "php", ".groovy": "groovy", ".tf": "hcl", ".tfvars": "hcl", ".hcl": "hcl",
-	".proto": "proto", ".graphql": "graphql", ".gql": "graphql", ".html": "html", ".htm": "html", ".dockerfile": "dockerfile", ".star": "starlark"}
+	".proto": "proto", ".graphql": "graphql", ".gql": "graphql", ".html": "html", ".htm": "html", ".css": "css", ".dockerfile": "dockerfile", ".star": "starlark"}
 
 // Pending returns the items for every pending_ai finding (deduplicated by content), in a stable order.
 func Pending(rep *findings.Report, byID map[string]*rules.Rule, o BuildOptions) []*Item {

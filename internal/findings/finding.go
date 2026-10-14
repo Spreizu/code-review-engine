@@ -65,6 +65,9 @@ type Finding struct {
 	// CWE / OWASP Top 10 categories of the rule (security rules).
 	CWE   []string `json:"cwe,omitempty"`
 	OWASP []string `json:"owasp,omitempty"`
+	// WCAG success criteria ("1.4.3") and their strictest conformance level (A, AA, AAA).
+	WCAG      []string `json:"wcag,omitempty"`
+	WCAGLevel string   `json:"wcag_level,omitempty"`
 	// SuppressedBy explains status "suppressed": project linter config, an inline disable
 	// comment, or crev-ignore.
 	SuppressedBy *SuppressedBy `json:"suppressed_by,omitempty"`

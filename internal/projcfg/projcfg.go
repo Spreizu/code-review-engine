@@ -306,11 +306,21 @@ var globParsers = map[string]parser{}
 
 func register(p parser, names ...string) {
 	for _, n := range names {
+		m := parsers
 		if strings.ContainsAny(n, "*?[") {
-			globParsers[n] = p
-		} else {
-			parsers[n] = p
+			m = globParsers
 		}
+		if prev, ok := m[n]; ok { // several tools read one file (package.json: eslint + stylelint)
+			p0, p1 := prev, p
+			m[n] = func(s *Set, c ctx, b []byte) error {
+				if err := p0(s, c, b); err != nil {
+					return err
+				}
+				return p1(s, c, b)
+			}
+			continue
+		}
+		m[n] = p
 	}
 }
 

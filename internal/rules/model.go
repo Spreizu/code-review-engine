@@ -125,9 +125,12 @@ type Rule struct {
 	MatchKind string `yaml:"match_kind,omitempty" json:"match_kind,omitempty"`
 	// Security taxonomy (security rules): CWE ids ("CWE-89"), OWASP Top 10 categories
 	// ("A03:2021", "A05:2025") and OWASP ASVS 5.0 requirement ids ("V1.2.5").
-	CWE         []string `yaml:"cwe"`
-	OWASP       []string `yaml:"owasp"`
-	ASVS        []string `yaml:"asvs"`
+	CWE   []string `yaml:"cwe"`
+	OWASP []string `yaml:"owasp"`
+	ASVS  []string `yaml:"asvs"`
+	// WCAG 2.x success criteria the rule checks ("1.1.1", "2.4.7"); level and version come from
+	// the WCAG table (rules.WCAG).
+	WCAG        []string `yaml:"wcag"`
 	RuleVersion int      `yaml:"rule_version"`
 	Tags        []string `yaml:"tags"`
 	Xref        []string `yaml:"xref"` // extra doc URLs and/or equivalent linter rules as "tool:id"

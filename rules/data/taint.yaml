@@ -155,6 +155,8 @@ languages:
         - '(^|\.)(html\.escape|markupsafe\.escape|escape|escape_html|html_escape|escape_for_html|bleach\.clean|saxutils\.escape|quoteattr|conditional_escape|format_html|urlencode|quote_plus|urllib\.parse\.quote|parse\.quote)$'
         - '(^|\.)(render_template|render|jsonify|redirect|abort|send_file|send_from_directory|url_for|JsonResponse|TemplateResponse)$'
       path: ['(^|\.)(secure_filename|basename|safe_join)$']
+      # a record looked up by the input (User.get_by_username(conn, name).id) is server-side data
+      trust: ['(^|\.)(get_by_\w+|get_object_or_404|authenticate|first|one|one_or_none|scalar|scalar_one|fetchrow|fetchval)$']
       ldap: ['(^|\.)(escape_filter_chars|escape_rdn|filter_format|escape_dn_chars)$']
       redirect: ['(^|\.)url_for$']
       xpath: ['(^|\.)(escape_for_xpath|xpath_escape)$']
@@ -179,7 +181,7 @@ languages:
         - {callee: '\.(search_s|search_st|search_ext|search_ext_s|search)$', args: [0, 1, 2], file: 'ldap'}
       xss:
         - {return_in: '@\w+(\.\w+)*\.(route|get|post|put|patch|delete)\(', file: '(?m)^\s*(from flask|import flask)'}
-        - {callee: '(^|\.)(make_response|HttpResponse|render_template_string|Markup|HTMLResponse|mark_safe)$', args: [0]}
+        - {callee: '(^|\.)(make_response|HttpResponse|render_template_string|Markup|HTMLResponse|mark_safe)$', args: [0], unless: 'content_type=[''"](text/plain|application/json)'}
         - {callee: '(^|\.)Response$', args: [0], unless_file: '(?m)^\s*from rest_framework(\.response)? import'}
       ssrf:
         # the host is fixed when the URL starts with a constant (UPPER_CASE config name or literal origin)
@@ -228,6 +230,9 @@ languages:
     sinks:
       sqli:
         - {callee: '(^|\.)(query|execute|raw|\$queryRawUnsafe|\$executeRawUnsafe|queryRawUnsafe|executeRawUnsafe|whereRaw|orderByRaw|havingRaw|joinRaw|unsafe)$', args: [0], file: '(?i)(require\(.(mysql2?|pg|sequelize|knex|sqlite3?|better-sqlite3|mssql|oracledb|typeorm|postgres)|from .(mysql2?|pg|sequelize|knex|sqlite3?|better-sqlite3|mssql|oracledb|typeorm|@prisma/client|postgres|mysql2/promise))'}
+        # a Sequelize instance reached through a project module (models.sequelize.query): the
+        # property name itself identifies the library's raw-query API
+        - {callee: '(^|\.)sequelize\.query$', args: [0]}
       cmdi:
         - {callee: '^((child_process|cp|childProcess)\.)?(exec|execSync)$', args: [0], file: 'child_process'}
         - {callee: '^((child_process|cp|childProcess)\.)?(spawn|spawnSync|execFile|execFileSync)$', args: [0], file: 'child_process'}
@@ -311,7 +316,7 @@ languages:
 
   go:
     sources:
-      - re: '^(r|req|request|httpReq|hr)\.(FormValue|PostFormValue|URL\.Query\(\)\.Get|URL\.Query\(\)|Header\.Get|Header\.Values|Cookie|Cookies|Body|URL\.RawQuery|URL\.Path|Form\.Get|PostForm\.Get|FormFile|Referer|UserAgent|RequestURI)\b'
+      - re: '^(r|req|request|httpReq|hr)\.(FormValue|PostFormValue|URL\.Query\(\)\.Get|URL\.Query\(\)|Header\.Get|Header\.Values|Cookie|Cookies|Body|URL\.RawQuery|URL\.Path|Form\.Get|PostForm\.Get|FormFile|Referer|UserAgent|RequestURI|PathValue)\b'
       - re: '^(c|ctx|gc)\.(Query|DefaultQuery|Param|PostForm|DefaultPostForm|GetHeader|GetQuery|QueryArray|PostFormArray|GetPostForm|Cookie|FormFile|GetRawData)\(\)$'
         file: 'gin-gonic/gin'
       - re: '^(c|ctx)\.(QueryParam|QueryParams|FormValue|Param|Cookie|FormFile|QueryString)\(\)$'
@@ -342,8 +347,10 @@ languages:
       ldap:
         - {callee: '^ldap\.NewSearchRequest$', args: [0, 6]}
       xss:
-        - {callee: '^(w|rw|writer|resp|res)\.Write$', args: [0]}
-        - {callee: '^fmt\.(Fprintf|Fprint|Fprintln)$', when: '^fmt\.Fprint\w*\((w|rw|writer|resp|res|c\.Writer),'}
+        # net/http sniffs the Content-Type from the first bytes when none is set (DetectContentType):
+        # a body that starts with fixed text other than '<' is served as text/plain, not HTML
+        - {callee: '^(w|rw|writer|resp|res)\.Write$', args: [0], unless: '^\w+\.Write\(\[\]byte\((fmt\.Sprintf\()?"[^<"\\]'}
+        - {callee: '^fmt\.(Fprintf|Fprint|Fprintln)$', when: '^fmt\.Fprint\w*\((w|rw|writer|resp|res|c\.Writer),', unless: '^fmt\.Fprint\w*\(\w+(\.\w+)?,"[^<"\\]'}
         - {callee: '^io\.WriteString$', args: [1], when: '^io\.WriteString\((w|rw|writer|resp|res|c\.Writer),'}
         - {callee: '^template\.(HTML|JS|HTMLAttr|URL|CSS)$', args: [0]}
       ssrf:

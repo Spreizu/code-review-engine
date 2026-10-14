@@ -4,6 +4,7 @@ package engine
 import (
 	"fmt"
 	"github.com/elmo/code-review-engine/internal/taint"
+	"github.com/elmo/code-review-engine/internal/types"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -76,10 +77,13 @@ type Tree struct {
 	// Dir and Root (absolute; empty for in-memory sources): dir.has_file / dir.lacks_file look for
 	// sibling files in Dir and its parents up to Root.
 	Dir, ScanRoot string
-	tree          *ts.Tree
+	// Rel is the slash path relative to the scan root (cross-file taint uses it to locate callees).
+	Rel  string
+	tree *ts.Tree
 	// lazily computed taint-lite result (taintrules.go)
 	taint    *taint.Result
 	taintErr error
+	types    *types.File // lazily built type index (typefilters.go)
 }
 
 // Parse parses src with the grammar.
@@ -154,6 +158,13 @@ func Run(r *rules.Rule, t *Tree) (hits []Hit, err error) {
 			if !ok || cleanByTaint(r, t, n) {
 				continue
 			}
+			if needTypes(r) {
+				if ok, err := typeFiltersPass(r, t, m, names); err != nil {
+					return nil, err
+				} else if !ok {
+					continue
+				}
+			}
 			seen[k] = true
 			sp, ep := n.StartPosition(), n.EndPosition()
 			h := Hit{n.StartByte(), n.EndByte(), sp.Row, sp.Column, ep.Row, ep.Column, n.Utf8Text(t.Src), enclosing(n, t.Src), ""}
@@ -219,6 +230,17 @@ func fileGate(r *rules.Rule, t *Tree) (bool, error) {
 			if dirHasFile(t.Dir, t.ScanRoot, strings.Split(arg, "|")) != (name == "dir.has_file") {
 				return false, nil
 			}
+		case "param.match":
+			// param.match:VALUE:REGEX - VALUE is a ${param} substituted from the project config
+			// (e.g. eslint curly "multi-line"); the rule runs only when it matches REGEX.
+			v, expr, _ := strings.Cut(arg, ":")
+			re, err := cachedRe("^(?:" + expr + ")$")
+			if err != nil {
+				return false, fmt.Errorf("filter %s: %w", name, err)
+			}
+			if !re.MatchString(v) {
+				return false, nil
+			}
 		case "sfc.has_re", "sfc.lacks_re":
 			re, err := cachedRe(arg)
 			if err != nil {
@@ -256,6 +278,66 @@ func dupSiblingKey(key ts.Node, src []byte) bool {
 	return false
 }
 
+var (
+	importSideEffectRe = regexp.MustCompile(`^import\s*['"]`)
+	importTypeRe       = regexp.MustCompile(`^import\s+type\b`)
+	importNamedRe      = regexp.MustCompile(`^import\s*\{([^}]*)\}`)
+	importNamespaceRe  = regexp.MustCompile(`\*\s*as\s`)
+	// a blanked <script> tag between two Vue SFC blocks leaves a line of only spaces
+	vueBlockGapRe = regexp.MustCompile(`(?m)^ {9,}$`)
+)
+
+// importMergeable reports whether an import statement could be merged with another value import
+// of its module: not side-effect-only, not type-only (import type / all-inline type specifiers)
+// and not a namespace import (import * as ns cannot share a clause with named bindings).
+func importMergeable(text string) bool {
+	if importSideEffectRe.MatchString(text) || importTypeRe.MatchString(text) || importNamespaceRe.MatchString(text) {
+		return false
+	}
+	if m := importNamedRe.FindStringSubmatch(text); m != nil {
+		all := true
+		for _, part := range strings.Split(m[1], ",") {
+			if p := strings.TrimSpace(part); p != "" && !strings.HasPrefix(p, "type ") {
+				all = false
+			}
+		}
+		if all {
+			return false
+		}
+	}
+	return true
+}
+
+// dupImport reports whether import statement n repeats the module of an earlier mergeable import in
+// the same program (one hit per repeated import, on the 2nd+ import, as ESLint no-duplicate-imports).
+func dupImport(n ts.Node, src []byte) bool {
+	text := n.Utf8Text(src)
+	if !importMergeable(text) {
+		return false
+	}
+	srcNode := n.ChildByFieldName("source")
+	if srcNode == nil {
+		return false
+	}
+	want := strings.Trim(srcNode.Utf8Text(src), "'\"`")
+	for p := n.PrevNamedSibling(); p != nil; p = p.PrevNamedSibling() {
+		if vueBlockGapRe.Match(src[p.EndByte():n.StartByte()]) {
+			return false // earlier <script> block of a Vue SFC
+		}
+		if p.Kind() != "import_statement" {
+			continue
+		}
+		ps := p.ChildByFieldName("source")
+		if ps == nil || strings.Trim(ps.Utf8Text(src), "'\"`") != want {
+			continue
+		}
+		if importMergeable(p.Utf8Text(src)) {
+			return true
+		}
+	}
+	return false
+}
+
 func attrRe(name string) *regexp.Regexp {
 	if v, ok := filterRe.Load(name); ok {
 		return v.(*regexp.Regexp)
@@ -271,9 +353,33 @@ var FilterNames = []string{
 	"file.has_text", "node.lacks_descendant_text", "node.has_descendant_text", "node.not_in_try_with_resources",
 	"file.has_re", "file.lacks_re", "sfc.has_re", "sfc.lacks_re", "node.has_re", "node.lacks_re", "parent.has_re", "parent.lacks_re",
 	"file.count_ge", "file.count_lt", "node.is_root", "func.has_re", "func.lacks_re", "cap.has_re", "cap.lacks_re",
-	"ancestor.has_re", "ancestor.lacks_re", "parentkind.has_re", "parentkind.lacks_re", "node.dup_sibling_key", "dir.has_file", "dir.lacks_file",
+	"markup.native", "markup.lacks_attr", "markup.has_attr", "markup.has_event", "markup.lacks_event", "markup.attr_re", "markup.attr_lacks_re",
+	"markup.no_text", "markup.has_text", "markup.has_text_without", "markup.not_hidden", "markup.parent_lacks_attr", "markup.in", "markup.not_in", "markup.has_child", "markup.lacks_child", "markup.unlabelled", "markup.dup_id", "markup.heading_skip", "markup.dup_link_text",
+	"markup.invalid_role", "markup.invalid_aria_attr", "markup.invalid_autocomplete", "markup.role_missing_required",
+	"css.unknown_property", "css.dup_decl", "css.dup_prop", "css.shorthand_override", "css.dup_selector", "css.contrast_lt", "css.contrast_ge", "css.unknown_pseudo", "css.unknown_at_rule", "css.dup_font_family", "css.unknown_media", "css.unknown_type", "css.dup_keyframe",
+	"ancestor.has_re", "ancestor.lacks_re", "parentkind.has_re", "parentkind.lacks_re", "node.dup_sibling_key", "node.dup_import", "cap.lacks_helper_re", "dir.has_file", "dir.lacks_file",
 	"metric.gt", "metric.ge", "branches.dup_body", "branches.all_same", "branches.dup_cond",
 	"func.count_lt", "func.count_ge", "func.returns_invariant",
+	"type.is", "type.not", "type.not_or_unknown", "type.differ", "type.vs_text", "type.eq", "type.eq_text", "param.match", "node.has_hole",
+}
+
+// hasHole reports whether an array literal has an elision: a "," right after "[" or after
+// another "," (comments between them do not count as elements). Commas inside string
+// elements are tokens of the string, not of the array, so they never match.
+func hasHole(n ts.Node) bool {
+	prev := ""
+	for i := uint(0); i < n.ChildCount(); i++ {
+		c := n.Child(i)
+		if c == nil || c.Kind() == "comment" {
+			continue
+		}
+		k := c.Kind()
+		if k == "," && (prev == "[" || prev == ",") {
+			return true
+		}
+		prev = k
+	}
+	return false
 }
 
 // dirHasFile reports whether one of names exists in dir or a parent directory up to root
@@ -293,7 +399,10 @@ func dirHasFile(dir, root string, names []string) bool {
 
 // capRef: "{cap:NAME}" in a regex filter is replaced by the quoted text of capture @NAME of the
 // same match (e.g. the loop variable), so filters can relate the candidate to its context.
-var capRef = regexp.MustCompile(`\{cap:([A-Za-z_][\w.-]*)\}`)
+// "{cap:NAME~prop}" is the capture without an accessor prefix (getFoo / setFoo / isFoo -> Foo).
+var capRef = regexp.MustCompile(`\{cap:([A-Za-z_][\w.-]*)(~prop)?\}`)
+
+var accessorPrefix = regexp.MustCompile(`^(get|set|is)([A-Z])`)
 
 func needCaps(r *rules.Rule) bool {
 	for _, f := range r.Detection.Filters {
@@ -310,6 +419,7 @@ var funcKinds = map[string]bool{
 	"arrow_function": true, "function_expression": true, "method_definition": true, "function": true,
 	"lambda_expression": true, "constructor_declaration": true, "anonymous_function": true, "lambda_literal": true,
 	"generator_function_declaration": true, "anonymous_function_creation_expression": true, "secondary_constructor": true,
+	"static_initializer": true,
 }
 
 // enclosingFunc returns the nearest function-like ancestor (or nil).
@@ -344,7 +454,11 @@ func PassFilters(r *rules.Rule, n ts.Node, src []byte, caps map[string]string) (
 		if caps != nil && strings.Contains(arg, "{cap:") {
 			dynamic = true
 			arg = capRef.ReplaceAllStringFunc(arg, func(m string) string {
-				if v, ok := caps[capRef.FindStringSubmatch(m)[1]]; ok {
+				sm := capRef.FindStringSubmatch(m)
+				if v, ok := caps[sm[1]]; ok {
+					if sm[2] != "" {
+						v = accessorPrefix.ReplaceAllString(v, "$2")
+					}
 					return regexp.QuoteMeta(v)
 				}
 				return `\x00\x01` // capture absent in this match: matches nothing
@@ -352,6 +466,8 @@ func PassFilters(r *rules.Rule, n ts.Node, src []byte, caps map[string]string) (
 		}
 		switch name {
 		case "taint.clean": // evaluated by Run, which has the tree (cleanByTaint)
+		case "type.is", "type.not", "type.not_or_unknown", "type.differ", "type.vs_text", "type.eq", "type.eq_text": // evaluated by Run (typeFiltersPass)
+		case "param.match": // evaluated by fileGate
 		case "vue.start_tag_lacks_attr":
 			if attrRe(arg).MatchString(n.Utf8Text(src)) {
 				return false, nil
@@ -445,6 +561,21 @@ func PassFilters(r *rules.Rule, n ts.Node, src []byte, caps map[string]string) (
 			if present && re.MatchString(subject) != (name == "cap.has_re") {
 				return false, nil
 			}
+		case "cap.lacks_helper_re":
+			// cap.lacks_helper_re:NAME:<regex> - fails when capture @NAME calls a method declared in the
+			// same file (up to two levels deep) whose body matches the regex: a test that delegates
+			// to a local assertion helper asserts.
+			cname, expr, ok := strings.Cut(arg, ":")
+			if !ok {
+				return false, fmt.Errorf("filter %s wants NAME:regex", name)
+			}
+			re, err := cachedRe(expr)
+			if err != nil {
+				return false, fmt.Errorf("filter %s: %w", name, err)
+			}
+			if subject, present := caps[cname]; present && localHelperMatches(string(src), subject, re, 2, map[string]bool{}) {
+				return false, nil
+			}
 		case "ancestor.has_re", "ancestor.lacks_re":
 			// ancestor.lacks_re:KIND[|KIND...]:<regex> - the regex runs on the nearest ancestor of
 			// one of the kinds (no such ancestor: has_re fails, lacks_re passes).
@@ -456,12 +587,22 @@ func PassFilters(r *rules.Rule, n ts.Node, src []byte, caps map[string]string) (
 			if err != nil {
 				return false, fmt.Errorf("filter %s: %w", name, err)
 			}
+			// KIND#N: the N-th nearest such ancestor (default 1)
+			nth := 1
+			if k, num, ok := strings.Cut(kinds, "#"); ok {
+				kinds = k
+				if v, err := strconv.Atoi(num); err == nil && v > 0 {
+					nth = v
+				}
+			}
 			want := strings.Split(kinds, "|")
 			var anc *ts.Node
 			for p := n.Parent(); p != nil && anc == nil; p = p.Parent() {
 				for _, k := range want {
 					if p.Kind() == k {
-						anc = p
+						if nth--; nth == 0 {
+							anc = p
+						}
 						break
 					}
 				}
@@ -514,7 +655,24 @@ func PassFilters(r *rules.Rule, n ts.Node, src []byte, caps map[string]string) (
 			if !funcKinds[n.Kind()] {
 				if fn := enclosingFunc(n); fn != nil {
 					scope = fn
+				} else {
+					// outside any function (instance initializer block, top level): count in the
+					// whole file rather than in the node alone
+					r := n
+					for r.Parent() != nil {
+						r = *r.Parent()
+					}
+					scope = &r
 				}
+			}
+			if name == "func.count_lt" && scope.HasError() {
+				// a parse error can cut the function short (Kotlin `suspend { } /** */ .call()`), hiding
+				// later writes: count in the whole file so an absence check stays conservative
+				r := n
+				for r.Parent() != nil {
+					r = *r.Parent()
+				}
+				scope = &r
 			}
 			c := len(re.FindAllStringIndex(scope.Utf8Text(src), want))
 			if (c >= want) != (name == "func.count_ge") {
@@ -533,8 +691,16 @@ func PassFilters(r *rules.Rule, n ts.Node, src []byte, caps map[string]string) (
 			if n.Parent() != nil {
 				return false, nil
 			}
+		case "node.has_hole":
+			if !hasHole(n) {
+				return false, nil
+			}
 		case "node.dup_sibling_key":
 			if !dupSiblingKey(n, src) {
+				return false, nil
+			}
+		case "node.dup_import":
+			if !dupImport(n, src) {
 				return false, nil
 			}
 		case "file.count_ge", "file.count_lt":
@@ -558,7 +724,16 @@ func PassFilters(r *rules.Rule, n ts.Node, src []byte, caps map[string]string) (
 			}
 		case "sfc.has_re", "sfc.lacks_re", "dir.has_file", "dir.lacks_file": // whole-file gates, evaluated in fileGate
 		default:
-			return false, fmt.Errorf("unknown filter %q", name)
+			pass, handled := cssFilter(name, arg, n, src)
+			if !handled {
+				pass, handled = markupFilter(name, arg, n, src)
+			}
+			if !handled {
+				return false, fmt.Errorf("unknown filter %q", name)
+			}
+			if !pass {
+				return false, nil
+			}
 		}
 	}
 	return true, nil
@@ -596,6 +771,39 @@ func VueScript(src []byte) ([]byte, string, string, bool) {
 		}
 	}
 	return out, grammar, lang, true
+}
+
+var styleRe = regexp.MustCompile(`(?is)<style\b([^>]*)>(.*?)</style>`)
+
+// StyleBlocks returns src with everything outside plain-CSS <style> blocks blanked (newlines
+// kept, so offsets and lines map 1:1); blocks with lang="scss|sass|less|stylus|postcss" are left
+// out (not plain CSS). ok=false when there is no such block.
+// StyleBoundary is written where each <style> tag stood in the StyleBlocks view.
+const StyleBoundary = "/*~*/"
+
+func StyleBlocks(src []byte) ([]byte, bool) {
+	ms := styleRe.FindAllSubmatchIndex(src, -1)
+	var out []byte
+	for _, m := range ms {
+		if l := langRe.FindSubmatch(src[m[2]:m[3]]); l != nil && strings.ToLower(string(l[1])) != "css" {
+			continue
+		}
+		if out == nil {
+			out = make([]byte, len(src))
+			for i, c := range src {
+				if c == '\n' {
+					out[i] = '\n'
+				} else {
+					out[i] = ' '
+				}
+			}
+		}
+		copy(out[m[4]:m[5]], src[m[4]:m[5]])
+		if m[4]-m[0] >= len(StyleBoundary) {
+			copy(out[m[0]:], StyleBoundary) // keeps separate <style> blocks (scoped vs global) apart
+		}
+	}
+	return out, out != nil
 }
 
 var symbolKinds = map[string]string{
@@ -637,3 +845,53 @@ func enclosing(n ts.Node, src []byte) string {
 
 // SExpr returns the tree as an S-expression (for `crev ast` / rule authoring).
 func (t *Tree) SExpr() string { return t.tree.RootNode().ToSexp() }
+
+var callNameRe = regexp.MustCompile(`(?:^|[^\w.])([A-Za-z_$][\w$]*)\s*\(`)
+
+// localHelperMatches reports whether code calls a method declared in file whose body matches re
+// (following helpers up to depth levels).
+func localHelperMatches(file, code string, re *regexp.Regexp, depth int, seen map[string]bool) bool {
+	if depth == 0 {
+		return false
+	}
+	for _, m := range callNameRe.FindAllStringSubmatch(code, -1) {
+		name := m[1]
+		switch name {
+		case "if", "for", "while", "switch", "catch", "synchronized", "return", "new", "super", "this":
+			continue
+		}
+		if seen[name] {
+			continue
+		}
+		seen[name] = true
+		decl, err := cachedRe(`(?m)^[ \t]*(?:(?:public|protected|private|static|final|abstract|synchronized|default|<[^>]*>)\s+)*[\w$<>\[\],.? ]+\s+` + regexp.QuoteMeta(name) + `\s*\([^)]*\)\s*(?:throws[^{;]*)?\{`)
+		if err != nil {
+			continue
+		}
+		for _, loc := range decl.FindAllStringIndex(file, -1) {
+			body := braceBody(file, loc[1]-1)
+			if re.MatchString(body) || localHelperMatches(file, body, re, depth-1, seen) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// braceBody returns the text from the '{' at open to its matching '}' (strings/comments are not
+// special-cased; good enough for method bodies).
+func braceBody(s string, open int) string {
+	d := 0
+	for i := open; i < len(s); i++ {
+		switch s[i] {
+		case '{':
+			d++
+		case '}':
+			d--
+			if d == 0 {
+				return s[open : i+1]
+			}
+		}
+	}
+	return s[open:]
+}

@@ -131,8 +131,11 @@ func linterTools(l string) []string {
 		return []string{"gosec"}
 	case "revive", "golint":
 		return []string{"revive"}
+	case "":
+		return nil
 	}
-	return nil
+	// other golangci-lint linters (containedctx, errorlint, ...) are their own tool namespace
+	return []string{l}
 }
 
 func staticChecks(s *Set, c ctx, checks []string) {

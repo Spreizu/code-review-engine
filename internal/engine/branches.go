@@ -20,7 +20,41 @@ type branch struct {
 	cond, body string
 	stmts      int
 	isElse     bool
-	init       bool // the branch's if has an init statement (Go `if v, ok := f(); ok`)
+	init       bool   // the branch's if has an init statement (Go `if v, ok := f(); ok`)
+	falls      bool   // a C-style case arm that falls through into the next arm (not mergeable)
+	subj       string // Kotlin `when (x)` / `when (val x = …)` subject name; "" when unknown, `this` or absent
+}
+
+var whenSubjVal = regexp.MustCompile(`^\(\s*val\s+([A-Za-z_]\w*)`)
+var whenSubjID = regexp.MustCompile(`^\(\s*([A-Za-z_]\w*)\s*\)$`)
+
+// whenSubject returns the named subject of a Kotlin when expression, or "" (no subject, `this`, or an expression).
+func whenSubject(n *ts.Node, src []byte) string {
+	for _, c := range named(n) {
+		if c.Kind() != "when_subject" {
+			continue
+		}
+		t := strings.TrimSpace(c.Utf8Text(src))
+		if m := whenSubjVal.FindStringSubmatch(t); m != nil {
+			return m[1]
+		}
+		if m := whenSubjID.FindStringSubmatch(t); m != nil && m[1] != "this" {
+			return m[1]
+		}
+	}
+	return ""
+}
+
+// castMatters reports whether a branch's `is` smart cast can change how its body resolves: always when the
+// subject is implicit or unknown, otherwise only when the body mentions the subject.
+func castMatters(b branch) bool {
+	if !smartCast.MatchString(b.cond) {
+		return false
+	}
+	if b.subj == "" {
+		return true
+	}
+	return regexp.MustCompile(`(^|[^\w.])` + regexp.QuoteMeta(b.subj) + `\b`).MatchString(b.body)
 }
 
 var (
@@ -187,8 +221,9 @@ func switchArms(n *ts.Node, src []byte) []branch {
 		}
 	}
 	walk(n)
+	subj := whenSubject(n, src)
 	var out []branch
-	for _, a := range arms {
+	for ai, a := range arms {
 		txt := a.Utf8Text(src)
 		isDefault := strings.HasPrefix(strings.TrimSpace(txt), "default") || strings.HasPrefix(strings.TrimSpace(txt), "else") ||
 			a.Kind() == "switch_default" || a.Kind() == "default_case" || a.Kind() == "default_statement" || a.Kind() == "match_default_expression"
@@ -205,6 +240,9 @@ func switchArms(n *ts.Node, src []byte) []branch {
 				continue
 			}
 			if v := a.ChildByFieldName("condition"); v != nil && v.Id() == k.Id() {
+				// Kotlin when_entry: `is T` is the condition field itself (type_test), so record it
+				// for the smart-cast check (corpus FP: okhttp MappingTables, coil when (this)).
+				conds = append(conds, normNode(k, src))
 				continue
 			}
 			if v := a.ChildByFieldName("conditional_expressions"); v != nil && v.Id() == k.Id() {
@@ -220,9 +258,37 @@ func switchArms(n *ts.Node, src []byte) []branch {
 		if body == "" {
 			continue
 		}
-		out = append(out, branch{cond: strings.Join(conds, " , "), body: body, stmts: stmts, isElse: isDefault})
+		falls := fallThroughArms[a.Kind()] && ai < len(arms)-1 && !endsInJump(a, src)
+		out = append(out, branch{cond: strings.Join(conds, " , "), body: body, stmts: stmts, isElse: isDefault, falls: falls, subj: subj})
 	}
 	return out
+}
+
+// fallThroughArms are case arms of switches whose cases fall through (Java/JS/TS/PHP/C-style):
+// two textually equal arms where one falls into the next are not duplicates (merging them
+// changes how many times the shared code runs, e.g. an unrolled loop).
+var fallThroughArms = set("switch_block_statement_group", "switch_case", "switch_default", "case_statement", "default_statement")
+
+// endsInJump reports whether the last statement of n leaves the switch arm.
+func endsInJump(n *ts.Node, src []byte) bool {
+	kids := named(n)
+	for i := len(kids) - 1; i >= 0; i-- {
+		k := kids[i]
+		if strings.Contains(k.Kind(), "comment") {
+			continue
+		}
+		switch k.Kind() {
+		case "break_statement", "return_statement", "throw_statement", "continue_statement", "yield_statement", "goto_statement", "exit_statement":
+			return true
+		case "block", "statement_block", "compound_statement":
+			return endsInJump(k, src)
+		case "expression_statement":
+			t := strings.TrimSpace(k.Utf8Text(src))
+			return strings.HasPrefix(t, "throw ") || strings.HasPrefix(t, "exit") || strings.HasPrefix(t, "die")
+		}
+		return false
+	}
+	return false
 }
 
 func trivial(b branch) bool {
@@ -251,20 +317,21 @@ func branchFilter(name string, n ts.Node, src []byte) bool {
 	}
 	switch name {
 	case "branches.dup_body":
-		seen := map[string]bool{}
+		seen := map[string]bool{} // body -> an earlier branch tested a smart cast
 		for _, b := range bs {
-			if trivial(b) {
+			if trivial(b) || b.falls {
 				continue
 			}
-			if seen[b.body] {
+			cast := castMatters(b)
+			if earlierCast, ok := seen[b.body]; ok && !cast && !earlierCast {
 				return true
 			}
-			seen[b.body] = true
+			seen[b.body] = seen[b.body] || cast
 		}
 	case "branches.all_same":
 		hasElse := false
 		for _, b := range bs {
-			if smartCast.MatchString(b.cond) {
+			if castMatters(b) {
 				return false
 			}
 			hasElse = hasElse || b.isElse

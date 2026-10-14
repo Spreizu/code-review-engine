@@ -6,6 +6,7 @@ import (
 	"maps"
 	"os"
 	"path/filepath"
+	"regexp"
 	"slices"
 	"sort"
 	"strings"
@@ -17,6 +18,7 @@ import (
 	"github.com/elmo/code-review-engine/internal/rules"
 	"github.com/elmo/code-review-engine/internal/scope"
 	"github.com/elmo/code-review-engine/internal/taint"
+	"github.com/elmo/code-review-engine/internal/types"
 	"github.com/elmo/code-review-engine/internal/versions"
 )
 
@@ -54,6 +56,11 @@ type Options struct {
 	Enabled map[string]bool
 
 	project *projcfg.Set
+	// TypeMode: "" / "basic" (per-file type resolver), "full" (cross-file type index built in a
+	// prepass over every source file of the supported languages), "off".
+	TypeMode string
+	// NoCrossFileTaint disables the cross-file taint prepass (function summaries of every file).
+	NoCrossFileTaint bool
 }
 
 var unitMarkers = []string{"pom.xml", "build.gradle", "build.gradle.kts", "settings.gradle", "settings.gradle.kts", "package.json", "tsconfig.json",
@@ -66,7 +73,7 @@ var codeExt = map[string]string{
 	".go": "go", ".py": "python", ".pyi": "python", ".php": "php", ".phtml": "php", ".kt": "kotlin", ".kts": "kotlin",
 	".gradle": "groovy", ".groovy": "groovy", ".json": "json", ".jsonc": "json", ".yaml": "yaml", ".yml": "yaml",
 	".xml": "xml", ".tf": "hcl", ".tfvars": "hcl", ".hcl": "hcl", ".dockerfile": "dockerfile", ".proto": "proto",
-	".graphql": "graphql", ".gql": "graphql", ".graphqls": "graphql", ".html": "html", ".htm": "html",
+	".graphql": "graphql", ".gql": "graphql", ".graphqls": "graphql", ".html": "html", ".htm": "html", ".css": "css",
 }
 
 // fileKind derives the grammar kind from the extension or well-known file names.
@@ -217,6 +224,7 @@ func Scan(o Options) (*findings.Report, error) {
 		}
 		units[d].Finalize(*p, o.Latest)
 	}
+	inheritBuildLevel(units, "java", "kotlin")
 
 	rep := &findings.Report{SchemaVersion: 1, Tool: "crev", Root: root, Units: map[string]map[string]string{}, Stats: map[string]int{}}
 	for d, u := range units {
@@ -285,6 +293,7 @@ func Scan(o Options) (*findings.Report, error) {
 		f.Location.Path = rel
 		f.Location.EnclosingSymbol = symbol
 		f.CWE, f.OWASP = r.CWE, r.OWASP
+		f.WCAG, f.WCAGLevel = r.WCAG, rules.WCAGLevel(r.WCAG)
 		f.ID = findings.Fingerprint(r.ID, rel, snippet, symbol, ordinal[key])
 		for k := range r.AppliesTo {
 			if fa, ok := u.Facts[k]; ok {
@@ -356,6 +365,23 @@ func Scan(o Options) (*findings.Report, error) {
 				add(r, u, strings.TrimPrefix(rel, "./"), findings.Location{StartLine: line, StartColumn: 1, EndLine: line, EndColumn: 1}, h.Text, "")
 			}
 		}
+	}
+	if o.TypeMode != "" {
+		TypeMode = o.TypeMode
+	}
+	if TypeMode == "" {
+		TypeMode = "basic"
+	}
+	ClearTypeProjects()
+	if TypeMode == "full" {
+		prog(progress.Event{Phase: "types", Total: len(files)})
+		buildTypeProjects(root, files, o.MaxFileKB)
+	}
+	taint.SetProject(nil)
+	if !o.NoCrossFileTaint && hasTaintRules(active) {
+		prog(progress.Event{Phase: "taint index", Total: len(files)})
+		taint.SetProject(buildTaintIndex(root, files, o.MaxFileKB))
+		defer taint.SetProject(nil)
 	}
 	scanned := 0
 	for i, f := range files {
@@ -470,8 +496,23 @@ func hasPositiveGlob(r *rules.Rule) bool {
 	return false
 }
 
+// SkipFixtureData: files under fixture-data directories (testdata/, tests/data/, __fixtures__/,
+// test/fixtures/, test/resources/, __snapshots__/) are inputs for tools and tests (formatter cases,
+// analyzer fixtures, golden files), not code anyone maintains; the go command likewise ignores
+// directories named testdata. Only security rules (CWE-tagged) still run there. The linter-fixture
+// harness (tools/corpus fixtures) turns this off because those suites live in testdata.
+var SkipFixtureData = true
+
+var fixtureDataRe = regexp.MustCompile(`(^|/)(testdata|test_data|tests?/data|__fixtures__|tests?/fixtures|tests?/resources|__snapshots__)/`)
+
+// IsFixtureData reports whether rel lies under a fixture-data directory.
+func IsFixtureData(rel string) bool { return fixtureDataRe.MatchString(rel) }
+
 func fileExcluded(r *rules.Rule, rel, unitRel string) bool {
 	if r.Detection.ExcludeTests && index.IsTest(rel) {
+		return true
+	}
+	if SkipFixtureData && len(r.CWE) == 0 && r.Category != "security" && IsFixtureData(rel) {
 		return true
 	}
 	for _, g := range r.Detection.Files {
@@ -495,6 +536,8 @@ func languageApplies(lang, kind, vueLang string) bool {
 		return kind == "vue"
 	case "jsx":
 		return kind == "javascript" || kind == "tsx"
+	case "css":
+		return kind == "css" || kind == "vue" || kind == "html"
 	}
 	return lang == kind
 }
@@ -509,7 +552,7 @@ func scanFile(root string, f file, active []*rules.Rule, o Options, add addFunc)
 	if err != nil {
 		return err
 	}
-	if !o.IncludeGenerated && IsGeneratedSource(src) {
+	if !o.IncludeGenerated && (IsGeneratedSource(src) || IsMinifiedSource(f.rel, src)) {
 		return nil
 	}
 	unitRel, _ := filepath.Rel(f.unit.Dir, abs)
@@ -526,6 +569,15 @@ func scanFile(root string, f file, active []*rules.Rule, o Options, add addFunc)
 	if kind == "vue" {
 		vueScript, vueGrammar, vueLang, _ = VueScript(src)
 	}
+	var styleSrc []byte
+	styleDone := false
+	styles := func() []byte {
+		if !styleDone {
+			styleSrc, _ = StyleBlocks(src)
+			styleDone = true
+		}
+		return styleSrc
+	}
 	tree := func(grammar string, s []byte) (*Tree, error) {
 		if t, ok := trees[grammar]; ok {
 			return t, nil
@@ -534,7 +586,7 @@ func scanFile(root string, f file, active []*rules.Rule, o Options, add addFunc)
 		if err != nil {
 			return nil, err
 		}
-		t.Dir, t.ScanRoot = filepath.Dir(abs), root
+		t.Dir, t.ScanRoot, t.Rel = filepath.Dir(abs), root, filepath.ToSlash(f.rel)
 		trees[grammar] = t
 		return t, nil
 	}
@@ -635,6 +687,11 @@ func scanFile(root string, f file, active []*rules.Rule, o Options, add addFunc)
 			var s []byte
 			block := ""
 			switch {
+			case r.Language == "css" && kind != "css":
+				if styles() == nil {
+					continue
+				}
+				grammar, s, block = "css", styles(), "style"
 			case kind == "vue" && r.Detection.Target == "template":
 				grammar, s, block = "vue", src, "template"
 			case kind == "vue":
@@ -690,4 +747,99 @@ func relTo(dir, rel string) string {
 		return ""
 	}
 	return filepath.ToSlash(r)
+}
+
+// buildTypeProjects is the full-type-mode prepass: index the declarations of every source file
+// per language family so obj.method() / imported helpers resolve across files.
+func buildTypeProjects(root string, files []file, maxKB int) {
+	per := map[string][]*types.File{}
+	for _, f := range files {
+		g := codeExt[strings.ToLower(filepath.Ext(f.rel))]
+		if !types.Supported(g) {
+			continue
+		}
+		abs := filepath.Join(root, f.rel)
+		if st, err := os.Stat(abs); err != nil || st.Size() > int64(maxKB)*1024 {
+			continue
+		}
+		src, err := os.ReadFile(abs)
+		if err != nil || IsGeneratedSource(src) {
+			continue
+		}
+		t, err := Parse(g, src)
+		if err != nil {
+			continue
+		}
+		if tf := TypeIndex(t); tf != nil {
+			per[typeFamily(g)] = append(per[typeFamily(g)], tf)
+		}
+		t.Close()
+	}
+	for fam, fs := range per {
+		SetTypeProject(fam, types.NewProject(fs))
+	}
+}
+
+func hasTaintRules(rs []*rules.Rule) bool {
+	for _, r := range rs {
+		if r.Detection.Engine == "taint" {
+			return true
+		}
+	}
+	return false
+}
+
+// buildTaintIndex is the cross-file taint prepass: summarise the named functions of every source
+// file so a call into another file's helper carries that helper's sinks and return taint.
+func buildTaintIndex(root string, files []file, maxKB int) *taint.Index {
+	x := taint.NewIndex()
+	for _, f := range files {
+		g := codeExt[strings.ToLower(filepath.Ext(f.rel))]
+		fam := taint.Family(g)
+		if fam == "" {
+			continue
+		}
+		l, err := taint.Spec(fam)
+		if err != nil || l == nil {
+			continue
+		}
+		abs := filepath.Join(root, f.rel)
+		if st, err := os.Stat(abs); err != nil || st.Size() > int64(maxKB)*1024 {
+			continue
+		}
+		src, err := os.ReadFile(abs)
+		if err != nil || IsGeneratedSource(src) {
+			continue
+		}
+		t, err := Parse(g, src)
+		if err != nil {
+			continue
+		}
+		x.Add(fam, taint.Summarize(taint.Convert(t.Root()), src, fam, filepath.ToSlash(f.rel), l))
+		t.Close()
+	}
+	return x
+}
+
+// inheritBuildLevel replaces an assumed-latest JVM language level with the lowest level another
+// module of the same scan declares. Multi-module Gradle builds often set the target once in a
+// convention plugin or build-logic module that is not a unit ancestor (corpus FP: okio samples and
+// jmh modules assumed Java 27 while every module that declares a level targets Java 8).
+func inheritBuildLevel(units map[string]*versions.Unit, dims ...string) {
+	for _, k := range dims {
+		low, from := "", ""
+		for d, u := range units {
+			if f, ok := u.Facts[k]; ok && f.Version != "" && !f.Assumed && (low == "" || versions.Compare(f.Version, low) < 0) {
+				low, from = f.Version, d
+			}
+		}
+		if low == "" {
+			continue
+		}
+		for _, u := range units {
+			if f, ok := u.Facts[k]; ok && f.Assumed {
+				u.Facts[k] = versions.Fact{Version: low, Source: "lowest " + k + " level declared in this build (" + from + ")"}
+			}
+		}
+	}
 }

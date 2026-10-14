@@ -25,7 +25,7 @@ func (t *Tree) taintResult() (taint.Result, error) {
 		t.taintErr = err
 		return *t.taint, err
 	}
-	*t.taint = taint.AnalyzeFull(taint.Convert(t.Root()), t.Src, fam, l)
+	*t.taint = taint.AnalyzeFullAt(taint.Convert(t.Root()), t.Src, fam, t.Rel, l)
 	return *t.taint, nil
 }
 

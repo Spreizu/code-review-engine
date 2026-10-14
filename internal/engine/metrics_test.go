@@ -113,7 +113,15 @@ func TestBranchFilters(t *testing.T) {
 		{"kotlin", "fun f(a: Boolean) = if (a) g(1) else g(1)\n", "branches.all_same", true},
 		{"go", "package p\nfunc f() {\n\tswitch a {\n\tcase 1:\n\t\tx()\n\tdefault:\n\t\tx()\n\t}\n}\n", "branches.all_same", true},
 		{"php", "<?php\nif ($a) { f(); g(); } elseif ($b) { f(); g(); }\n", "branches.dup_body", true},
+		{"kotlin", "fun f(r: Any) = if (r is String) { g(r); h(r) } else { g(r); h(r) }\n", "branches.dup_body", false}, // smart cast
+		{"kotlin", "fun f(e: Any) { when (e) { is A -> e.x = 1\n is B -> e.x = 1\n } }\n", "branches.dup_body", false},
 		{"kotlin", "fun f() { if (a) { x() } else { x() } }", "branches.all_same", true},
+		{"kotlin", "fun f(r: R) { when (r) {\n is A -> { w(r.b1); w(0) }\n is B -> { w(r.b1); w(r.b2) }\n is C -> { w(r.b1); w(r.b2) }\n } }\n", "branches.dup_body", false}, // body uses the cast subject
+		{"kotlin", "fun Any.f() { when (this) {\n is A -> { t = 1; log() }\n is B -> { t = 1; log() }\n } }\n", "branches.dup_body", false},                                  // implicit receiver
+		{"kotlin", "fun f(c: Any) { when (val s = c) {\n is A -> { t = 1; log() }\n is B -> { t = 1; log() }\n } }\n", "branches.dup_body", true},                            // subject unused in bodies
+		{"kotlin", "fun f(c: Any) { when (c) {\n is A -> { t = 1; log() }\n is B -> { t = 1; log() }\n } }\n", "branches.dup_body", true},
+		{"java", `class A { void f(int left) { switch (left) { case 3: prop = props[i++]; prop.write(g, bean); case 2: prop = props[i++]; prop.write(g, bean); case 1: prop = props[i++]; prop.write(g, bean); } } }`, "branches.dup_body", false}, // fall-through (unrolled loop)
+		{"java", `class A { void f(int k) { switch (k) { case 1: log(1); count++; break; case 2: other(); break; case 3: log(1); count++; break; } } }`, "branches.dup_body", true},
 		{"go", "package p\nfunc f() {\n\tif a { }\n\tif b {\n\t} else {\n\t}\n}\n", "branches.all_same", false}, // empty bodies must not panic
 	}
 	for i, c := range cases {

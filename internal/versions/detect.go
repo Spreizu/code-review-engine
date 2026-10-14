@@ -72,7 +72,7 @@ var (
 	pomProp     = func(n string) *regexp.Regexp {
 		return regexp.MustCompile(`<` + regexp.QuoteMeta(n) + `>\s*([^<\s]+)\s*</`)
 	}
-	pomRelease = regexp.MustCompile(`<(?:release|source)>\s*(\d[^<\s]*)\s*</`)
+	pomRelease = regexp.MustCompile(`<(?:release|source)>\s*(\d[^<\s]*|\$\{[\w.-]+\})\s*</`)
 	pomDep     = regexp.MustCompile(`(?s)<dependency>\s*<groupId>\s*([^<\s]+)\s*</groupId>\s*<artifactId>\s*([^<\s]+)\s*</artifactId>`)
 	gradleBoot = regexp.MustCompile(`(?:id\s*\(?\s*["']org\.springframework\.boot["']\s*\)?\s*version\s*["']([^"']+)["'])|(?:spring-boot-gradle-plugin:([0-9][^"')]+))`)
 	gradleJava = regexp.MustCompile(`(?:JavaLanguageVersion\.of\(\s*(\d+)\s*\))|(?:(?:sourceCompatibility|targetCompatibility)\s*=\s*(?:JavaVersion\.VERSION_)?["']?(\d+(?:[._]\d+)?))|(?:jvmToolchain\(\s*(\d+)\s*\))`)
@@ -121,13 +121,22 @@ func DetectUnit(dir string) *Unit {
 		if m := pomProp("spring-boot.version").FindStringSubmatch(pom); m != nil {
 			u.set("spring-boot", m[1], "pom.xml <spring-boot.version>")
 		}
-		for _, p := range []string{"maven.compiler.release", "java.version", "maven.compiler.source", "maven.compiler.target"} {
+		for _, p := range pomJavaProps {
 			if m := pomProp(p).FindStringSubmatch(pom); m != nil {
 				u.set("java", m[1], "pom.xml <"+p+">")
 			}
 		}
-		if m := pomRelease.FindStringSubmatch(pom); m != nil {
-			u.set("java", m[1], "pom.xml compiler plugin")
+		if m := pomRelease.FindStringSubmatch(withoutProfiles(pom)); m != nil {
+			if v := pomResolve(pom, m[1]); v != "" {
+				u.set("java", v, "pom.xml compiler plugin")
+			}
+		}
+		if _, ok := u.Facts["java"]; !ok {
+			// Maven inheritance: the release usually lives in a parent POM (<relativePath>, default
+			// ../pom.xml), which may be a sibling module (dropwizard-parent), not an ancestor dir.
+			if v, src := parentPomJava(dir, pom, 0); v != "" {
+				u.set("java", v, src)
+			}
 		}
 		for _, m := range pomDep.FindAllStringSubmatch(pom, -1) {
 			u.Deps[m[1]+":"+m[2]] = true
@@ -405,3 +414,63 @@ func (u *Unit) AppliesTo(a map[string]string) bool {
 	}
 	return true
 }
+
+var pomRelPath = regexp.MustCompile(`(?s)<parent>.*?</parent>`)
+var pomRelPathTag = regexp.MustCompile(`<relativePath>\s*([^<\s]*)\s*</relativePath>`)
+
+// parentPomJava follows a POM's <parent> chain (at most 5 hops) to the first java release.
+func parentPomJava(dir, pom string, depth int) (string, string) {
+	blk := pomRelPath.FindString(pom)
+	if blk == "" || depth >= 5 {
+		return "", ""
+	}
+	rel := "../pom.xml"
+	if m := pomRelPathTag.FindStringSubmatch(blk); m != nil {
+		if m[1] == "" {
+			return "", "" // <relativePath/>: parent comes from a repository
+		}
+		rel = m[1]
+	}
+	path := filepath.Join(dir, rel)
+	if !strings.HasSuffix(path, ".xml") {
+		path = filepath.Join(path, "pom.xml")
+	}
+	pp := read(path)
+	if pp == "" {
+		return "", ""
+	}
+	for _, p := range pomJavaProps {
+		if m := pomProp(p).FindStringSubmatch(pp); m != nil {
+			return m[1], "parent pom <" + p + ">"
+		}
+	}
+	if m := pomRelease.FindStringSubmatch(withoutProfiles(pp)); m != nil {
+		if v := pomResolve(pp, m[1]); v != "" {
+			return v, "parent pom compiler plugin"
+		}
+	}
+	return parentPomJava(filepath.Dir(path), pp, depth+1)
+}
+
+// pomJavaProps are the POM properties that carry the Java language level. javac.src.version is the
+// FasterXML jackson-parent convention (jackson-databind 3: <javac.src.version>17</javac.src.version>).
+var pomJavaProps = []string{"maven.compiler.release", "java.version", "maven.compiler.source", "maven.compiler.target", "javac.src.version"}
+
+var pomProfiles = regexp.MustCompile(`(?s)<profiles>.*?</profiles>`)
+
+// withoutProfiles drops <profiles>: a compiler <release> inside a profile only applies when that
+// profile is active (corpus FP: jackson-databind's jdk21 test profile read as the build's Java 21).
+func withoutProfiles(pom string) string { return pomProfiles.ReplaceAllString(pom, "") }
+
+// pomResolve expands a ${property} compiler release against the POM's <properties>.
+func pomResolve(pom, v string) string {
+	if !strings.HasPrefix(v, "${") {
+		return v
+	}
+	name := strings.TrimSuffix(strings.TrimPrefix(v, "${"), "}")
+	if m := pomProp(name).FindStringSubmatch(pom); m != nil && m[1] != "" && m[1][0] >= '0' && m[1][0] <= '9' {
+		return m[1]
+	}
+	return ""
+}
+
