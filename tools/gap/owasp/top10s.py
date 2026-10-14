@@ -10,7 +10,7 @@ runtime or design), and it is reported as such.
 MOBILE = r"^(ANDROID|KT|TAINT-KT|APPSEC-KT|GRADLE)-"
 K8S = r"^KUBE-"
 DOCKER = r"^(DOCKER|COMPOSE)-"
-LLM = r"^LLM-"
+LLM = r"LLM-"
 
 PROJECTS = {
     "API Security Top 10 2023": ("https://owasp.org/API-Security/editions/2023/en/0x11-t10/", {

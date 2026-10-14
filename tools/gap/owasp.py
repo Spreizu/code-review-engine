@@ -11,6 +11,9 @@ A requirement is covered when an enabled crev security rule (category security o
 Top 10 items such as Docker/Kubernetes/mobile, any rule in scope) carries its id in `asvs`, or matches the regex (when
 one is given), or otherwise shares a CWE family.
 
+Cheat Sheet Series: a sheet is covered when a security rule's source.url contains the sheet stem, or
+(when a regex is given) a rule id matches. Process/runtime sheets are n/a.
+
   python tools/gap/owasp.py fetch && python tools/gap/owasp.py   # writes tools/gap/owasp-coverage.md
 """
 import glob, json, os, re, shutil, sys, urllib.request
@@ -23,6 +26,7 @@ from sonar import FAMILY, ROOT  # noqa: E402
 from snyk import ensure_cache_module  # noqa: E402
 import asvs5_map  # noqa: E402
 import top10s  # noqa: E402
+import cheatsheets  # noqa: E402
 import yaml  # noqa: E402
 
 CACHE = os.path.join(ROOT, "tools/gap/cache")
@@ -58,10 +62,11 @@ def rules():
             sec = r.get("category") == "security" or bool(r.get("cwe") or t.get("cwe"))
             out.append({"id": r["id"], "sec": sec, "lang": r.get("language"), "cwe": fam(r.get("cwe") or t.get("cwe") or []),
                         "asvs": set(r.get("asvs") or []) | set(t.get("asvs") or []),
-                        "owasp": set(r.get("owasp") or []) | set(t.get("owasp") or [])})
+                        "owasp": set(r.get("owasp") or []) | set(t.get("owasp") or []),
+                        "url": (r.get("source") or {}).get("url") or ""})
     # rules defined in Go rather than in a pack (internal/sca: OSV.dev dependency scan, on by default)
     out.append({"id": "SCA-OSV-VULNERABLE-DEPENDENCY", "sec": True, "lang": "any", "cwe": {"1395"},
-                "asvs": {"V3.7.1", "V15.2.1"}, "owasp": {"A06:2021", "A03:2025"}})
+                "asvs": {"V3.7.1", "V15.2.1"}, "owasp": {"A06:2021", "A03:2025"}, "url": ""})
     return out
 
 
@@ -96,6 +101,25 @@ def asvs(rs):
     if unknown:
         sys.exit("asvs5_map ids not in ASVS 5.0: %s" % sorted(unknown))
     return ch
+
+
+def sheets(rs):
+    rs = [r for r in rs if r["sec"]]
+    rows = []
+    for stem, it in cheatsheets.SHEETS.items():
+        if it is None:
+            rows.append((stem, None, 0, []))
+            continue
+        label, rx = it
+        needle = "/cheatsheets/" + stem + ".html"
+        hit = []
+        for r in rs:
+            if needle in r.get("url", ""):
+                hit.append(r["id"])
+            elif rx and re.search(rx, r["id"]):
+                hit.append(r["id"])
+        rows.append((stem, label, len(hit), hit[:3]))
+    return rows
 
 
 def top10(rs):
@@ -153,6 +177,26 @@ def report():
         L += ["", f"### {name}", ""]
         for iid, label, n, ex in rows:
             L.append(f"- {iid} " + ("n/a" if label is None else f"{label}: " + (f"{n} ({', '.join(ex)})" if n else "**no rule**")))
+    sh = sheets(rs)
+    sh_cv = [r for r in sh if r[1] is not None]
+    sh_cov = [r for r in sh_cv if r[2]]
+    L += ["", "## Cheat Sheet Series (https://cheatsheetseries.owasp.org/)", "",
+          f"{len(sh)} sheets; {len(sh_cv)} judged code-verifiable by static analysis; **{len(sh_cov)} covered "
+          f"({100 * len(sh_cov) / max(len(sh_cv), 1):.0f}% of code-verifiable)**. A sheet is covered when a security "
+          "rule cites it or (when a regex is given) a rule id matches.", "",
+          "### Code-verifiable sheets without a rule", ""]
+    for stem, label, n, _ in sh:
+        if label is not None and not n:
+            L.append(f"- {stem}: {label}")
+    L += ["", "### Covered sheets (rule count, examples)", ""]
+    for stem, label, n, ex in sh:
+        if label is not None and n:
+            L.append(f"- {stem}: {n} ({', '.join(ex)})")
+    L += ["", "### Not code-verifiable (process, runtime, design, or a stack crev does not parse)", ""]
+    for stem, label, _, _ in sh:
+        if label is None:
+            L.append(f"- {stem}")
+    print(f"Cheat Sheet Series: {len(sh_cov)}/{len(sh_cv)}")
     open(os.path.join(HERE, "owasp-coverage.md"), "w", encoding="utf-8").write("\n".join(L) + "\n")
     print(f"ASVS 5.0: {tot_cov}/{tot_cv} code-verifiable covered")
 

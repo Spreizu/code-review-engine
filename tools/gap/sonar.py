@@ -3,7 +3,7 @@
 
 Uses only Sonar's public rule catalog metadata - rule key, title, type, severity, CWE/OWASP tags
 and membership in the built-in "Sonar way" quality profiles - from the public SonarQube API
-(next.sonarqube.com). No analyzer code, rule descriptions or test code are fetched or used; crev
+(sonarcloud.io; built-in Sonar way profiles). No analyzer code, rule descriptions or test code are fetched or used; crev
 implements its own tree-sitter detection, wording and examples, citing official docs, and records
 the Sonar key only as `xref: [sonar:<key>]`.
 
@@ -27,7 +27,10 @@ def ensure_cache_module(cache):
     if not os.path.exists(p):
         with open(p, "w", encoding="utf-8") as f:
             f.write("module crevcache\n")
-API = "https://next.sonarqube.com/sonarqube/api"
+API = "https://sonarcloud.io/api"
+# SonarCloud requires an organization; built-in profile contents do not vary by org.
+# `apache` is public. next.sonarqube.com (the old dogfood host) now 302s to marketing HTML.
+ORG = "apache"
 # Sonar language key -> crev rule languages
 LANGS = {"java": ["java"], "js": ["javascript"], "ts": ["typescript", "javascript"], "py": ["python"], "go": ["go"],
          "kotlin": ["kotlin"], "php": ["php"], "docker": ["dockerfile"], "terraform": ["hcl", "terraform"],
@@ -39,10 +42,15 @@ FAMILY = {"338": "330", "331": "330", "328": "327", "326": "327", "916": "327", 
 
 
 def get(path, **q):
+    q.setdefault("organization", ORG)
     url = f"{API}/{path}?{urllib.parse.urlencode(q)}"
+    req = urllib.request.Request(url, headers={"Accept": "application/json", "User-Agent": "crev-sonar-catalog"})
     for i in range(4):
         try:
-            with urllib.request.urlopen(url, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                ctype = r.headers.get("content-type", "")
+                if "json" not in ctype:
+                    raise RuntimeError(f"expected JSON, got {ctype} from {r.geturl()}")
                 return json.load(r)
         except Exception as e:  # noqa: BLE001 - transient network errors are retried
             if i == 3:

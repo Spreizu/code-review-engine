@@ -6,55 +6,55 @@ Only rule keys and counts are written here; titles stay in the local cache.
 
 | Sonar language | profile | rules | covered (xref) | covered (cwe) | coverage | security rules | security covered |
 |---|---|---|---|---|---|---|---|
-| java | Sonar way core | 309 | 141 | 15 | 50.5% | 92 | 46 |
-| java | Sonar way comprehensive | 661 | 229 | 15 | 36.9% | 92 | 46 |
-| js | Sonar way core | 249 | 87 | 53 | 56.2% | 108 | 63 |
-| js | Sonar way comprehensive | 481 | 173 | 53 | 47.0% | 108 | 63 |
-| ts | Sonar way core | 248 | 79 | 51 | 52.4% | 108 | 60 |
-| ts | Sonar way comprehensive | 496 | 179 | 51 | 46.4% | 108 | 60 |
-| py | Sonar way core | 300 | 103 | 34 | 45.7% | 96 | 65 |
-| py | Sonar way comprehensive | 490 | 152 | 34 | 38.0% | 96 | 65 |
+| java | Sonar way core | 308 | 157 | 17 | 56.5% | 92 | 48 |
+| java | Sonar way comprehensive | 648 | 256 | 16 | 42.0% | 91 | 47 |
+| js | Sonar way core | 248 | 93 | 53 | 58.9% | 108 | 63 |
+| js | Sonar way comprehensive | 466 | 185 | 52 | 50.9% | 107 | 62 |
+| ts | Sonar way core | 247 | 83 | 54 | 55.5% | 108 | 63 |
+| ts | Sonar way comprehensive | 471 | 189 | 53 | 51.4% | 106 | 61 |
+| py | Sonar way core | 300 | 110 | 34 | 48.0% | 96 | 65 |
+| py | Sonar way comprehensive | 478 | 161 | 33 | 40.6% | 94 | 64 |
 | go | Sonar way core | 52 | 27 | 9 | 69.2% | 39 | 23 |
-| go | Sonar way comprehensive | 82 | 39 | 9 | 58.5% | 39 | 23 |
+| go | Sonar way comprehensive | 81 | 38 | 9 | 58.0% | 39 | 23 |
 | kotlin | Sonar way core | 82 | 38 | 12 | 61.0% | 58 | 30 |
-| kotlin | Sonar way comprehensive | 157 | 61 | 12 | 46.5% | 58 | 30 |
-| php | Sonar way core | 97 | 43 | 15 | 59.8% | 52 | 32 |
-| php | Sonar way comprehensive | 195 | 77 | 15 | 47.2% | 52 | 32 |
-| docker | Sonar way core | 35 | 2 | 13 | 42.9% | 27 | 13 |
-| docker | Sonar way comprehensive | 51 | 4 | 13 | 33.3% | 27 | 13 |
+| kotlin | Sonar way comprehensive | 155 | 66 | 12 | 50.3% | 56 | 30 |
+| php | Sonar way core | 97 | 46 | 16 | 63.9% | 52 | 33 |
+| php | Sonar way comprehensive | 195 | 86 | 16 | 52.3% | 52 | 33 |
+| docker | Sonar way core | 35 | 4 | 13 | 48.6% | 27 | 13 |
+| docker | Sonar way comprehensive | 51 | 10 | 13 | 45.1% | 27 | 13 |
 | terraform | Sonar way core | 49 | 2 | 26 | 57.1% | 49 | 28 |
 | terraform | Sonar way comprehensive | 51 | 2 | 26 | 54.9% | 49 | 28 |
 | yaml | Sonar way core | 2 | 0 | 2 | 100.0% | 2 | 2 |
 | yaml | Sonar way comprehensive | 2 | 0 | 2 | 100.0% | 2 | 2 |
 | json | Sonar way core | 2 | 0 | 2 | 100.0% | 2 | 2 |
 | json | Sonar way comprehensive | 2 | 0 | 2 | 100.0% | 2 | 2 |
-| web | Sonar way core | 36 | 14 | 2 | 44.4% | 6 | 3 |
-| web | Sonar way comprehensive | 61 | 27 | 2 | 47.5% | 6 | 3 |
-| css | Sonar way core | 25 | 0 | 0 | 0.0% | 0 | 0 |
-| css | Sonar way comprehensive | 41 | 0 | 0 | 0.0% | 0 | 0 |
+| web | Sonar way core | 34 | 13 | 2 | 44.1% | 6 | 3 |
+| web | Sonar way comprehensive | 59 | 27 | 2 | 49.2% | 6 | 3 |
+| css | Sonar way core | 25 | 17 | 0 | 68.0% | 0 | 0 |
+| css | Sonar way comprehensive | 39 | 21 | 0 | 53.8% | 0 | 0 |
 
 ## Uncovered Sonar way (comprehensive) keys by type
 
-- **java**: BUG 107; CODE_SMELL 264; VULNERABILITY 46
-  - security gaps: S1989, S2053, S2115, S2254, S3752, S4036, S4347, S4512, S4601, S4684, S5145, S5147, S5320, S5322, S5324, S5332, S5443, S5445, S5496, S5659, S5679, S5689, S5693, S5804, S5808, S5883, S6173, S6287, S6288, S6293, S6301, S6350, S6373, S6376, S6377, S6384, S6390, S6398, S6399, S6432, S6547, S7044, S7409, S7435, S7518, S7610
-- **js**: BUG 41; CODE_SMELL 169; VULNERABILITY 45
-  - security gaps: S1523, S2077, S2092, S2598, S2612, S2755, S2819, S3330, S4036, S4502, S4507, S4684, S4790, S4830, S5148, S5443, S5496, S5527, S5542, S5659, S5693, S5725, S5739, S5852, S5876, S6109, S6249, S6252, S6275, S6303, S6308, S6317, S6319, S6327, S6330, S6332, S6333, S6350, S6641, S6776, S8348, S8349, S8441, S8477, S8706
-- **ts**: BUG 38; CODE_SMELL 180; VULNERABILITY 48
-  - security gaps: S1523, S2077, S2092, S2245, S2598, S2612, S2755, S2819, S3330, S4036, S4423, S4426, S4502, S4507, S4684, S4790, S4830, S5148, S5443, S5496, S5527, S5542, S5547, S5659, S5693, S5725, S5739, S5852, S5876, S6109, S6249, S6252, S6275, S6303, S6308, S6317, S6319, S6327, S6330, S6332, S6333, S6350, S6418, S6641, S6776, S8441, S8477, S8706
-- **py**: BUG 84; CODE_SMELL 189; VULNERABILITY 31
-  - security gaps: S2053, S2115, S3752, S4433, S5332, S5344, S5496, S5852, S6249, S6252, S6275, S6303, S6308, S6317, S6319, S6327, S6330, S6332, S6333, S6350, S6377, S6639, S6680, S6776, S6785, S6786, S7608, S7698, S8389, S8435, S8706
+- **java**: BUG 87; CODE_SMELL 245; VULNERABILITY 44
+  - security gaps: S1989, S2053, S2115, S2254, S3752, S4036, S4347, S4512, S4601, S4684, S5145, S5147, S5320, S5322, S5324, S5332, S5443, S5445, S5496, S5659, S5679, S5689, S5804, S5808, S5883, S6173, S6287, S6288, S6293, S6301, S6350, S6373, S6376, S6377, S6384, S6398, S6399, S6432, S6547, S7044, S7409, S7435, S7518, S7610
+- **js**: BUG 35; CODE_SMELL 149; VULNERABILITY 45
+  - security gaps: S1523, S2068, S2077, S2092, S2598, S2612, S2755, S2819, S3330, S4036, S4502, S4507, S4684, S4790, S4830, S5148, S5443, S5496, S5527, S5542, S5659, S5693, S5725, S5852, S5876, S6109, S6252, S6275, S6303, S6308, S6317, S6319, S6327, S6330, S6332, S6333, S6350, S6418, S6437, S6641, S6776, S7639, S8441, S8477, S8706
+- **ts**: BUG 33; CODE_SMELL 151; VULNERABILITY 45
+  - security gaps: S1523, S2068, S2077, S2092, S2598, S2612, S2755, S2819, S3330, S4036, S4502, S4507, S4684, S4790, S4830, S5148, S5443, S5496, S5527, S5542, S5659, S5693, S5725, S5852, S5876, S6109, S6252, S6275, S6303, S6308, S6317, S6319, S6327, S6330, S6332, S6333, S6350, S6418, S6437, S6641, S6776, S7639, S8441, S8477, S8706
+- **py**: BUG 76; CODE_SMELL 178; VULNERABILITY 30
+  - security gaps: S2053, S2115, S3752, S4433, S5332, S5344, S5496, S5852, S6249, S6252, S6275, S6303, S6308, S6317, S6319, S6327, S6330, S6332, S6333, S6350, S6377, S6639, S6680, S6776, S6785, S6786, S7608, S7698, S8435, S8706
 - **go**: BUG 1; CODE_SMELL 17; VULNERABILITY 16
   - security gaps: S2053, S2077, S2091, S4036, S5135, S5145, S5332, S5344, S5443, S5445, S5527, S5659, S6173, S6350, S6547, S8261
-- **kotlin**: BUG 6; CODE_SMELL 50; VULNERABILITY 28
-  - security gaps: S2053, S2091, S5135, S5145, S5147, S5322, S5332, S5344, S5496, S5883, S6173, S6287, S6288, S6293, S6301, S6350, S6384, S6398, S6399, S6432, S6474, S6547, S7044, S7204, S7409, S7410, S7435, S7610
-- **php**: BUG 21; CODE_SMELL 62; VULNERABILITY 20
-  - security gaps: S2053, S2077, S2115, S2755, S4433, S4502, S5135, S5145, S5332, S5335, S5527, S5808, S5876, S5883, S6173, S6287, S6343, S6348, S6350, S6418
-- **docker**: BUG 4; CODE_SMELL 16; VULNERABILITY 14
+- **kotlin**: BUG 6; CODE_SMELL 45; VULNERABILITY 26
+  - security gaps: S2053, S2091, S5135, S5145, S5147, S5322, S5332, S5344, S5496, S5883, S6287, S6288, S6293, S6301, S6350, S6398, S6399, S6432, S6474, S6547, S7044, S7204, S7409, S7410, S7435, S7610
+- **php**: BUG 18; CODE_SMELL 56; VULNERABILITY 19
+  - security gaps: S2053, S2077, S2115, S2755, S4433, S4502, S5135, S5145, S5328, S5332, S5335, S5527, S5808, S5876, S5883, S6173, S6287, S6343, S6350
+- **docker**: BUG 2; CODE_SMELL 12; VULNERABILITY 14
   - security gaps: S2612, S4423, S4507, S4790, S4830, S5332, S6431, S6437, S6469, S6470, S6472, S6473, S6504, S6506
 - **terraform**: CODE_SMELL 2; VULNERABILITY 21
   - security gaps: S4423, S6252, S6317, S6319, S6333, S6364, S6375, S6378, S6380, S6381, S6382, S6385, S6387, S6401, S6402, S6405, S6409, S6410, S6412, S8793, S8847
 - **yaml**: 
 - **json**: 
-- **web**: BUG 7; CODE_SMELL 22; VULNERABILITY 3
+- **web**: BUG 6; CODE_SMELL 21; VULNERABILITY 3
   - security gaps: S7039, S7071, S7074
-- **css**: BUG 25; CODE_SMELL 16
+- **css**: BUG 7; CODE_SMELL 11

@@ -17,8 +17,9 @@ import sonar  # noqa: E402
 # (category id, own-words reason, predicate over (lang, key, type, lowercase name)).
 # The first matching category wins; order goes from "cannot" to "could, later".
 CATS = [
-    ("no-parser", "No parser in the binary for this file type (CSS); adding a grammar is deferred to keep the binary small.",
-     lambda l, k, t, n: l == "css"),
+    # CSS has a grammar and a css pack since 2026-10-10: no language is parser-less any more
+    ("no-parser", "No parser in the binary for this file type (none at present).",
+     lambda l, k, t, n: False),
     ("py2", "Python 2 only syntax; current grammars and interpreters reject it before review.",
      lambda l, k, t, n: k in ("BackticksUsage", "ExecStatementUsage", "PrintStatementUsage", "InequalityUsage", "S1717")),
     ("compiler", "The compiler or interpreter already rejects this code (syntax/compile error), so it never reaches review.",
