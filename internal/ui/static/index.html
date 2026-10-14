@@ -139,7 +139,7 @@ async function viewRuns(){
 }
 
 // ---- findings view
-const FACETS=[["change","Status"],["severity","Severity"],["category","Category"],["lang","Language"],["pack","Pack"],["rule","Rule"],["cwe","CWE"],["owasp","OWASP"],["trust","Trust"],["reason","Hidden reason"]];
+const FACETS=[["change","Status"],["severity","Severity"],["category","Category"],["lang","Language"],["pack","Pack"],["rule","Rule"],["cwe","CWE"],["owasp","OWASP"],["wcag_level","WCAG level"],["wcag","WCAG criterion"],["trust","Trust"],["reason","Hidden reason"]];
 const PER=200,ruleCache={};
 const getRule=id=>ruleCache[id]||(ruleCache[id]=api("rules/"+encodeURIComponent(id)).catch(()=>null));
 let cur={items:[],run:null,sel:-1};
@@ -221,7 +221,7 @@ async function detail(f,root=app,runId=cur.run?.id){
    ${f.ai?`<blockquote><b>AI ${esc(f.ai.verdict)}</b> (${esc(f.ai.confidence)}${f.ai.model?", "+esc(f.ai.model):""}${f.ai.via?", via "+esc(f.ai.via):""}): ${esc(f.ai.rationale||"")}${f.ai.suggested_fix?`<div><b>Suggested fix:</b> ${esc(f.ai.suggested_fix)}</div>`:""}</blockquote>`:""}
    ${f.suppressed_by?`<blockquote>Suppressed by ${esc(f.suppressed_by.kind)} · ${esc(f.suppressed_by.tool)}:${esc(f.suppressed_by.id)} · <span class="mono">${esc(f.suppressed_by.source)}</span></blockquote>`:""}
    <div id="snip" class="mut">loading code…</div>
-   ${(f.cwe||[]).length||(f.owasp||[]).length?`<div class="bar">${(f.cwe||[]).map(x=>`<a class="pill" href="https://cwe.mitre.org/data/definitions/${esc(x.replace("CWE-",""))}.html" target="_blank" rel="noopener noreferrer">${esc(x)}</a>`).join("")}${(f.owasp||[]).map(x=>pill("OWASP "+x)).join("")}</div>`:""}
+   ${(f.wcag||[]).length?`<div class="bar">${f.wcag.map(x=>`<a class="pill" href="https://www.w3.org/WAI/WCAG22/quickref/#:~:text=${esc(x)}" target="_blank" rel="noopener noreferrer">WCAG ${esc(x)}</a>`).join("")}${f.wcag_level?pill("level "+f.wcag_level):""}</div>`:""}${(f.cwe||[]).length||(f.owasp||[]).length?`<div class="bar">${(f.cwe||[]).map(x=>`<a class="pill" href="https://cwe.mitre.org/data/definitions/${esc(x.replace("CWE-",""))}.html" target="_blank" rel="noopener noreferrer">${esc(x)}</a>`).join("")}${(f.owasp||[]).map(x=>pill("OWASP "+x)).join("")}</div>`:""}
    ${f.evidence?`<h3>Evidence</h3><div class="mono" style="white-space:pre-wrap">${esc(f.evidence)}</div>`:""}
    ${f.vuln?`<h3>Advisory</h3><div><a href="https://osv.dev/vulnerability/${encodeURIComponent(f.vuln.id)}" target="_blank" rel="noopener noreferrer">${esc(f.vuln.id)}</a> ${esc((f.vuln.cve||[]).join(", "))} · <span class="mono">${esc(f.vuln.package)} ${esc(f.vuln.version)}</span> · ${f.vuln.fixed_version?"fixed in <b>"+esc(f.vuln.fixed_version)+"</b>":"no fix published"}</div>`:""}
    <h3>Fingerprint</h3><div class="copy"><code>${esc(f.id)}</code><button data-copy="${esc(f.id)}" aria-label="Copy fingerprint">Copy</button></div>
@@ -323,7 +323,7 @@ async function viewRules(){
 async function viewRule(id){
   const d=await api("rules/"+encodeURIComponent(id)),r=d.rule,s=r.source||{},st=d.stats;
   app.innerHTML=`<div class="mut"><a href="#/rules">← Rules</a></div><h1 class="mono">${esc(r.id)}</h1><div style="font-size:16px">${esc(r.title)}</div>
-  <div class="bar">${sev(r.severity)}${pill(r.category)}${pill(r.language)}${r.framework?pill(r.framework):""}${pill(r.mode)}${r.trust?pill("trust "+r.trust.level):""}${pill("pack "+d.pack+" "+d.pack_version)}${r.origin?pill(r.origin):""}${Object.entries(r.applies_to||{}).map(([k,v])=>pill(k+" "+v)).join("")}${(r.cwe||[]).map(x=>pill(x)).join("")}${(r.owasp||[]).map(x=>pill("OWASP "+x)).join("")}${(r.asvs||[]).map(x=>pill("ASVS "+x)).join("")}</div>
+  <div class="bar">${sev(r.severity)}${pill(r.category)}${pill(r.language)}${r.framework?pill(r.framework):""}${pill(r.mode)}${r.trust?pill("trust "+r.trust.level):""}${pill("pack "+d.pack+" "+d.pack_version)}${r.origin?pill(r.origin):""}${Object.entries(r.applies_to||{}).map(([k,v])=>pill(k+" "+v)).join("")}${(r.cwe||[]).map(x=>pill(x)).join("")}${(r.owasp||[]).map(x=>pill("OWASP "+x)).join("")}${(r.asvs||[]).map(x=>pill("ASVS "+x)).join("")}${(r.wcag||[]).map(x=>pill("WCAG "+x)).join("")}</div>
   <div class="kpis"><div class="card kpi"><b>${st?.hits||0}</b><small>hits (last ${d.sampled_runs} runs)</small></div><div class="card kpi"><b>${st?.runs||0}</b><small>runs fired</small></div><div class="card kpi"><b>${st?.latest||0}</b><small>in latest run</small></div><div class="card kpi"><b class="mut">${st?.hidden||0}</b><small>hidden</small></div></div>
   ${st?.latest?`<div><a href="#/run/latest?rule=${encodeURIComponent(r.id)}&hidden=1">Show findings in the latest run →</a></div>`:""}
   <div class="card pad"><div>${esc(r.message)}</div>${r.rationale?`<p class="mut">${esc(r.rationale)}</p>`:""}${r.fix?`<p><b>Fix:</b> ${esc(r.fix)}</p>`:""}${r.ai_question?`<p class="mut"><b>AI confirmation question:</b> ${esc(r.ai_question)}</p>`:""}

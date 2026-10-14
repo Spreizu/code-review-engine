@@ -400,7 +400,7 @@ func (s *Server) getRule(w http.ResponseWriter, r *http.Request) {
 			"severity": ru.Severity, "mode": ru.Detection.Mode, "applies_to": ru.AppliesTo, "message": ru.Message, "rationale": ru.Rationale,
 			"fix": ru.Fix, "source": ru.Source, "examples": map[string]string{"bad": ru.Examples.Bad, "good": ru.Examples.Good},
 			"xref": ru.Xref, "tags": ru.Tags, "origin": ru.Origin, "status": ru.Status, "trust": ru.Trust, "trust_summary": trustSummary(ru),
-			"cwe": ru.CWE, "owasp": ru.OWASP, "asvs": ru.ASVS, "precision": ru.Precision, "ai_question": ru.AIQuestion}})
+			"cwe": ru.CWE, "owasp": ru.OWASP, "asvs": ru.ASVS, "wcag": rules.WCAGLabels(ru.WCAG), "precision": ru.Precision, "ai_question": ru.AIQuestion}})
 }
 
 func trustSummary(ru *rules.Rule) string {

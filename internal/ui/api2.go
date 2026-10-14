@@ -123,7 +123,7 @@ func (s *Server) runViews(m *runs.Meta, rep *findings.Report) []FindingView {
 
 type findingFilter struct {
 	q                                                                 string
-	sev, cat, lang, pack, rule, cwe, owasp, trust, change, reason, st []string
+	sev, cat, lang, pack, rule, cwe, owasp, wcag, wlevel, trust, change, reason, st []string
 	file                                                              string
 	hidden                                                            string // "" (review list only) | "1" (all) | "only"
 }
@@ -144,7 +144,7 @@ func split(v string) []string {
 func parseFilter(r *http.Request) findingFilter {
 	q := r.URL.Query()
 	return findingFilter{q: strings.ToLower(q.Get("q")), sev: split(q.Get("severity")), cat: split(q.Get("category")), lang: split(q.Get("lang")),
-		pack: split(q.Get("pack")), rule: split(q.Get("rule")), cwe: split(q.Get("cwe")), owasp: split(q.Get("owasp")), trust: split(q.Get("trust")),
+		pack: split(q.Get("pack")), rule: split(q.Get("rule")), cwe: split(q.Get("cwe")), owasp: split(q.Get("owasp")), wcag: split(q.Get("wcag")), wlevel: split(q.Get("wcag_level")), trust: split(q.Get("trust")),
 		change: split(q.Get("change")), reason: split(q.Get("reason")), st: split(q.Get("status")), file: q.Get("file"), hidden: q.Get("hidden")}
 }
 
@@ -189,6 +189,12 @@ func (ff findingFilter) keep(v FindingView, skip string) bool {
 		return false
 	}
 	if skip != "owasp" && len(ff.owasp) > 0 && !in(ff.owasp, v.OWASP...) {
+		return false
+	}
+	if skip != "wcag" && len(ff.wcag) > 0 && !in(ff.wcag, v.WCAG...) {
+		return false
+	}
+	if !chk("wcag_level", ff.wlevel, v.WCAGLevel) {
 		return false
 	}
 	if skip != "file" && ff.file != "" && v.Location.Path != ff.file && !strings.HasPrefix(v.Location.Path, strings.TrimSuffix(ff.file, "/")+"/") {
@@ -277,7 +283,7 @@ func (s *Server) runFindings(w http.ResponseWriter, r *http.Request) {
 			name string
 			vals []string
 		}{{"severity", []string{v.Severity}}, {"category", []string{v.Category}}, {"lang", []string{v.Lang}}, {"pack", []string{v.Pack}},
-			{"rule", []string{v.RuleID}}, {"cwe", v.CWE}, {"owasp", v.OWASP}, {"trust", []string{v.Trust}}, {"change", []string{v.Change}},
+			{"rule", []string{v.RuleID}}, {"cwe", v.CWE}, {"owasp", v.OWASP}, {"wcag", v.WCAG}, {"wcag_level", nonEmpty(v.WCAGLevel)}, {"trust", []string{v.Trust}}, {"change", []string{v.Change}},
 			{"reason", []string{v.Reason}}, {"status", []string{v.Status}}} {
 			if ff.keep(v, k.name) {
 				facet(k.name, k.vals...)
@@ -460,4 +466,12 @@ func (s *Server) ruleHits() (map[string]*hitStats, int) {
 	}
 	hitCache.key, hitCache.m, hitCache.runs = key, m, len(sample)
 	return m, len(sample)
+}
+
+// nonEmpty is []string{s}, or nil for "" (facets skip findings without the value).
+func nonEmpty(s string) []string {
+	if s == "" {
+		return nil
+	}
+	return []string{s}
 }

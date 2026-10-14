@@ -27,8 +27,8 @@ var (
 	cweRe         = regexp.MustCompile(`^CWE-[1-9]\d*$`)
 	// Top 10 2021/2025, API Security 2023, Mobile 2024, LLM 2025, Docker (D01..D10), Kubernetes 2022,
 	// Proactive Controls 2024 and MASVS v2 control ids.
-	owaspRe       = regexp.MustCompile(`^(A(0[1-9]|10):(2021|2025)|API([1-9]|10):2023|M([1-9]|10):2024|LLM(0[1-9]|10):2025|D(0[1-9]|10)|K(0[1-9]|10):2022|C([1-9]|10):2024|MASVS-(STORAGE|CRYPTO|AUTH|NETWORK|PLATFORM|CODE|RESILIENCE|PRIVACY)-[1-9])$`)
-	asvsRe        = regexp.MustCompile(`^V\d+(\.\d+){1,2}$`)
+	owaspRe = regexp.MustCompile(`^(A(0[1-9]|10):(2021|2025)|API([1-9]|10):2023|M([1-9]|10):2024|LLM(0[1-9]|10):2025|D(0[1-9]|10)|K(0[1-9]|10):2022|C([1-9]|10):2024|MASVS-(STORAGE|CRYPTO|AUTH|NETWORK|PLATFORM|CODE|RESILIENCE|PRIVACY)-[1-9])$`)
+	asvsRe  = regexp.MustCompile(`^V\d+(\.\d+){1,2}$`)
 	// KnownConfigTools may appear in detection.requires_config.
 	KnownConfigTools = map[string]bool{"yamllint": true, "editorconfig": true, "prettier": true}
 	idRe             = regexp.MustCompile(`^[A-Z]+(-[A-Z0-9]+)+$`)
@@ -219,6 +219,16 @@ func Validate(r *rules.Rule) []string {
 		if !asvsRe.MatchString(c) {
 			e = append(e, "bad asvs "+c+" (V<chapter>.<section>[.<req>])")
 		}
+	}
+	for _, c := range r.WCAG {
+		if w, ok := rules.WCAG[c]; !ok {
+			e = append(e, "bad wcag "+c+" (WCAG 2.2 success criterion id, e.g. 1.4.3)")
+		} else if w.Obsolete {
+			e = append(e, "wcag "+c+" is obsolete in WCAG 2.2")
+		}
+	}
+	if r.Category == "accessibility" && len(r.WCAG) == 0 && !slices.Contains(r.Tags, "a11y-best-practice") {
+		e = append(e, "accessibility rule needs wcag success criteria (or tag a11y-best-practice)")
 	}
 	if r.Kind == "security" && len(r.CWE) == 0 {
 		e = append(e, "security rule needs cwe (and owasp) classification")

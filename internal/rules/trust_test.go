@@ -77,3 +77,12 @@ func TestWilsonLowerAndPromotion(t *testing.T) {
 		t.Error("only promoted, active, built-in rules change mode")
 	}
 }
+
+func TestWCAGTable(t *testing.T) {
+	if len(WCAG) != 87 {
+		t.Fatalf("WCAG 2.2 has 86 success criteria plus obsolete 4.1.1, got %d", len(WCAG))
+	}
+	if WCAGLevel([]string{"1.4.3", "1.1.1"}) != "A" || WCAG["2.5.8"].Since != "2.2" || !WCAG["4.1.1"].Obsolete {
+		t.Fatal("wcag table")
+	}
+}
