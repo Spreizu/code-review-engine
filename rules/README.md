@@ -41,9 +41,9 @@ rules/data/*.yaml                     trust, governance, opt-in, xref, taxonomy,
   page), then refresh `sources.yaml`/`sources.md`:
 
   ```sh
-  /tmp/venv/bin/python tools/rulegen/rulegen.py verify   # all specs, or: verify nuxt
-  /tmp/venv/bin/python tools/rulegen/rulegen.py gen
-  /tmp/venv/bin/python tools/rulegen/sources.py
+  python3 tools/rulegen/rulegen.py verify   # all specs, or: verify nuxt
+  python3 tools/rulegen/rulegen.py gen
+  python3 tools/rulegen/sources.py
   ```
 * Inspect a tree while writing queries: `go run ./tools/astdump <grammar> FILE ['<query>']` or `go run ./tools/sexp <java|javascript|typescript|tsx|vue> FILE [x]`.
 * Authoring rules: cite an official doc (`source.url`, `doc_version`, `retrieved`, plus a short verbatim `quote`), give a `bad` and a `good` example, capture the reported node as `@match`, keep predicates *inside* the pattern's parentheses, and use `ai-confirm` + `ai_question` whenever the syntax alone can't decide. Do not mirror deprecated linter rules.
@@ -225,6 +225,10 @@ False positives must never reach the review list. The mechanisms, in order:
      * `ancestor.has_re:KIND|KIND:re` and `ancestor.lacks_re:KIND|KIND:re`;
      * `parentkind.has_re:KIND|KIND:re` and `parentkind.lacks_re:KIND|KIND:re` (direct parent of one of the kinds, e.g. a literal inside an all-literal deny-list);
      * `{cap:NAME}` inside any regex filter.
+     * `type.is:CAP:regex`, `type.not:CAP:regex`, `type.not_or_unknown:CAP:regex` on the resolved
+       type of capture CAP (`internal/types`; unknown never matches `type.is` / `type.not`);
+     * `type.differ:A:B` (built-in types that cannot be equal), `type.vs_text:A:T` (value vs written
+       annotation), `type.eq:A:B` / `type.eq_text:A:T` (same non-empty type).
 5. **Quarantine** (`status: shadow` with `status_reason`). The rule runs and its hits are counted
    in `report.shadow` and kept with status `shadow` / `hidden_reason: shadow`, never listed by
    default and never gating. Set it in a pack, or centrally in `rules/data/governance.yaml`, which also takes

@@ -721,7 +721,7 @@ code-review-engine/
 
 | Phase | Weeks | Scope | Milestone / exit criteria |
 |---|---|---|---|
-| **0: Foundations** (done) | – | Rule schema, 2211 verified rules in 26 packs, user rules overlay (`.crev/rules/`, `crev rules validate`), sources, grammar registry incl. vendored Vue, `rulecheck`, `sexp`, `astdump`, `rulegen`; first CLI cut (`scan`, SARIF/JSON/MD, exit codes, AI api + Cursor-skill + `ingest`, cache) | `rulecheck` green (achieved: 958/958) |
+| **0: Foundations** (done) | – | Rule schema, 3325 verified rules in 32 packs, user rules overlay (`.crev/rules/`, `crev rules validate`), sources, grammar registry incl. vendored Vue, `rulecheck`, `sexp`, `astdump`, `rulegen`; first CLI cut (`scan`, SARIF/JSON/MD, exit codes, AI api + Cursor-skill + `ingest`, cache) | `rulecheck` green (achieved: 958/958) |
 | **1: Deterministic MVP CLI** | 1–5 | `crev scan` (tree-sitter + config + manifest engines), SFC included ranges, version detection (Maven, Gradle, npm/yarn/pnpm, tsconfig, nuxt.config), text/JSON/SARIF/MD, exit codes, suppressions, baseline, `--diff-base`, fixture goldens, release builds (linux/macOS amd64+arm64) | **M1:** runs on 3 reference repos (Spring Boot 3, Vue 3/Nuxt 4, Vue 2/Nuxt 2) with 0 crashes, < 30 s per 10k files, deterministic-rule precision ≥ 0.9 on labelled sample |
 | **2: AI confirmation** | 6–9 | Handoff builder + context slicer + scrubber, providers (api ✔, cursor-skill ✔, exec), cache ✔, compression ✔, verdict merge ✔, `crev feedback`, `rules stats`, eval set | **M2:** ai-confirm precision ≥ 0.8 and recall ≥ 0.7 on the eval set with the chosen model; zero secret leakage in scrubber tests |
 | **3: Docs update pipeline** | 10–13 | Fetchers, normalisers, structured extractors (deprecated-list, JEP, TC39, Boot guides, Vue/Nuxt migration, TS deprecations), snapshot store, diff, `needs-review` report, rule-draft templates, scheduled job in rules repo | **M3:** weekly job produces a report; a replayed historical change (e.g. Boot 3.4 MockBean deprecation) yields a correct draft that passes `rulecheck` |
@@ -782,7 +782,7 @@ code-review-engine/
 
 > Layout changed 2026-10-10: packs are now one directory per language/framework/file type with topic files (`rules/README.md` has the current per-pack table). Former cross-cutting packs (taint, appsec, llm, cert-java, java-security, python-security, supply-chain, ci, cloud, simplify-*, vue-vapor) are topic files plus theme tags in the language packs; `ci` became `github-actions` / `gitlab-ci`, `cloud` became `terraform/cloud.gen.yaml`. The table below is the historical pre-layout snapshot.
 
-Unique rule ids across all packs, base `<pack>.yaml` + generated `<pack>-extended.yaml`. There are no duplicate ids. Counts come from `go run ./tools/rulecheck rules/packs/*.yaml` (`total=2211 failures=0`).
+Unique rule ids across all packs, base `<pack>.yaml` + generated `<pack>-extended.yaml`. There are no duplicate ids. Counts come from `go run ./tools/rulecheck rules/packs/*/*.yaml` (`total=3325 failures=0`).
 
 | Pack | Rules | deterministic | ai-confirm | Grammar(s) | Main sources | Version dimensions |
 |---|---|---|---|---|---|---|
@@ -874,8 +874,9 @@ How rules were verified: every cited URL was fetched on 2026-10-09 (HTTP 200). E
     identifiers the example declares (never strings or API names). Found and fixed 3 false negatives
     (REACT-SEC-SERVER-FUNCTION-NO-AUTH, PAYLOAD-MIG-PUBLIC-ENV, YAML-QUAL-DOCUMENT-START broke on a leading
     comment).
-  * Queued: fix-commit differential (rule must fire before and not after security fix commits mined from
-    the corpus history), AI-generated adversarial near-misses, a larger corpus (34 repos today).
+  * Fix-commit differential (`tools/corpus fixdiff`), lint autofix commits (`autofix`), inline
+    suppression mining (`suppressions`) and real-linter agreement (`agree`) feed `tools/trust compute`.
+    Still queued: AI-generated adversarial near-misses, a larger corpus (34 repos today).
 * **Oxlint (implemented):** `.oxlintrc.json` / `.oxlintrc.jsonc` / `oxlint.json` (categories, plugins,
   rules, overrides, extends, ignorePatterns) and `oxlint-disable*` comments are honoured;
   `xref: oxlint:<plugin>/<rule>`.
@@ -904,9 +905,10 @@ How rules were verified: every cited URL was fetched on 2026-10-09 (HTTP 200). E
 
 ## Queue (2026-10-10)
 
-1. OWASP phase (in progress): ASVS 5.0 mapping + per-chapter coverage, API Top 10 2023, Mobile Top 10 2024 / MASVS
-   (android pack done), LLM Top 10 2025, Docker/Kubernetes Top 10, Proactive Controls 2024, Cheat Sheet Series;
-   Snyk/Kotlin/JS CWE gaps; re-measure OWASP Benchmark, Sonar/Semgrep/Snyk, bench A.
+1. OWASP phase: ASVS 5.0, API Top 10 2023, Mobile Top 10 2024 / MASVS, LLM Top 10 2025, Docker/Kubernetes
+   Top 10, Proactive Controls 2024 and Cheat Sheet Series are mapped (`tools/gap/owasp-coverage.md`).
+   Leftovers: overview/unparsed-stack cheat sheets, process/runtime MASVS and Top 10 items, Snyk/Kotlin/JS
+   CWE gaps; re-measure OWASP Benchmark, Sonar/Semgrep/Snyk, bench A.
 2. Widen beyond Top 10s: code-detectable CWE list per language, SEI CERT Java, official framework security guides
    (Spring Security, Django, Flask, Express, Angular, React, Vue, Nuxt, PHP manual), CIS Docker/Kubernetes,
    AWS/Azure/GCP provider best practices for Terraform, OpenSSF Scorecard / SLSA supply-chain checks.

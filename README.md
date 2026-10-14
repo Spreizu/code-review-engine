@@ -71,9 +71,11 @@ flowchart LR
 - **Taint** (`internal/taint`, `rules/data/taint.yaml`, `rules/data/frameworks.yaml`): source-to-sink
   rules for Java, Kotlin, Python, JavaScript/TypeScript, PHP and Go. Framework models only apply in files
   that import the framework. `frameworks.yaml` currently models javalin, quarkus-rest, spring-webflux
-  (functional), nestjs, hapi, fiber, chi, falcon, aiohttp, symfony-http-foundation, psr-7 and
-  codeigniter4. Built-in language blocks cover common frameworks such as Spring, Flask, Django and
-  Express. Cross-file function summaries are on by default (`cross_file_taint: false` disables them).
+  (functional), micronaut, vertx-web, sparkjava, play-java, nestjs, hapi, fiber, chi, falcon,
+  aiohttp, http4k, symfony-http-foundation, psr-7 and codeigniter4. Built-in language blocks cover
+  common frameworks such as Spring, Flask, Django and Express. Cross-file function summaries (imported
+  functions and class/instance methods with a unique candidate) are on by default
+  (`cross_file_taint: false` disables them).
 - **Simplification rules** (`engine: index`) use a repo-wide symbol and caller index (`crev index`).
 - **SCA:** lockfiles (npm, yarn, pnpm, composer, Go, Poetry, Pipfile, pinned requirements, Gradle
   lockfiles, pom.xml) are matched against OSV.dev, either online or with offline databases from
@@ -222,7 +224,7 @@ None of these ship in the binary.
 | `go run ./tools/rulecheck $(find rules/packs -name '*.yaml')` | validate every rule: schema, source, examples executed, trust and governance |
 | `python tools/rulegen/rulegen.py` | regenerate `*.gen.yaml` from `tools/rulegen/specs/*.py` (also `sources.py`, `taxonomy.py`, `xref.py`, `optin.py`) |
 | `go run ./tools/ruleupdate [-latest] [-fail-on-review]` | doc drift: re-fetch cited pages, verify quotes, flag new deprecations and new latest versions; writes `.ruleupdate/report.md` and never edits rules |
-| `go run ./tools/corpus fetch\|run\|summarize\|diff\|sample\|fixtures\|govern\|bench\|fixdiff\|slow` | false-positive harness: pinned OSS repos, benchmark apps and linter test suites (`tools/corpus/README.md`) |
+| `go run ./tools/corpus fetch\|run\|summarize\|diff\|sample\|fixtures\|govern\|bench\|fixdiff\|suppressions\|autofix\|agree\|slow` | false-positive harness: pinned OSS repos, benchmark apps, linter test suites, inline suppressions, autofix commits and real-linter agreement (`tools/corpus/README.md`) |
 | `go run ./tools/trust compute -label <run>` / `metamorphic` | compute `rules/data/trust.yaml` and `tools/trust/report.md` |
 | `python tools/gap/{sonar,semgrep,snyk,owasp,cwe}.py` | coverage checklists against external rule catalogs, by key/CWE only |
 | `tools/bench/*.py` | crev vs AI-review benchmark (`tools/bench/README.md`) |
